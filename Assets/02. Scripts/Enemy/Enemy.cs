@@ -1,6 +1,14 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
+public enum EnemyState
+{
+    Patrol,
+    Chase,
+    Investigate,
+    Return,
+    Attack
+}
 
 public class Enemy : MonoBehaviour
 {
@@ -28,6 +36,15 @@ public class Enemy : MonoBehaviour
     public Transform Target => target;
     public bool HasTarget => target;
 
+    public float StopDistance
+    {
+        get => Agent.stoppingDistance;
+        set
+        {
+            Agent.stoppingDistance = value;
+        }
+    }
+
 
     private void Start()
     {
@@ -38,6 +55,11 @@ public class Enemy : MonoBehaviour
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+    }
+
+    private void OnEnable()
+    {
+        stateMachine?.ChangeState<PatrolRouteState>();
     }
 
     private void Update()

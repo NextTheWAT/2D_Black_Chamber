@@ -14,12 +14,13 @@ public class StateMachine
     {
         this.owner = owner;
 
-        AddState(new PatrolState(owner));
+        AddState(new PatrolRouteState(owner));
+        AddState(new PatrolGuardState(owner));
         AddState(new ChaseState(owner));
         // AddState(new AttackState(owner));
         // AddState(new ReturnState(owner));
 
-        ChangeState<PatrolState>();
+        ChangeState<PatrolRouteState>();
     }
 
 

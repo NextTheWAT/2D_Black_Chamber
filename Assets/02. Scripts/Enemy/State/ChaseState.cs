@@ -10,17 +10,18 @@ public class ChaseState : BaseState
     {
         if (owner.Target == null)
         {
-            owner.ChangeState<PatrolState>();
+            owner.ChangeState<PatrolRouteState>();
             return;
         }
 
         ConditionalLogger.Log("ChaseState Enter");
         owner.Agent.isStopped = false;
+        owner.StopDistance = 1f;
         owner.MoveTo(owner.Target.position);
     }
     public override void Update()
     {
-        owner.FindTargetInFOV();
+        owner.FindTarget();
 
         if (owner.HasTarget)
         {
@@ -28,7 +29,7 @@ public class ChaseState : BaseState
         }
         else
         {
-            owner.ChangeState<PatrolState>();
+            owner.ChangeState<PatrolRouteState>();
             return;
         }
     }

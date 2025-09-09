@@ -1077,6 +1077,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8909634474722234564, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
+      propertyPath: targetMask.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8909634474722234564, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
       propertyPath: patrolPoints.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -1340,6 +1344,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 1924743225816651000, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2074348539204141139, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1350,11 +1358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5202866971798451329, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.21
+      value: 1.07
       objectReference: {fileID: 0}
     - target: {fileID: 5202866971798451329, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.83
+      value: -3.17
       objectReference: {fileID: 0}
     - target: {fileID: 5202866971798451329, guid: 34459d7cb1feffb4c9abc9b57620300b, type: 3}
       propertyPath: m_LocalPosition.z

@@ -1,19 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-public class PatrolState : BaseState
+public class PatrolRouteState : BaseState
 {
     // protected Transform[] patrolPoints;
     private int currentPointIndex = 0;
     private float waitTime = 2f;
     private Coroutine patrolCoroutine;
 
-    public PatrolState(Enemy owner) : base(owner) { }
+    public PatrolRouteState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {
         ConditionalLogger.Log("PatrolState Enter");
         owner.Agent.isStopped = false;
+        owner.StopDistance = 0f;
         StartPatrol();
     }
 
@@ -59,12 +60,12 @@ public class PatrolState : BaseState
 
             Vector2 destination = owner.patrolPoints[currentPointIndex].position;
             owner.MoveTo(destination);
-            currentPointIndex = (currentPointIndex + 1) % owner.patrolPoints.Length;
 
-            while (!owner.Agent.pathPending && owner.Agent.remainingDistance > 0.5f)
+            while (owner.Agent.pathPending || owner.Agent.remainingDistance > 0.1f)
                 yield return null;
 
             yield return new WaitForSeconds(waitTime);
+            currentPointIndex = (currentPointIndex + 1) % owner.patrolPoints.Length;
         }
     }
 
