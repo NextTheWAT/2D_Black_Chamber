@@ -164,7 +164,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 69028
+  m_InstanceId: 33446
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -188,6 +188,7 @@ MonoBehaviour:
     m_Bits: 0
   originalColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   alertColor: {r: 1, g: 0, b: 0, a: 0.78431374}
+  patrolPoints: []
 --- !u!195 &-6281325203026582095
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -198,7 +199,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -234,7 +235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c7f4db162bab4443818dd13bed4b1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularSpeed: 50
+  angularSpeed: 200
 --- !u!1 &2951343543140570501
 GameObject:
   m_ObjectHideFlags: 0

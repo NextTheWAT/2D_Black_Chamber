@@ -16,51 +16,71 @@ public class Enemy : MonoBehaviour
     private Light2D light2D;
     private NavMeshAgent agent;
     private Transform target;
+    private StateMachine stateMachine;
+
+    public NavMeshAgent Agent => agent;
+    public StateMachine StateMachine => stateMachine;
+
+    public Transform[] patrolPoints;
+    public LayerMask TargetMask => targetMask;
+    public LayerMask ObstacleMask => obstacleMask;
+
+    public Transform Target => target;
+    public bool HasTarget => target;
+
 
     private void Start()
     {
         light2D = GetComponentInChildren<Light2D>();
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
+        stateMachine = new StateMachine(this);
+
         agent.updateRotation = false;
         agent.updateUpAxis = false;
     }
 
     private void Update()
     {
-        FindTarget();
+        stateMachine?.UpdateState();
 
+        /*
+        FindTarget();
 
         if (target)
         {
             agent.SetDestination(target.position);
         }
+        else
+        {
+            agent.SetDestination(transform.position);
+            light2D.color = originalColor;
+        }
+        */
     }
 
-    void FindTarget()
+    public void MoveTo(Vector2 destination)
+        => agent.SetDestination(destination);
+
+    public void ChangeState<T>() where T : IState
+        => stateMachine?.ChangeState<T>();
+
+
+    public void FindTarget()
     {
-        Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, ViewDistance, targetMask);
-        Transform findTarget = null;
+        Transform findTarget = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
 
-        foreach (Collider2D col in targets)
+        if (findTarget)
         {
-            if (col == coll) continue;
-
-            if (col is CircleCollider2D circle)
-            {
-                if (transform.IsCircleVisible(circle, ViewAngle, ViewDistance, targetMask, obstacleMask))
-                {
-                    ConditionalLogger.Log(col);
-                    light2D.color = alertColor;
-                    findTarget = col.transform;
-                }
-                else
-                {
-                    light2D.color = originalColor;
-                }
-            }
+            ConditionalLogger.Log(findTarget);
+            light2D.color = alertColor;
+            target = findTarget.transform;
         }
-        target = findTarget;
+        else
+        {
+            light2D.color = originalColor;
+            target = null;
+        }
     }
 
 }
