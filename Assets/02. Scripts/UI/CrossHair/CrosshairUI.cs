@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
 public class CrosshairUI : MonoBehaviour
@@ -16,36 +17,38 @@ public class CrosshairUI : MonoBehaviour
     [SerializeField] private Ease shrinkEase = Ease.OutQuad;
     [SerializeField] private Ease expandEase = Ease.OutBack;
 
-    private RectTransform rt;
+    [Header("CrossHair_Image")]
+    [SerializeField] private Image crossHairImage;
+    [SerializeField] private RectTransform crossHair_rt;
+
     private Vector3 baseScale;
     private Sequence seq;
 
     private void Awake()
     {
-        rt = GetComponent<RectTransform>();
-        baseScale = rt.localScale;
+        baseScale = crossHair_rt.localScale;
         Cursor.lockState = CursorLockMode.Confined;
         if (hideHardwareCursor) Cursor.visible = false;
     }
 
-    private void OnDisable()
-    {
-        seq?.Kill();
-        if (hideHardwareCursor) Cursor.visible = true;
-    }
+    //private void OnDisable()
+    //{
+    //    seq?.Kill();
+    //    if (hideHardwareCursor) Cursor.visible = true;
+    //}
 
     private void Update()
     {
         if (!followMouse || Mouse.current == null) return;
-        rt.position = Mouse.current.position.ReadValue();   // 화면 좌표 그대로 배치
+        crossHair_rt.position = Mouse.current.position.ReadValue();   // 화면 좌표 그대로 배치
     }
 
     public void Pulse()
     {
         seq?.Kill();
-        rt.localScale = baseScale;
+        crossHair_rt.localScale = baseScale;
         seq = DOTween.Sequence()
-            .Append(rt.DOScale(baseScale * shrinkScale, shrinkTime).SetEase(shrinkEase))
-            .Append(rt.DOScale(baseScale, expandTime).SetEase(expandEase));
+            .Append(crossHair_rt.DOScale(baseScale * shrinkScale, shrinkTime).SetEase(shrinkEase))
+            .Append(crossHair_rt.DOScale(baseScale, expandTime).SetEase(expandEase));
     }
 }
