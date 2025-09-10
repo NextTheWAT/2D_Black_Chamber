@@ -6,6 +6,7 @@ public class StateMachine
 {
     private IState currentState;
     public IState CurrentState => currentState;
+    public Type CurrentStateType => currentState?.GetType();
 
     private Dictionary<Type, IState> states = new();
     private Enemy owner;
@@ -14,13 +15,12 @@ public class StateMachine
     {
         this.owner = owner;
 
-        AddState(new PatrolRouteState(owner));
-        AddState(new PatrolGuardState(owner));
+        AddState(new PatrolState(owner));
         AddState(new ChaseState(owner));
-        // AddState(new AttackState(owner));
-        // AddState(new ReturnState(owner));
+        AddState(new InvestigateState(owner));
+        AddState(new ReturnState(owner));
 
-        ChangeState<PatrolRouteState>();
+        ChangeState<PatrolState>();
     }
 
 
