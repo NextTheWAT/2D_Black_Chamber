@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2419104370726133471}
   - component: {fileID: 8766163319023578675}
   - component: {fileID: 2085526500673798680}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44928
+  m_InstanceId: 31470
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -129,12 +129,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angularSpeed: 120
   targetMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   originalColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   alertColor: {r: 1, g: 0, b: 0, a: 0.78431374}
   patrolPoints: []
@@ -224,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1978850537240009486}
   - component: {fileID: 4973411465921940280}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Light2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,7 +307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3659671206245553402}
   - component: {fileID: 3534859664244284107}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
