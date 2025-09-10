@@ -19,6 +19,9 @@ public enum PatrolType
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Agent")]
+    [SerializeField] private float angularSpeed = 120f;
+
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
@@ -36,7 +39,6 @@ public class Enemy : MonoBehaviour
     private NavMeshAgent agent;
     private Transform target;
     private StateMachine stateMachine;
-    private AgentRotateSmooth2d agentRotate;
 
     public float ViewDistance => light2D.pointLightOuterRadius;
     public float ViewAngle => light2D.pointLightInnerAngle;
@@ -54,7 +56,7 @@ public class Enemy : MonoBehaviour
     public Transform Target => target;
     public bool HasTarget => target;
 
-    public float RotateSpeed => agentRotate.angularSpeed;
+    public float RotateSpeed => angularSpeed;
 
     public float StopDistance
     {
@@ -72,7 +74,6 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         stateMachine = new StateMachine(this);
-        agentRotate = GetComponent<AgentRotateSmooth2d>();
 
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -93,8 +94,6 @@ public class Enemy : MonoBehaviour
 
     public void RotateTo(float targetAngle)
     {
-        if (agentRotate == null) return;
-
         float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * RotateSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
