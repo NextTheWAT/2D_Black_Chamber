@@ -6,7 +6,7 @@ public class ProjectileController : MonoBehaviour
 {
     [SerializeField] private LayerMask levelcollisionLayer;
 
-    private RangeaponHandler rangeWeaponHandler;
+    private RangeWeaponHandler rangeWeaponHandler;
 
     private float currentDuraction;
     private Vector2 direction;
@@ -57,7 +57,7 @@ public class ProjectileController : MonoBehaviour
 
         this.direction = direction;
         currentDuraction = 0;
-        transform.localScale = Vector3.one; * waeponHandler.BulletSize;
+       // transform.localScale = Vector3.one * weaponHandler.BulletSize;   //Åº Å©±â Á¶Àý
 
         transform.right = this.direction;
 
@@ -69,7 +69,7 @@ public class ProjectileController : MonoBehaviour
         isReady = true;
     }
 
-    private void DestroyProhjectile(Vector3 position, bool createFx)
+    private void DestroyProjectile(Vector3 position, bool createFx)
     {
         Destroy(this.gameObject);
     }
