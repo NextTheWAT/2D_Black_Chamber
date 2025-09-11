@@ -397,7 +397,7 @@ MonoBehaviour:
   patrolType: 0
   initialChaseDelay: 2
   investigateThreshold: 3
-  attackRange: 5
+  attackRange: 6
   shooter: {fileID: 5479762679829375684}
 --- !u!114 &3002781076233205060
 MonoBehaviour:
@@ -569,7 +569,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 0.1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 00000000
