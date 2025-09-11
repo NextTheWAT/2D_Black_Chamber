@@ -153,4 +153,21 @@ public class Enemy : MonoBehaviour
             target = null;
         }
     }
+
+
+    public void Hit()
+    {
+        animationController.PlayHit();
+        ChangeState<AttackState>();
+    }
+
+    public void Die()
+    {
+        animationController.PlayDie();
+        coll.enabled = false;
+        agent.isStopped = true;
+        enabled = false;
+        Destroy(gameObject, 2f);
+    }
+
 }

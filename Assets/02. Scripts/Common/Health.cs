@@ -20,6 +20,8 @@ public class Health : MonoBehaviour
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    public void TakeDamage(float damage) => TakeDamage(Mathf.RoundToInt(damage));
+
     public void TakeDamage(int damage)
     {
         if (IsDead) return;
