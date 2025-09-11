@@ -37,12 +37,12 @@ public class Shooter : MonoBehaviour
         if (respectFireRate)
             cooldown = 1f / Mathf.Max(0.001f, gun.fireRate);
 
-        // VFX/SFX
-        //if (gun.muzzleFlashPrefab)
-        //{
-        //    var fx = Instantiate(gun.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
-        //    Destroy(fx, 1.5f);
-        //}
+        //VFX / SFX
+        if (gun.muzzleFlashPrefab)
+        {
+            var fx = Instantiate(gun.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
+            Destroy(fx, 0.05f);
+        }
         if (gun.shotSfx)
         {
             AudioSource.PlayClipAtPoint(gun.shotSfx, gunPoint.position);

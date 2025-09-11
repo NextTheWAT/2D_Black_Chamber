@@ -19,5 +19,6 @@ MonoBehaviour:
   spread: 0
   projectilesPerShot: 1
   bulletPrefab: {fileID: 8908556986258763193, guid: c313c365d0117924c9a3743c986c3318, type: 3}
+  muzzleFlashPrefab: {fileID: 7841737132505529772, guid: 9aada97fd4f02c34db89301bbf287966, type: 3}
   shotSfx: {fileID: 8300000, guid: 428f7729deab1004aa09c9be670b0d1b, type: 3}
   bulletLife: 2
