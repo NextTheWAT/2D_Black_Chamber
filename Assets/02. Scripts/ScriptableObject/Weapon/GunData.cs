@@ -5,7 +5,7 @@ public class GunData : ScriptableObject
 {
     [Header("Stats")]
     public string displayName = "Pistol";
-    [Min(0f)] public float damage = 10f;
+    [Min(0f)] public int damage = 10;
     [Min(0f)] public float bulletSpeed = 20f;
     [Tooltip("Shots per second")][Min(0.1f)] public float fireRate = 6f;
     [Range(0f, 20f)] public float spread = 0f;        // µµ(¡Æ)

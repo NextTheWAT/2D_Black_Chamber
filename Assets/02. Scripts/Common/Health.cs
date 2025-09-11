@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Health : MonoBehaviour
+public class Health : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxHealth = 100;
     public int MaxHealth => maxHealth;
@@ -28,6 +28,8 @@ public class Health : MonoBehaviour
 
         currentHealth = Mathf.Max(currentHealth - damage, 0);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        Debug.Log(damage + " 데미지 받음");
 
         if (currentHealth <= 0)
         {
