@@ -72,15 +72,15 @@ public class CharacterAnimationController : MonoBehaviour
         upperAnimator.SetTrigger(hash);
     }
 
-    public void PlayUse()
+    public void SetActiveUse(bool value)
     {
         int hash = AnimationHash.Use;
-        upperAnimator.SetTrigger(hash);
+        upperAnimator.SetBool(hash, value);
     }
-    public void PlayPunch()
+    public void SetActivePunch(bool value)
     {
         int hash = AnimationHash.Punch;
-        upperAnimator.SetTrigger(hash);
+        upperAnimator.SetBool(hash, value);
     }
 
     public void PlayReload()
