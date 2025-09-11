@@ -7,16 +7,34 @@ public partial class PlayerInputController : TopDownController
 
     [SerializeField] Shooter shooter;
 
-
+    private bool shootPressed = false;
+    public bool ShootPressed => shootPressed;
 
     public void OnAttack(InputAction.CallbackContext ctx)
     {
-        if (!ctx.performed) return;
+        if (shooter.respectFireRate)
+        {
+            if (ctx.phase == InputActionPhase.Started)
+            {
+                shootPressed = true;
+                animationController.SetActiveShoot(true); // 공격 애니메이션 시작
+            }
+            else if (ctx.phase == InputActionPhase.Canceled)
+            {
+                shootPressed = false;
+                animationController.SetActiveShoot(false); // 공격 애니메이션 종료
+            }
+        }
+        else
+        {
+            if(!ctx.performed) return; // 누를 때만 발사
+
+            animationController.SetActiveShoot(true); // 공격 애니메이션 시작
+            animationController.SetActiveShoot(false); // 공격 애니메이션 종료
+            GunForward();
+        }
+
         //crosshair?.Pulse();   // 크로스헤어 펄스
-
-        GunForward();
-
-        UICrosshairManager.Instance.crosshairUI.Pulse(); // 싱글톤으로 접근하여 펄스 호출
 
         // 공격 로직은 나중에 추가
     }
@@ -28,6 +46,8 @@ public partial class PlayerInputController : TopDownController
         mouse.z = shooter.gunPoint.position.z;
 
         Vector2 dir = (mouse - shooter.gunPoint.position).normalized;
-        shooter.Shoot(dir); // ← 이 한 줄이면 발사
+        // ← 이 한 줄이면 발사
+        if (shooter.Shoot(dir))
+            UICrosshairManager.Instance.crosshairUI.Pulse(); // 싱글톤으로 접근하여 펄스 호출
     }
 }

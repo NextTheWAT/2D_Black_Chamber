@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Pistol
   damage: 10
   bulletSpeed: 100
-  fireRate: 100
+  fireRate: 5
   spread: 0
   projectilesPerShot: 1
   bulletPrefab: {fileID: 8908556986258763193, guid: c313c365d0117924c9a3743c986c3318, type: 3}

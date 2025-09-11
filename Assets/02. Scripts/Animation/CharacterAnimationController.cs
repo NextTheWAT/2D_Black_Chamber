@@ -15,12 +15,17 @@ public class CharacterAnimationController : MonoBehaviour
 
     public void Initialize()
     {
-        SetMoveSpeed(0f);
-        PlayIdle();
+        SetMoveBlend(0f);
+        SetMoveSpeed(1f);
         SetActiveShoot(false);
     }
 
-
+    public void SetLowerBodyRotation(Vector2 direction)
+    {
+        if (direction.sqrMagnitude < 0.01f) return;
+        lowerAnimator.transform.right = direction;
+        // lowerAnimator.transform.rotation = Quaternion.Euler(0f, 0f, targetAngle);
+    }
 
     public void SetMoveSpeed(float speed)
     {
@@ -29,17 +34,17 @@ public class CharacterAnimationController : MonoBehaviour
         lowerAnimator.SetFloat(hash, speed);
     }
 
-    public void PlayIdle() => SetMove(0f);
+    public void PlayIdle() => SetMoveBlend(0f);
 
-    public void PlayWalk() => SetMove(0.5f);
+    public void PlayWalk() => SetMoveBlend(0.5f);
 
-    public void PlayRun() => SetMove(1f);
+    public void PlayRun() => SetMoveBlend(1f);
 
-    public void SetMove(float speed)
+    public void SetMoveBlend(float blend)
     {
         int hash = AnimationHash.MoveBlend;
-        upperAnimator.SetFloat(hash, speed);
-        lowerAnimator.SetFloat(hash, speed);
+        upperAnimator.SetFloat(hash, blend);
+        lowerAnimator.SetFloat(hash, blend);
     }
 
     public void SetActiveShoot(bool value)
