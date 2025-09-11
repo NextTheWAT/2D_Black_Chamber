@@ -3,6 +3,11 @@ using UnityEngine.InputSystem;
 
 public partial class PlayerInputController : TopDownController
 {
+    private void Awake()
+    {
+        _camera = Camera.main;
+        shooter = GetComponent<Shooter>();
+    }
 
     private void LateUpdate()
     {
