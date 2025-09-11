@@ -2,20 +2,7 @@ using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-public enum EnemyState
-{
-    Patrol,
-    Chase,
-    Investigate,
-    Return,
-    Attack
-}
-
-public enum PatrolType
-{
-    Waypoint,
-    Fixed
-}
+using Constants;
 
 public class Enemy : MonoBehaviour
 {

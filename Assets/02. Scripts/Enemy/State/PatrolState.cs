@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Constants;
 
 public class PatrolState : BaseState
 {
