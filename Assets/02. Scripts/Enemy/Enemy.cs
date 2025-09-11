@@ -153,16 +153,4 @@ public class Enemy : MonoBehaviour
             target = null;
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log($"Collsion {collision.transform}");
-        if (collision.transform == target)
-        {
-            Debug.Log($"Attack {target}");
-            Destroy(collision.gameObject);
-            ChangeState<ReturnState>();
-        }
-    }
-
 }
