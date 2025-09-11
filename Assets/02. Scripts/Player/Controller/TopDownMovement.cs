@@ -23,7 +23,7 @@ public class TopDownMovement : MonoBehaviour
         controller = GetComponent<TopDownController>();
         rb = GetComponent<Rigidbody2D>();
 
-        rb.bodyType = RigidbodyType2D.Kinematic;
+        // rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         rb.freezeRotation = false; // 스크립트로 회전
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;

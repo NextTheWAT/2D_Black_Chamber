@@ -22,6 +22,9 @@ public class Enemy : MonoBehaviour
     [Header("Agent")]
     [SerializeField] private float angularSpeed = 120f;
 
+    [Header("Stat")]
+    [SerializeField] private Health health;
+
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
@@ -57,6 +60,8 @@ public class Enemy : MonoBehaviour
     public bool HasTarget => target;
 
     public float RotateSpeed => angularSpeed;
+
+    public Health Health => health;
 
     public float StopDistance
     {
