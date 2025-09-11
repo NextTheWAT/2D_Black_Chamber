@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 142148147}
   - component: {fileID: 142148146}
   m_Layer: 0
-  m_Name: flow
+  m_Name: floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
