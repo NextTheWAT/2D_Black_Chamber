@@ -18,6 +18,8 @@ public class CharacterAnimationController : MonoBehaviour
         SetMoveBlend(0f);
         SetMoveSpeed(1f);
         SetActiveShoot(false);
+        SetActiveUse(false);
+        SetActivePunch(false);
     }
 
     public void SetLowerBodyRotation(Vector2 direction)

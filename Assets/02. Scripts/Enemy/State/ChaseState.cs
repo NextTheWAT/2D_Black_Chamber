@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class ChaseState : BaseState
 {
-    private float initialChaseDelay = 2f; // 처음 타겟 발견했을 때 정지 시간
-    private float investigateThreshold = 3f; // 몇 초 이상 못 보면 조사 상태로 전환
     private Coroutine chaseCoroutine;
-
 
     public ChaseState(Enemy owner) : base(owner) { }
 
@@ -53,7 +50,7 @@ public class ChaseState : BaseState
         float chaseTimer = 0f;
         Vector2 lastTargetPos = owner.Target.position;
         
-        while (chaseTimer < initialChaseDelay)
+        while (chaseTimer < owner.InitialChaseDelay)
         {
             owner.FindTarget();
 
@@ -76,13 +73,22 @@ public class ChaseState : BaseState
             if (owner.HasTarget)
             {
                 investigateTimer = 0;
-                owner.MoveTo(owner.Target.position);
+                float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
+                if (distToTarget <= owner.AttackRange)
+                {
+                    owner.ChangeState<AttackState>();
+                    yield break;
+                }
+                else
+                {
+                    owner.MoveTo(owner.Target.position);
+                }
             }
             else
             {
                 investigateTimer += Time.deltaTime;
 
-                if (investigateTimer >= investigateThreshold)
+                if (investigateTimer >= owner.InvestigateThreshold)
                 {
                     owner.ChangeState<InvestigateState>();
                     yield break;

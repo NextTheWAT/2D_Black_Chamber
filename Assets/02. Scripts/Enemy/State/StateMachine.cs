@@ -19,6 +19,7 @@ public class StateMachine
         AddState(new ChaseState(owner));
         AddState(new InvestigateState(owner));
         AddState(new ReturnState(owner));
+        AddState(new AttackState(owner));
 
         ChangeState<PatrolState>();
     }

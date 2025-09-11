@@ -24,14 +24,27 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int startPatrolPointIndex;
     [SerializeField] private PatrolType patrolType;
 
+    [Header("Chase")]
+    [SerializeField] private float initialChaseDelay = 2f; // 처음 타겟 발견했을 때 정지 시간
+    [SerializeField] private float investigateThreshold = 3f; // 몇 초 이상 못 보면 조사 상태로 전환
+
+    [Header("Attack")]
+    [SerializeField] private float attackRange = 1.5f;
+    [SerializeField] private Shooter shooter;
+
     private Collider2D coll;
     private Light2D light2D;
     private NavMeshAgent agent;
     private Transform target;
+    private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
+    private CharacterAnimationController animationController; 
+
+    public float InitialChaseDelay => initialChaseDelay;
+    public float InvestigateThreshold => investigateThreshold;
 
     public float ViewDistance => light2D.pointLightOuterRadius;
-    public float ViewAngle => light2D.pointLightInnerAngle;
+    public float ViewAngle => light2D.pointLightOuterAngle;
 
     public Transform[] PatrolPoints => patrolPoints;
     public PatrolType PatrolType => patrolType;
@@ -39,11 +52,18 @@ public class Enemy : MonoBehaviour
 
     public NavMeshAgent Agent => agent;
     public StateMachine StateMachine => stateMachine;
+    public CharacterAnimationController AnimationController => animationController;
 
     public LayerMask TargetMask => targetMask;
     public LayerMask ObstacleMask => obstacleMask;
 
     public Transform Target => target;
+    public Vector2 LastKnownTargetPos
+    {
+        get => lastKnownTargetPos;
+        set => lastKnownTargetPos = value;
+    }
+
     public bool HasTarget => target;
 
     public float RotateSpeed => angularSpeed;
@@ -59,12 +79,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public float AttackRange => attackRange;
+
+
 
     private void Start()
     {
         light2D = GetComponentInChildren<Light2D>();
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
+        animationController = GetComponent<CharacterAnimationController>();
         stateMachine = new StateMachine(this);
 
         agent.updateRotation = false;
@@ -79,6 +103,13 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         stateMachine?.UpdateState();
+        UpdateMoveBlend();
+    }
+
+    private void UpdateMoveBlend()
+    {
+        float moveBlend = agent.velocity.magnitude > 0.01f ? 1f : 0f;
+        animationController.SetMoveBlend(moveBlend);
     }
 
     public void MoveTo(Vector2 destination)
@@ -100,6 +131,11 @@ public class Enemy : MonoBehaviour
     public void ChangeState<T>() where T : IState
         => stateMachine?.ChangeState<T>();
 
+    public void Attack()
+    {
+        shooter.Shoot(transform.up);
+    }
+
 
     public void FindTarget()
     {
@@ -109,6 +145,7 @@ public class Enemy : MonoBehaviour
         {
             light2D.color = alertColor;
             target = findTarget.transform;
+            lastKnownTargetPos = target.position;
         }
         else
         {

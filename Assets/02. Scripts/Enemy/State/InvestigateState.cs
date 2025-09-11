@@ -51,6 +51,15 @@ public class InvestigateState : BaseState
     {
         float timer = 0f;
 
+        // 처음 플레이어 위치로 이동
+        owner.MoveTo(owner.LastKnownTargetPos);
+        while (timer < investigateDuration)
+        {
+            if (owner.Agent.remainingDistance < 0.01f) break;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
         while (timer < investigateDuration)
         {
             // 랜덤한 조사 지점으로 이동
