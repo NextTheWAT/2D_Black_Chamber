@@ -35,7 +35,7 @@ public class InvestigateState : BaseState
     {
         if (investigateCoroutine != null)
             owner.StopCoroutine(investigateCoroutine);
-        owner.StartCoroutine(InvestigateLoop());
+        investigateCoroutine = owner.StartCoroutine(InvestigateLoop());
     }
 
     private void StopInvestigate()
@@ -53,6 +53,7 @@ public class InvestigateState : BaseState
 
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
+        yield return null;
         while (timer < investigateDuration)
         {
             if (owner.Agent.remainingDistance < 0.01f) break;
