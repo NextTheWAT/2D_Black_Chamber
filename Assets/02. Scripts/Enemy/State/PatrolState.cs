@@ -52,6 +52,7 @@ public class PatrolState : BaseState
             if (owner.PatrolType == PatrolType.Waypoint)
             {
                 if (owner.PatrolPoints.Length == 0) yield break;
+                if (owner.PatrolPoints[currentPointIndex] == null) yield break;
 
                 Vector2 destination = owner.PatrolPoints[currentPointIndex].position;
                 owner.MoveTo(destination);
