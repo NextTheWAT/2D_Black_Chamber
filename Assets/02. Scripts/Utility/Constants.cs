@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Constants
 {
-    public enum EnemyState
+    public enum StateType
     {
         Patrol,
         Chase,
