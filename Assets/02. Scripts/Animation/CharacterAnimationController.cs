@@ -65,7 +65,6 @@ public class CharacterAnimationController : MonoBehaviour
     {
         int hash = AnimationHash.Die;
         upperAnimator.SetTrigger(hash);
-        lowerAnimator.SetTrigger(hash);
     }
 
     public void PlayHit()
