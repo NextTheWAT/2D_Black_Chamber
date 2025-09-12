@@ -84,7 +84,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.10169053
+        value: 0.0324664
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -105,7 +105,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.51204026, b: 0, a: 0.78431374}
+      key0: {r: 1, g: 1, b: 0.8235294, a: 0.78431374}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -193,7 +193,7 @@ MonoBehaviour:
   m_LightType: 3
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 1
-  m_Color: {r: 1, g: 0.60967547, b: 0, a: 0.78431374}
+  m_Color: {r: 1, g: 1, b: 0.8235294, a: 0.78431374}
   m_Intensity: 0.1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 1
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 7905008452251158660}
   - component: {fileID: 2934995451585205486}
   m_Layer: 0
-  m_Name: PlayerBullet
+  m_Name: Pistol_Silence_Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -306,7 +306,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0e922aeb5d290e846aa2d0fb6f0eec6f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -393,6 +393,3 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
-  useTagFilter: 1
-  damageTags:
-  - Enemy
