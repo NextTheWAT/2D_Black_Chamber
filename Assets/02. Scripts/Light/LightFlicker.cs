@@ -19,7 +19,7 @@ public class LightFlicker : MonoBehaviour
 
     private void Update()
     {
-        float instensity = baseIntensity + Mathf.Sin(Time.time * flickerSpeed) * flickerAmount;
+        float instensity = baseIntensity + Mathf.Sin(Time.time * flickerSpeed) * flickerAmount; // Mathf.Sin = 주기적으로 반복되게 하는 함수
         light2D.intensity = Mathf.Max(0, instensity);
     }
 }
