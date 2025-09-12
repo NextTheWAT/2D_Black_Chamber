@@ -225,6 +225,7 @@ public class Enemy : MonoBehaviour
     public void Hit()
     {
         animationController.PlayHit();
+        LastKnownTargetPos = GameManager.Instance.player.position;
         IsHit = true;
     }
 
