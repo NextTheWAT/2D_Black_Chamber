@@ -6,11 +6,12 @@ namespace Constants
 {
     public enum StateType
     {
-        Patrol,
-        Chase,
-        Investigate,
-        Return,
-        Attack
+        Patrol, // 순찰
+        Chase, // 추격
+        Investigate, // 수색
+        Return, // 복귀
+        Attack, // 공격
+        Flee, // 도주
     }
 
     public enum PatrolType

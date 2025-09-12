@@ -33,6 +33,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private Shooter shooter;
 
+    [Header("Flee")]
+    [SerializeField] private float fleeDistance = 10f;
+
     private Collider2D coll;
     private Light2D light2D;
     private NavMeshAgent agent;
@@ -89,6 +92,8 @@ public class Enemy : MonoBehaviour
         get => agent.enabled;
         set => agent.enabled = value;
     }
+
+    public float FleeDistance => fleeDistance;
 
 
     private void Start()
