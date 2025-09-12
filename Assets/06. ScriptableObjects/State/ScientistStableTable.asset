@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: ScientistStableTable
   m_EditorClassIdentifier: 
   startStateIndex: 0
-  states:
-  - stateType: 0
+  stateTypes: 000000000500000003000000
