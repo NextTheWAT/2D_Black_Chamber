@@ -19,7 +19,10 @@ public class ReturnState : BaseState
 
         if (owner.HasTarget)
         {
-            owner.ChangeState<ChaseState>();
+            if(owner.isTarget)
+                owner.ChangeState<FleeState>();
+            else
+                owner.ChangeState<ChaseState>();
             return;
         }
 

@@ -35,6 +35,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Flee")]
     [SerializeField] private float fleeDistance = 10f;
+    [SerializeField] private float fleeDuration = 5f;
 
     private Collider2D coll;
     private Light2D light2D;
@@ -94,6 +95,9 @@ public class Enemy : MonoBehaviour
     }
 
     public float FleeDistance => fleeDistance;
+    public float FleeDuration => fleeDuration;
+
+    public bool isTarget = false;
 
 
     private void Start()

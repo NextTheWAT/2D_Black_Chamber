@@ -22,7 +22,12 @@ public class PatrolState : BaseState
         owner.FindTarget();
 
         if (owner.HasTarget)
-            owner.ChangeState<ChaseState>();
+        {
+            if(owner.isTarget)
+                owner.ChangeState<FleeState>();
+            else
+                owner.ChangeState<ChaseState>();
+        }
     }
 
     public override void Exit()

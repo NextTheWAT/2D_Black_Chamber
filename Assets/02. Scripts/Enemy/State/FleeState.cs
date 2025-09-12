@@ -7,6 +7,7 @@ public class FleeState : BaseState
     private Coroutine fleeCoroutine;
 
     public FleeState(Enemy owner) : base(owner) { }
+    private float timer;
 
     public override void Enter()
     {
@@ -19,6 +20,25 @@ public class FleeState : BaseState
         }
 
         ConditionalLogger.Log($"FleeState: Enter");
+    }
+
+    public override void Update()
+    {
+        owner.FindTarget();
+
+        if (owner.HasTarget)
+        {
+            timer = 0f;
+            Vector2 pos = GetFleePoint();
+            owner.MoveTo(pos);
+        }
+        else
+        {
+            if(timer < owner.FleeDuration) 
+                timer += Time.deltaTime;
+            else
+                owner.ChangeState<ReturnState>();
+        }
     }
 
     public override void Exit()
