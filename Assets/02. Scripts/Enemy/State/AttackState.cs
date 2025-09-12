@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class AttackState : BaseState
 {
     public AttackState(Enemy owner) : base(owner) { }
+    public override StateType StateType => StateType.Attack;
 
     public override void Enter()
     {
@@ -22,7 +24,7 @@ public class AttackState : BaseState
             owner.Attack();
         }
         else
-            owner.ChangeState<InvestigateState>();
+            owner.ChangeState(StateType.Investigate);
     }
 
     public override void Exit()

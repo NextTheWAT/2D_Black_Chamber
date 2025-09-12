@@ -226,7 +226,6 @@ GameObject:
   - component: {fileID: 5954136968334891971}
   - component: {fileID: 7171698669810226869}
   - component: {fileID: 4185835950088197724}
-  - component: {fileID: 3002781076233205060}
   - component: {fileID: 4119749525860128978}
   - component: {fileID: 375016970361882885}
   - component: {fileID: 5479762679829375684}
@@ -345,6 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   angularSpeed: 120
   health: {fileID: 4119749525860128978}
+  stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
   targetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -365,48 +365,6 @@ MonoBehaviour:
   attackRange: 6
   shooter: {fileID: 5479762679829375684}
   stateType: 
---- !u!114 &3002781076233205060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3338864281046059789}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShadowGroup: 0
-  m_ComponentVersion: 1
-  m_HasRenderer: 0
-  m_UseRendererSilhouette: 1
-  m_CastsShadows: 1
-  m_SelfShadows: 0
-  m_ApplyToSortingLayers: 00000000
-  m_ShapePath:
-  - {x: -0.397586, y: -0.36832476, z: 0}
-  - {x: -0.50974417, y: -0.14475285, z: 0}
-  - {x: -0.52120125, y: 0.040926628, z: 0}
-  - {x: -0.46713892, y: 0.22804283, z: 0}
-  - {x: -0.36832482, y: 0.37320164, z: 0}
-  - {x: -0.21683323, y: 0.47302276, z: 0}
-  - {x: -0.0042539835, y: 0.50910556, z: 0}
-  - {x: 0.22519583, y: 0.47834837, z: 0}
-  - {x: 0.37807846, y: 0.3536942, z: 0}
-  - {x: 0.47550184, y: 0.22804283, z: 0}
-  - {x: 0.52244747, y: 0.06531102, z: 0}
-  - {x: 0.5127812, y: -0.15007849, z: 0}
-  - {x: 0.38295537, y: -0.37320164, z: 0}
-  - {x: 0.22519583, y: -0.4696176, z: 0}
-  - {x: 0.010376394, y: -0.5150354, z: 0}
-  - {x: -0.21683323, y: -0.47494334, z: 0}
-  m_ShapePathHash: -128645897
-  m_Mesh: {fileID: 0}
-  m_InstanceId: -1464
-  m_LocalBounds:
-    m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
-    m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
 --- !u!114 &4119749525860128978
 MonoBehaviour:
   m_ObjectHideFlags: 0

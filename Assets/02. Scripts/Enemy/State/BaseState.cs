@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class BaseState : IState
 {
@@ -8,6 +9,8 @@ public class BaseState : IState
 
     public BaseState(Enemy owner)
         => this.owner = owner;
+
+    public virtual StateType StateType { get; }
 
     public virtual void Enter() { }
 

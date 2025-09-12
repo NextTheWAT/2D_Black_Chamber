@@ -1,21 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class ChaseState : BaseState
 {
     private Coroutine chaseCoroutine;
 
     public ChaseState(Enemy owner) : base(owner) { }
+    public override StateType StateType => StateType.Chase;
 
     public override void Enter()
     {
-        if (owner.Target == null)
-        {
-            owner.ChangeState<PatrolState>();
-            return;
-        }
-
         ConditionalLogger.Log("ChaseState Enter");
         BeginChase();
     }
@@ -48,23 +44,18 @@ public class ChaseState : BaseState
         owner.Agent.isStopped = true;
         ConditionalLogger.Log("Find Enemy!");
         float chaseTimer = 0f;
-        Vector2 lastTargetPos = owner.Target.position;
-        
+
         while (chaseTimer < owner.InitialChaseDelay)
         {
             owner.FindTarget();
-
-            if (owner.HasTarget)
-                lastTargetPos = owner.Target.position;
-
-            owner.MoveTo(lastTargetPos);
+            owner.LookAt(owner.LastKnownTargetPos);
             chaseTimer += Time.deltaTime;
             yield return null;
         }
 
         ConditionalLogger.Log("Start Chase!");
         owner.Agent.isStopped = false;
-        float investigateTimer = 0f;
+        owner.chaseToInvestigateTimer = 0f;
 
         while (true)
         {
@@ -72,27 +63,12 @@ public class ChaseState : BaseState
 
             if (owner.HasTarget)
             {
-                investigateTimer = 0;
-                float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
-                if (distToTarget <= owner.AttackRange)
-                {
-                    owner.ChangeState<AttackState>();
-                    yield break;
-                }
-                else
-                {
-                    owner.MoveTo(owner.Target.position);
-                }
+                owner.chaseToInvestigateTimer = 0;
+                owner.MoveTo(owner.Target.position);
             }
             else
             {
-                investigateTimer += Time.deltaTime;
-
-                if (investigateTimer >= owner.InvestigateThreshold)
-                {
-                    owner.ChangeState<InvestigateState>();
-                    yield break;
-                }
+                owner.chaseToInvestigateTimer += Time.deltaTime;
             }
             yield return null;
         }

@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Stat")]
     [SerializeField] private Health health;
+    [SerializeField] private StateTable stateTable;
 
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
@@ -27,10 +28,22 @@ public class Enemy : MonoBehaviour
     [Header("Chase")]
     [SerializeField] private float initialChaseDelay = 2f; // 처음 타겟 발견했을 때 정지 시간
     [SerializeField] private float investigateThreshold = 3f; // 몇 초 이상 못 보면 조사 상태로 전환
+    public float chaseToInvestigateTimer;
 
     [Header("Attack")]
     [SerializeField] private float attackRange = 1.5f;
     [SerializeField] private Shooter shooter;
+
+    [Header("Flee")]
+    [SerializeField] private float fleeDistance = 10f;
+    [SerializeField] private float fleeDuration = 5f;
+    public float fleeTimer;
+
+    [Header("Investigate")]
+    public float investigateDuration = 5f;
+    public float investigateRange = 2f;
+    public float investigateTimer;
+
 
     private Collider2D coll;
     private Light2D light2D;
@@ -81,6 +94,51 @@ public class Enemy : MonoBehaviour
 
     public float AttackRange => attackRange;
 
+    public string stateType;
+
+    public bool AgentEnabled
+    {
+        get => agent.enabled;
+        set => agent.enabled = value;
+    }
+
+    public float FleeDistance => fleeDistance;
+    public float FleeDuration => fleeDuration;
+
+    public bool isTarget = false;
+
+    public bool IsFleeStop => fleeTimer >= fleeDuration;
+
+    public bool IsChaseToInvestigate => chaseToInvestigateTimer >= investigateThreshold;
+
+    public bool IsInvestigateStop => investigateTimer >= investigateDuration;
+
+    // 목적지에 도착했는지
+    public bool IsArrived
+    {
+        get
+        {
+            if (!Agent.pathPending)
+            {
+                if (Agent.remainingDistance <= Agent.stoppingDistance)
+                {
+                    if (!Agent.hasPath || Agent.velocity.sqrMagnitude == 0f)
+                        return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public bool IsTargetInAttackRange
+    {
+        get
+        {
+            if (!HasTarget) return false;
+            float distToTarget = Vector2.Distance(transform.position, Target.position);
+            return distToTarget <= AttackRange;
+        }
+    }
 
 
     private void Start()
@@ -89,21 +147,22 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
-        stateMachine = new StateMachine(this);
-
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
+        if(isTarget)
+            stateMachine = new TargetFSM(this, stateTable);
+        else
+            stateMachine = new SoliderFSM(this, stateTable);
     }
 
     private void OnEnable()
     {
-        stateMachine?.ChangeState<PatrolState>();
+        stateMachine?.ChangeState(StateType.Patrol);
     }
 
     private void Update()
     {
         stateMachine?.UpdateState();
         UpdateMoveBlend();
+        stateType = stateMachine?.CurrentState.StateType.ToString();
     }
 
     private void UpdateMoveBlend()
@@ -112,8 +171,11 @@ public class Enemy : MonoBehaviour
         animationController.SetMoveBlend(moveBlend);
     }
 
-    public void MoveTo(Vector2 destination)
-        => agent.SetDestination(destination);
+    public void MoveTo(Vector2 destination){
+        if (!AgentEnabled) return;
+        if ((Vector3)destination == agent.destination) return;
+        agent.SetDestination(destination);
+    }
 
     public void RotateTo(float targetAngle)
     {
@@ -128,8 +190,8 @@ public class Enemy : MonoBehaviour
         RotateTo(angle);
     }
 
-    public void ChangeState<T>() where T : IState
-        => stateMachine?.ChangeState<T>();
+    public void ChangeState(StateType stateType)
+        => stateMachine?.ChangeState(stateType);
 
     public void Attack()
     {
@@ -158,7 +220,7 @@ public class Enemy : MonoBehaviour
     public void Hit()
     {
         animationController.PlayHit();
-        ChangeState<AttackState>();
+        ChangeState(StateType.Attack);
     }
 
     public void Die()

@@ -9,6 +9,7 @@ public class PatrolState : BaseState
     private Coroutine patrolCoroutine;
 
     public PatrolState(Enemy owner) : base(owner) { }
+    public override StateType StateType => StateType.Patrol;
 
     public override void Enter()
     {
@@ -20,9 +21,6 @@ public class PatrolState : BaseState
     public override void Update()
     {
         owner.FindTarget();
-
-        if (owner.HasTarget)
-            owner.ChangeState<ChaseState>();
     }
 
     public override void Exit()
