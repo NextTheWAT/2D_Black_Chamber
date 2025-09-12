@@ -1,13 +1,13 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class Shooter : MonoBehaviour
 {
     [Header("Refs")]
-    public Transform gunPoint;   // ÃÑ±¸ À§Ä¡(ÀÚ½Ä Transform)
-    public GunData gun;          // SO·Î ÃÑ ½ºÆå ÁöÁ¤
+    public Transform gunPoint;   // ì´êµ¬ ìœ„ì¹˜(ìì‹ Transform)
+    public GunData gun;          // SOë¡œ ì´ ìŠ¤í™ ì§€ì •
 
     [Header("Options")]
-    public bool respectFireRate = true; // true¸é fireRate(ÃÊ´ç ¹ß»ç¼ö) ÁØ¼ö
+    public bool respectFireRate = true; // trueë©´ fireRate(ì´ˆë‹¹ ë°œì‚¬ìˆ˜) ì¤€ìˆ˜
 
     private float cooldown;
 
@@ -18,14 +18,14 @@ public class Shooter : MonoBehaviour
     }
 
     /// <summary>
-    /// ¹æÇâ º¤ÅÍ ±âÁØÀ¸·Î ¹ß»ç. ¼º°ø ½Ã true, ½ÇÆĞ(Äğ´Ù¿î/¼¼ÆÃ´©¶ô) ½Ã false
+    /// ë°©í–¥ ë²¡í„° ê¸°ì¤€ìœ¼ë¡œ ë°œì‚¬. ì„±ê³µ ì‹œ true, ì‹¤íŒ¨(ì¿¨ë‹¤ìš´/ì„¸íŒ…ëˆ„ë½) ì‹œ false
     /// </summary>
     public bool Shoot(Vector2 direction)
     {
         if (gun == null || gunPoint == null || gun.bulletPrefab == null) return false;
         if (respectFireRate && cooldown > 0f) return false;
 
-        // ¹ß»ç
+        // ë°œì‚¬
         int count = Mathf.Max(1, gun.projectilesPerShot);
         for (int i = 0; i < count; i++)
         {
@@ -33,16 +33,18 @@ public class Shooter : MonoBehaviour
             SpawnBullet(dir);
         }
 
-        // Äğ´Ù¿î ¼³Á¤
+        // ì¿¨ë‹¤ìš´ ì„¤ì •
         if (respectFireRate)
             cooldown = 1f / Mathf.Max(0.001f, gun.fireRate);
 
-        //VFX / SFX
+        //VFX
         if (gun.muzzleFlashPrefab)
         {
             var fx = Instantiate(gun.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
             Destroy(fx, 0.05f);
         }
+
+        //SFX
         if (gun.shotSfx)
         {
             AudioSource.PlayClipAtPoint(gun.shotSfx, gunPoint.position);
@@ -57,7 +59,7 @@ public class Shooter : MonoBehaviour
         var b = go.GetComponent<Bullet>();
         if (!b)
         {
-            Debug.LogError("Bullet ÇÁ¸®ÆÕ¿¡ Bullet2D ÄÄÆ÷³ÍÆ®°¡ ÇÊ¿äÇÕ´Ï´Ù.");
+            Debug.LogError("Bullet í”„ë¦¬íŒ¹ì— Bullet2D ì»´í¬ë„ŒíŠ¸ê°€ í•„ìš”í•©ë‹ˆë‹¤.");
             Destroy(go);
             return;
         }
@@ -68,7 +70,7 @@ public class Shooter : MonoBehaviour
             speed: gun.bulletSpeed,
             damage: gun.damage,
             lifetime: gun.bulletLife,
-            ignoreLayer: gameObject.layer  // ÀÚ±â ·¹ÀÌ¾î´Â ¹«½Ã
+            ignoreLayer: gameObject.layer  // ìê¸° ë ˆì´ì–´ëŠ” ë¬´ì‹œ
         );
     }
 
