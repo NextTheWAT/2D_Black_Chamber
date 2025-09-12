@@ -9,6 +9,7 @@ public class InvestigateState : BaseState
     private Coroutine investigateCoroutine;
 
     public InvestigateState(Enemy owner) : base(owner) { }
+    public override StateType StateType => StateType.Investigate;
 
     public override void Enter()
     {

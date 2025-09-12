@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using Constants;
+using System;
 
 public class Enemy : MonoBehaviour
 {
@@ -51,8 +52,9 @@ public class Enemy : MonoBehaviour
     private Transform target;
     private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
-    private CharacterAnimationController animationController; 
+    private CharacterAnimationController animationController;
 
+    public bool IsHit { get; private set; }
     public float InitialChaseDelay => initialChaseDelay;
     public float InvestigateThreshold => investigateThreshold;
 
@@ -163,6 +165,9 @@ public class Enemy : MonoBehaviour
         stateMachine?.UpdateState();
         UpdateMoveBlend();
         stateType = stateMachine?.CurrentState.StateType.ToString();
+
+        if(IsHit)
+            IsHit = false;
     }
 
     private void UpdateMoveBlend()
@@ -220,7 +225,7 @@ public class Enemy : MonoBehaviour
     public void Hit()
     {
         animationController.PlayHit();
-        ChangeState(StateType.Attack);
+        IsHit = true;
     }
 
     public void Die()

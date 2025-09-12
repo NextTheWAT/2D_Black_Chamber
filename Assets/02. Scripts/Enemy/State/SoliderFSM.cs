@@ -7,6 +7,9 @@ public class SoliderFSM : StateMachine
 {
     public SoliderFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
     {
+        // Global
+        AddGlobalTransition(StateType.Investigate, () => owner.IsHit);
+
         // Patrol
         AddTransition(StateType.Patrol, StateType.Chase, () => owner.HasTarget);
 

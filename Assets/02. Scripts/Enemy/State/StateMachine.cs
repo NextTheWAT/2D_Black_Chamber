@@ -1,12 +1,12 @@
 using Constants;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class StateMachine
 {
     private IState currentState;
-    private List<Transition> transitions = new();
+    private List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
+    private List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
 
     public IState CurrentState => currentState;
     private Dictionary<StateType, IState> states = new();
@@ -38,6 +38,19 @@ public class StateMachine
         }
 
         transitions.Add(new Transition(states[from], states[to], condition));
+    }
+
+
+    public void AddGlobalTransition(StateType to, Func<bool> condition)
+    {
+        if (!states.ContainsKey(to))
+        {
+            ConditionalLogger.LogWarning($"GlobalTransition 추가 실패: {to} 상태가 존재하지 않습니다.");
+            return;
+        }
+
+        ConditionalLogger.Log($"GlobalTransition 추가: -> {to}");
+        globalTransitions.Add(new Transition(null, states[to], condition));
     }
 
     public void AddState(StateType stateType, IState state)
@@ -73,6 +86,17 @@ public class StateMachine
 
         // 현재 상태 업데이트
         currentState.Update();
+
+        // GlobalTransition 체크
+        foreach (var t in globalTransitions)
+        {
+            if (t.Condition())
+            {
+                ConditionalLogger.Log($"Global Transition: {currentState.StateType} -> {t.ToState.StateType}");
+                ChangeState(t.ToState.StateType);
+                break; // 한 번에 하나만 전환
+            }
+        }
 
         // Transition 체크
         foreach (var t in transitions)

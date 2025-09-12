@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Constants;
 
 public class TargetFSM : StateMachine
 {
     public TargetFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
     {
+        // Global
+        AddGlobalTransition(StateType.Flee, () => owner.IsHit);
+
         // Patrol
         AddTransition(StateType.Patrol, StateType.Flee, () => owner.HasTarget);
 

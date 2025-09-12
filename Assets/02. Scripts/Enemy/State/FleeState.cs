@@ -9,6 +9,7 @@ public class FleeState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log($"FleeState: Enter");
+        owner.MoveTo(GetFleePoint());
         owner.fleeTimer = 0f;
     }
 
@@ -35,7 +36,7 @@ public class FleeState : BaseState
 
     Vector2 GetFleePoint()
     {
-        Vector2 dirToPlayer = (owner.transform.position - owner.Target.position).normalized;
+        Vector2 dirToPlayer = ((Vector2)owner.transform.position - owner.LastKnownTargetPos).normalized;
         return (Vector2)owner.transform.position + dirToPlayer * owner.FleeDistance;
     }
 }
