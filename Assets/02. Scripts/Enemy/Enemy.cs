@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
     [Header("Chase")]
     [SerializeField] private float initialChaseDelay = 2f; // 처음 타겟 발견했을 때 정지 시간
     [SerializeField] private float investigateThreshold = 3f; // 몇 초 이상 못 보면 조사 상태로 전환
+    public float chaseToInvestigateTimer;
 
     [Header("Attack")]
     [SerializeField] private float attackRange = 1.5f;
@@ -36,6 +37,13 @@ public class Enemy : MonoBehaviour
     [Header("Flee")]
     [SerializeField] private float fleeDistance = 10f;
     [SerializeField] private float fleeDuration = 5f;
+    public float fleeTimer;
+
+    [Header("Investigate")]
+    public float investigateDuration = 5f;
+    public float investigateRange = 2f;
+    public float investigateTimer;
+
 
     private Collider2D coll;
     private Light2D light2D;
@@ -99,6 +107,39 @@ public class Enemy : MonoBehaviour
 
     public bool isTarget = false;
 
+    public bool IsFleeStop => fleeTimer >= fleeDuration;
+
+    public bool IsChaseToInvestigate => chaseToInvestigateTimer >= investigateThreshold;
+
+    public bool IsInvestigateStop => investigateTimer >= investigateDuration;
+
+    // 목적지에 도착했는지
+    public bool IsArrived
+    {
+        get
+        {
+            if (!Agent.pathPending)
+            {
+                if (Agent.remainingDistance <= Agent.stoppingDistance)
+                {
+                    if (!Agent.hasPath || Agent.velocity.sqrMagnitude == 0f)
+                        return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public bool IsTargetInAttackRange
+    {
+        get
+        {
+            if (!HasTarget) return false;
+            float distToTarget = Vector2.Distance(transform.position, Target.position);
+            return distToTarget <= AttackRange;
+        }
+    }
+
 
     private void Start()
     {
@@ -106,19 +147,22 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
-        stateMachine = new StateMachine(this, stateTable);
+        if(isTarget)
+            stateMachine = new TargetFSM(this, stateTable);
+        else
+            stateMachine = new SoliderFSM(this, stateTable);
     }
 
     private void OnEnable()
     {
-        stateMachine?.ChangeState<PatrolState>();
+        stateMachine?.ChangeState(StateType.Patrol);
     }
 
     private void Update()
     {
         stateMachine?.UpdateState();
         UpdateMoveBlend();
-        stateType = stateMachine?.CurrentStateType.Name;
+        stateType = stateMachine?.CurrentState.StateType.ToString();
     }
 
     private void UpdateMoveBlend()
@@ -146,8 +190,8 @@ public class Enemy : MonoBehaviour
         RotateTo(angle);
     }
 
-    public void ChangeState<T>() where T : IState
-        => stateMachine?.ChangeState<T>();
+    public void ChangeState(StateType stateType)
+        => stateMachine?.ChangeState(stateType);
 
     public void Attack()
     {
@@ -164,7 +208,6 @@ public class Enemy : MonoBehaviour
             light2D.color = alertColor;
             target = findTarget.transform;
             lastKnownTargetPos = target.position;
-            ConditionalLogger.Log("Find Target: " + target.name);
         }
         else
         {
@@ -177,7 +220,7 @@ public class Enemy : MonoBehaviour
     public void Hit()
     {
         animationController.PlayHit();
-        ChangeState<AttackState>();
+        ChangeState(StateType.Attack);
     }
 
     public void Die()

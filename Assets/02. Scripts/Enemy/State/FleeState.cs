@@ -1,25 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class FleeState : BaseState
 {
-    private Coroutine fleeCoroutine;
-
     public FleeState(Enemy owner) : base(owner) { }
-    private float timer;
+    public override StateType StateType => StateType.Flee;
 
     public override void Enter()
     {
-        owner.Agent.isStopped = false;
-
-        if (owner.HasTarget)
-        {
-            Vector2 pos = GetFleePoint();
-            owner.MoveTo(pos);
-        }
-
         ConditionalLogger.Log($"FleeState: Enter");
+        owner.fleeTimer = 0f;
     }
 
     public override void Update()
@@ -28,16 +18,12 @@ public class FleeState : BaseState
 
         if (owner.HasTarget)
         {
-            timer = 0f;
-            Vector2 pos = GetFleePoint();
-            owner.MoveTo(pos);
+            owner.fleeTimer = 0f;
+            owner.MoveTo(GetFleePoint());
         }
         else
         {
-            if(timer < owner.FleeDuration) 
-                timer += Time.deltaTime;
-            else
-                owner.ChangeState<ReturnState>();
+            owner.fleeTimer += Time.deltaTime;
         }
     }
 

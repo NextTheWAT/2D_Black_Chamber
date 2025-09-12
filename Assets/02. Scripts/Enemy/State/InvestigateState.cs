@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class InvestigateState : BaseState
 {
-    private float investigateDuration = 5f;
-    private float investigateRange = 2f;
     private float waitTime = 1f;
     private Coroutine investigateCoroutine;
 
@@ -20,9 +19,6 @@ public class InvestigateState : BaseState
     public override void Update()
     {
         owner.FindTarget();
-
-        if (owner.HasTarget)
-            owner.ChangeState<ChaseState>();
     }
 
     public override void Exit()
@@ -49,48 +45,43 @@ public class InvestigateState : BaseState
 
     private IEnumerator InvestigateLoop()
     {
-        float timer = 0f;
-
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
-        yield return null;
-        while (timer < investigateDuration)
+        owner.investigateTimer = 0f;
+
+        while (owner.investigateTimer < owner.investigateDuration)
         {
-            if (owner.Agent.remainingDistance < 0.01f) break;
-            timer += Time.deltaTime;
+            if (owner.IsArrived) break;
+            owner.investigateTimer += Time.deltaTime;
             yield return null;
         }
 
-        while (timer < investigateDuration)
+        while (true)
         {
             // 랜덤한 조사 지점으로 이동
             do
             {
-                GetRandomInvestigatePoint();
                 owner.MoveTo(GetRandomInvestigatePoint());
-                timer += Time.deltaTime;
+                owner.investigateTimer += Time.deltaTime;
                 yield return null;
             }
             while (!owner.Agent.hasPath);
 
             // 목적지에 도착할 때까지 대기
-            while (owner.Agent.remainingDistance > 0.01f)
+            while (!owner.IsArrived)
             {
-                timer += Time.deltaTime;
+                owner.investigateTimer += Time.deltaTime;
                 yield return null;
             }
 
             yield return new WaitForSeconds(waitTime);
         }
-
-        // 조사 시간이 끝나면 복귀 상태로 전환
-        owner.ChangeState<ReturnState>();
     }
 
     // 조사할 랜덤 지점 생성
     private Vector2 GetRandomInvestigatePoint()
     {
-        Vector2 randomDirection = Random.insideUnitCircle.normalized * investigateRange;
+        Vector2 randomDirection = Random.insideUnitCircle.normalized * owner.investigateRange;
         Vector2 investigatePoint = (Vector2)owner.transform.position + randomDirection;
         return investigatePoint;
     }

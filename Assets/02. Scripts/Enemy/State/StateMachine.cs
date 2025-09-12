@@ -1,3 +1,4 @@
+using Constants;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,11 +6,12 @@ using UnityEngine;
 public class StateMachine
 {
     private IState currentState;
-    public IState CurrentState => currentState;
-    public Type CurrentStateType => currentState?.GetType();
+    private List<Transition> transitions = new();
 
-    private Dictionary<Type, IState> states = new();
-    private Enemy owner;
+    public IState CurrentState => currentState;
+    private Dictionary<StateType, IState> states = new();
+
+    protected Enemy owner;
 
     public StateMachine(Enemy owner, StateTable stateTable)
     {
@@ -19,43 +21,69 @@ public class StateMachine
         {
             var state = StateFactory.CreateState(stateType, owner);
             if (state != null)
-                AddState(state);
+                AddState(stateType, state);
             else
                 ConditionalLogger.LogWarning($"StateFactory에서 {stateType} 상태를 생성하지 못했습니다.");
         }
 
-        ChangeState<PatrolState>();
+        ChangeState(stateTable.stateTypes[stateTable.startStateIndex]);
     }
 
-    public void AddState(IState state)
+    public void AddTransition(StateType from, StateType to, Func<bool> condition)
     {
-        var type = state.GetType(); // 실제 구체 타입
-        if (states.ContainsKey(type))
+        if (!states.ContainsKey(from) || !states.ContainsKey(to))
         {
-            ConditionalLogger.LogWarning($"이미 {type} 상태가 존재합니다.");
+            ConditionalLogger.LogWarning($"Transition 추가 실패: {from} 또는 {to} 상태가 존재하지 않습니다.");
             return;
         }
 
-        states[type] = state;
+        transitions.Add(new Transition(states[from], states[to], condition));
     }
 
-
-    public void ChangeState<T>() where T : IState
+    public void AddState(StateType stateType, IState state)
     {
-        var type = typeof(T);
-        if (!states.ContainsKey(type))
+        if (states.ContainsKey(stateType))
         {
-            ConditionalLogger.LogWarning($"해당 {type}가 존재하지 않습니다.");
+            ConditionalLogger.LogWarning($"이미 {state} 상태가 존재합니다.");
             return;
         }
 
-        if(currentState != null && currentState.GetType() == type) return;
+        states[stateType] = state;
+    }
+
+    public void ChangeState(StateType stateType)
+    {
+        if (!states.ContainsKey(stateType))
+        {
+            ConditionalLogger.LogWarning($"해당 {stateType}가 존재하지 않습니다.");
+            return;
+        }
+
+        IState state = states[stateType];
+        if (currentState != null && currentState == state) return;
 
         currentState?.Exit();
-        currentState = states[type];
+        currentState = state;
         currentState.Enter();
     }
 
     public void UpdateState()
-        => currentState?.Update();
+    {
+        if (currentState == null) return;
+
+        // 현재 상태 업데이트
+        currentState.Update();
+
+        // Transition 체크
+        foreach (var t in transitions)
+        {
+            if (t.FromState != currentState) continue;
+
+            if (t.Condition())
+            {
+                ChangeState(t.ToState.StateType);
+                break; // 한 번에 하나만 전환
+            }
+        }
+    }
 }
