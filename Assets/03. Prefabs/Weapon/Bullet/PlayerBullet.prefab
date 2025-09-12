@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8622328750694902348}
   - component: {fileID: 7649949690489484101}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: TrailRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461514879300201872}
   - component: {fileID: 6569974284536427203}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Light2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 8100800642068904587}
   - component: {fileID: 7905008452251158660}
   - component: {fileID: 2934995451585205486}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: PlayerBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,3 +393,6 @@ MonoBehaviour:
   damageLayers:
     serializedVersion: 2
     m_Bits: 128
+  useTagFilter: 1
+  damageTags:
+  - Enemy
