@@ -92,7 +92,6 @@ public class StateMachine
         {
             if (t.Condition())
             {
-                ConditionalLogger.Log($"Global Transition: {currentState.StateType} -> {t.ToState.StateType}");
                 ChangeState(t.ToState.StateType);
                 break; // 한 번에 하나만 전환
             }

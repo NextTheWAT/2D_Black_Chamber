@@ -20,6 +20,7 @@ public class ChaseState : BaseState
     {
         ConditionalLogger.Log("ChaseState Exit");
         StopChase();
+        owner.Agent.isStopped = false;
     }
 
     private void BeginChase()

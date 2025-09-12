@@ -14,7 +14,6 @@ public class SoliderFSM : StateMachine
         AddTransition(StateType.Patrol, StateType.Chase, () => owner.HasTarget);
 
         // Chase
-        AddTransition(StateType.Chase, StateType.Patrol, () => !owner.HasTarget);
         AddTransition(StateType.Chase, StateType.Attack, () => owner.HasTarget && owner.IsTargetInAttackRange);
         AddTransition(StateType.Chase, StateType.Investigate, () => owner.IsChaseToInvestigate);
 
