@@ -12,6 +12,7 @@ public static class StateFactory
             StateType.Investigate => new InvestigateState(owner),
             StateType.Return => new ReturnState(owner),
             StateType.Attack => new AttackState(owner),
+            StateType.Flee => new FleeState(owner),
             _ => null,
         };
     }
