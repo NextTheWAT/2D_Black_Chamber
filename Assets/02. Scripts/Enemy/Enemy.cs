@@ -222,8 +222,10 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void Hit()
+    public void Hit(int currentHealth, int maxHealth)
     {
+        if (currentHealth == maxHealth) return;
+
         animationController.PlayHit();
         LastKnownTargetPos = GameManager.Instance.player.position;
         IsHit = true;

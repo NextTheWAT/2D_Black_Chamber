@@ -256,9 +256,17 @@ MonoBehaviour:
   patrolType: 0
   initialChaseDelay: 2
   investigateThreshold: 3
+  chaseToInvestigateTimer: 0
   attackRange: 6
   shooter: {fileID: 1894057060115248025}
+  fleeDistance: 10
+  fleeDuration: 5
+  fleeTimer: 0
+  investigateDuration: 5
+  investigateRange: 2
+  investigateTimer: 0
   stateType: 
+  isTarget: 0
 --- !u!114 &5175531006165489716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,7 +286,7 @@ MonoBehaviour:
       - m_Target: {fileID: 60627825490756506}
         m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
         m_MethodName: Hit
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
