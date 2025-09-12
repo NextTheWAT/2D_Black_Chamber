@@ -11,31 +11,34 @@ public class StateMachine
     private Dictionary<Type, IState> states = new();
     private Enemy owner;
 
-    public StateMachine(Enemy owner)
+    public StateMachine(Enemy owner, StateTable stateTable)
     {
         this.owner = owner;
 
-        AddState(new PatrolState(owner));
-        AddState(new ChaseState(owner));
-        AddState(new InvestigateState(owner));
-        AddState(new ReturnState(owner));
-        AddState(new AttackState(owner));
+        foreach (var stateType in stateTable.stateTypes)
+        {
+            var state = StateFactory.CreateState(stateType, owner);
+            if (state != null)
+                AddState(state);
+            else
+                ConditionalLogger.LogWarning($"StateFactory에서 {stateType} 상태를 생성하지 못했습니다.");
+        }
 
         ChangeState<PatrolState>();
     }
 
-
-    public void AddState<T>(T state) where T : IState
+    public void AddState(IState state)
     {
-        var type = typeof(T);
+        var type = state.GetType(); // 실제 구체 타입
         if (states.ContainsKey(type))
         {
-            ConditionalLogger.LogWarning($"이미 해당 {type}가 존재합니다.");
+            ConditionalLogger.LogWarning($"이미 {type} 상태가 존재합니다.");
             return;
         }
 
         states[type] = state;
     }
+
 
     public void ChangeState<T>() where T : IState
     {

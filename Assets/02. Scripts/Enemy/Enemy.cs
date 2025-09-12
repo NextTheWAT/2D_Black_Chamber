@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Stat")]
     [SerializeField] private Health health;
+    [SerializeField] private StateTable stateTable;
 
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
@@ -81,6 +82,13 @@ public class Enemy : MonoBehaviour
 
     public float AttackRange => attackRange;
 
+    public string stateType;
+
+    public bool AgentEnabled
+    {
+        get => agent.enabled;
+        set => agent.enabled = value;
+    }
 
 
     private void Start()
@@ -89,10 +97,7 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
-        stateMachine = new StateMachine(this);
-
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
+        stateMachine = new StateMachine(this, stateTable);
     }
 
     private void OnEnable()
@@ -104,6 +109,7 @@ public class Enemy : MonoBehaviour
     {
         stateMachine?.UpdateState();
         UpdateMoveBlend();
+        stateType = stateMachine?.CurrentStateType.Name;
     }
 
     private void UpdateMoveBlend()
@@ -112,8 +118,11 @@ public class Enemy : MonoBehaviour
         animationController.SetMoveBlend(moveBlend);
     }
 
-    public void MoveTo(Vector2 destination)
-        => agent.SetDestination(destination);
+    public void MoveTo(Vector2 destination){
+        if (!AgentEnabled) return;
+        if ((Vector3)destination == agent.destination) return;
+        agent.SetDestination(destination);
+    }
 
     public void RotateTo(float targetAngle)
     {
@@ -146,6 +155,7 @@ public class Enemy : MonoBehaviour
             light2D.color = alertColor;
             target = findTarget.transform;
             lastKnownTargetPos = target.position;
+            ConditionalLogger.Log("Find Target: " + target.name);
         }
         else
         {
