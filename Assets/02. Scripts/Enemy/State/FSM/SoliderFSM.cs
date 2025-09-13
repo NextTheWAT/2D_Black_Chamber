@@ -12,14 +12,14 @@ public class SoliderFSM : StateMachine
         AttackState attackState = GetState<AttackState>();
 
         // Global
-        AddGlobalTransition<InvestigateState>(() => owner.IsHit);
+        AddGlobalTransition<InvestigateState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState));
 
         // Patrol
         AddTransition<PatrolState, ChaseState>(() => owner.HasTarget);
 
         // Chase
         AddTransition<ChaseState, AttackState>(() => attackState.IsTargetInAttackRange);
-        AddTransition<ChaseState, InvestigateState>(() => chaseState.IsChasing);
+        AddTransition<ChaseState, InvestigateState>(() => !chaseState.IsChasing);
 
         // Attack
         AddTransition<AttackState, InvestigateState>(() => !owner.HasTarget);

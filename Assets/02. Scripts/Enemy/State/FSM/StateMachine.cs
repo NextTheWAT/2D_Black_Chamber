@@ -42,7 +42,7 @@ public class StateMachine
 
     public void ChangeState(IState state)
     {
-        if (currentState != null && currentState.GetType() == state.GetType()) return;
+        if (currentState != null && currentState == state) return;
         currentState?.Exit();
         currentState = state;
         currentState.Enter();
