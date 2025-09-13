@@ -5,11 +5,11 @@ using System.Collections.Generic;
 public class StateMachine
 {
     private IState currentState;
+    private Dictionary<StateType, IState> states = new();
     private List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
     private List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
 
     public IState CurrentState => currentState;
-    private Dictionary<StateType, IState> states = new();
 
     protected Enemy owner;
 
@@ -27,30 +27,6 @@ public class StateMachine
         }
 
         ChangeState(stateTable.stateTypes[stateTable.startStateIndex]);
-    }
-
-    public void AddTransition(StateType from, StateType to, Func<bool> condition)
-    {
-        if (!states.ContainsKey(from) || !states.ContainsKey(to))
-        {
-            ConditionalLogger.LogWarning($"Transition 추가 실패: {from} 또는 {to} 상태가 존재하지 않습니다.");
-            return;
-        }
-
-        transitions.Add(new Transition(states[from], states[to], condition));
-    }
-
-
-    public void AddGlobalTransition(StateType to, Func<bool> condition)
-    {
-        if (!states.ContainsKey(to))
-        {
-            ConditionalLogger.LogWarning($"GlobalTransition 추가 실패: {to} 상태가 존재하지 않습니다.");
-            return;
-        }
-
-        ConditionalLogger.Log($"GlobalTransition 추가: -> {to}");
-        globalTransitions.Add(new Transition(null, states[to], condition));
     }
 
     public void AddState(StateType stateType, IState state)
@@ -78,6 +54,30 @@ public class StateMachine
         currentState?.Exit();
         currentState = state;
         currentState.Enter();
+    }
+
+    public void AddTransition(StateType from, StateType to, Func<bool> condition)
+    {
+        if (!states.ContainsKey(from) || !states.ContainsKey(to))
+        {
+            ConditionalLogger.LogWarning($"Transition 추가 실패: {from} 또는 {to} 상태가 존재하지 않습니다.");
+            return;
+        }
+
+        transitions.Add(new Transition(states[from], states[to], condition));
+    }
+
+
+    public void AddGlobalTransition(StateType to, Func<bool> condition)
+    {
+        if (!states.ContainsKey(to))
+        {
+            ConditionalLogger.LogWarning($"GlobalTransition 추가 실패: {to} 상태가 존재하지 않습니다.");
+            return;
+        }
+
+        ConditionalLogger.Log($"GlobalTransition 추가: -> {to}");
+        globalTransitions.Add(new Transition(null, states[to], condition));
     }
 
     public void UpdateState()
