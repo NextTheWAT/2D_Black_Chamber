@@ -5,10 +5,19 @@ using Constants;
 
 public class ChaseState : BaseState
 {
-    private Coroutine chaseCoroutine;
+    private readonly float initialChaseDelay;
+    private readonly float investigateThreshold;
 
-    public ChaseState(Enemy owner) : base(owner) { }
-    public override StateType StateType => StateType.Chase;
+    private Coroutine chaseCoroutine;
+    private float chaseTimer = 0f;
+
+    public bool IsChasing => chaseTimer < investigateThreshold;
+
+    public ChaseState(Enemy owner, float initialChaseDelay, float investigateThreshold) : base(owner)
+    {
+        this.initialChaseDelay = initialChaseDelay;
+        this.investigateThreshold = investigateThreshold;
+    }
 
     public override void Enter()
     {
@@ -44,19 +53,19 @@ public class ChaseState : BaseState
         // 발견 이펙트 생성
         owner.Agent.isStopped = true;
         ConditionalLogger.Log("Find Enemy!");
-        float chaseTimer = 0f;
+        float timer = 0f;
 
-        while (chaseTimer < owner.InitialChaseDelay)
+        while (timer < initialChaseDelay)
         {
             owner.FindTarget();
             owner.LookAt(owner.LastKnownTargetPos);
-            chaseTimer += Time.deltaTime;
+            timer += Time.deltaTime;
             yield return null;
         }
 
         ConditionalLogger.Log("Start Chase!");
         owner.Agent.isStopped = false;
-        owner.chaseToInvestigateTimer = 0f;
+        chaseTimer = 0f;
 
         while (true)
         {
@@ -64,12 +73,12 @@ public class ChaseState : BaseState
 
             if (owner.HasTarget)
             {
-                owner.chaseToInvestigateTimer = 0;
+                chaseTimer = 0;
                 owner.MoveTo(owner.Target.position);
             }
             else
             {
-                owner.chaseToInvestigateTimer += Time.deltaTime;
+                chaseTimer += Time.deltaTime;
             }
             yield return null;
         }

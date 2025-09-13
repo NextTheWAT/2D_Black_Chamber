@@ -3,14 +3,23 @@ using Constants;
 
 public class FleeState : BaseState
 {
-    public FleeState(Enemy owner) : base(owner) { }
-    public override StateType StateType => StateType.Flee;
+    private readonly float fleeDistance = 10f;
+    private readonly float fleeDuration = 5f;
+    public float fleeTimer;
+
+    public bool IsFleeing => fleeTimer < fleeDuration;
+
+    public FleeState(Enemy owner, float fleeDistance, float fleeDuration) : base(owner)
+    {
+        this.fleeDistance = fleeDistance;
+        this.fleeDuration = fleeDuration;
+    }
 
     public override void Enter()
     {
         ConditionalLogger.Log($"FleeState: Enter");
         owner.MoveTo(GetFleePoint());
-        owner.fleeTimer = 0f;
+        fleeTimer = 0f;
     }
 
     public override void Update()
@@ -19,13 +28,11 @@ public class FleeState : BaseState
 
         if (owner.HasTarget)
         {
-            owner.fleeTimer = 0f;
+            fleeTimer = 0f;
             owner.MoveTo(GetFleePoint());
         }
         else
-        {
-            owner.fleeTimer += Time.deltaTime;
-        }
+            fleeTimer += Time.deltaTime;
     }
 
     public override void Exit()
@@ -37,6 +44,6 @@ public class FleeState : BaseState
     Vector2 GetFleePoint()
     {
         Vector2 dirToPlayer = ((Vector2)owner.transform.position - owner.LastKnownTargetPos).normalized;
-        return (Vector2)owner.transform.position + dirToPlayer * owner.FleeDistance;
+        return (Vector2)owner.transform.position + dirToPlayer * fleeDistance;
     }
 }

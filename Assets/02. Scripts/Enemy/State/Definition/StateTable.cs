@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Constants;
 using System;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "StateTable", menuName = "ScriptableObjects/StateTable")]
 public class StateTable : ScriptableObject
 {
     public int startStateIndex;
-    public StateType[] stateTypes;
+    public StateDefinition[] definitions;
+
+    public Type StartStateType => definitions[startStateIndex].StateType;
 }

@@ -7,26 +7,30 @@ public class SoliderFSM : StateMachine
 {
     public SoliderFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
     {
+        InvestigateState investigateState = GetState<InvestigateState>();
+        ChaseState chaseState = GetState<ChaseState>();
+        AttackState attackState = GetState<AttackState>();
+
         // Global
-        AddGlobalTransition(StateType.Investigate, () => owner.IsHit);
+        AddGlobalTransition<InvestigateState>(() => owner.IsHit);
 
         // Patrol
-        AddTransition(StateType.Patrol, StateType.Chase, () => owner.HasTarget);
+        AddTransition<PatrolState, ChaseState>(() => owner.HasTarget);
 
         // Chase
-        AddTransition(StateType.Chase, StateType.Attack, () => owner.HasTarget && owner.IsTargetInAttackRange);
-        AddTransition(StateType.Chase, StateType.Investigate, () => owner.IsChaseToInvestigate);
+        AddTransition<ChaseState, AttackState>(() => attackState.IsTargetInAttackRange);
+        AddTransition<ChaseState, InvestigateState>(() => chaseState.IsChasing);
 
         // Attack
-        AddTransition(StateType.Attack, StateType.Investigate, () => !owner.HasTarget);
+        AddTransition<AttackState, InvestigateState>(() => !owner.HasTarget);
 
         // Investigate
-        AddTransition(StateType.Investigate, StateType.Chase, () => owner.HasTarget);
-        AddTransition(StateType.Investigate, StateType.Return, () => owner.IsInvestigateStop);
+        AddTransition<InvestigateState, ChaseState>(() => owner.HasTarget);
+        AddTransition<InvestigateState, ReturnState>(() => !investigateState.IsInvestigating);
 
         // Return
-        AddTransition(StateType.Return, StateType.Chase, () => owner.HasTarget);
-        AddTransition(StateType.Return, StateType.Patrol, () => owner.IsArrived);
+        AddTransition<ReturnState, ChaseState>(() => owner.HasTarget);
+        AddTransition<ReturnState, PatrolState>(() => owner.IsArrived);
 
     }
 }

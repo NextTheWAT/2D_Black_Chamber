@@ -5,8 +5,22 @@ using Constants;
 
 public class AttackState : BaseState
 {
-    public AttackState(Enemy owner) : base(owner) { }
-    public override StateType StateType => StateType.Attack;
+    private readonly float attackRange = 1.5f;
+
+    public AttackState(Enemy owner, float attackRange) : base(owner)
+    {
+        this.attackRange = attackRange;
+    }
+
+    public bool IsTargetInAttackRange
+    {
+        get
+        {
+            if (!owner.HasTarget) return false;
+            float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
+            return distToTarget <= attackRange;
+        }
+    }
 
     public override void Enter()
     {
@@ -23,8 +37,6 @@ public class AttackState : BaseState
             owner.MoveTo(owner.Target.position);
             owner.Attack();
         }
-        else
-            owner.ChangeState(StateType.Investigate);
     }
 
     public override void Exit()

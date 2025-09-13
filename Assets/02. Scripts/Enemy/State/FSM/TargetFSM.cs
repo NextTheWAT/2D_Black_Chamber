@@ -4,17 +4,20 @@ public class TargetFSM : StateMachine
 {
     public TargetFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
     {
+        FleeState fleeState = GetState<FleeState>();
+
+
         // Global
-        AddGlobalTransition(StateType.Flee, () => owner.IsHit);
+        AddGlobalTransition<FleeState>(() => owner.IsHit);
 
         // Patrol
-        AddTransition(StateType.Patrol, StateType.Flee, () => owner.HasTarget);
+        AddTransition<PatrolState, FleeState>(() => owner.HasTarget);
 
         // Flee
-        AddTransition(StateType.Flee, StateType.Patrol, () => owner.IsFleeStop);
+        AddTransition<FleeState, PatrolState>(() => !fleeState.IsFleeing);
 
         // Return
-        AddTransition(StateType.Return, StateType.Flee, () => owner.HasTarget);
-        AddTransition(StateType.Return, StateType.Patrol, () => owner.IsArrived);
+        AddTransition<ReturnState, FleeState>(() => owner.HasTarget);
+        AddTransition<ReturnState, PatrolState>(() => owner.IsArrived);
     }
 }

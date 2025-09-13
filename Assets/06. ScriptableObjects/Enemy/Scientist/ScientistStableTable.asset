@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: ScientistStableTable
   m_EditorClassIdentifier: 
   startStateIndex: 0
-  stateTypes: 000000000500000003000000
+  definitions:
+  - {fileID: 11400000, guid: ea7f2403d0a75e7448bb1438872b6ffc, type: 2}
+  - {fileID: 11400000, guid: d086d360e7712e6428b6c5728b4860b0, type: 2}
+  - {fileID: 11400000, guid: 0af9c157c5ccdb44e8b5df3362adccd1, type: 2}

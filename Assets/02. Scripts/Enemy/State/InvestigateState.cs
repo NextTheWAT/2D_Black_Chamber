@@ -1,15 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Constants;
 
 public class InvestigateState : BaseState
 {
-    private float waitTime = 1f;
+    private readonly float investigateDuration = 5f; // 조사 상태 지속 시간
+    private readonly float investigateRange = 2f; // 조사 중 무작위로 이동하는 범위
+    private readonly float pauseDuration = 1f; // 조사 중 멈추는 시간
+    private float investigateTimer = 0f;
+    public bool IsInvestigating => investigateTimer < investigateDuration;
+
     private Coroutine investigateCoroutine;
 
-    public InvestigateState(Enemy owner) : base(owner) { }
-    public override StateType StateType => StateType.Investigate;
+    public InvestigateState(Enemy owner, float investigateDuration, float investigateRange, float pauseDuration) : base(owner)
+    {
+        this.investigateDuration = investigateDuration;
+        this.investigateRange = investigateRange;
+        this.pauseDuration = pauseDuration;
+    }
 
     public override void Enter()
     {
@@ -48,12 +56,12 @@ public class InvestigateState : BaseState
     {
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
-        owner.investigateTimer = 0f;
+        investigateTimer = 0f;
 
-        while (owner.investigateTimer < owner.investigateDuration)
+        while (investigateTimer < investigateDuration)
         {
             if (owner.IsArrived) break;
-            owner.investigateTimer += Time.deltaTime;
+            investigateTimer += Time.deltaTime;
             yield return null;
         }
 
@@ -63,7 +71,7 @@ public class InvestigateState : BaseState
             do
             {
                 owner.MoveTo(GetRandomInvestigatePoint());
-                owner.investigateTimer += Time.deltaTime;
+                investigateTimer += Time.deltaTime;
                 yield return null;
             }
             while (!owner.Agent.hasPath);
@@ -71,18 +79,18 @@ public class InvestigateState : BaseState
             // 목적지에 도착할 때까지 대기
             while (!owner.IsArrived)
             {
-                owner.investigateTimer += Time.deltaTime;
+                investigateTimer += Time.deltaTime;
                 yield return null;
             }
 
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(pauseDuration);
         }
     }
 
     // 조사할 랜덤 지점 생성
     private Vector2 GetRandomInvestigatePoint()
     {
-        Vector2 randomDirection = Random.insideUnitCircle.normalized * owner.investigateRange;
+        Vector2 randomDirection = Random.insideUnitCircle.normalized * investigateRange;
         Vector2 investigatePoint = (Vector2)owner.transform.position + randomDirection;
         return investigatePoint;
     }
