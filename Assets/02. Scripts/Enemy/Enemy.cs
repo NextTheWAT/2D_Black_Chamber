@@ -25,6 +25,7 @@ public class Enemy : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private Shooter shooter;
     [SerializeField] private AudioClip[] hitSounds;
+    [SerializeField] private AudioClip[] deathSounds;
 
     private Collider2D coll;
     private Light2D light2D;
@@ -178,6 +179,12 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+        if (deathSounds.Length > 0)
+        {
+            int index = Random.Range(0, deathSounds.Length);
+            audioSource.PlayOneShot(deathSounds[index]);
+        }
+
         animationController.PlayDie();
         coll.enabled = false;
         agent.isStopped = true;
