@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
@@ -15,7 +16,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
 
+    [SerializeField] private Light2D forwardLight;
+    [SerializeField] private Light2D backwardLight;
+
     [SerializeField] private Color originalColor;
+    [SerializeField] private Color suspiciousColor;
     [SerializeField] private Color alertColor;
 
     [Header("Patrol")]
@@ -28,45 +33,55 @@ public class Enemy : MonoBehaviour
     [SerializeField] private AudioClip[] deathSounds;
 
     private Collider2D coll;
-    private Light2D light2D;
     private NavMeshAgent agent;
     private Transform target;
     private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
     private CharacterAnimationController animationController;
     private AudioSource audioSource;
-
     public bool IsHit { get; private set; }
 
-    public float ViewDistance => light2D.pointLightOuterRadius;
-    public float ViewAngle => light2D.pointLightOuterAngle;
+    public float ViewDistance => forwardLight.pointLightOuterRadius;
+    public float ViewAngle => forwardLight.pointLightOuterAngle;
 
     public Transform[] PatrolPoints => patrolPoints;
     public int StartPatrolPointIndex => startPatrolPointIndex;
 
     public NavMeshAgent Agent => agent;
-    public StateMachine StateMachine => stateMachine;
     public CharacterAnimationController AnimationController => animationController;
 
-    public LayerMask TargetMask => targetMask;
-    public LayerMask ObstacleMask => obstacleMask;
+    private bool hasSuspiciousTarget = false;
 
-    public Transform Target => target;
+    public bool HasSuspiciousTarget
+    {
+        get => hasSuspiciousTarget;
+        set
+        {
+            hasSuspiciousTarget = value;
+            UpdateLightColor();
+        }
+    }
+    public Transform Target
+    {
+        get => target;
+        set
+        {
+            target = value;
+            if (target)
+                LastKnownTargetPos = target.position;
+
+            UpdateLightColor();
+        }
+    }
+    public bool HasTarget => target;
     public Vector2 LastKnownTargetPos
     {
         get => lastKnownTargetPos;
         set => lastKnownTargetPos = value;
     }
 
-    public bool HasTarget => target;
 
     public Health Health => health;
-
-    public float StopDistance
-    {
-        get => Agent.stoppingDistance;
-        set => Agent.stoppingDistance = value;
-    }
 
     public string stateType;
 
@@ -91,11 +106,12 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        light2D = GetComponentInChildren<Light2D>();
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
         audioSource = GetComponent<AudioSource>();
+
+        backwardLight.color = alertColor;
 
 
         if(isTarget)
@@ -143,23 +159,43 @@ public class Enemy : MonoBehaviour
         shooter.Shoot(transform.up);
     }
 
-
-    public void FindTarget()
+    public void UpdateLightColor()
     {
-        Transform findTarget = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
+        forwardLight.color = originalColor;
+        backwardLight.color = originalColor;
 
-        if (findTarget)
+        if (HasSuspiciousTarget)
         {
-            light2D.color = alertColor;
-            target = findTarget.transform;
-            lastKnownTargetPos = target.position;
+            forwardLight.color = suspiciousColor;
+            backwardLight.color = alertColor;
         }
-        else
+
+        if (HasTarget)
         {
-            light2D.color = originalColor;
-            target = null;
+            forwardLight.color = alertColor;
+            backwardLight.color = alertColor;
         }
     }
+
+    public void SetBackwardLightRadius(float ratio)
+        => backwardLight.pointLightOuterRadius = ViewDistance * ratio;
+
+    public Transform FindSuspiciousTarget()
+    {
+        Transform target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
+        HasSuspiciousTarget = target;
+        return target;
+    }
+
+    public void FindTarget(float viewAngle, float viewDistance)
+    {
+        Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+    }
+    public void FindTarget()
+    {
+        Target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
+    }
+
 
 
     public void Hit(int currentHealth, int maxHealth)
@@ -190,6 +226,16 @@ public class Enemy : MonoBehaviour
         agent.isStopped = true;
         enabled = false;
         Destroy(gameObject, 2f);
+    }
+
+    private void OnBecameVisible()
+    {
+        forwardLight.enabled = true;
+    }
+
+    private void OnBecameInvisible()
+    {
+        forwardLight.enabled = false;
     }
 
 }

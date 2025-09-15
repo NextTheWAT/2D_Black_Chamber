@@ -50,6 +50,7 @@ public class ChaseState : BaseState
 
     private IEnumerator ChaseLoop()
     {
+        /*
         // 발견 이펙트 생성
         owner.Agent.isStopped = true;
         ConditionalLogger.Log("Find Enemy!");
@@ -62,8 +63,8 @@ public class ChaseState : BaseState
             timer += Time.deltaTime;
             yield return null;
         }
-
         ConditionalLogger.Log("Start Chase!");
+        */
         owner.Agent.isStopped = false;
         chaseTimer = 0f;
 
