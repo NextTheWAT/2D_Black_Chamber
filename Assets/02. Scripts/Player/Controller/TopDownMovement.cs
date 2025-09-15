@@ -6,6 +6,8 @@ public class TopDownMovement : MonoBehaviour
     private TopDownController controller;
     private Rigidbody2D rb;
     private CharacterAnimationController animController;
+    public Transform mouseTr;
+    public float maxMouseDistance = 5f;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;      // 유닛/초
@@ -67,6 +69,14 @@ public class TopDownMovement : MonoBehaviour
 
         // 5) 애니메이션
         UpdateAnimation();
+
+        // 6) 마우스 위치 갱신
+        if (mouseTr != null)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos = Vector2.ClampMagnitude(mousePos - (Vector2)transform.position, maxMouseDistance) + (Vector2)transform.position;
+            mouseTr.position = mousePos;
+        }
     }
 
     private void HandleMove(Vector2 v) => moveInput = v;
