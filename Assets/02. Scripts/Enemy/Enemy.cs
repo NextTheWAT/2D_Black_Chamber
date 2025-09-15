@@ -32,6 +32,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private AudioClip[] hitSounds;
     [SerializeField] private AudioClip[] deathSounds;
 
+    [Header("Return")]
+    [SerializeField] private Transform returnPoint;
+
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
@@ -50,6 +53,7 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
+    private bool foundTarget = false; // 타겟을 발견한적 있는지
     private bool hasSuspiciousTarget = false;
 
     public bool HasSuspiciousTarget
@@ -58,6 +62,8 @@ public class Enemy : MonoBehaviour
         set
         {
             hasSuspiciousTarget = value;
+            if(hasSuspiciousTarget)
+                foundTarget = true;
             UpdateLightColor();
         }
     }
@@ -68,7 +74,11 @@ public class Enemy : MonoBehaviour
         {
             target = value;
             if (target)
+            {
+                foundTarget = true;
                 LastKnownTargetPos = target.position;
+            }
+
 
             UpdateLightColor();
         }
@@ -103,6 +113,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public Transform ReturnPoint;
+
 
     private void Start()
     {
@@ -113,8 +125,9 @@ public class Enemy : MonoBehaviour
 
         backwardLight.color = alertColor;
 
+        foundTarget = false;
 
-        if(isTarget)
+        if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
         else
             stateMachine = new SoliderFSM(this, stateTable);
@@ -203,15 +216,23 @@ public class Enemy : MonoBehaviour
     {
         if (currentHealth == maxHealth) return;
 
-        animationController.PlayHit();
-        LastKnownTargetPos = GameManager.Instance.player.position;
-        IsHit = true;
-
-        if (hitSounds.Length > 0)
+        if (foundTarget)
         {
-            int index = Random.Range(0, hitSounds.Length);
-            audioSource.PlayOneShot(hitSounds[index]);
+            animationController.PlayHit();
+            LastKnownTargetPos = GameManager.Instance.player.position;
+            IsHit = true;
+
+            if (hitSounds.Length > 0)
+            {
+                int index = Random.Range(0, hitSounds.Length);
+                audioSource.PlayOneShot(hitSounds[index]);
+            }
         }
+        else
+        {
+            health.TakeDamage(maxHealth);
+        }
+
     }
 
     public void Die()
@@ -237,6 +258,14 @@ public class Enemy : MonoBehaviour
     private void OnBecameInvisible()
     {
         forwardLight.enabled = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Target = collision.transform;
+        }
     }
 
 }

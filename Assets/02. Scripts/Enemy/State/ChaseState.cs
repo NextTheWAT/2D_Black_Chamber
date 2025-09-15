@@ -79,6 +79,7 @@ public class ChaseState : BaseState
             }
             else
             {
+                owner.MoveTo(owner.LastKnownTargetPos);
                 chaseTimer += Time.deltaTime;
             }
             yield return null;

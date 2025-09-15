@@ -5,8 +5,8 @@ public class ReturnState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("ReturnState Enter");
-        if (owner.PatrolPoints[owner.StartPatrolPointIndex])
-            owner.MoveTo(owner.PatrolPoints[owner.StartPatrolPointIndex].position);
+        if (owner.ReturnPoint)
+            owner.MoveTo(owner.ReturnPoint.position);
     }
 
     public override void Update()
