@@ -218,8 +218,10 @@ public class Enemy : MonoBehaviour
         if (GameManager.Instance.IsCombat || hasSuspiciousTarget)
         {
             animationController.PlayHit();
-            LastKnownTargetPos = GameManager.Instance.player.position;
+            LastKnownTargetPos = GameManager.Instance.Player.position;
             IsHit = true;
+
+            Debug.Log(GameManager.Instance.Player);
 
             if (hitSounds.Length > 0)
             {
