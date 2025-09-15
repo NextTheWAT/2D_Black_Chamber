@@ -145,7 +145,7 @@ public class Enemy : MonoBehaviour
 
     private void UpdateMoveBlend()
     {
-        float moveBlend = agent.velocity.magnitude > 0.01f ? 1f : 0f;
+        float moveBlend = agent.velocity.magnitude > 0.01f ? 0.5f : 0f;
         animationController.SetMoveBlend(moveBlend);
     }
 
