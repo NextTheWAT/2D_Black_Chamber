@@ -251,6 +251,7 @@ GameObject:
   - component: {fileID: 4119749525860128978}
   - component: {fileID: 375016970361882885}
   - component: {fileID: 5479762679829375684}
+  - component: {fileID: 7725595448719031270}
   - component: {fileID: 3961344761222560345}
   - component: {fileID: 3349755987107838253}
   m_Layer: 7
@@ -469,6 +470,19 @@ MonoBehaviour:
   gunPoint: {fileID: 239226948978297036}
   gun: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
   respectFireRate: 1
+--- !u!114 &7725595448719031270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338864281046059789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d562a48a58eae24fb1b211b1b21ad0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kind: 0
 --- !u!60 &3961344761222560345
 PolygonCollider2D:
   m_ObjectHideFlags: 0

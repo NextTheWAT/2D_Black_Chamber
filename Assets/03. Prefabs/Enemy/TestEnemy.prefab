@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 1855575603251970583}
   - component: {fileID: 2254611311797786880}
   - component: {fileID: 3740297428120905047}
+  - component: {fileID: 1324625950303086069}
   m_Layer: 7
   m_Name: TestEnemy
   m_TagString: Untagged
@@ -166,8 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularSpeed: 120
   health: {fileID: 1855575603251970583}
+  stateTable: {fileID: 0}
+  angularSpeed: 120
   targetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -182,11 +184,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   startPatrolPointIndex: 0
-  patrolType: 0
-  initialChaseDelay: 2
-  investigateThreshold: 3
-  attackRange: 5
   shooter: {fileID: 3740297428120905047}
+  hitSounds: []
+  deathSounds: []
+  stateType: 
+  isTarget: 0
 --- !u!114 &2074348539204141139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +279,19 @@ MonoBehaviour:
   gunPoint: {fileID: 932805169162167024}
   gun: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
   respectFireRate: 1
+--- !u!114 &1324625950303086069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924743225816651000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d562a48a58eae24fb1b211b1b21ad0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kind: 0
 --- !u!1 &2951343543140570501
 GameObject:
   m_ObjectHideFlags: 0
