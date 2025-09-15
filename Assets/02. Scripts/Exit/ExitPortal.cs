@@ -25,6 +25,8 @@ public class ExitPortal : MonoBehaviour
         Debug.Log("탈출 가능");
     }
 
+    // 연구원이 맵에 없을때 열리게
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && npcKilled)  // npc태그? 연구원만 적용
