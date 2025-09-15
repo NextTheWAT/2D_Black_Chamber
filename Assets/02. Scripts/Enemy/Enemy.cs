@@ -246,6 +246,7 @@ public class Enemy : MonoBehaviour
         coll.enabled = false;
         agent.isStopped = true;
         enabled = false;
+        angularSpeed = 0f;
         Destroy(gameObject, 2f);
     }
 
