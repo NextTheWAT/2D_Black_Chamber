@@ -1,15 +1,23 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class InvestigateState : BaseState
 {
-    private float investigateDuration = 5f;
-    private float investigateRange = 2f;
-    private float waitTime = 1f;
+    private readonly float investigateDuration = 5f; // 조사 상태 지속 시간
+    private readonly float investigateRange = 2f; // 조사 중 무작위로 이동하는 범위
+    private readonly float pauseDuration = 1f; // 조사 중 멈추는 시간
+    private float investigateTimer = 0f;
+    public bool IsInvestigating => investigateTimer < investigateDuration;
+
     private Coroutine investigateCoroutine;
 
-    public InvestigateState(Enemy owner) : base(owner) { }
+    public InvestigateState(Enemy owner, float investigateDuration, float investigateRange, float pauseDuration) : base(owner)
+    {
+        this.investigateDuration = investigateDuration;
+        this.investigateRange = investigateRange;
+        this.pauseDuration = pauseDuration;
+    }
 
     public override void Enter()
     {
@@ -20,9 +28,6 @@ public class InvestigateState : BaseState
     public override void Update()
     {
         owner.FindTarget();
-
-        if (owner.HasTarget)
-            owner.ChangeState<ChaseState>();
     }
 
     public override void Exit()
@@ -35,7 +40,7 @@ public class InvestigateState : BaseState
     {
         if (investigateCoroutine != null)
             owner.StopCoroutine(investigateCoroutine);
-        owner.StartCoroutine(InvestigateLoop());
+        investigateCoroutine = owner.StartCoroutine(InvestigateLoop());
     }
 
     private void StopInvestigate()
@@ -49,32 +54,37 @@ public class InvestigateState : BaseState
 
     private IEnumerator InvestigateLoop()
     {
-        float timer = 0f;
+        // 처음 플레이어 위치로 이동
+        owner.MoveTo(owner.LastKnownTargetPos);
+        investigateTimer = 0f;
 
-        while (timer < investigateDuration)
+        while (investigateTimer < investigateDuration)
+        {
+            if (owner.IsArrived) break;
+            investigateTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        while (true)
         {
             // 랜덤한 조사 지점으로 이동
             do
             {
-                GetRandomInvestigatePoint();
                 owner.MoveTo(GetRandomInvestigatePoint());
-                timer += Time.deltaTime;
+                investigateTimer += Time.deltaTime;
                 yield return null;
             }
             while (!owner.Agent.hasPath);
 
             // 목적지에 도착할 때까지 대기
-            while (owner.Agent.remainingDistance > 0.01f)
+            while (!owner.IsArrived)
             {
-                timer += Time.deltaTime;
+                investigateTimer += Time.deltaTime;
                 yield return null;
             }
 
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(pauseDuration);
         }
-
-        // 조사 시간이 끝나면 복귀 상태로 전환
-        owner.ChangeState<ReturnState>();
     }
 
     // 조사할 랜덤 지점 생성

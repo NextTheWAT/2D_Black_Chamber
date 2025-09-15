@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33cb7e04f1ff38241aa6de4e9d044040, type: 3}
+  m_Name: ScientistStableTable
+  m_EditorClassIdentifier: 
+  startStateIndex: 0
+  definitions:
+  - {fileID: 11400000, guid: ea7f2403d0a75e7448bb1438872b6ffc, type: 2}
+  - {fileID: 11400000, guid: d086d360e7712e6428b6c5728b4860b0, type: 2}
+  - {fileID: 11400000, guid: 0af9c157c5ccdb44e8b5df3362adccd1, type: 2}

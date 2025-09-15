@@ -5,6 +5,7 @@ public class TopDownMovement : MonoBehaviour
 {
     private TopDownController controller;
     private Rigidbody2D rb;
+    private CharacterAnimationController animController;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;      // 유닛/초
@@ -22,6 +23,7 @@ public class TopDownMovement : MonoBehaviour
     {
         controller = GetComponent<TopDownController>();
         rb = GetComponent<Rigidbody2D>();
+        animController = GetComponent<CharacterAnimationController>();
 
         // rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
@@ -59,6 +61,9 @@ public class TopDownMovement : MonoBehaviour
             float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(newAngle);
         }
+
+        // 5) 애니메이션
+        UpdateAnimation();
     }
 
     private void HandleMove(Vector2 v) => moveInput = v;
@@ -68,5 +73,16 @@ public class TopDownMovement : MonoBehaviour
     {
         if (v.sqrMagnitude > 0.0001f)
             lastLookDir = v.normalized;
+    }
+
+    private void UpdateAnimation()
+    {
+        if (animController == null) return;
+
+        float blend = curVel.sqrMagnitude > 0.01f ? 1f : 0f; // 0~1
+        animController.SetMoveBlend(blend);
+
+        // 이동방향으로 하체 회전
+        animController.SetLowerBodyRotation(moveInput);
     }
 }

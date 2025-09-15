@@ -7,10 +7,6 @@ public partial class PlayerInputController : TopDownController
 {
     [SerializeField] private bool continuousMouseAim = true; // 매 프레임 마우스 위치로 에임 갱신
     private Camera _camera;
-    private void Awake()
-    {
-        _camera = Camera.main;
-    }
 
     // Look : (선택) 액션으로도 들어오면 그대로 반영 — 하지만 위의 Update가 계속 커버함
     public void OnLook(InputAction.CallbackContext ctx)

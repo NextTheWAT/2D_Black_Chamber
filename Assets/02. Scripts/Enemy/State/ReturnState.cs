@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Constants;
 
 public class ReturnState : BaseState
 {
@@ -9,21 +10,13 @@ public class ReturnState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("ReturnState Enter");
-        owner.MoveTo(owner.PatrolPoints[owner.StartPatrolPointIndex].position);
+        if (owner.PatrolPoints[owner.StartPatrolPointIndex])
+            owner.MoveTo(owner.PatrolPoints[owner.StartPatrolPointIndex].position);
     }
 
     public override void Update()
     {
         owner.FindTarget();
-
-        if (owner.HasTarget)
-        {
-            owner.ChangeState<ChaseState>();
-            return;
-        }
-
-        if(owner.Agent.remainingDistance < 0.01f)
-            owner.ChangeState<PatrolState>();
     }
 
     public override void Exit()

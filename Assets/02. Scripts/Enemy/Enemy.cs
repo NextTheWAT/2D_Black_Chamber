@@ -1,29 +1,15 @@
-using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-public enum EnemyState
-{
-    Patrol,
-    Chase,
-    Investigate,
-    Return,
-    Attack
-}
-
-public enum PatrolType
-{
-    Waypoint,
-    Fixed
-}
+using System;
+using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Agent")]
-    [SerializeField] private float angularSpeed = 120f;
-
     [Header("Stat")]
     [SerializeField] private Health health;
+    [SerializeField] private StateTable stateTable;
+    [SerializeField] private float angularSpeed = 120f;
 
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
@@ -35,40 +21,70 @@ public class Enemy : MonoBehaviour
     [Header("Patrol")]
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private int startPatrolPointIndex;
-    [SerializeField] private PatrolType patrolType;
+
+    [Header("Attack")]
+    [SerializeField] private Shooter shooter;
+    [SerializeField] private AudioClip[] hitSounds;
+    [SerializeField] private AudioClip[] deathSounds;
 
     private Collider2D coll;
     private Light2D light2D;
     private NavMeshAgent agent;
     private Transform target;
+    private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
+    private CharacterAnimationController animationController;
+    private AudioSource audioSource;
+
+    public bool IsHit { get; private set; }
 
     public float ViewDistance => light2D.pointLightOuterRadius;
-    public float ViewAngle => light2D.pointLightInnerAngle;
+    public float ViewAngle => light2D.pointLightOuterAngle;
 
     public Transform[] PatrolPoints => patrolPoints;
-    public PatrolType PatrolType => patrolType;
     public int StartPatrolPointIndex => startPatrolPointIndex;
 
     public NavMeshAgent Agent => agent;
     public StateMachine StateMachine => stateMachine;
+    public CharacterAnimationController AnimationController => animationController;
 
     public LayerMask TargetMask => targetMask;
     public LayerMask ObstacleMask => obstacleMask;
 
     public Transform Target => target;
-    public bool HasTarget => target;
+    public Vector2 LastKnownTargetPos
+    {
+        get => lastKnownTargetPos;
+        set => lastKnownTargetPos = value;
+    }
 
-    public float RotateSpeed => angularSpeed;
+    public bool HasTarget => target;
 
     public Health Health => health;
 
     public float StopDistance
     {
         get => Agent.stoppingDistance;
-        set
+        set => Agent.stoppingDistance = value;
+    }
+
+    public string stateType;
+
+    public bool isTarget = false;
+    // 목적지에 도착했는지
+    public bool IsArrived
+    {
+        get
         {
-            Agent.stoppingDistance = value;
+            if (!Agent.pathPending)
+            {
+                if (Agent.remainingDistance <= Agent.stoppingDistance)
+                {
+                    if (!Agent.hasPath || Agent.velocity.sqrMagnitude == 0f)
+                        return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -78,28 +94,40 @@ public class Enemy : MonoBehaviour
         light2D = GetComponentInChildren<Light2D>();
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
-        stateMachine = new StateMachine(this);
+        animationController = GetComponent<CharacterAnimationController>();
+        audioSource = GetComponent<AudioSource>();
 
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
-    }
 
-    private void OnEnable()
-    {
-        stateMachine?.ChangeState<PatrolState>();
+        if(isTarget)
+            stateMachine = new TargetFSM(this, stateTable);
+        else
+            stateMachine = new SoliderFSM(this, stateTable);
     }
 
     private void Update()
     {
         stateMachine?.UpdateState();
+        UpdateMoveBlend();
+        stateType = stateMachine?.CurrentState.ToString();
+
+        if(IsHit)
+            IsHit = false;
     }
 
-    public void MoveTo(Vector2 destination)
-        => agent.SetDestination(destination);
+    private void UpdateMoveBlend()
+    {
+        float moveBlend = agent.velocity.magnitude > 0.01f ? 1f : 0f;
+        animationController.SetMoveBlend(moveBlend);
+    }
+
+    public void MoveTo(Vector2 destination){
+        if ((Vector3)destination == agent.destination) return;
+        agent.SetDestination(destination);
+    }
 
     public void RotateTo(float targetAngle)
     {
-        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * RotateSpeed);
+        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * angularSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
@@ -110,8 +138,10 @@ public class Enemy : MonoBehaviour
         RotateTo(angle);
     }
 
-    public void ChangeState<T>() where T : IState
-        => stateMachine?.ChangeState<T>();
+    public void Attack()
+    {
+        shooter.Shoot(transform.up);
+    }
 
 
     public void FindTarget()
@@ -122,6 +152,7 @@ public class Enemy : MonoBehaviour
         {
             light2D.color = alertColor;
             target = findTarget.transform;
+            lastKnownTargetPos = target.position;
         }
         else
         {
@@ -130,15 +161,35 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    public void Hit(int currentHealth, int maxHealth)
     {
-        Debug.Log($"Collsion {collision.transform}");
-        if (collision.transform == target)
+        if (currentHealth == maxHealth) return;
+
+        animationController.PlayHit();
+        LastKnownTargetPos = GameManager.Instance.player.position;
+        IsHit = true;
+
+        if (hitSounds.Length > 0)
         {
-            Debug.Log($"Attack {target}");
-            Destroy(collision.gameObject);
-            ChangeState<ReturnState>();
+            int index = Random.Range(0, hitSounds.Length);
+            audioSource.PlayOneShot(hitSounds[index]);
         }
+    }
+
+    public void Die()
+    {
+        if (deathSounds.Length > 0)
+        {
+            int index = Random.Range(0, deathSounds.Length);
+            audioSource.PlayOneShot(deathSounds[index]);
+        }
+
+        animationController.PlayDie();
+        coll.enabled = false;
+        agent.isStopped = true;
+        enabled = false;
+        Destroy(gameObject, 2f);
     }
 
 }

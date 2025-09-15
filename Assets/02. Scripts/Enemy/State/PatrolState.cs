@@ -1,13 +1,19 @@
 using System.Collections;
 using UnityEngine;
+using Constants;
 
 public class PatrolState : BaseState
 {
+    private readonly PatrolType patrolType;
+    private readonly float patrolPauseTime = 2f;
     private int currentPointIndex = 0;
-    private readonly float waitTime = 2f;
     private Coroutine patrolCoroutine;
 
-    public PatrolState(Enemy owner) : base(owner) { }
+    public PatrolState(Enemy owner, PatrolType patrolType, float patrolPauseTime) : base(owner)
+    {
+        this.patrolType = patrolType;
+        this.patrolPauseTime = patrolPauseTime;
+    }
 
     public override void Enter()
     {
@@ -19,9 +25,6 @@ public class PatrolState : BaseState
     public override void Update()
     {
         owner.FindTarget();
-
-        if (owner.HasTarget)
-            owner.ChangeState<ChaseState>();
     }
 
     public override void Exit()
@@ -50,9 +53,10 @@ public class PatrolState : BaseState
     {
         while (true)
         {
-            if (owner.PatrolType == PatrolType.Waypoint)
+            if (patrolType == PatrolType.Waypoint)
             {
                 if (owner.PatrolPoints.Length == 0) yield break;
+                if (owner.PatrolPoints[currentPointIndex] == null) yield break;
 
                 Vector2 destination = owner.PatrolPoints[currentPointIndex].position;
                 owner.MoveTo(destination);
@@ -60,10 +64,10 @@ public class PatrolState : BaseState
                 while (owner.Agent.pathPending || owner.Agent.remainingDistance > 0.1f)
                     yield return null;
 
-                yield return new WaitForSeconds(waitTime);
+                yield return new WaitForSeconds(patrolPauseTime);
                 currentPointIndex = (currentPointIndex + 1) % owner.PatrolPoints.Length;
             }
-            else if (owner.PatrolType == PatrolType.Fixed)
+            else if (patrolType == PatrolType.Fixed)
             {
                 float randomAngle = Random.Range(0f, 360f);
 
@@ -73,7 +77,7 @@ public class PatrolState : BaseState
                     yield return null;
                 }
 
-                yield return new WaitForSeconds(waitTime);
+                yield return new WaitForSeconds(patrolPauseTime);
             }
         }
     }

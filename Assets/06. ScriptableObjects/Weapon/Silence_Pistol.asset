@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
+  m_Name: Silence_Pistol
+  m_EditorClassIdentifier: 
+  displayName: Pistol
+  damage: 10
+  bulletSpeed: 100
+  fireRate: 5
+  spread: 0
+  projectilesPerShot: 1
+  bulletPrefab: {fileID: 8908556986258763193, guid: e6199e5bc8a5ecc40b6bee74a672bcef, type: 3}
+  muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
+  shotSfx: {fileID: 8300000, guid: 10195cb9d76b0d245b52df7e6569a743, type: 3}
+  bulletLife: 2
