@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LowerBodyAnimator_Scientist
+  m_Controller: {fileID: 9100000, guid: a98d47e40398ba743b61341d021d4371, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 382113b98df90544d84072a676fc1a74, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 33cc5ecb5297fe74f8477f32b54135ca, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 97bafb0c8cdb1d94ca55ac60b5dca9f9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 16a7e81bd898e70498d2e77923e88412, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: cdca121a98a6d1a40b170cf106df5a54, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d11bdd97c8e3dfe4c85b115b37aef65a, type: 2}

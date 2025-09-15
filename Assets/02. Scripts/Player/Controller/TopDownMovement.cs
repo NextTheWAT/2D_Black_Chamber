@@ -5,6 +5,7 @@ public class TopDownMovement : MonoBehaviour
 {
     private TopDownController controller;
     private Rigidbody2D rb;
+    private CharacterAnimationController animController;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;      // 유닛/초
@@ -14,6 +15,9 @@ public class TopDownMovement : MonoBehaviour
     [SerializeField] private bool rotateToLook = true;   // 마우스 에임 방향 회전
     [SerializeField] private float rotationSpeed = 720f; // deg/sec
 
+    [Header("Animation (0.5 - Walk) (1 - Run)")]
+    [SerializeField] private float animationTree = 0.5f; // 0.5 - 걷기, 1 - 뛰기
+
     private Vector2 moveInput;     // WASD (이동 전용)
     private Vector2 curVel;        // 현재 속도(유닛/초)
     private Vector2 lastLookDir = Vector2.up; // 항상 이 방향을 바라봄(마우스 기준)
@@ -22,6 +26,7 @@ public class TopDownMovement : MonoBehaviour
     {
         controller = GetComponent<TopDownController>();
         rb = GetComponent<Rigidbody2D>();
+        animController = GetComponent<CharacterAnimationController>();
 
         // rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
@@ -59,6 +64,9 @@ public class TopDownMovement : MonoBehaviour
             float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(newAngle);
         }
+
+        // 5) 애니메이션
+        UpdateAnimation();
     }
 
     private void HandleMove(Vector2 v) => moveInput = v;
@@ -68,5 +76,16 @@ public class TopDownMovement : MonoBehaviour
     {
         if (v.sqrMagnitude > 0.0001f)
             lastLookDir = v.normalized;
+    }
+
+    private void UpdateAnimation()
+    {
+        if (animController == null) return;
+
+        float blend = curVel.sqrMagnitude > 0.01f ? animationTree : 0f; // 0~1
+        animController.SetMoveBlend(blend);
+
+        // 이동방향으로 하체 회전
+        animController.SetLowerBodyRotation(moveInput);
     }
 }
