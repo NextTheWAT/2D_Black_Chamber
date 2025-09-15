@@ -13,7 +13,7 @@ public class SoliderFSM : StateMachine
 
         // Global
         AddGlobalTransition<ChaseState>(() => owner.IsHit && CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.IsCombat = true); // 맞았을 때 의심상태면 추격 및 난전 시작
-        AddGlobalTransition<ChaseState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState), ()=> owner.LastKnownTargetPos = GameManager.Instance.Player.position); // 맞았을 때 공격상태가 아니면 추격
+        AddGlobalTransition<ChaseState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState), ()=> owner.LastKnownTargetPos = GameManager.Instance.player.position); // 맞았을 때 공격상태가 아니면 추격
 
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심
