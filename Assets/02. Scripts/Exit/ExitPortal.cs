@@ -5,13 +5,24 @@ using UnityEngine.SceneManagement;
 
 public class ExitPortal : MonoBehaviour
 {
+    public GameObject defaultLight;
+    public GameObject clearLight;
     public string clearSceneName = "";      // 클리어씬
     private bool npcKilled = false;
 
+    private void Start()
+    {
+        defaultLight.SetActive(true);
+        clearLight.SetActive(false);
+    }
     public void isNpcKilled()
     {
         Debug.Log("클리어 조건을 만족하였습니다.");
         npcKilled = true;
+
+        defaultLight.SetActive(false);
+        clearLight.SetActive(true);
+        Debug.Log("탈출 가능");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
