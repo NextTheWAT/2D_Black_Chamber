@@ -24,7 +24,7 @@ public class PatrolState : BaseState
 
     public override void Update()
     {
-        owner.FindTarget();
+        owner.FindSuspiciousTarget();
     }
 
     public override void Exit()

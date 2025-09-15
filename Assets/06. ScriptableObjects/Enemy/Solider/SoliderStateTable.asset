@@ -15,6 +15,7 @@ MonoBehaviour:
   startStateIndex: 0
   definitions:
   - {fileID: 11400000, guid: a70728a59b163c64ba7af189cee733e4, type: 2}
+  - {fileID: 11400000, guid: 74df5e3f0c9d7294895d00ddbb7d67af, type: 2}
   - {fileID: 11400000, guid: 3bddcf7436c35df4eae9704bb8a93dcb, type: 2}
   - {fileID: 11400000, guid: e27b0d7647df7344ea8fc0f40f853ec0, type: 2}
   - {fileID: 11400000, guid: 7a97ff29602190547b5c4c284698c56d, type: 2}

@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
@@ -15,7 +16,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
 
+    [SerializeField] private Light2D forwardLight;
+    [SerializeField] private Light2D backwardLight;
+
     [SerializeField] private Color originalColor;
+    [SerializeField] private Color suspiciousColor;
     [SerializeField] private Color alertColor;
 
     [Header("Patrol")]
@@ -27,46 +32,66 @@ public class Enemy : MonoBehaviour
     [SerializeField] private AudioClip[] hitSounds;
     [SerializeField] private AudioClip[] deathSounds;
 
+    [Header("Return")]
+    [SerializeField] private Transform returnPoint;
+
     private Collider2D coll;
-    private Light2D light2D;
     private NavMeshAgent agent;
     private Transform target;
     private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
     private CharacterAnimationController animationController;
     private AudioSource audioSource;
-
     public bool IsHit { get; private set; }
 
-    public float ViewDistance => light2D.pointLightOuterRadius;
-    public float ViewAngle => light2D.pointLightOuterAngle;
+    public float ViewDistance => forwardLight.pointLightOuterRadius;
+    public float ViewAngle => forwardLight.pointLightOuterAngle;
 
     public Transform[] PatrolPoints => patrolPoints;
     public int StartPatrolPointIndex => startPatrolPointIndex;
 
     public NavMeshAgent Agent => agent;
-    public StateMachine StateMachine => stateMachine;
     public CharacterAnimationController AnimationController => animationController;
 
-    public LayerMask TargetMask => targetMask;
-    public LayerMask ObstacleMask => obstacleMask;
+    private bool foundTarget = false; // 타겟을 발견한적 있는지
+    private bool hasSuspiciousTarget = false;
 
-    public Transform Target => target;
+    public bool HasSuspiciousTarget
+    {
+        get => hasSuspiciousTarget;
+        set
+        {
+            hasSuspiciousTarget = value;
+            if(hasSuspiciousTarget)
+                foundTarget = true;
+            UpdateLightColor();
+        }
+    }
+    public Transform Target
+    {
+        get => target;
+        set
+        {
+            target = value;
+            if (target)
+            {
+                foundTarget = true;
+                LastKnownTargetPos = target.position;
+            }
+
+
+            UpdateLightColor();
+        }
+    }
+    public bool HasTarget => target;
     public Vector2 LastKnownTargetPos
     {
         get => lastKnownTargetPos;
         set => lastKnownTargetPos = value;
     }
 
-    public bool HasTarget => target;
 
     public Health Health => health;
-
-    public float StopDistance
-    {
-        get => Agent.stoppingDistance;
-        set => Agent.stoppingDistance = value;
-    }
 
     public string stateType;
 
@@ -88,17 +113,21 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public Transform ReturnPoint;
+
 
     private void Start()
     {
-        light2D = GetComponentInChildren<Light2D>();
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
         audioSource = GetComponent<AudioSource>();
 
+        backwardLight.color = alertColor;
 
-        if(isTarget)
+        foundTarget = false;
+
+        if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
         else
             stateMachine = new SoliderFSM(this, stateTable);
@@ -116,7 +145,7 @@ public class Enemy : MonoBehaviour
 
     private void UpdateMoveBlend()
     {
-        float moveBlend = agent.velocity.magnitude > 0.01f ? 1f : 0f;
+        float moveBlend = agent.velocity.magnitude > 0.01f ? 0.5f : 0f;
         animationController.SetMoveBlend(moveBlend);
     }
 
@@ -143,22 +172,42 @@ public class Enemy : MonoBehaviour
         shooter.Shoot(transform.up);
     }
 
+    public void UpdateLightColor()
+    {
+        forwardLight.color = originalColor;
+        backwardLight.color = originalColor;
 
+        if (HasSuspiciousTarget)
+        {
+            forwardLight.color = suspiciousColor;
+            backwardLight.color = alertColor;
+        }
+
+        if (HasTarget)
+        {
+            forwardLight.color = alertColor;
+            backwardLight.color = alertColor;
+        }
+    }
+
+    public void SetBackwardLightRadius(float ratio)
+        => backwardLight.pointLightOuterRadius = ViewDistance * ratio;
+
+    public Transform FindSuspiciousTarget()
+    {
+        Transform target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
+        HasSuspiciousTarget = target;
+        LastKnownTargetPos = target ? target.position : LastKnownTargetPos;
+        return target;
+    }
+
+    public void FindTarget(float viewAngle, float viewDistance)
+    {
+        Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+    }
     public void FindTarget()
     {
-        Transform findTarget = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
-
-        if (findTarget)
-        {
-            light2D.color = alertColor;
-            target = findTarget.transform;
-            lastKnownTargetPos = target.position;
-        }
-        else
-        {
-            light2D.color = originalColor;
-            target = null;
-        }
+        Target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
     }
 
 
@@ -166,15 +215,23 @@ public class Enemy : MonoBehaviour
     {
         if (currentHealth == maxHealth) return;
 
-        animationController.PlayHit();
-        LastKnownTargetPos = GameManager.Instance.player.position;
-        IsHit = true;
-
-        if (hitSounds.Length > 0)
+        if (GameManager.Instance.IsCombat || hasSuspiciousTarget)
         {
-            int index = Random.Range(0, hitSounds.Length);
-            audioSource.PlayOneShot(hitSounds[index]);
+            animationController.PlayHit();
+            LastKnownTargetPos = GameManager.Instance.player.position;
+            IsHit = true;
+
+            if (hitSounds.Length > 0)
+            {
+                int index = Random.Range(0, hitSounds.Length);
+                audioSource.PlayOneShot(hitSounds[index]);
+            }
         }
+        else
+        {
+            health.TakeDamage(maxHealth);
+        }
+
     }
 
     public void Die()
@@ -190,6 +247,25 @@ public class Enemy : MonoBehaviour
         agent.isStopped = true;
         enabled = false;
         Destroy(gameObject, 2f);
+    }
+
+    private void OnBecameVisible()
+    {
+        forwardLight.enabled = true;
+    }
+
+    private void OnBecameInvisible()
+    {
+        forwardLight.enabled = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Target = collision.transform;
+            GameManager.Instance.IsCombat = true;
+        }
     }
 
 }
