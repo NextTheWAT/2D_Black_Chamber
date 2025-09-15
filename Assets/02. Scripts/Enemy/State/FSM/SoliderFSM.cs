@@ -12,18 +12,22 @@ public class SoliderFSM : StateMachine
         AttackState attackState = GetState<AttackState>();
 
         // Global
-        AddGlobalTransition<InvestigateState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState));
+        AddGlobalTransition<ChaseState>(() => owner.IsHit && CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.IsCombat = true); // 맞았을 때 의심상태면 추격 및 난전 시작
+        AddGlobalTransition<InvestigateState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState)); // 맞았을 때 공격상태가 아니면 조사
 
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심
+        AddTransition<PatrolState, ChaseState>(() => owner.HasTarget); // 타겟 발견하면 공격
+        AddTransition<PatrolState, InvestigateState>(() => !owner.HasTarget && GameManager.Instance.IsCombat); // 타겟 없고 난전상태면 조사
 
         // Suspect
-        AddTransition<SuspectState, PatrolState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
-        AddTransition<SuspectState, ChaseState>(() => owner.HasTarget); // 타겟 발견하면 추격
-
+        AddTransition<SuspectState, InvestigateState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
+        AddTransition<SuspectState, ChaseState>(() => owner.HasTarget, () => GameManager.Instance.IsCombat = true); // 타겟 발견하면 추격, 난전시작
+        AddTransition<SuspectState, InvestigateState>(() => !owner.HasTarget && GameManager.Instance.IsCombat); // 타겟 없고 난전상태면 조사
 
         // Chase
-        AddTransition<ChaseState, AttackState>(() => attackState.IsTargetInAttackRange); // 사정거리 안에 들어오면 공격
+        AddTransition<ChaseState, AttackState>(() => attackState.IsTargetInAttackRange && GameManager.Instance.IsCombat); // 사정거리 안에 들어오면 공격
+        AddTransition<ChaseState, SuspectState>(() => owner.HasTarget && !GameManager.Instance.IsCombat); // 사정거리 안에 들어오면 공격
         AddTransition<ChaseState, InvestigateState>(() => !chaseState.IsChasing); // 타겟 잃으면 수색
 
         // Attack
