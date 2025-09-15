@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Constants;
 
 public class AttackState : BaseState
 {
@@ -32,6 +29,7 @@ public class AttackState : BaseState
     public override void Update()
     {
         owner.FindTarget();
+
         if (owner.HasTarget)
         {
             owner.MoveTo(owner.Target.position);

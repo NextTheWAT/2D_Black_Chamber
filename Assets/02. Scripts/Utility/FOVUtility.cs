@@ -4,9 +4,6 @@ using UnityEngine;
 
 public static class FOVUtility
 {
-    public static Transform FindTargetInFOV(this Enemy self)
-        => FindTargetInFOV(self.transform, self.ViewAngle, self.ViewDistance, self.TargetMask, self.ObstacleMask);
-
     public static Transform FindTargetInFOV(this Transform self, float viewAngle, float viewDistance, LayerMask targetMask, LayerMask obstacleMask)
     {
         Collider2D[] targets = self.FindNearTargets(viewDistance, targetMask);
