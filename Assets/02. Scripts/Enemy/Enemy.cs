@@ -184,6 +184,7 @@ public class Enemy : MonoBehaviour
     {
         Transform target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
         HasSuspiciousTarget = target;
+        LastKnownTargetPos = target ? target.position : LastKnownTargetPos;
         return target;
     }
 

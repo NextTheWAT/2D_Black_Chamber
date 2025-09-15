@@ -18,9 +18,8 @@ public class SoliderFSM : StateMachine
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심
 
         // Suspect
-        AddTransition<SuspectState, PatrolState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
+        AddTransition<SuspectState, InvestigateState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
         AddTransition<SuspectState, ChaseState>(() => owner.HasTarget); // 타겟 발견하면 추격
-
 
         // Chase
         AddTransition<ChaseState, AttackState>(() => attackState.IsTargetInAttackRange); // 사정거리 안에 들어오면 공격
