@@ -8,7 +8,8 @@ public class TargetFSM : StateMachine
 
 
         // Global
-        AddGlobalTransition<FleeState>(() => owner.IsHit);
+        AddGlobalTransition<FleeState>(() => owner.IsHit, ()=> GameManager.Instance.IsCombat = true);
+        AddGlobalTransition<FleeState>(() => GameManager.Instance.IsCombat);
 
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심

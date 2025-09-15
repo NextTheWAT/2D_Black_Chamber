@@ -16,6 +16,11 @@ namespace Constants
         Pistol,
         Rifle,
     }
+    public enum GamePhase
+    {
+        Stealth, // 잠입
+        Combat // 난전
+    }
 
     public static class AnimationHash
     {

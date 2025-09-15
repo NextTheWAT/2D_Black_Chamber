@@ -8,7 +8,7 @@ public class InvestigateState : BaseState
     private readonly float investigateRange = 2f; // 조사 중 무작위로 이동하는 범위
     private readonly float pauseDuration = 1f; // 조사 중 멈추는 시간
     private float investigateTimer = 0f;
-    public bool IsInvestigating => investigateTimer < investigateDuration;
+    public bool IsInvestigating => investigateTimer < investigateDuration || GameManager.Instance.IsCombat;
 
     private Coroutine investigateCoroutine;
 
