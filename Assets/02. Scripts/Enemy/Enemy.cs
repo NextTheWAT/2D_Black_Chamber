@@ -1,9 +1,8 @@
-using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using Constants;
 using System;
+using Random = UnityEngine.Random;
 
 public class Enemy : MonoBehaviour
 {
@@ -25,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Attack")]
     [SerializeField] private Shooter shooter;
+    [SerializeField] private AudioClip[] hitSounds;
 
     private Collider2D coll;
     private Light2D light2D;
@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
     private CharacterAnimationController animationController;
+    private AudioSource audioSource;
 
     public bool IsHit { get; private set; }
 
@@ -93,6 +94,9 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
+        audioSource = GetComponent<AudioSource>();
+
+
         if(isTarget)
             stateMachine = new TargetFSM(this, stateTable);
         else
@@ -164,6 +168,12 @@ public class Enemy : MonoBehaviour
         animationController.PlayHit();
         LastKnownTargetPos = GameManager.Instance.player.position;
         IsHit = true;
+
+        if (hitSounds.Length > 0)
+        {
+            int index = Random.Range(0, hitSounds.Length);
+            audioSource.PlayOneShot(hitSounds[index]);
+        }
     }
 
     public void Die()

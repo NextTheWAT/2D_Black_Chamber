@@ -237,9 +237,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularSpeed: 120
   health: {fileID: 5175531006165489716}
   stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
+  angularSpeed: 120
   targetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -254,18 +254,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   startPatrolPointIndex: 0
-  patrolType: 0
-  initialChaseDelay: 2
-  investigateThreshold: 3
-  chaseToInvestigateTimer: 0
-  attackRange: 6
   shooter: {fileID: 1894057060115248025}
-  fleeDistance: 10
-  fleeDuration: 5
-  fleeTimer: 0
-  investigateDuration: 5
-  investigateRange: 2
-  investigateTimer: 0
+  hitSounds:
+  - {fileID: 8300000, guid: 5583e9c9a0afdf0408f9d0946666f85a, type: 3}
+  - {fileID: 8300000, guid: 572fe06c861000149bc4b51cc1fdb09d, type: 3}
+  - {fileID: 8300000, guid: 88b91714a2e2cbb428f61e18ca4d39d8, type: 3}
+  - {fileID: 8300000, guid: 80cc6816623c9a04580970e36613d8c4, type: 3}
+  - {fileID: 8300000, guid: cad57fcf83264a4489ae5c41b55e7a8b, type: 3}
   stateType: 
   isTarget: 0
 --- !u!114 &5175531006165489716
@@ -403,7 +398,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
