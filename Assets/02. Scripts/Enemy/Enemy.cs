@@ -64,7 +64,7 @@ public class Enemy : MonoBehaviour
             hasSuspiciousTarget = value;
             if(hasSuspiciousTarget)
                 foundTarget = true;
-            UpdateLightColor();
+            UpdateLight();
         }
     }
     public Transform Target
@@ -80,7 +80,7 @@ public class Enemy : MonoBehaviour
             }
 
 
-            UpdateLightColor();
+            UpdateLight();
         }
     }
     public bool HasTarget => target;
@@ -172,8 +172,11 @@ public class Enemy : MonoBehaviour
         shooter.Shoot(transform.up);
     }
 
-    public void UpdateLightColor()
+    public void UpdateLight()
     {
+        forwardLight.enabled = HasTarget || HasSuspiciousTarget;
+        backwardLight.enabled = HasTarget || HasSuspiciousTarget;
+
         forwardLight.color = originalColor;
         backwardLight.color = originalColor;
 
@@ -250,16 +253,6 @@ public class Enemy : MonoBehaviour
         enabled = false;
         angularSpeed = 0f;
         Destroy(gameObject, 2f);
-    }
-
-    private void OnBecameVisible()
-    {
-        forwardLight.enabled = true;
-    }
-
-    private void OnBecameInvisible()
-    {
-        forwardLight.enabled = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
