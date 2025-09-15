@@ -79,7 +79,7 @@ public class TopDownMovement : MonoBehaviour
     {
         if (animController == null) return;
 
-        float blend = curVel.sqrMagnitude > 0.01f ? 1f : 0f; // 0~1
+        float blend = curVel.sqrMagnitude > 0.01f ? 0.5f : 0f; // 0~1
         animController.SetMoveBlend(blend);
 
         // 이동방향으로 하체 회전
