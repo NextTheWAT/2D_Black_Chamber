@@ -15,6 +15,9 @@ public class TopDownMovement : MonoBehaviour
     [SerializeField] private bool rotateToLook = true;   // 마우스 에임 방향 회전
     [SerializeField] private float rotationSpeed = 720f; // deg/sec
 
+    [Header("Animation (0.5 - Walk) (1 - Run)")]
+    [SerializeField] private float animationTree = 0.5f; // 0.5 - 걷기, 1 - 뛰기
+
     private Vector2 moveInput;     // WASD (이동 전용)
     private Vector2 curVel;        // 현재 속도(유닛/초)
     private Vector2 lastLookDir = Vector2.up; // 항상 이 방향을 바라봄(마우스 기준)
@@ -79,7 +82,7 @@ public class TopDownMovement : MonoBehaviour
     {
         if (animController == null) return;
 
-        float blend = curVel.sqrMagnitude > 0.01f ? 0.5f : 0f; // 0~1
+        float blend = curVel.sqrMagnitude > 0.01f ? animationTree : 0f; // 0~1
         animController.SetMoveBlend(blend);
 
         // 이동방향으로 하체 회전

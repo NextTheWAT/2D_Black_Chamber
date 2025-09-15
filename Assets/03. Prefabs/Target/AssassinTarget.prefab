@@ -19,8 +19,8 @@ GameObject:
   - component: {fileID: 832514891371369143}
   - component: {fileID: 6262810931504493246}
   - component: {fileID: 7121977400482476697}
-  m_Layer: 7
-  m_Name: ScientistEnemy
+  m_Layer: 11
+  m_Name: AssassinTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -392,7 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8096577770221033954}
   - component: {fileID: 3757559673783468784}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: Light2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 7580790552893861339}
   - component: {fileID: 5990597688693713336}
   - component: {fileID: 8081028850479260102}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: LowerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,7 +581,7 @@ GameObject:
   - component: {fileID: 930888396186245311}
   - component: {fileID: 8010748519383549066}
   - component: {fileID: 4582954057272408066}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: UpperBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
