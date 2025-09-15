@@ -48,18 +48,18 @@ public class StateMachine
         currentState.Enter();
     }
 
-    public void AddTransition<TFrom, TTo>(Func<bool> condition) where TFrom : IState where TTo : IState
+    public void AddTransition<TFrom, TTo>(Func<bool> condition, Action callback = null) where TFrom : IState where TTo : IState
     {
         Type from = typeof(TFrom);
         Type to = typeof(TTo);
-        transitions.Add(new Transition(states[from], states[to], condition));
+        transitions.Add(new Transition(states[from], states[to], condition, callback));
     }
 
 
-    public void AddGlobalTransition<TTo>(Func<bool> condition) where TTo : IState
+    public void AddGlobalTransition<TTo>(Func<bool> condition, Action callback = null) where TTo : IState
     {
         Type to = typeof(TTo);
-        globalTransitions.Add(new Transition(null, states[to], condition));
+        globalTransitions.Add(new Transition(null, states[to], condition, callback));
     }
 
     public void UpdateState()
@@ -74,6 +74,7 @@ public class StateMachine
         {
             if (t.Condition())
             {
+                t.Callback?.Invoke();
                 ChangeState(t.ToState);
                 break; // 한 번에 하나만 전환
             }
@@ -86,6 +87,7 @@ public class StateMachine
 
             if (t.Condition())
             {
+                t.Callback?.Invoke();
                 ChangeState(t.ToState);
                 break; // 한 번에 하나만 전환
             }

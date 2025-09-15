@@ -17,6 +17,7 @@ public class SuspectState : BaseState
 
     public override void Enter()
     {
+        owner.Agent.isStopped = true;
         suspicionElapsedTime = 0f;
         currentDetectionRange = 0f;
         owner.SetBackwardLightRadius(0f);
@@ -26,6 +27,8 @@ public class SuspectState : BaseState
     public override void Update()
     {
         Transform target = owner.FindSuspiciousTarget();
+        if (target)
+            owner.LookAt(target.position);
 
         suspicionElapsedTime += Time.deltaTime;
         float ratio = suspicionElapsedTime / suspicionBuildTime;
@@ -33,12 +36,11 @@ public class SuspectState : BaseState
 
         currentDetectionRange = Mathf.Lerp(0, owner.ViewDistance, ratio);
         owner.FindTarget(owner.ViewAngle, currentDetectionRange);
-        if(target)
-            owner.LookAt(target.position);
     }
 
     public override void Exit()
     {
+        owner.Agent.isStopped = false;
         owner.SetBackwardLightRadius(0f);
         ConditionalLogger.Log("Exit Suspect State");
     }

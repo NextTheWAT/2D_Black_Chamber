@@ -211,12 +211,11 @@ public class Enemy : MonoBehaviour
     }
 
 
-
     public void Hit(int currentHealth, int maxHealth)
     {
         if (currentHealth == maxHealth) return;
 
-        if (foundTarget)
+        if (GameManager.Instance.IsCombat || hasSuspiciousTarget)
         {
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.player.position;
@@ -265,6 +264,7 @@ public class Enemy : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Target = collision.transform;
+            GameManager.Instance.IsCombat = true;
         }
     }
 
