@@ -20,13 +20,13 @@ public class SoliderFSM : StateMachine
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심
         AddTransition<PatrolState, ChaseState>(() => owner.HasTarget); // 타겟 발견하면 공격
-        AddTransition<PatrolState, ChaseState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 추격
+        AddTransition<PatrolState, CoverState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 엄폐
 
 
         // Suspect
         AddTransition<SuspectState, InvestigateState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
         AddTransition<SuspectState, ChaseState>(() => owner.HasTarget, () => GameManager.Instance.IsCombat = true); // 타겟 발견하면 추격, 난전시작
-        AddTransition<SuspectState, ChaseState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 추격
+        AddTransition<SuspectState, CoverState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 엄폐
 
         // Investigate
         AddTransition<InvestigateState, SuspectState>(() => owner.HasSuspiciousTarget); // 타겟 발견하면 추격
@@ -39,14 +39,18 @@ public class SoliderFSM : StateMachine
         // 난전
 
         // Chase
-        AddTransition<ChaseState, AssaultState>(() => chaseState.IsTargetInChaseRange); // 사정거리 안에 들어오면 공격
+        AddTransition<ChaseState, CoverState>(() => chaseState.IsTargetInChaseRange); // 사정거리 안에 들어오면 공격
+
+        // Cover
+        AddTransition<CoverState, ChaseState>(() => !chaseState.IsTargetInChaseRange); // 사정거리 벗어나면 추격
+        AddTransition<CoverState, AttackState>(() => attackState.IsTargetInAttackRange && assaultState.CanAttack); // 사정거리 안에 들어오면 공격
 
         // Assault
         AddTransition<AssaultState, ChaseState>(() => !chaseState.IsTargetInChaseRange); // 사정거리 벗어나면 추격
         AddTransition<AssaultState, AttackState>(() => assaultState.CanAttack); // 공격 가능하면 공격
 
         // Attack
-        AddTransition<AttackState, AssaultState>(() => !assaultState.CanAttack); // 사정거리 벗어나면 추격
+        AddTransition<AttackState, CoverState>(() => !assaultState.CanAttack); // 사정거리 벗어나면 추격
 
     }
 }

@@ -7,7 +7,7 @@ public class FleeState : BaseState
     private readonly float fleeDuration = 5f;
     public float fleeTimer;
 
-    public bool IsFleeing => fleeTimer < fleeDuration;
+    public bool IsFleeing => fleeTimer < fleeDuration || GameManager.Instance.IsCombat;
 
     public FleeState(Enemy owner, float fleeDistance, float fleeDuration) : base(owner)
     {

@@ -14,7 +14,8 @@ public class AssaultState : BaseState
     {
         get
         {
-            RaycastHit2D hit = Physics2D.Raycast(owner.transform.position, owner.transform.up, 20f, targetLayer);
+            if(!owner.HasTarget) return false;
+            RaycastHit2D hit = Physics2D.Linecast(owner.transform.position, owner.Target.position, targetLayer);
             return hit.collider != null && hit.collider.CompareTag("Player");
         }
     }
