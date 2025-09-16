@@ -42,3 +42,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: LightMask
+    uniqueID: 3967303837
+    locked: 0

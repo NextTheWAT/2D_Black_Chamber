@@ -161,7 +161,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620677906095334835}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -268,8 +268,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c9fcdbd8bb5bb9c42981a9ba28089d98, type: 3}
   - {fileID: 8300000, guid: c5311bb6d7d14a14c80bfdcaf3f07b8c, type: 3}
   - {fileID: 8300000, guid: ed5d0007a6aca7a4e9cfe74b94ed21a2, type: 3}
+  returnPoint: {fileID: 0}
   stateType: 
   isTarget: 0
+  ReturnPoint: {fileID: 0}
 --- !u!114 &5175531006165489716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -555,7 +557,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 9d4078ec
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -796,12 +798,12 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 9d4078ec
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 1
   m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 0
+  m_OverlapOperation: 1
   m_NormalMapDistance: 3
   m_NormalMapQuality: 2
   m_UseNormalMap: 0
@@ -815,7 +817,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 0
   m_PointLightOuterAngle: 100.00003
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 8
+  m_PointLightOuterRadius: 10
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
