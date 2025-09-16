@@ -233,11 +233,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
-  m_LightType: 1
+  m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.4
+  m_FalloffIntensity: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.8
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 00000000
@@ -254,12 +254,12 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 1
   m_ShadowVolumeIntensity: 1
   m_LocalBounds:
-    m_Center: {x: -0.00060001016, y: -0.050300002, z: 0}
-    m_Extent: {x: 0.8004, y: 0.7507, z: 0}
-  m_PointLightInnerAngle: 0
-  m_PointLightOuterAngle: 80
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 20
+  m_PointLightOuterRadius: 1
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -509,7 +509,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -27834
+  m_InstanceId: -7020
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -651,10 +651,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d0edc7ff9d1e348aba4018ebfc4a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseTr: {fileID: 0}
+  maxMouseDistance: 5
   moveSpeed: 3
   acceleration: 30
   rotateToLook: 1
   rotationSpeed: 720
+  animationTree: 0.5
 --- !u!114 &5297714505067383858
 MonoBehaviour:
   m_ObjectHideFlags: 0
