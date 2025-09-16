@@ -39,6 +39,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: LightMask
+    uniqueID: 3967303837
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Layer2
+    uniqueID: 19895981
     locked: 0
