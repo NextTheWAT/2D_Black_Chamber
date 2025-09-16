@@ -1,7 +1,7 @@
 using Constants;
 using UnityEngine;
 
-public class UIWeaponHUDGamePhaseConnector : MonoBehaviour
+public class WeaponHUDSwitcher : MonoBehaviour
 {
     [SerializeField] private UIWeaponHUD hud; //실제 무기 아이콘, 탄약 표시 담당
 
