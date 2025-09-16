@@ -161,8 +161,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9ac9e455e130968459fc7ff35a33428c, type: 3}
   - {fileID: 8300000, guid: f325d26adff89d64cb93f78147635cf7, type: 3}
   - {fileID: 8300000, guid: 8f4f375ffa0090842aeb8c5e2df71b5f, type: 3}
+  returnPoint: {fileID: 0}
   stateType: 
   isTarget: 1
+  ReturnPoint: {fileID: 0}
 --- !u!114 &208123243127908645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,7 +551,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 0
   m_PointLightOuterAngle: 100
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 8
+  m_PointLightOuterRadius: 10
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
