@@ -31,6 +31,17 @@ namespace FischlWorks_FogWar
     /// Various public interfaces related to FogRevealer's FOV are also available.
     public class csFogWar : MonoBehaviour
     {
+        private float[,] spotWeight;
+
+        private void EnsureSpotArrays()
+        {
+            if (spotWeight == null ||
+                spotWeight.GetLength(0) != levelDimensionX ||
+                spotWeight.GetLength(1) != levelDimensionY)
+            {
+                spotWeight = new float[levelDimensionX, levelDimensionY];
+            }
+        }
         /// A class for storing the base level data.
         /// 
         /// This class is later serialized into Json format.\n
@@ -145,50 +156,47 @@ namespace FischlWorks_FogWar
         [System.Serializable]
         public class FogRevealer
         {
-            public FogRevealer(Transform revealerTransform, int sightRange, bool updateOnlyOnMove)
-            {
-                this.revealerTransform = revealerTransform;
-                this.sightRange = sightRange;
-                this.updateOnlyOnMove = updateOnlyOnMove;
-            }
+            public FogRevealer(Transform revealerTransform, bool updateOnlyOnMove)
+            { this.revealerTransform = revealerTransform; this.updateOnlyOnMove = updateOnlyOnMove; }
 
             public Vector2Int GetCurrentLevelCoordinates(csFogWar fogWar)
             {
                 currentLevelCoordinates = new Vector2Int(
                     fogWar.GetUnitX(revealerTransform.position.x),
-                    fogWar.GetUnitY(revealerTransform.position.y));  // ← y!
-
+                    fogWar.GetUnitY(revealerTransform.position.y));
                 return currentLevelCoordinates;
             }
 
-            // To be assigned manually by the user
-            [SerializeField]
-            private Transform revealerTransform = null;
-            // These are called expression-bodied properties btw, being stricter here because these are not pure data containers
+            [SerializeField] private Transform revealerTransform = null;
             public Transform _RevealerTransform => revealerTransform;
 
-            [SerializeField]
-            private int sightRange = 0;
-            public int _SightRange => sightRange;
+            [Header("Spot (Fan) Settings")]
+            [Tooltip("월드 단위 거리(바깥 반경)")]
+            [SerializeField] public float outerRadius = 7f;
+            [Tooltip("월드 단위 거리(안쪽 반경, 0이면 하드 컷)")]
+            [SerializeField] public float innerRadius = 3f;
+            [Tooltip("바깥 각도(도)")]
+            [SerializeField] public float outerAngleDeg = 90f;
+            [Tooltip("안쪽 각도(도, 0이면 하드 컷)")]
+            [SerializeField] public float innerAngleDeg = 60f;
+            [Tooltip("전방 축: true=transform.right, false=transform.up")]
+            [SerializeField] public bool forwardIsRight = true;
 
-            [SerializeField]
-            private bool updateOnlyOnMove = true;
+            [SerializeField] private bool updateOnlyOnMove = true;
             public bool _UpdateOnlyOnMove => updateOnlyOnMove;
 
-            private Vector2Int currentLevelCoordinates = new Vector2Int();
-            public Vector2Int _CurrentLevelCoordinates
+            public Vector2 GetForward2D()
             {
-                get
-                {
-                    lastSeenAt = currentLevelCoordinates;
-
-                    return currentLevelCoordinates;
-                }
+                var v = forwardIsRight ? (Vector2)revealerTransform.right : (Vector2)revealerTransform.up;
+                if (v.sqrMagnitude < 1e-5f) v = Vector2.right;
+                return v.normalized;
             }
 
+            private Vector2Int currentLevelCoordinates = new Vector2Int();
+            public Vector2Int _CurrentLevelCoordinates { get { lastSeenAt = currentLevelCoordinates; return currentLevelCoordinates; } }
+
             [Header("Debug")]
-            [SerializeField]
-            private Vector2Int lastSeenAt = new Vector2Int(Int32.MaxValue, Int32.MaxValue);
+            [SerializeField] private Vector2Int lastSeenAt = new Vector2Int(Int32.MaxValue, Int32.MaxValue);
             public Vector2Int _LastSeenAt => lastSeenAt;
         }
 
@@ -407,7 +415,7 @@ namespace FischlWorks_FogWar
             mr.material = new Material(fogPlaneMaterial);
             mr.material.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
 
-            fogPlane.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
+            //fogPlane.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
 
             // 2D 정렬(스프라이트 위로)
             mr.sortingLayerName = sortingLayerName;
@@ -494,18 +502,67 @@ namespace FischlWorks_FogWar
         private void UpdateFogField()
         {
             shadowcaster.ResetTileVisibility();
+            EnsureSpotArrays();
 
-            foreach (FogRevealer fogRevealer in fogRevealers)
+            // 가중치 초기화
+            for (int x = 0; x < levelDimensionX; x++)
+                for (int y = 0; y < levelDimensionY; y++)
+                    spotWeight[x, y] = 0f;
+
+            foreach (var r in fogRevealers)
             {
-                fogRevealer.GetCurrentLevelCoordinates(this);
+                // 중심 타일/월드 좌표/전방
+                var lc = r.GetCurrentLevelCoordinates(this);
+                Vector2 revealerPos = new Vector2(GetWorldX(lc.x + (levelDimensionX / 2)),
+                                                  GetWorldY(lc.y + (levelDimensionY / 2)));
+                Vector2 fwd = r.GetForward2D();
 
-                shadowcaster.ProcessLevelData(
-                    fogRevealer._CurrentLevelCoordinates,
-                    Mathf.RoundToInt(fogRevealer._SightRange / unitScale));
+                // 반경/각도
+                float outerR = Mathf.Max(0.001f, r.outerRadius);
+                float innerR = Mathf.Clamp(r.innerRadius, 0f, outerR);
+                float halfOuterA = Mathf.Max(0f, r.outerAngleDeg * 0.5f);
+                float halfInnerA = Mathf.Clamp(r.innerAngleDeg * 0.5f, 0f, halfOuterA);
+
+                int radiusTiles = Mathf.Max(1, Mathf.RoundToInt(outerR / unitScale));
+
+                // LOS(가림) 계산은 반경 타일로
+                shadowcaster.ProcessLevelData(lc, radiusTiles);
+
+                // 부채꼴 가중치(거리/각도 소프트 에지)
+                int minX = Mathf.Max(0, lc.x - radiusTiles);
+                int maxX = Mathf.Min(levelDimensionX - 1, lc.x + radiusTiles);
+                int minY = Mathf.Max(0, lc.y - radiusTiles);
+                int maxY = Mathf.Min(levelDimensionY - 1, lc.y + radiusTiles);
+
+                float outerR2 = outerR * outerR;
+
+                for (int x = minX; x <= maxX; x++)
+                    for (int y = minY; y <= maxY; y++)
+                    {
+                        // LOS가 안 뚫린 타일이면 어차피 0이 될 것이니, 가벼운 필터
+                        if (shadowcaster.fogField[x][y] != Shadowcaster.LevelColumn.ETileVisibility.Revealed)
+                            continue;
+
+                        Vector2 p = new Vector2(GetWorldX(x), GetWorldY(y));
+                        Vector2 to = p - revealerPos;
+                        float d2 = to.sqrMagnitude;
+                        if (d2 > outerR2) continue;
+
+                        float ang = Vector2.Angle(fwd, to);
+                        if (ang > halfOuterA) continue;
+
+                        float dist01 = (innerR <= 0f) ? 1f : 1f - Mathf.InverseLerp(innerR, outerR, Mathf.Sqrt(d2));
+                        float ang01 = (halfInnerA <= 0f) ? 1f : 1f - Mathf.InverseLerp(halfInnerA, halfOuterA, ang);
+
+                        float w = Mathf.Clamp01(dist01 * ang01);
+
+                        if (w > spotWeight[x, y]) spotWeight[x, y] = w; // 여러 리빌러면 최대값
+                    }
             }
 
             UpdateFogPlaneTextureTarget();
         }
+
 
 
 
@@ -535,12 +592,36 @@ namespace FischlWorks_FogWar
 
         private void UpdateFogPlaneTextureTarget()
         {
-            fogPlane.GetComponent<MeshRenderer>().material.SetColor("_Color", fogColor);
+            var mr = fogPlane.GetComponent<MeshRenderer>();
+            mr.material.SetColor("_Color", fogColor);
 
-            fogPlaneTextureLerpTarget.SetPixels(shadowcaster.fogField.GetColors(fogPlaneAlpha, this));
+            var pixels = new Color[levelDimensionX * levelDimensionY];
+            int i = 0;
+            float revealedA = keepRevealedTiles ? revealedTileOpacity : 0f;
 
+            for (int y = 0; y < levelDimensionY; y++)
+                for (int x = 0; x < levelDimensionX; x++, i++)
+                {
+                    // spotWeight는 UpdateFogField에서 LOS 통과한 타일만 채움
+                    float vis = (spotWeight != null) ? spotWeight[x, y] : 0f;
+                    // vis=1 → revealedA(투명/회색), vis=0 → fogPlaneAlpha(어두움)
+                    float a = Mathf.Lerp(fogPlaneAlpha, revealedA, vis);
+                    pixels[i] = new Color(1f, 1f, 1f, a);
+                }
+
+            if (fogPlaneTextureLerpTarget == null ||
+                fogPlaneTextureLerpTarget.width != levelDimensionX ||
+                fogPlaneTextureLerpTarget.height != levelDimensionY)
+            {
+                fogPlaneTextureLerpTarget = new Texture2D(levelDimensionX, levelDimensionY, TextureFormat.RGBA32, false);
+                fogPlaneTextureLerpTarget.wrapMode = TextureWrapMode.Clamp;
+                fogPlaneTextureLerpTarget.filterMode = FilterMode.Point;
+            }
+
+            fogPlaneTextureLerpTarget.SetPixels(pixels);
             fogPlaneTextureLerpTarget.Apply();
         }
+
 
 
 

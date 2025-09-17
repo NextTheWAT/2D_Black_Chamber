@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3340223867602117555
+--- !u!1 &6596327194479918305
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8497084447981742589}
-  - component: {fileID: 5480802721500574208}
+  - component: {fileID: 4467621653560013347}
+  - component: {fileID: 4479699699956169332}
   m_Layer: 0
   m_Name: FogWar
   m_TagString: Untagged
@@ -17,36 +17,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8497084447981742589
+--- !u!4 &4467621653560013347
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3340223867602117555}
+  m_GameObject: {fileID: 6596327194479918305}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!114 &5480802721500574208
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4479699699956169332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3340223867602117555}
+  m_GameObject: {fileID: 6596327194479918305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5de54c084f472845b61ee9a97cb8a48, type: 3}
+  m_Script: {fileID: 11500000, guid: daaca03a2139ed5418b0e8ad4fffbbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   fogRevealers:
   - revealerTransform: {fileID: 0}
-    sightRange: 5
+    outerRadius: 60
+    innerRadius: 0
+    outerAngleDeg: 30
+    innerAngleDeg: 0
+    forwardIsRight: 0
     updateOnlyOnMove: 1
     lastSeenAt: {x: 0, y: 0}
   levelMidPoint: {fileID: 0}
@@ -66,8 +70,8 @@ MonoBehaviour:
   LevelDataToLoad: {fileID: 0}
   saveDataOnScan: 1
   levelNameToSave: Default
-  levelDimensionX: 31
-  levelDimensionY: 31
+  levelDimensionX: 60
+  levelDimensionY: 60
   unitScale: 1
   scanSpacingPerUnit: 0.25
   rayStartHeight: 5
