@@ -392,9 +392,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageLayers:
     serializedVersion: 2
-    m_Bits: 3959
+    m_Bits: 64
   obstacleLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 513
   damageHitEffect: {fileID: 0}
   obstacleHitEffect: {fileID: 0}
