@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: -5200466512008399858}
   - component: {fileID: 8409662625867862265}
   - component: {fileID: 2790809598059174657}
+  - component: {fileID: -2752299516884496647}
   m_Layer: 7
   m_Name: RifleEnemy
   m_TagString: Untagged
@@ -161,7 +162,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620677906095334835}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -189,11 +190,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 620677906095334835}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.75
   m_Speed: 2
-  m_Acceleration: 5
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 180
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -241,7 +242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 5175531006165489716}
   stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
-  angularSpeed: 120
+  angularSpeed: 150
   targetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -505,6 +506,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-2752299516884496647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620677906095334835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fogWar: {fileID: 0}
+  additionalRadius: 0
+  spotThreshold: 0.01
 --- !u!1 &2308755261218418756
 GameObject:
   m_ObjectHideFlags: 0
