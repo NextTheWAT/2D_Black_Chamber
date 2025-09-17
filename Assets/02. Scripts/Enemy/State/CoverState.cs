@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.AI;
-
 public class CoverState : BaseState
 {
-    private LayerMask obstacleLayer;
-    private LayerMask enemyLayer;
-    private float coverOffset = 2f;
+    // 1. 적이 플레이어로 이동하는 경로를 참조한다.
+    // 2. 경로의 끝 지점부터 시작 지점까지의 위치를 임의의 점을 이동하며, 점과 플레이어 사이에 장애물이 충돌하는지 확인한다.
+    // 3. 만약 충돌한다면 있다면 그 충돌 지점을 기반으로 삼고, 장애물의 벽에서 플레이어와 반대되는 일정 지점을 엄폐 지점으로 삼는다.
+    // 4. 혹시 엄폐 지점에 다른 적이 있다면 이번 지점은 포기하고, 점을 계속 이동시켜 적절한 위치를 찾는다.
+    // 5. 엄폐 할 곳이 없거나, 경로를 못찾으면 현재 위치에 머문다.
+    private readonly LayerMask obstacleLayer;
+    private readonly LayerMask enemyLayer;
+    private readonly float coverOffset = 2f;
     private Vector2 lookPoint;
 
     public CoverState(Enemy owner, LayerMask obstacleLayer, LayerMask enemyLayer, float coverOffset) : base(owner)
@@ -19,29 +23,16 @@ public class CoverState : BaseState
     {
         ConditionalLogger.Log("CoverState Enter");
         owner.Target = GameManager.Instance.player;
-        Vector2 coverPoint = GetCoverPoint();
-        if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
-            owner.MoveTo(coverPoint);
     }
 
     public override void Update()
     {
-        try
-        {
-            Vector2 coverPoint = GetCoverPoint();
-            if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
-                owner.MoveTo(coverPoint);
-        }
-        catch (System.Exception ex)
-        {
-            ConditionalLogger.LogError($"CoverState Update Exception: {ex.Message}");
-            return;
-        }
+        Vector2 coverPoint = GetCoverPoint();
+        if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
+            owner.MoveTo(coverPoint);
 
         if (owner.IsArrived)
-        {
             owner.LookAt(lookPoint);
-        }
     }
 
     public override void Exit()
@@ -54,8 +45,7 @@ public class CoverState : BaseState
         if (!owner.HasTarget) return owner.transform.position;
 
         Vector3[] corners = GetPathCorners();
-        if (corners == null) return owner.transform.position;
-        if(corners.Length <= 2)
+        if (corners == null || corners.Length < 2)
         {
             lookPoint = owner.Target.position;
             return owner.transform.position;
@@ -65,89 +55,15 @@ public class CoverState : BaseState
         {
             Vector2 start = corners[i];
             Vector2 end = corners[i - 1];
-            float t = 0f;
 
-            int count = 0;
-            while (t < 1f)
+            for (float t = 0.1f; t <= 1f; t += 0.1f)
             {
-                if (count++ > 10)
-                {
-                    ConditionalLogger.LogError("GetCoverPoint: Too many iterations");
-                    break;
-                }
-                t += 0.1f;
                 Vector2 point = Vector2.Lerp(start, end, t);
                 RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, obstacleLayer);
+                if (!hit.collider) continue;
 
-                if (hit.collider)
-                {
-                    // 벽 안쪽 깊이
-                    float coverDepth = owner.Agent.radius;
-
-                    // 벽 표면 tangent
-                    Vector2 tangent = new(-hit.normal.y, hit.normal.x);
-
-                    // 플레이어 반대 방향
-                    Vector2 dirToPlayer = ((Vector2)owner.Target.position - hit.point).normalized;
-                    Vector2 oppositeDir = -dirToPlayer;
-
-                    // 벽 안쪽으로 이동
-                    Vector2 inward = hit.point + hit.normal * coverDepth;
-
-                    // 벽을 따라 플레이어 반대 방향으로 이동
-                    Vector2 tangentMove = tangent * Vector2.Dot(oppositeDir, tangent) * coverOffset;
-                    Vector2 finalCoverPoint = inward + tangentMove;
-
-                    // NavMesh 위로 보정
-                    if (NavMesh.SamplePosition(finalCoverPoint, out NavMeshHit navHit, 1f, NavMesh.AllAreas))
-                        finalCoverPoint = navHit.position;
-
-                    // 주변 적과 겹치지 않도록 밀어내기
-                    if (Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
-                        continue;
-
-                    lookPoint = start;
-                    return finalCoverPoint;
-                }
-            }
-        }
-
-
-        /*
-        Vector2? lastBlockedCorner = null;
-        Vector2? lastOpenedCorner = null; 
-        
-        foreach (var corner in corners)
-        {
-            bool isBlocked = Physics2D.Linecast(corner, owner.Target.position, obstacleLayer);
-            if (isBlocked) lastBlockedCorner = corner;
-            else
-            {
-                lastOpenedCorner = corner;
-                if (lastBlockedCorner == null) return owner.transform.position;
-                break;
-            }
-        }
-
-        if (!lastBlockedCorner.HasValue || !lastOpenedCorner.HasValue)
-            return owner.transform.position;
-
-        Vector2 start = lastOpenedCorner.Value;
-        Vector2 end = lastBlockedCorner.Value;
-        float t = 0f;
-
-        lookPoint = start;
-
-        while (t < 1f)
-        {
-            t += 0.1f;
-            Vector2 point = Vector2.Lerp(start, end, t);
-            RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, obstacleLayer);
-
-            if (hit.collider)
-            {
                 // 벽 안쪽 깊이
-                float coverDepth = 0.75f;
+                float coverDepth = owner.Agent.radius;
 
                 // 벽 표면 tangent
                 Vector2 tangent = new(-hit.normal.y, hit.normal.x);
@@ -160,20 +76,21 @@ public class CoverState : BaseState
                 Vector2 inward = hit.point + hit.normal * coverDepth;
 
                 // 벽을 따라 플레이어 반대 방향으로 이동
-                Vector2 tangentMove = tangent * Vector2.Dot(oppositeDir, tangent) * coverOffset;
+                Vector2 tangentMove = coverOffset * Vector2.Dot(oppositeDir, tangent) * tangent;
                 Vector2 finalCoverPoint = inward + tangentMove;
 
                 // NavMesh 위로 보정
                 if (NavMesh.SamplePosition(finalCoverPoint, out NavMeshHit navHit, 1f, NavMesh.AllAreas))
                     finalCoverPoint = navHit.position;
 
-                if(Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
+                // 주변 적과 겹치지 않도록 밀어내기
+                if (Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
                     continue;
 
+                lookPoint = start;
                 return finalCoverPoint;
             }
         }
-        */
 
         return owner.transform.position;
     }
