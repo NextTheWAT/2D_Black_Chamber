@@ -23,20 +23,27 @@ public class AttackState : BaseState
     {
         ConditionalLogger.Log("AttackState Enter");
         owner.Target = GameManager.Instance.player;
-        owner.AnimationController.SetActiveShoot(true);
-        owner.Agent.isStopped = true;
+        // owner.Agent.isStopped = true;
     }
 
     public override void Update()
     {
         owner.LookAt(owner.Target.position);
-        owner.Attack();
+        if (owner.IsTargetInSight)
+        {
+            owner.Attack();
+            owner.AnimationController.SetActiveShoot(true);
+        }
+        else
+        {
+            owner.AnimationController.SetActiveShoot(false);
+        }
     }
 
     public override void Exit()
     {
         ConditionalLogger.Log("AttackState Exit");
         owner.AnimationController.SetActiveShoot(false);
-        owner.Agent.isStopped = false;
+        // owner.Agent.isStopped = false;
     }
 }

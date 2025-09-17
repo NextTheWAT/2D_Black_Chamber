@@ -86,6 +86,15 @@ public class Enemy : MonoBehaviour
         set => lastKnownTargetPos = value;
     }
 
+    public bool IsTargetInSight
+    {
+        get
+        {
+            if (!HasTarget) return false;
+            RaycastHit2D hit = Physics2D.Linecast(transform.position, Target.position, targetMask | obstacleMask);
+            return hit.collider != null && hit.collider.CompareTag("Player");
+        }
+    }
 
     public Health Health => health;
 

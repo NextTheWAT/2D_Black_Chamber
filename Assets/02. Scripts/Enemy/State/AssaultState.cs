@@ -10,16 +10,6 @@ public class AssaultState : BaseState
         this.targetLayer = targetLayer;
     }
 
-    public bool CanAttack
-    {
-        get
-        {
-            if(!owner.HasTarget) return false;
-            RaycastHit2D hit = Physics2D.Linecast(owner.transform.position, owner.Target.position, targetLayer);
-            return hit.collider != null && hit.collider.CompareTag("Player");
-        }
-    }
-
     public override void Enter()
     {
         owner.Target = GameManager.Instance.player;
