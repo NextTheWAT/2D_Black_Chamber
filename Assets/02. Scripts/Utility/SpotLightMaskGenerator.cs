@@ -12,7 +12,7 @@ public class SpotLightMaskGenerator : MonoBehaviour
     [SerializeField] private int textureSize = 256;
     [SerializeField] private float offset = 0f;
 
-    [ContextMenu("Generate Multiply Mask (R) Sprite With Alpha")]
+    [ContextMenu("Generate Mask Sprite")]
     void GenerateMaskSprite()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
@@ -72,12 +72,12 @@ public class SpotLightMaskGenerator : MonoBehaviour
             new Vector2(0.5f, 0.5f),
             textureSize / (outerRadius * 2f)
         );
-        sprite.name = "MultiplyMask_R";
+        sprite.name = "MaskSprite";
         spriteRenderer.sprite = sprite;
 
 #if UNITY_EDITOR
         byte[] bytes = tex.EncodeToPNG();
-        string path = "Assets/07. Sprites(Image)/MultiplyMask_R.png";
+        string path = "Assets/07. Sprites(Image)/MaskSprite.png";
         System.IO.File.WriteAllBytes(path, bytes);
         AssetDatabase.ImportAsset(path);
         TextureImporter ti = AssetImporter.GetAtPath(path) as TextureImporter;
