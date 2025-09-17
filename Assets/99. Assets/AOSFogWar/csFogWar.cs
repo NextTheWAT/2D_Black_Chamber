@@ -99,6 +99,26 @@ namespace FischlWorks_FogWar
             private List<LevelColumn> levelRow = new List<LevelColumn>();
         }
 
+        public bool CheckVisibilitySpot(Vector3 world, int additionalRadius = 0, float threshold = 0.01f)
+        {
+            // spotWeight가 아직 없다면 그대로 가림 처리
+            if (spotWeight == null) return false;
+
+            var lc = WorldToLevel(world);
+            if (!CheckLevelGridRange(lc)) return false;
+
+            if (additionalRadius <= 0)
+                return spotWeight[lc.x, lc.y] > threshold;
+
+            for (int dx = -additionalRadius; dx <= additionalRadius; dx++)
+                for (int dy = -additionalRadius; dy <= additionalRadius; dy++)
+                {
+                    var p = new Vector2Int(lc.x + dx, lc.y + dy);
+                    if (!CheckLevelGridRange(p)) continue;
+                    if (spotWeight[p.x, p.y] > threshold) return true;
+                }
+            return false;
+        }
 
 
         [System.Serializable]

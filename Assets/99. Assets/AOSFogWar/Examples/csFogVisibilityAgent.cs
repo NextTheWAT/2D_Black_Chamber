@@ -1,135 +1,123 @@
 /*
- * Created :    Winter 2022
- * Author :     SeungGeon Kim (keithrek@hanmail.net)
- * Project :    FogWar
- * Filename :   csFogVisibilityAgent.cs (non-static monobehaviour module)
- * 
- * All Content (C) 2022 Unlimited Fischl Works, all rights reserved.
+ * 2D Top-Down Fog Visibility Agent (Spot-ready)
+ * - Uses FogWar.CheckVisibilitySpot(worldPos, additionalRadius, threshold) when available
+ * - Falls back to CheckVisibility(...) if Spot check is missing
+ * - Toggles MeshRenderer, SkinnedMeshRenderer, SpriteRenderer
+ * - Draws gizmo on XY plane
  */
 
-/*
- * This script is just an example of what you can do with the visibility check interface.
- * You can create whatever agent that you want based on this script.
- * Also, I recommend you to change the part where the FogWar module is fetched with Find()...
- */
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
-
-
-using UnityEngine;                  // Monobehaviour
-using System.Collections.Generic;   // List
-using System.Linq;                  // ToList
-
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace FischlWorks_FogWar
 {
-
-
-
-    /// An example of an monobehaviour agent that utilizes the public interfaces of csFogWar class.
-
-    /// Fetches all MeshRenderers and SkinnedMeshRenderers of child objects,\n
-    /// then enables / disables them based on each FogRevealer's FOV.
     public class csFogVisibilityAgent : MonoBehaviour
     {
-        [SerializeField]
-        private csFogWar fogWar = null;
+        [SerializeField] private csFogWar fogWar = null;
 
-        [SerializeField]
-        private bool visibility = false;
+        [Header("Visibility (Spot/LOS)")]
+        [Range(0, 2)][SerializeField] private int additionalRadius = 0;
+        [Tooltip("Spot 가중치 임계값(0..1). 이 값 이상이면 보이는 것으로 간주")]
+        [Range(0f, 1f)][SerializeField] private float spotThreshold = 0.01f;
 
-        [SerializeField]
-        [Range(0, 2)]
-        private int additionalRadius = 0;
+        // cached renderers
+        private List<MeshRenderer> meshRenderers;
+        private List<SkinnedMeshRenderer> skinnedMeshRenderers;
+        private List<SpriteRenderer> spriteRenderers;
 
-        private List<MeshRenderer> meshRenderers = null;
-        private List<SkinnedMeshRenderer> skinnedMeshRenderers = null;
-
-
+        // optional spot-check via reflection (to keep compatibility)
+        private MethodInfo checkSpotMI;
 
         private void Start()
         {
-            // This part is meant to be modified following the project's scene structure later...
-            try
+            if (fogWar == null)
             {
                 fogWar = FindObjectOfType<csFogWar>();
-            }
-            catch
-            {
-                Debug.LogErrorFormat("Failed to fetch csFogWar component. " +
-                    "Please rename the gameobject that the module is attachted to as \"FogWar\", " +
-                    "or change the implementation located in the csFogVisibilityAgent.cs script.");
+                if (fogWar == null)
+                {
+                    Debug.LogError("csFogVisibilityAgent: FogWar를 찾을 수 없습니다. 씬에 csFogWar가 있어야 합니다.");
+                    enabled = false; return;
+                }
             }
 
-            meshRenderers = GetComponentsInChildren<MeshRenderer>().ToList();
-            skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
+            // cache renderers (include inactive children)
+            meshRenderers = GetComponentsInChildren<MeshRenderer>(true).ToList();
+            skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>(true).ToList();
+            spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true).ToList();
+
+            // try to bind CheckVisibilitySpot(Vector3,int,float)
+            checkSpotMI = typeof(csFogWar).GetMethod(
+                "CheckVisibilitySpot",
+                BindingFlags.Public | BindingFlags.Instance,
+                binder: null,
+                types: new[] { typeof(Vector3), typeof(int), typeof(float) },
+                modifiers: null
+            );
         }
-
-
 
         private void Update()
         {
-            if (fogWar == null || fogWar.CheckWorldGridRange(transform.position) == false)
+            if (fogWar == null) return;
+            if (!fogWar.CheckWorldGridRange(transform.position)) return;
+
+            bool visible;
+
+            if (checkSpotMI != null)
             {
-                return;
+                // Spot(부채꼴) 기준
+                object ret = checkSpotMI.Invoke(fogWar, new object[] { (Vector3)transform.position, additionalRadius, spotThreshold });
+                visible = (ret is bool b) && b;
+            }
+            else
+            {
+                // 폴백: 원형(LOS) 기준
+                visible = fogWar.CheckVisibility(transform.position, additionalRadius);
             }
 
-            visibility = fogWar.CheckVisibility(transform.position, additionalRadius);
-
-            foreach (MeshRenderer renderer in meshRenderers)
-            {
-                renderer.enabled = visibility;
-            }
-
-            foreach (SkinnedMeshRenderer renderer in skinnedMeshRenderers)
-            {
-                renderer.enabled = visibility;
-            }
+            // toggle all renderers
+            for (int i = 0; i < meshRenderers.Count; i++) if (meshRenderers[i]) meshRenderers[i].enabled = visible;
+            for (int i = 0; i < skinnedMeshRenderers.Count; i++) if (skinnedMeshRenderers[i]) skinnedMeshRenderers[i].enabled = visible;
+            for (int i = 0; i < spriteRenderers.Count; i++) if (spriteRenderers[i]) spriteRenderers[i].enabled = visible;
         }
-
-
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (fogWar == null || Application.isPlaying == false)
+            if (fogWar == null || Application.isPlaying == false) return;
+
+            // do the same check used in Update()
+            bool visible;
+            if (checkSpotMI != null)
             {
-                return;
-            }
-
-            if (fogWar.CheckWorldGridRange(transform.position) == false)
-            {
-                Gizmos.color = Color.red;
-
-                Gizmos.DrawWireSphere(
-                    new Vector3(
-                        Mathf.RoundToInt(transform.position.x),
-                        0,
-                        Mathf.RoundToInt(transform.position.z)),
-                    (fogWar._UnitScale / 2.0f) + additionalRadius);
-
-                return;
-            }
-
-            if (fogWar.CheckVisibility(transform.position, additionalRadius) == true)
-            {
-                Gizmos.color = Color.green;
+                object ret = checkSpotMI.Invoke(fogWar, new object[] { (Vector3)transform.position, additionalRadius, spotThreshold });
+                visible = (ret is bool b) && b;
             }
             else
             {
-                Gizmos.color = Color.yellow;
+                visible = fogWar.CheckVisibility(transform.position, additionalRadius);
             }
 
-            Gizmos.DrawWireSphere(
-                new Vector3(
-                    Mathf.RoundToInt(transform.position.x),
-                    0,
-                    Mathf.RoundToInt(transform.position.z)),
-                (fogWar._UnitScale / 2.0f) + additionalRadius);
+            // XY plane gizmo (disc)
+            float r = (fogWar._UnitScale * 0.5f) + additionalRadius;
+
+#if UNITY_EDITOR
+            Handles.color = visible ? Color.green : Color.yellow;
+            Handles.DrawWireDisc(new Vector3(
+                Mathf.RoundToInt(transform.position.x),
+                Mathf.RoundToInt(transform.position.y),
+                -0.1f), // camera front
+                Vector3.forward, r);
+#else
+            Gizmos.color = visible ? Color.green : Color.yellow;
+            Gizmos.DrawWireSphere(new Vector3(transform.position.x, transform.position.y, -0.1f), r);
+#endif
         }
 #endif
     }
-
-
-
 }
