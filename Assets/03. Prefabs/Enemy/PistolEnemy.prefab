@@ -728,8 +728,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogWar: {fileID: 4479699699956169332, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-  visibility: 1
+  fogWar: {fileID: 0}
+  visibility: 0
   additionalRadius: 0
 --- !u!1 &4773010290339460112
 GameObject:
