@@ -15,4 +15,7 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 129
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
   coverOffset: 3

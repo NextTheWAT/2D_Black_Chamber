@@ -26,10 +26,6 @@ public class CoverState : BaseState
 
     public override void Update()
     {
-        if (owner.IsArrived)
-        {
-            owner.LookAt(lookPoint);
-        }
         try
         {
             Vector2 coverPoint = GetCoverPoint();
@@ -40,6 +36,11 @@ public class CoverState : BaseState
         {
             ConditionalLogger.LogError($"CoverState Update Exception: {ex.Message}");
             return;
+        }
+
+        if (owner.IsArrived)
+        {
+            owner.LookAt(lookPoint);
         }
     }
 
@@ -53,8 +54,12 @@ public class CoverState : BaseState
         if (!owner.HasTarget) return owner.transform.position;
 
         Vector3[] corners = GetPathCorners();
-        if (corners == null || corners.Length == 0)
+        if (corners == null) return owner.transform.position;
+        if(corners.Length <= 2)
+        {
+            lookPoint = owner.Target.position;
             return owner.transform.position;
+        }
 
         for (int i = corners.Length - 1; i > 0; i--)
         {
@@ -169,6 +174,7 @@ public class CoverState : BaseState
             }
         }
         */
+
         return owner.transform.position;
     }
 
