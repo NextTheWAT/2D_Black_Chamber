@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Constants;
-
 public class SoliderFSM : StateMachine
 {
     public SoliderFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
@@ -10,11 +5,15 @@ public class SoliderFSM : StateMachine
         InvestigateState investigateState = GetState<InvestigateState>();
         AssaultState assaultState = GetState<AssaultState>();
         AttackState attackState = GetState<AttackState>();
+
+        // 공용
+        AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
+
         // 잠입
 
         // Global
         AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.IsCombat = true); // 맞았을 때 의심상태면 추격 및 난전 시작
-        AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState)); // 맞았을 때 공격상태가 아니면 추격
+        AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState)); // 맞았을 때 공격상태가 아니면 엄폐
 
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심

@@ -43,6 +43,7 @@ public class Enemy : MonoBehaviour
     private CharacterAnimationController animationController;
     private AudioSource audioSource;
     public bool IsHit { get; private set; }
+    public bool IsDead => health.IsDead;
 
     public float ViewDistance => forwardLight.pointLightOuterRadius;
     public float ViewAngle => forwardLight.pointLightOuterAngle;
@@ -139,8 +140,8 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         stateMachine?.UpdateState();
-        UpdateMoveBlend();
         stateType = stateMachine?.CurrentState.ToString();
+        UpdateMoveBlend();
 
         if(IsHit)
             IsHit = false;
@@ -244,6 +245,9 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+        ConditionalLogger.Log($"{gameObject.name} »ç¸Á");
+        StopAllCoroutines();
+
         if (deathSounds.Length > 0)
         {
             int index = Random.Range(0, deathSounds.Length);
@@ -254,8 +258,6 @@ public class Enemy : MonoBehaviour
         coll.enabled = false;
         agent.isStopped = true;
         enabled = false;
-        angularSpeed = 0f;
-        Destroy(gameObject, 2f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -275,11 +277,8 @@ public class Enemy : MonoBehaviour
             var path = agent.path;
             var corners = path.corners;
             for (int i = 0; i < corners.Length - 1; i++)
-            {
                 Gizmos.DrawLine(corners[i], corners[i + 1]);
-            }
         }
-        
     }
 
 }
