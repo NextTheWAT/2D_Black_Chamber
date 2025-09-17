@@ -154,17 +154,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &644792175 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3821806198634988249, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-  m_PrefabInstance: {fileID: 1094665498}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!43 &850853855
 Mesh:
   m_ObjectHideFlags: 0
@@ -696,61 +685,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!1 &1445869638 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3340223867602117555, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-  m_PrefabInstance: {fileID: 1755541404694532803}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1445869641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1445869638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daaca03a2139ed5418b0e8ad4fffbbe1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fogRevealers:
-  - revealerTransform: {fileID: 1094665501}
-    outerRadius: 60
-    innerRadius: 0
-    outerAngleDeg: 30
-    innerAngleDeg: 0
-    forwardIsRight: 0
-    updateOnlyOnMove: 1
-    lastSeenAt: {x: 0, y: 0}
-  levelMidPoint: {fileID: 251869556}
-  FogRefreshRate: 10
-  fogPlaneZ: -0.1
-  sortingLayerName: Default
-  sortingOrder: 100
-  fogPlaneHeight: 1
-  fogPlaneMaterial: {fileID: 2100000, guid: 36b93ac6fcf129c449491654e397fe4a, type: 2}
-  fogColor: {r: 0.019607844, g: 0.05882353, b: 0.09803922, a: 1}
-  fogPlaneAlpha: 1
-  fogLerpSpeed: 2.5
-  keepRevealedTiles: 0
-  revealedTileOpacity: 0.5
-  fogPlaneTextureLerpTarget: {fileID: 0}
-  fogPlaneTextureLerpBuffer: {fileID: 0}
-  LevelDataToLoad: {fileID: 0}
-  saveDataOnScan: 1
-  levelNameToSave: Default
-  levelDimensionX: 60
-  levelDimensionY: 60
-  unitScale: 1
-  scanSpacingPerUnit: 0.25
-  rayStartHeight: 5
-  rayMaxDistance: 10
-  obstacleLayers:
-    serializedVersion: 2
-    m_Bits: 512
-  ignoreTriggers: 1
-  drawGizmos: 1
-  LogOutOfRange: 0
 --- !u!1 &1499054139
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,11 +941,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1895163092 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3635746013236650576, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-  m_PrefabInstance: {fileID: 1094665498}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2140404706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1096,7 +1025,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1755541404694532803
+--- !u!1001 &5431485005890909957
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1104,110 +1033,62 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3340223867602117555, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: m_Name
-      value: FogWar
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: levelMidPoint
-      value: 
-      objectReference: {fileID: 251869556}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: levelDimensionX
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: levelDimensionY
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].light2D
-      value: 
-      objectReference: {fileID: 644792175}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].useSpot
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].innerRadius
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].outerRadius
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].fallbackAngle
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].innerAngleDeg
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].outerAngleDeg
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].forwardIsRight
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].forwardOverride
-      value: 
-      objectReference: {fileID: 1895163092}
-    - target: {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      propertyPath: fogRevealers.Array.data[0].revealerTransform
-      value: 
-      objectReference: {fileID: 1094665501}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8497084447981742589, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4467621653560013347, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 5480802721500574208, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+    - target: {fileID: 4479699699956169332, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+      propertyPath: levelMidPoint
+      value: 
+      objectReference: {fileID: 251869556}
+    - target: {fileID: 4479699699956169332, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+      propertyPath: fogRevealers.Array.data[0].revealerTransform
+      value: 
+      objectReference: {fileID: 1094665501}
+    - target: {fileID: 6596327194479918305, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+      propertyPath: m_Name
+      value: FogWar
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3340223867602117555, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1445869641}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
 --- !u!1001 &7488429456799839933
 PrefabInstance:
@@ -1277,6 +1158,6 @@ SceneRoots:
   - {fileID: 1559968592}
   - {fileID: 1499054142}
   - {fileID: 1094665498}
-  - {fileID: 1755541404694532803}
+  - {fileID: 5431485005890909957}
   - {fileID: 251869556}
   - {fileID: 952764332}

@@ -1575,22 +1575,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 909145523}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5de54c084f472845b61ee9a97cb8a48, type: 3}
+  m_Script: {fileID: 11500000, guid: daaca03a2139ed5418b0e8ad4fffbbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fogRevealers:
-  - revealerTransform: {fileID: 338021608}
-    sightRange: 10
-    updateOnlyOnMove: 1
-    lastSeenAt: {x: 0, y: 0}
-  - revealerTransform: {fileID: 339515059}
-    sightRange: 5
-    updateOnlyOnMove: 1
-    lastSeenAt: {x: 0, y: 0}
-  levelMidPoint: {fileID: 1350092291}
+  fogRevealers: []
+  levelMidPoint: {fileID: 338021608}
   FogRefreshRate: 10
-  fogPlaneHeight: 0
-  fogPlaneMaterial: {fileID: 2100000, guid: 36b93ac6fcf129c449491654e397fe4a, type: 2}
+  fogPlaneZ: -0.1
+  sortingLayerName: Default
+  sortingOrder: 100
+  fogPlaneHeight: 1
+  fogPlaneMaterial: {fileID: 0}
   fogColor: {r: 0.019607844, g: 0.05882353, b: 0.09803922, a: 1}
   fogPlaneAlpha: 1
   fogLerpSpeed: 2.5
@@ -1601,17 +1596,17 @@ MonoBehaviour:
   LevelDataToLoad: {fileID: 0}
   saveDataOnScan: 1
   levelNameToSave: Default
-  levelDimensionX: 31
-  levelDimensionY: 31
+  levelDimensionX: 11
+  levelDimensionY: 11
   unitScale: 1
   scanSpacingPerUnit: 0.25
-  rayStartHeight: 3
-  rayMaxDistance: 5
+  rayStartHeight: 5
+  rayMaxDistance: 10
   obstacleLayers:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 0
   ignoreTriggers: 1
-  drawGizmos: 1
+  drawGizmos: 0
   LogOutOfRange: 0
 --- !u!4 &909145525
 Transform:

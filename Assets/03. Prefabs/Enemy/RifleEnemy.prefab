@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: -5200466512008399858}
   - component: {fileID: 8409662625867862265}
   - component: {fileID: 2790809598059174657}
+  - component: {fileID: -2752299516884496647}
   m_Layer: 7
   m_Name: RifleEnemy
   m_TagString: Untagged
@@ -505,6 +506,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-2752299516884496647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620677906095334835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fogWar: {fileID: 4479699699956169332, guid: 92df9554eb2f04a4fb3e232cf5172b2a, type: 3}
+  visibility: 1
+  additionalRadius: 0
 --- !u!1 &2308755261218418756
 GameObject:
   m_ObjectHideFlags: 0
