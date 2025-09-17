@@ -42,15 +42,15 @@ public class SoliderFSM : StateMachine
         AddTransition<ChaseState, CoverState>(() => chaseState.IsTargetInChaseRange); // 사정거리 안에 들어오면 공격
 
         // Cover
-        AddTransition<CoverState, ChaseState>(() => !chaseState.IsTargetInChaseRange); // 사정거리 벗어나면 추격
-        AddTransition<CoverState, AttackState>(() => attackState.IsTargetInAttackRange && assaultState.CanAttack); // 사정거리 안에 들어오면 공격
+        // AddTransition<CoverState, ChaseState>(() => !chaseState.IsTargetInChaseRange); // 사정거리 벗어나면 추격
+        AddTransition<CoverState, AttackState>(() => attackState.IsTargetInAttackRange && owner.IsTargetInSight); // 사정거리 안에 들어오면 공격
 
         // Assault
         AddTransition<AssaultState, ChaseState>(() => !chaseState.IsTargetInChaseRange); // 사정거리 벗어나면 추격
-        AddTransition<AssaultState, AttackState>(() => assaultState.CanAttack); // 공격 가능하면 공격
+        AddTransition<AssaultState, AttackState>(() => owner.IsTargetInSight); // 공격 가능하면 공격
 
         // Attack
-        AddTransition<AttackState, CoverState>(() => !assaultState.CanAttack); // 사정거리 벗어나면 추격
+        AddTransition<AttackState, CoverState>(() => !attackState.IsTargetInAttackRange || !owner.IsTargetInSight); // 사정거리 벗어나면 추격
 
     }
 }

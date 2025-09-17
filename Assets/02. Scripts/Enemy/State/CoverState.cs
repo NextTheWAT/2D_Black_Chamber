@@ -1,17 +1,17 @@
-using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class CoverState : BaseState
 {
     private LayerMask obstacleLayer;
+    private LayerMask enemyLayer;
     private float coverOffset = 2f;
     private Vector2 lookPoint;
 
-    public CoverState(Enemy owner, LayerMask obstacleLayer, float coverOffset) : base(owner)
+    public CoverState(Enemy owner, LayerMask obstacleLayer, LayerMask enemyLayer, float coverOffset) : base(owner)
     {
         this.obstacleLayer = obstacleLayer;
+        this.enemyLayer = enemyLayer;
         this.coverOffset = coverOffset;
     }
 
@@ -20,7 +20,7 @@ public class CoverState : BaseState
         ConditionalLogger.Log("CoverState Enter");
         owner.Target = GameManager.Instance.player;
         Vector2 coverPoint = GetCoverPoint();
-        if(Vector2.Distance(owner.transform.position, coverPoint) > 1f)
+        if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
             owner.MoveTo(coverPoint);
     }
 
@@ -29,6 +29,17 @@ public class CoverState : BaseState
         if (owner.IsArrived)
         {
             owner.LookAt(lookPoint);
+        }
+        try
+        {
+            Vector2 coverPoint = GetCoverPoint();
+            if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
+                owner.MoveTo(coverPoint);
+        }
+        catch (System.Exception ex)
+        {
+            ConditionalLogger.LogError($"CoverState Update Exception: {ex.Message}");
+            return;
         }
     }
 
@@ -41,32 +52,74 @@ public class CoverState : BaseState
     {
         if (!owner.HasTarget) return owner.transform.position;
 
-        // 1. NavMesh 경로 기반 후보 얻기
         Vector3[] corners = GetPathCorners();
         if (corners == null || corners.Length == 0)
-        {
-            Debug.LogWarning("No path corners found, returning current position as cover point.");
             return owner.transform.position;
+
+        for (int i = corners.Length - 1; i > 0; i--)
+        {
+            Vector2 start = corners[i];
+            Vector2 end = corners[i - 1];
+            float t = 0f;
+
+            int count = 0;
+            while (t < 1f)
+            {
+                if (count++ > 10)
+                {
+                    ConditionalLogger.LogError("GetCoverPoint: Too many iterations");
+                    break;
+                }
+                t += 0.1f;
+                Vector2 point = Vector2.Lerp(start, end, t);
+                RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, obstacleLayer);
+
+                if (hit.collider)
+                {
+                    // 벽 안쪽 깊이
+                    float coverDepth = owner.Agent.radius;
+
+                    // 벽 표면 tangent
+                    Vector2 tangent = new(-hit.normal.y, hit.normal.x);
+
+                    // 플레이어 반대 방향
+                    Vector2 dirToPlayer = ((Vector2)owner.Target.position - hit.point).normalized;
+                    Vector2 oppositeDir = -dirToPlayer;
+
+                    // 벽 안쪽으로 이동
+                    Vector2 inward = hit.point + hit.normal * coverDepth;
+
+                    // 벽을 따라 플레이어 반대 방향으로 이동
+                    Vector2 tangentMove = tangent * Vector2.Dot(oppositeDir, tangent) * coverOffset;
+                    Vector2 finalCoverPoint = inward + tangentMove;
+
+                    // NavMesh 위로 보정
+                    if (NavMesh.SamplePosition(finalCoverPoint, out NavMeshHit navHit, 1f, NavMesh.AllAreas))
+                        finalCoverPoint = navHit.position;
+
+                    // 주변 적과 겹치지 않도록 밀어내기
+                    if (Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
+                        continue;
+
+                    lookPoint = start;
+                    return finalCoverPoint;
+                }
+            }
         }
 
-        Vector2 coverPoint = owner.transform.position;
-        Vector2? lastBlockedCorner = null;
-        Vector2? lastOpenedCorner = null;
 
+        /*
+        Vector2? lastBlockedCorner = null;
+        Vector2? lastOpenedCorner = null; 
+        
         foreach (var corner in corners)
         {
-            // 2. 플레이어와의 Linecast로 가려지는지 확인
             bool isBlocked = Physics2D.Linecast(corner, owner.Target.position, obstacleLayer);
-
-            if (isBlocked)
-            {
-                lastBlockedCorner = corner;
-            }
+            if (isBlocked) lastBlockedCorner = corner;
             else
             {
                 lastOpenedCorner = corner;
-                if (lastBlockedCorner == null)
-                    return owner.transform.position;
+                if (lastBlockedCorner == null) return owner.transform.position;
                 break;
             }
         }
@@ -74,9 +127,8 @@ public class CoverState : BaseState
         if (!lastBlockedCorner.HasValue || !lastOpenedCorner.HasValue)
             return owner.transform.position;
 
-        // 3. 마지막으로 가려진 코너 뒤로 숨기
-        Vector2 start = (Vector2)lastOpenedCorner;
-        Vector2 end = (Vector2)lastBlockedCorner;
+        Vector2 start = lastOpenedCorner.Value;
+        Vector2 end = lastBlockedCorner.Value;
         float t = 0f;
 
         lookPoint = start;
@@ -90,7 +142,7 @@ public class CoverState : BaseState
             if (hit.collider)
             {
                 // 벽 안쪽 깊이
-                float coverDepth = 0.5f;
+                float coverDepth = 0.75f;
 
                 // 벽 표면 tangent
                 Vector2 tangent = new(-hit.normal.y, hit.normal.x);
@@ -107,15 +159,17 @@ public class CoverState : BaseState
                 Vector2 finalCoverPoint = inward + tangentMove;
 
                 // NavMesh 위로 보정
-                if (NavMesh.SamplePosition(finalCoverPoint, out NavMeshHit navHit, 5f, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(finalCoverPoint, out NavMeshHit navHit, 1f, NavMesh.AllAreas))
                     finalCoverPoint = navHit.position;
 
-                coverPoint = finalCoverPoint;
-                break;
+                if(Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
+                    continue;
+
+                return finalCoverPoint;
             }
         }
-
-        return coverPoint;
+        */
+        return owner.transform.position;
     }
 
     private Vector3[] GetPathCorners()
