@@ -53,7 +53,6 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
-    private bool foundTarget = false; // 타겟을 발견한적 있는지
     private bool hasSuspiciousTarget = false;
 
     public bool HasSuspiciousTarget
@@ -62,8 +61,6 @@ public class Enemy : MonoBehaviour
         set
         {
             hasSuspiciousTarget = value;
-            if(hasSuspiciousTarget)
-                foundTarget = true;
             UpdateLight();
         }
     }
@@ -75,7 +72,6 @@ public class Enemy : MonoBehaviour
             target = value;
             if (target)
             {
-                foundTarget = true;
                 LastKnownTargetPos = target.position;
             }
 
@@ -124,8 +120,6 @@ public class Enemy : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         backwardLight.color = alertColor;
-
-        foundTarget = false;
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
@@ -262,6 +256,21 @@ public class Enemy : MonoBehaviour
             Target = collision.transform;
             GameManager.Instance.IsCombat = true;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.green;
+            var path = agent.path;
+            var corners = path.corners;
+            for (int i = 0; i < corners.Length - 1; i++)
+            {
+                Gizmos.DrawLine(corners[i], corners[i + 1]);
+            }
+        }
+        
     }
 
 }

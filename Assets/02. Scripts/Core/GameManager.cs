@@ -8,15 +8,21 @@ public class GameManager : Singleton<GameManager>
 
     public GamePhase CurrentPhase { get; set; } = GamePhase.Stealth;
 
+    public event System.Action<GamePhase> OnPhaseChanged;
+
     public bool IsCombat
     {
         get => CurrentPhase == GamePhase.Combat;
         set
         {
-            CurrentPhase = value ? GamePhase.Combat : GamePhase.Stealth;
+            GamePhase next = value ? GamePhase.Combat : GamePhase.Stealth;
+            if (CurrentPhase != next)
+            {
+                CurrentPhase = next;
+                OnPhaseChanged?.Invoke(CurrentPhase); //총 UI 변경 이벤트 발행
+            }
         }
     }
-
 
     protected override void Initialize()
     {

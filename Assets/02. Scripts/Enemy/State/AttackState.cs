@@ -22,19 +22,15 @@ public class AttackState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("AttackState Enter");
+        owner.Target = GameManager.Instance.player;
         owner.AnimationController.SetActiveShoot(true);
         owner.Agent.isStopped = true;
     }
 
     public override void Update()
     {
-        owner.FindTarget();
-
-        if (owner.HasTarget)
-        {
-            owner.MoveTo(owner.Target.position);
-            owner.Attack();
-        }
+        owner.LookAt(owner.Target.position);
+        owner.Attack();
     }
 
     public override void Exit()
