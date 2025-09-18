@@ -49,7 +49,7 @@ public class MinimapLight : MonoBehaviour
     Vector2 TexturePosition(Vector3 worldPosition)
     {
         // 월드 좌표를 텍스쳐 좌표로 변환
-        float tx = Mathf.InverseLerp(-25, 25, worldPosition.x) * mapWidth;  // worldPosition.x가 -50 ~ 50 사이에서 0~1로 매핑, 맵길이 곱해서 픽셀좌표로 변환
+        float tx = Mathf.InverseLerp(-25, 25, worldPosition.x) * mapWidth;  // worldPosition.x가 -25 ~ 25 사이에서 0~1로 매핑, 맵길이 곱해서 픽셀좌표로 변환
         float ty = Mathf.InverseLerp(-25, 25, worldPosition.y) * mapHeight;
         return new Vector2 (tx, ty);
     }
