@@ -150,11 +150,10 @@ MonoBehaviour:
   startPatrolPointIndex: 0
   shooter: {fileID: 832514891371369143}
   hitSounds:
-  - {fileID: 8300000, guid: 164c4cd428e81554a89f938451aae22f, type: 3}
-  - {fileID: 8300000, guid: 5c25a8b6c2ef9624caf832fe0d756bbd, type: 3}
-  - {fileID: 8300000, guid: 616758222d84f6f47b8b9dd6a3e5d3b8, type: 3}
-  - {fileID: 8300000, guid: 7ed99645cac6f06438be178db3df164c, type: 3}
-  - {fileID: 8300000, guid: 7b85f48408e15f748a6a7de0f94963cf, type: 3}
+  - {fileID: 8300000, guid: 49c87a52e763d0444b2131a605315930, type: 3}
+  - {fileID: 8300000, guid: 40ade288ff495934da063bc8b10e5c04, type: 3}
+  - {fileID: 8300000, guid: 9c6842fef845f4a4fb9369c01e56e04b, type: 3}
+  - {fileID: 8300000, guid: b2227710932903449b6f2f2fe7cbd929, type: 3}
   deathSounds:
   - {fileID: 8300000, guid: 37670623b2aa89a4589af3d795088c80, type: 3}
   - {fileID: 8300000, guid: 6857c17d0b39a594298d2c0ebc09f389, type: 3}
@@ -315,7 +314,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
-  m_Pitch: 2
+  m_Pitch: 1.3
   Loop: 0
   Mute: 0
   Spatialize: 0
