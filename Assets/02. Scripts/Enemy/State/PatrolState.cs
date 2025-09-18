@@ -76,15 +76,28 @@ public class PatrolState : BaseState
             }
             else if (patrolType == PatrolType.Fixed)
             {
+                // 랜덤 각도 결정
                 float randomAngle = Random.Range(-halfFixedPatrolAngle, halfFixedPatrolAngle);
                 float targetAngle = originalEulerAngle + randomAngle;
+                float currentAngle = owner.transform.eulerAngles.z;
 
-                while (Mathf.Abs(Mathf.DeltaAngle(owner.transform.eulerAngles.z, targetAngle)) > 1f)
+                // 각도를 0~360 범위로 정리
+                targetAngle = Mathf.Repeat(targetAngle, 360f);
+
+                // LookPoint 계산
+                float rad = (targetAngle + 90) * Mathf.Deg2Rad; // LookPoint 계산을 위해 90도 보정
+                owner.LookPoint = (Vector2)owner.transform.position + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+                
+                // 회전될 때까지 대기
+                
+                while (Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle)) > 1f)
                 {
-                    owner.RotateTo(targetAngle);
+                    currentAngle = owner.transform.eulerAngles.z;
+                    ConditionalLogger.Log($"CurrentAngle: {currentAngle}, TargetAngle: {targetAngle} DeltaAngle {Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle))}");
                     yield return null;
                 }
-
+                
+                
                 yield return new WaitForSeconds(patrolPauseTime);
             }
         }

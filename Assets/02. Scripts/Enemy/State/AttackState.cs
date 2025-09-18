@@ -28,7 +28,8 @@ public class AttackState : BaseState
 
     public override void Update()
     {
-        owner.LookAt(owner.Target.position);
+        owner.LookPoint = owner.Target.position;
+
         if (owner.IsTargetInSight)
         {
             owner.Attack();

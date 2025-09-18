@@ -32,7 +32,7 @@ public class CoverState : BaseState
             owner.MoveTo(coverPoint);
 
         if (owner.IsArrived)
-            owner.LookAt(lookPoint);
+            owner.LookPoint = lookPoint;
     }
 
     public override void Exit()

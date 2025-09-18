@@ -27,7 +27,7 @@ public class RetreatState : BaseState
         // 플레이어가 시야에 보이는지 확인
         if (owner.IsTargetInSight)
         {
-            owner.LookAt(owner.Target.position);
+            owner.LookPoint = owner.Target.position;
         }
     }
 

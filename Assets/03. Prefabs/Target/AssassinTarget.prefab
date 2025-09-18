@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8935914971441705292}
   - component: {fileID: 8080533485866252298}
   - component: {fileID: 9053710662871910856}
-  - component: {fileID: 8789840833126599223}
   - component: {fileID: 2207446290490613089}
   - component: {fileID: 208123243127908645}
   - component: {fileID: 2697154082547761088}
@@ -108,19 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e39f6090724e4a4a8aadeb042afa2bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8789840833126599223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701606878684549374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c7f4db162bab4443818dd13bed4b1dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angularSpeed: 150
 --- !u!114 &2207446290490613089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +150,6 @@ MonoBehaviour:
   returnPoint: {fileID: 0}
   stateType: 
   isTarget: 1
-  ReturnPoint: {fileID: 0}
 --- !u!114 &208123243127908645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +398,9 @@ MonoBehaviour:
   fogWar: {fileID: 0}
   additionalRadius: 0
   spotThreshold: 0.01
+  fadeInTime: 0.12
+  fadeOutTime: 0.35
+  disableRendererAtZero: 1
 --- !u!1 &1447761448545050520
 GameObject:
   m_ObjectHideFlags: 0

@@ -51,6 +51,8 @@ public class Enemy : MonoBehaviour
     public Transform[] PatrolPoints => patrolPoints;
     public int StartPatrolPointIndex => startPatrolPointIndex;
 
+    public Transform ReturnPoint => returnPoint;
+
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
@@ -130,8 +132,8 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public Transform ReturnPoint;
-
+    public Vector2 NextMovePoint
+        => Agent.path.corners.Length > 1 ? (Vector2)Agent.path.corners[1] : (Vector2)transform.position;
 
     private void Start()
     {
@@ -139,6 +141,9 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
         audioSource = GetComponent<AudioSource>();
+
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
@@ -151,6 +156,7 @@ public class Enemy : MonoBehaviour
         stateMachine?.UpdateState();
         stateType = stateMachine?.CurrentState.ToString();
         UpdateMoveBlend();
+        Rotate();
 
         if(IsHit)
             IsHit = false;
@@ -162,24 +168,41 @@ public class Enemy : MonoBehaviour
         animationController.SetMoveBlend(moveBlend);
     }
 
-    public void MoveTo(Vector2 destination){
+    public void MoveTo(Vector2 destination, Vector2 lookPoint)
+    {
         if ((Vector3)destination == agent.destination) return;
         agent.SetDestination(destination);
+        LookPoint = NextMovePoint;
     }
 
+    public void MoveTo(Vector2 destination)
+        => MoveTo(destination, NextMovePoint);
+
+    public Vector2 LookPoint { get; set; } = Vector2.zero;
+
+    void Rotate()
+    {
+        Vector2 direction = (LookPoint - (Vector2)transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // 위쪽을 기준으로 보정
+        angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, angle, Time.deltaTime * angularSpeed);
+        transform.eulerAngles = new Vector3(0, 0, angle);
+        ConditionalLogger.Log($"LookPoint: {LookPoint}, Angle: {angle}, CurrentAngle: {transform.eulerAngles.z}");
+    }
+
+    /*
     public void RotateTo(float targetAngle)
     {
         float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * angularSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
-
+    
     public void LookAt(Vector2 lookPoint)
     {
         Vector2 direction = (lookPoint - (Vector2)transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
         RotateTo(angle);
     }
-
+    */
     public void Attack()
     {
         shooter.Shoot(transform.up);
@@ -287,6 +310,10 @@ public class Enemy : MonoBehaviour
             var corners = path.corners;
             for (int i = 0; i < corners.Length - 1; i++)
                 Gizmos.DrawLine(corners[i], corners[i + 1]);
+
+            for (int i = 0; i < corners.Length; i++)
+                Gizmos.DrawSphere(corners[i], 0.2f);
+
         }
     }
 

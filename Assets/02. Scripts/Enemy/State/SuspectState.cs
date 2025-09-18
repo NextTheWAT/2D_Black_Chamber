@@ -28,7 +28,7 @@ public class SuspectState : BaseState
     {
         Transform target = owner.FindSuspiciousTarget();
         if (target)
-            owner.LookAt(target.position);
+            owner.LookPoint = target.position;
 
         suspicionElapsedTime += Time.deltaTime;
         float ratio = suspicionElapsedTime / suspicionBuildTime;
