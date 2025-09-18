@@ -5,6 +5,7 @@ public class SoliderFSM : StateMachine
         InvestigateState investigateState = GetState<InvestigateState>();
         AssaultState assaultState = GetState<AssaultState>();
         AttackState attackState = GetState<AttackState>();
+        RetreatState retreatState = GetState<RetreatState>();
 
         // 공용
         AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
@@ -32,6 +33,8 @@ public class SoliderFSM : StateMachine
         AddTransition<ReturnState, PatrolState>(() => owner.IsArrived);
 
         // 난전
+        AddGlobalTransition<RetreatState>(() => owner.NearbyDeathTriggered); // 근처 아군 사망시 후퇴
+        AddGlobalTransition<RetreatState>(() => retreatState.ShouldRetreat); // 피격 및 체력 낮으면 후퇴
 
         // Cover
         AddTransition<CoverState, AttackState>(() => attackState.IsTargetInAttackRange && owner.IsTargetInSight); // 사정거리 안에 들어오면 공격

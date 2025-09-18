@@ -72,10 +72,7 @@ public class Enemy : MonoBehaviour
         {
             target = value;
             if (target)
-            {
                 LastKnownTargetPos = target.position;
-            }
-
 
             UpdateLight();
         }
@@ -95,6 +92,20 @@ public class Enemy : MonoBehaviour
             RaycastHit2D hit = Physics2D.Linecast(transform.position, Target.position, targetMask | obstacleMask);
             return hit.collider != null && hit.collider.CompareTag("Player");
         }
+    }
+    private bool nearbyDeathTriggered;
+    public bool NearbyDeathTriggered
+    {
+        get
+        {
+            if (nearbyDeathTriggered)
+            {
+                nearbyDeathTriggered = false; // 읽는 순간 소비
+                return true;
+            }
+            return nearbyDeathTriggered;
+        }
+        set => nearbyDeathTriggered = value;
     }
 
     public Health Health => health;
@@ -128,8 +139,6 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
         audioSource = GetComponent<AudioSource>();
-
-        backwardLight.color = alertColor;
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
