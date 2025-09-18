@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 4215764903156184602}
   - component: {fileID: 6262810931504493246}
   - component: {fileID: 7121977400482476697}
+  - component: {fileID: 3191301827752158431}
   m_Layer: 11
   m_Name: AssassinTarget
   m_TagString: Untagged
@@ -397,6 +398,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3191301827752158431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701606878684549374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fogWar: {fileID: 0}
+  additionalRadius: 0
+  spotThreshold: 0.01
 --- !u!1 &1447761448545050520
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,33 +6,42 @@ public class TopDownMovement : MonoBehaviour
     private TopDownController controller;
     private Rigidbody2D rb;
     private CharacterAnimationController animController;
+
+    // 추가: 상태 참조
+    private PlayerInputController input;
+    private PlayerConditionManager condition;
+
     public Transform mouseTr;
     public float maxMouseDistance = 5f;
 
     [Header("Move")]
-    [SerializeField] private float moveSpeed = 5f;      // 유닛/초
-    [SerializeField] private float acceleration = 30f;  // 가감속
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float acceleration = 30f;
+    [SerializeField] private float runSpeedMultiplier = 1.5f; // 필요 시 조절
 
     [Header("Rotate")]
-    [SerializeField] private bool rotateToLook = true;   // 마우스 에임 방향 회전
-    [SerializeField] private float rotationSpeed = 720f; // deg/sec
+    [SerializeField] private bool rotateToLook = true;
+    [SerializeField] private float rotationSpeed = 720f;
 
-    [Header("Animation (0.5 - Walk) (1 - Run)")]
-    [SerializeField] private float animationTree = 0.5f; // 0.5 - 걷기, 1 - 뛰기
+    [Header("Animation Blend")]
+    [SerializeField] private float walkBlend = 0.5f; // 걷기
+    [SerializeField] private float runBlend = 1.0f; // 뛰기
 
-    private Vector2 moveInput;     // WASD (이동 전용)
-    private Vector2 curVel;        // 현재 속도(유닛/초)
-    private Vector2 lastLookDir = Vector2.up; // 항상 이 방향을 바라봄(마우스 기준)
+    private Vector2 moveInput;
+    private Vector2 curVel;
+    private Vector2 lastLookDir = Vector2.up;
+    private bool isRunning; // 최종 달리기 상태
 
     private void Awake()
     {
         controller = GetComponent<TopDownController>();
         rb = GetComponent<Rigidbody2D>();
         animController = GetComponent<CharacterAnimationController>();
+        input = GetComponent<PlayerInputController>();
+        condition = GetComponent<PlayerConditionManager>();
 
-        // rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
-        rb.freezeRotation = false; // 스크립트로 회전
+        rb.freezeRotation = false;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
     }
 
@@ -50,27 +59,42 @@ public class TopDownMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // 0) 달릴지 결정
+        bool wantsToRun = (input != null && input.RunHeld) && moveInput.sqrMagnitude > 0.0001f;
+        bool canRun = condition == null ? wantsToRun : (wantsToRun && condition.CanRun);
+        isRunning = canRun;
+
         // 1) 목표 속도
-        Vector2 targetVel = moveInput.normalized * moveSpeed;
+        float speed = moveSpeed * (isRunning ? runSpeedMultiplier : 1f);
+        Vector2 targetVel = moveInput.normalized * speed;
 
         // 2) 가감속
         curVel = Vector2.MoveTowards(curVel, targetVel, acceleration * Time.fixedDeltaTime);
 
-        // 3) Kinematic 이동
+        // 3) 이동
         rb.MovePosition(rb.position + curVel * Time.fixedDeltaTime);
 
-        // 4) 회전: 무조건 마우스 에임(lastLookDir)만 기준
+        // 4) 회전(마우스 에임 기준)
         if (rotateToLook && lastLookDir.sqrMagnitude > 0.0001f)
         {
-            float targetAngle = Mathf.Atan2(lastLookDir.y, lastLookDir.x) * Mathf.Rad2Deg - 90f; // 위(+Y) 기준 스프라이트
+            float targetAngle = Mathf.Atan2(lastLookDir.y, lastLookDir.x) * Mathf.Rad2Deg - 90f;
             float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(newAngle);
         }
 
-        // 5) 애니메이션
+        // 5) 스태미나 처리
+        if (condition != null)
+        {
+            if (isRunning && curVel.sqrMagnitude > 0.01f)
+                condition.ConsumeForRun(Time.fixedDeltaTime);  // 달리는 중 소모
+            else
+                condition.TickRegen(Time.fixedDeltaTime);      // 멈춤/걷기 = 재생
+        }
+
+        // 6) 애니메이션
         UpdateAnimation();
 
-        // 6) 마우스 위치 갱신
+        // 7) 마우스 미니 포인터(있다면)
         if (mouseTr != null)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -81,7 +105,6 @@ public class TopDownMovement : MonoBehaviour
 
     private void HandleMove(Vector2 v) => moveInput = v;
 
-    // 마우스 에임 갱신(정규화 & 0 입력 무시)
     private void HandleLook(Vector2 v)
     {
         if (v.sqrMagnitude > 0.0001f)
@@ -92,10 +115,12 @@ public class TopDownMovement : MonoBehaviour
     {
         if (animController == null) return;
 
-        float blend = curVel.sqrMagnitude > 0.01f ? animationTree : 0f; // 0~1
+        // 이동 중이면 0.5(걷기) 또는 1.0(뛰기), 정지면 0
+        float tree = isRunning ? runBlend : walkBlend;
+        float blend = curVel.sqrMagnitude > 0.01f ? tree : 0f;
         animController.SetMoveBlend(blend);
 
-        // 이동방향으로 하체 회전
+        // 하체 방향 회전(원 코드 유지)
         animController.SetLowerBodyRotation(moveInput);
     }
 }
