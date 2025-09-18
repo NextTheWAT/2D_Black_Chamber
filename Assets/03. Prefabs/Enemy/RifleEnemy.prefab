@@ -248,7 +248,7 @@ MonoBehaviour:
     m_Bits: 64
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 513
   forwardLight: {fileID: 4323048248607678388}
   backwardLight: {fileID: 2236709224812973637}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -258,11 +258,10 @@ MonoBehaviour:
   startPatrolPointIndex: 0
   shooter: {fileID: 1894057060115248025}
   hitSounds:
-  - {fileID: 8300000, guid: 5583e9c9a0afdf0408f9d0946666f85a, type: 3}
-  - {fileID: 8300000, guid: 572fe06c861000149bc4b51cc1fdb09d, type: 3}
-  - {fileID: 8300000, guid: 88b91714a2e2cbb428f61e18ca4d39d8, type: 3}
-  - {fileID: 8300000, guid: 80cc6816623c9a04580970e36613d8c4, type: 3}
-  - {fileID: 8300000, guid: cad57fcf83264a4489ae5c41b55e7a8b, type: 3}
+  - {fileID: 8300000, guid: 49c87a52e763d0444b2131a605315930, type: 3}
+  - {fileID: 8300000, guid: 40ade288ff495934da063bc8b10e5c04, type: 3}
+  - {fileID: 8300000, guid: 9c6842fef845f4a4fb9369c01e56e04b, type: 3}
+  - {fileID: 8300000, guid: b2227710932903449b6f2f2fe7cbd929, type: 3}
   deathSounds:
   - {fileID: 8300000, guid: 36face8ac33b3814caa19d440d6d33fa, type: 3}
   - {fileID: 8300000, guid: e5cec87f827407d4c80611da3e064acd, type: 3}
