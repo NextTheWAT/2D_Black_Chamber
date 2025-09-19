@@ -20,6 +20,7 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
 
     private void Awake()
     {
+        base.Awake();
         stamina = maxStamina;
         Notify();
     }

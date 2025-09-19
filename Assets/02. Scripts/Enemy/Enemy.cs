@@ -29,8 +29,6 @@ public class Enemy : MonoBehaviour
 
     [Header("Attack")]
     [SerializeField] private Shooter shooter;
-    [SerializeField] private AudioClip[] hitSounds;
-    [SerializeField] private AudioClip[] deathSounds;
 
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
@@ -229,11 +227,8 @@ public class Enemy : MonoBehaviour
 
             Debug.Log(GameManager.Instance.player);
 
-            if (hitSounds.Length > 0)
-            {
-                int index = Random.Range(0, hitSounds.Length);
-                audioSource.PlayOneShot(hitSounds[index]);
-            }
+
+            CharacterSoundManager.Instance.PlayHitSound();
         }
         else
         {
@@ -244,11 +239,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        if (deathSounds.Length > 0)
-        {
-            int index = Random.Range(0, deathSounds.Length);
-            audioSource.PlayOneShot(deathSounds[index]);
-        }
+        CharacterSoundManager.Instance.PlayDieSound();
 
         animationController.PlayDie();
         coll.enabled = false;

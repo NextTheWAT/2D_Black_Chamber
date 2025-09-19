@@ -46,7 +46,7 @@ public partial class PlayerInputController : TopDownController
         mouse.z = shooter.gunPoint.position.z;
 
         Vector2 dir = (mouse - shooter.gunPoint.position).normalized;
-        // ← 이 한 줄이면 발사
+
         if (shooter.Shoot(dir))
             UICrosshairManager.Instance.crosshairUI.Pulse(); // 싱글톤으로 접근하여 펄스 호출
     }
