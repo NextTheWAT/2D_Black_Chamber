@@ -303,9 +303,9 @@ public class Enemy : MonoBehaviour
             audioSource.PlayOneShot(deathSounds[index]);
         }
 
+        agent.enabled = false;
         animationController.PlayDie();
         coll.enabled = false;
-        agent.isStopped = true;
         enabled = false;
     }
 
