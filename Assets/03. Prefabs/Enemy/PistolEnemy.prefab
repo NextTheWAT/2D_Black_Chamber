@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 9d4078ec
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -336,9 +336,10 @@ GameObject:
   - component: {fileID: 7725595448719031270}
   - component: {fileID: 3961344761222560345}
   - component: {fileID: 3349755987107838253}
+  - component: {fileID: 5810413119813973091}
   m_Layer: 7
   m_Name: PistolEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -399,11 +400,11 @@ NavMeshAgent:
   m_GameObject: {fileID: 3338864281046059789}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.75
   m_Speed: 2
-  m_Acceleration: 5
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 180
   m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -451,13 +452,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: {fileID: 4119749525860128978}
   stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
-  angularSpeed: 120
+  angularSpeed: 150
   targetMask:
     serializedVersion: 2
     m_Bits: 64
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 513
   forwardLight: {fileID: 5105342054748008689}
   backwardLight: {fileID: 2490828225547866822}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -467,19 +468,20 @@ MonoBehaviour:
   startPatrolPointIndex: 0
   shooter: {fileID: 5479762679829375684}
   hitSounds:
-  - {fileID: 8300000, guid: 5583e9c9a0afdf0408f9d0946666f85a, type: 3}
-  - {fileID: 8300000, guid: 572fe06c861000149bc4b51cc1fdb09d, type: 3}
-  - {fileID: 8300000, guid: 88b91714a2e2cbb428f61e18ca4d39d8, type: 3}
-  - {fileID: 8300000, guid: 80cc6816623c9a04580970e36613d8c4, type: 3}
-  - {fileID: 8300000, guid: cad57fcf83264a4489ae5c41b55e7a8b, type: 3}
+  - {fileID: 8300000, guid: 49c87a52e763d0444b2131a605315930, type: 3}
+  - {fileID: 8300000, guid: 40ade288ff495934da063bc8b10e5c04, type: 3}
+  - {fileID: 8300000, guid: 9c6842fef845f4a4fb9369c01e56e04b, type: 3}
+  - {fileID: 8300000, guid: b2227710932903449b6f2f2fe7cbd929, type: 3}
   deathSounds:
   - {fileID: 8300000, guid: 36face8ac33b3814caa19d440d6d33fa, type: 3}
   - {fileID: 8300000, guid: e5cec87f827407d4c80611da3e064acd, type: 3}
   - {fileID: 8300000, guid: c9fcdbd8bb5bb9c42981a9ba28089d98, type: 3}
   - {fileID: 8300000, guid: c5311bb6d7d14a14c80bfdcaf3f07b8c, type: 3}
   - {fileID: 8300000, guid: ed5d0007a6aca7a4e9cfe74b94ed21a2, type: 3}
+  returnPoint: {fileID: 0}
   stateType: 
   isTarget: 0
+  ReturnPoint: {fileID: 0}
 --- !u!114 &4119749525860128978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -713,6 +715,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5810413119813973091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3338864281046059789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fogWar: {fileID: 0}
+  additionalRadius: 0
+  spotThreshold: 0.01
+  fadeInTime: 0.12
+  fadeOutTime: 0.35
+  disableRendererAtZero: 1
 --- !u!1 &4773010290339460112
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,7 +816,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 9d4078ec
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -815,7 +835,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 0
   m_PointLightOuterAngle: 100
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 8
+  m_PointLightOuterRadius: 10
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1

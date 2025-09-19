@@ -53,7 +53,6 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
-    private bool foundTarget = false; // 타겟을 발견한적 있는지
     private bool hasSuspiciousTarget = false;
 
     public bool HasSuspiciousTarget
@@ -62,9 +61,7 @@ public class Enemy : MonoBehaviour
         set
         {
             hasSuspiciousTarget = value;
-            if(hasSuspiciousTarget)
-                foundTarget = true;
-            UpdateLightColor();
+            UpdateLight();
         }
     }
     public Transform Target
@@ -75,12 +72,11 @@ public class Enemy : MonoBehaviour
             target = value;
             if (target)
             {
-                foundTarget = true;
                 LastKnownTargetPos = target.position;
             }
 
 
-            UpdateLightColor();
+            UpdateLight();
         }
     }
     public bool HasTarget => target;
@@ -90,6 +86,15 @@ public class Enemy : MonoBehaviour
         set => lastKnownTargetPos = value;
     }
 
+    public bool IsTargetInSight
+    {
+        get
+        {
+            if (!HasTarget) return false;
+            RaycastHit2D hit = Physics2D.Linecast(transform.position, Target.position, targetMask | obstacleMask);
+            return hit.collider != null && hit.collider.CompareTag("Player");
+        }
+    }
 
     public Health Health => health;
 
@@ -124,8 +129,6 @@ public class Enemy : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         backwardLight.color = alertColor;
-
-        foundTarget = false;
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
@@ -172,8 +175,11 @@ public class Enemy : MonoBehaviour
         shooter.Shoot(transform.up);
     }
 
-    public void UpdateLightColor()
+    public void UpdateLight()
     {
+        forwardLight.enabled = HasTarget || HasSuspiciousTarget;
+        backwardLight.enabled = HasTarget || HasSuspiciousTarget;
+
         forwardLight.color = originalColor;
         backwardLight.color = originalColor;
 
@@ -221,6 +227,8 @@ public class Enemy : MonoBehaviour
             LastKnownTargetPos = GameManager.Instance.player.position;
             IsHit = true;
 
+            Debug.Log(GameManager.Instance.player);
+
             if (hitSounds.Length > 0)
             {
                 int index = Random.Range(0, hitSounds.Length);
@@ -250,16 +258,6 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject, 2f);
     }
 
-    private void OnBecameVisible()
-    {
-        forwardLight.enabled = true;
-    }
-
-    private void OnBecameInvisible()
-    {
-        forwardLight.enabled = false;
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -267,6 +265,21 @@ public class Enemy : MonoBehaviour
             Target = collision.transform;
             GameManager.Instance.IsCombat = true;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (agent != null && agent.hasPath)
+        {
+            Gizmos.color = Color.green;
+            var path = agent.path;
+            var corners = path.corners;
+            for (int i = 0; i < corners.Length - 1; i++)
+            {
+                Gizmos.DrawLine(corners[i], corners[i + 1]);
+            }
+        }
+        
     }
 
 }
