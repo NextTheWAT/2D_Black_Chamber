@@ -1,6 +1,8 @@
+using System;
+
 public class SoliderFSM : StateMachine
 {
-    public SoliderFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
+    public SoliderFSM(Enemy owner, StateTable stateTable, Type startType) : base(owner, stateTable, startType)
     {
         InvestigateState investigateState = GetState<InvestigateState>();
         RetreatState retreatState = GetState<RetreatState>();
