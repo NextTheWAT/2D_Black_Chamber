@@ -29,16 +29,22 @@ public class CoverState : BaseState
     {
         Vector2 coverPoint = GetCoverPoint();
         if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
+        {
             owner.MoveTo(coverPoint);
+            owner.Agent.isStopped = false;
+
+        }
+        else
+        {
+            owner.Agent.isStopped = true;
+        }
 
         if (owner.IsArrived)
             owner.LookPoint = lookPoint;
     }
 
     public override void Exit()
-    {
-        ConditionalLogger.Log("CoverState Exit");
-    }
+        => ConditionalLogger.Log("CoverState Exit");
 
     private Vector2 GetCoverPoint()
     {
@@ -47,6 +53,7 @@ public class CoverState : BaseState
         Vector3[] corners = GetPathCorners();
         if (corners == null || corners.Length <= 2)
         {
+            ConditionalLogger.Log("CoverState: No Path or Too Short");
             lookPoint = owner.Target.position;
             return owner.transform.position;
         }
