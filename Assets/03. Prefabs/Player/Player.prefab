@@ -510,7 +510,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -22324
+  m_InstanceId: -72250
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -635,6 +635,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: be43fb08-492d-43ab-9129-cf4ff351c3a5
     m_ActionName: Player/Look[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b9d94c20-438b-471c-a578-678b8e5ed264
+    m_ActionName: Player/Reload[/Keyboard/r]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -656,9 +660,11 @@ MonoBehaviour:
   maxMouseDistance: 5
   moveSpeed: 3
   acceleration: 30
+  runSpeedMultiplier: 2
   rotateToLook: 1
   rotationSpeed: 720
-  animationTree: 0.5
+  walkBlend: 0.5
+  runBlend: 1
 --- !u!114 &5297714505067383858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,6 +679,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shooter: {fileID: 0}
   continuousMouseAim: 1
+  reloadSfx: {fileID: 8300000, guid: 139959255b785c947a0940fe05d3a2ad, type: 3}
+  condition: {fileID: 0}
 --- !u!114 &3834872891024348976
 MonoBehaviour:
   m_ObjectHideFlags: 0
