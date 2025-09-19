@@ -3,8 +3,6 @@ public class SoliderFSM : StateMachine
     public SoliderFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
     {
         InvestigateState investigateState = GetState<InvestigateState>();
-        AssaultState assaultState = GetState<AssaultState>();
-        AttackState attackState = GetState<AttackState>();
         RetreatState retreatState = GetState<RetreatState>();
 
         // 공용
@@ -14,7 +12,7 @@ public class SoliderFSM : StateMachine
 
         // Global
         AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.IsCombat = true); // 맞았을 때 의심상태면 추격 및 난전 시작
-        AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState)); // 맞았을 때 공격상태가 아니면 엄폐
+        AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState) && CurrentState.GetType() != typeof(RetreatState)); // 맞았을 때 공격상태가 아니면 엄폐
 
         // Patrol
         AddTransition<PatrolState, SuspectState>(() => owner.HasTargetInFOV); // 근처에 타겟 있으면 의심
@@ -44,6 +42,9 @@ public class SoliderFSM : StateMachine
 
         // Attack
         AddTransition<AttackState, CoverState>(() => !owner.HasTargetInFOV); // 사정거리 벗어나면 추격
+
+        // Retreat
+        AddTransition<RetreatState, CoverState>(() => !retreatState.IsRetreating); // 후퇴 완료 후 엄폐
 
     }
 }
