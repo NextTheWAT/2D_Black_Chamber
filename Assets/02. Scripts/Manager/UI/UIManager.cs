@@ -10,12 +10,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private string[] gameplaySceneNames = { };
     [SerializeField] private string[] gameplayScenePrefixes = { "ProtoTypeScene" };
 
+    [Header("Result Scenes")] //결과씬
+    [SerializeField] private string[] resultScenes = { "ClearScene", "GameOverScene" };
+    [SerializeField] private string[] resultScenePrefixes = { "ResultScene" };
+
     [Header("UI Groups")]
     [SerializeField] private GameObject titleCanvas;
     [SerializeField] private GameObject lobbyGroup;
     [SerializeField] private GameObject playerGroup;
     [SerializeField] private GameObject crosshairCanvas;
     [SerializeField] private GameObject gameGroup;
+    [SerializeField] private GameObject clearCanvas;
 
     [Header("Pause Canvases (optional)")]
     [SerializeField] private GameObject lobbyPauseCanvas;
@@ -53,6 +58,7 @@ public class UIManager : MonoBehaviour
         bool isGameplay = !isTitle && !isLobby &&
             (Matches(sceneName, gameplaySceneNames) || 
             StartsWithAny(sceneName, gameplayScenePrefixes));
+        bool isResult = Matches(sceneName, resultScenes) || StartsWithAny(sceneName, resultScenePrefixes);
 
         // 타이틀씬 전용
         if (titleCanvas) titleCanvas.SetActive(isTitle);
@@ -64,6 +70,18 @@ public class UIManager : MonoBehaviour
         if (playerGroup) playerGroup.SetActive(isGameplay);
         if (crosshairCanvas) crosshairCanvas.SetActive(isGameplay);
         if (gameGroup) gameGroup.SetActive(isGameplay);
+
+        //결과씬 전용
+        if (clearCanvas) clearCanvas.SetActive(isResult);
+
+        if (isResult)
+        {
+            titleCanvas?.SetActive(false);
+            lobbyGroup?.SetActive(false);
+            playerGroup?.SetActive(false);
+            crosshairCanvas?.SetActive(false);
+            gameGroup?.SetActive(false);
+        }
 
         // 일시정지는 기본 끄기 (필요할 때 외부에서 켜기)
         if (lobbyPauseCanvas) lobbyPauseCanvas.SetActive(false);
