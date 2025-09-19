@@ -26,9 +26,8 @@ public class SuspectState : BaseState
 
     public override void Update()
     {
-        Transform target = owner.FindSuspiciousTarget();
-        if (target)
-            owner.LookPoint = target.position;
+        if (owner.HasTargetInFOV)
+            owner.LookPoint = owner.TargetInFOV.position;
 
         suspicionElapsedTime += Time.deltaTime;
         float ratio = suspicionElapsedTime / suspicionBuildTime;

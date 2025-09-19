@@ -35,10 +35,12 @@ public class Enemy : MonoBehaviour
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
 
+    public string stateType;
+    public bool isTarget = false;
+
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
-    private Vector2 lastKnownTargetPos;
     private StateMachine stateMachine;
     private CharacterAnimationController animationController;
     private AudioSource audioSource;
@@ -56,17 +58,6 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
-    private bool hasSuspiciousTarget = false;
-
-    public bool HasSuspiciousTarget
-    {
-        get => hasSuspiciousTarget;
-        set
-        {
-            hasSuspiciousTarget = value;
-            UpdateLight();
-        }
-    }
     public Transform Target
     {
         get
@@ -84,11 +75,7 @@ public class Enemy : MonoBehaviour
         }
     }
     public bool HasTarget => target;
-    public Vector2 LastKnownTargetPos
-    {
-        get => lastKnownTargetPos;
-        set => lastKnownTargetPos = value;
-    }
+    public Vector2 LastKnownTargetPos { get; set; }
 
     public bool IsTargetInSight
     {
@@ -116,9 +103,6 @@ public class Enemy : MonoBehaviour
 
     public Health Health => health;
 
-    public string stateType;
-
-    public bool isTarget = false;
     // 목적지에 도착했는지
     public bool IsArrived
     {
@@ -152,6 +136,24 @@ public class Enemy : MonoBehaviour
     public Vector2 MoveDirection
         => Agent.velocity.normalized;
 
+    private Transform targetInFOV;
+    public Transform TargetInFOV
+    {
+        get { return targetInFOV; }
+        set
+        {
+            targetInFOV = value;
+            if (targetInFOV)
+                LastKnownTargetPos = targetInFOV.position;
+            UpdateLight();
+        }
+    }
+    public bool HasTargetInFOV
+        => TargetInFOV;
+
+    public Vector2 LookPoint { get; set; } = Vector2.zero;
+
+    public bool AutoRotate { get; set; }
 
     private void Start()
     {
@@ -159,9 +161,6 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
         audioSource = GetComponent<AudioSource>();
-
-        agent.updateRotation = false;
-        agent.updateUpAxis = false;
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
@@ -171,11 +170,13 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        stateMachine?.UpdateState();
-        stateType = stateMachine?.CurrentState.ToString();
-        UpdateMoveBlend();
-        Rotate();
+        TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
+        stateMachine?.UpdateState(); // 상태 머신 업데이트
+        stateType = stateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
+        UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
+        Rotate(); // 회전
 
+        // 맞았던 상태 초기화
         if(IsHit)
             IsHit = false;
     }
@@ -190,50 +191,41 @@ public class Enemy : MonoBehaviour
     {
         if ((Vector3)destination == agent.destination) return;
         agent.SetDestination(destination);
-        LookPoint = NextMovePoint;
+        LookPoint = lookPoint;
+        ConditionalLogger.Log($"{gameObject.name} MoveTo {destination} LookAt {lookPoint}");
     }
 
     public void MoveTo(Vector2 destination)
         => MoveTo(destination, NextMovePoint);
 
-    public Vector2 LookPoint { get; set; } = Vector2.zero;
-
     void Rotate()
     {
+        if (AutoRotate)
+        {
+            if (!IsArrived)
+                LookPoint = NextMovePoint;
+            else
+                LookPoint = transform.position + transform.up;
+        }
+
         Vector2 direction = (LookPoint - (Vector2)transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // 위쪽을 기준으로 보정
         angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, angle, Time.deltaTime * angularSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
-    /*
-    public void RotateTo(float targetAngle)
-    {
-        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, targetAngle, Time.deltaTime * angularSpeed);
-        transform.eulerAngles = new Vector3(0, 0, angle);
-    }
-    
-    public void LookAt(Vector2 lookPoint)
-    {
-        Vector2 direction = (lookPoint - (Vector2)transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90;
-        RotateTo(angle);
-    }
-    */
     public void Attack()
-    {
-        shooter.Shoot(transform.up);
-    }
+        => shooter.Shoot(transform.up);
 
     public void UpdateLight()
     {
-        forwardLight.enabled = HasTarget || HasSuspiciousTarget;
-        backwardLight.enabled = HasTarget || HasSuspiciousTarget;
+        forwardLight.enabled = HasTarget || HasTargetInFOV;
+        backwardLight.enabled = HasTarget || HasTargetInFOV;
 
         forwardLight.color = originalColor;
         backwardLight.color = originalColor;
 
-        if (HasSuspiciousTarget)
+        if (HasTargetInFOV)
         {
             forwardLight.color = suspiciousColor;
             backwardLight.color = alertColor;
@@ -249,35 +241,18 @@ public class Enemy : MonoBehaviour
     public void SetBackwardLightRadius(float ratio)
         => backwardLight.pointLightOuterRadius = ViewDistance * ratio;
 
-    public Transform FindSuspiciousTarget()
-    {
-        Transform target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
-        HasSuspiciousTarget = target;
-        LastKnownTargetPos = target ? target.position : LastKnownTargetPos;
-        return target;
-    }
-
     public void FindTarget(float viewAngle, float viewDistance)
-    {
-        Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
-    }
-    public void FindTarget()
-    {
-        Target = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask);
-    }
-
+        => Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
 
     public void Hit(int currentHealth, int maxHealth)
     {
         if (currentHealth == maxHealth) return;
 
-        if (GameManager.Instance.IsCombat || hasSuspiciousTarget)
+        if (GameManager.Instance.IsCombat || HasTargetInFOV)
         {
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.player.position;
             IsHit = true;
-
-            Debug.Log(GameManager.Instance.player);
 
             if (hitSounds.Length > 0)
             {
@@ -286,10 +261,7 @@ public class Enemy : MonoBehaviour
             }
         }
         else
-        {
             health.TakeDamage(maxHealth);
-        }
-
     }
 
     public void Die()
@@ -330,7 +302,6 @@ public class Enemy : MonoBehaviour
 
             for (int i = 0; i < corners.Length; i++)
                 Gizmos.DrawSphere(corners[i], 0.2f);
-
         }
 
         Gizmos.color = Color.red;

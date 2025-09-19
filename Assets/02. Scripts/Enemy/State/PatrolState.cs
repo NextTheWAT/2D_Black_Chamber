@@ -29,11 +29,6 @@ public class PatrolState : BaseState
         BeginPatrol();
     }
 
-    public override void Update()
-    {
-        owner.FindSuspiciousTarget();
-    }
-
     public override void Exit()
     {
         ConditionalLogger.Log("PatrolState Exit");

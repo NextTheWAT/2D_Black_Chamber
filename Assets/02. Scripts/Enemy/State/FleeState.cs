@@ -24,8 +24,6 @@ public class FleeState : BaseState
 
     public override void Update()
     {
-        owner.FindTarget();
-
         if (owner.HasTarget)
         {
             fleeTimer = 0f;

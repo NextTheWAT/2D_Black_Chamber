@@ -25,9 +25,12 @@ public class RetreatState : BaseState
     public override void Update()
     {
         // 플레이어가 시야에 보이는지 확인
+
         if (owner.IsTargetInSight)
         {
             owner.LookPoint = owner.Target.position;
+            if (owner.HasTargetInFOV)
+                owner.Attack();
         }
         else
         {

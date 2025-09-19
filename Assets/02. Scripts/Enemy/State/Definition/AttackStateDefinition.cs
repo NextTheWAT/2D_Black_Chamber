@@ -4,9 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AttackStateDefinition", menuName = "ScriptableObjects/StateDefinitions/AttackStateDefinition")]
 public class AttackStateDefinition : StateDefinition
 {
-    public float attackRange = 1.5f;
+    public float maxAttackRange = 6f;
+    public float desiredAttackDistance = 3f;
 
     public override Type StateType => typeof(AttackState);
     public override IState CreateState(Enemy enemy)
-        => new AttackState(enemy, attackRange);
+        => new AttackState(enemy, maxAttackRange, desiredAttackDistance);
 }

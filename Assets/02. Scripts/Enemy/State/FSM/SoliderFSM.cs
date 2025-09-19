@@ -17,16 +17,16 @@ public class SoliderFSM : StateMachine
         AddGlobalTransition<CoverState>(() => owner.IsHit && CurrentState.GetType() != typeof(AttackState)); // 맞았을 때 공격상태가 아니면 엄폐
 
         // Patrol
-        AddTransition<PatrolState, SuspectState>(() => owner.HasSuspiciousTarget); // 근처에 타겟 있으면 의심
+        AddTransition<PatrolState, SuspectState>(() => owner.HasTargetInFOV); // 근처에 타겟 있으면 의심
         AddTransition<PatrolState, CoverState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 엄폐
 
         // Suspect
-        AddTransition<SuspectState, InvestigateState>(() => !owner.HasSuspiciousTarget); // 근처에 타겟 없으면 다시 순찰
+        AddTransition<SuspectState, InvestigateState>(() => !owner.HasTargetInFOV); // 근처에 타겟 없으면 순찰
         AddTransition<SuspectState, CoverState>(() => owner.HasTarget, () => GameManager.Instance.IsCombat = true); // 타겟 발견하면 추격, 난전시작
         AddTransition<SuspectState, CoverState>(() => GameManager.Instance.IsCombat); // 난전 시작되면 엄폐
 
         // Investigate
-        AddTransition<InvestigateState, SuspectState>(() => owner.HasSuspiciousTarget); // 타겟 발견하면 추격
+        AddTransition<InvestigateState, SuspectState>(() => owner.HasTargetInFOV); // 타겟 발견하면 의심
         AddTransition<InvestigateState, ReturnState>(() => !investigateState.IsInvestigating); // 조사 시간 끝나면 복귀
 
         // Return
@@ -37,13 +37,13 @@ public class SoliderFSM : StateMachine
         AddGlobalTransition<RetreatState>(() => retreatState.ShouldRetreat); // 피격 및 체력 낮으면 후퇴
 
         // Cover
-        AddTransition<CoverState, AttackState>(() => attackState.IsTargetInAttackRange && owner.IsTargetInSight); // 사정거리 안에 들어오면 공격
+        AddTransition<CoverState, AttackState>(() => owner.HasTargetInFOV); // 사정거리 안에 들어오면 공격
 
         // Assault
-        AddTransition<AssaultState, AttackState>(() => owner.IsTargetInSight); // 공격 가능하면 공격
+        AddTransition<AssaultState, AttackState>(() => owner.HasTargetInFOV); // 공격 가능하면 공격
 
         // Attack
-        AddTransition<AttackState, CoverState>(() => !attackState.IsTargetInAttackRange || !owner.IsTargetInSight); // 사정거리 벗어나면 추격
+        AddTransition<AttackState, CoverState>(() => !owner.HasTargetInFOV); // 사정거리 벗어나면 추격
 
     }
 }
