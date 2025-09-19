@@ -1,6 +1,8 @@
+using System;
+
 public class TargetFSM : StateMachine
 {
-    public TargetFSM(Enemy owner, StateTable stateTable) : base(owner, stateTable)
+    public TargetFSM(Enemy owner, StateTable stateTable, Type startType) : base(owner, stateTable, startType)
     {
         FleeState fleeState = GetState<FleeState>();
 

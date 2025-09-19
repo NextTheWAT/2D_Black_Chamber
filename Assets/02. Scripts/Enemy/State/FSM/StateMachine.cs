@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 public class StateMachine
 {
+    private readonly Dictionary<Type, IState> states = new();
+    private readonly List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
+    private readonly List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
     private IState currentState;
-    private Dictionary<Type, IState> states = new();
-    private List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
-    private List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
     public IState CurrentState => currentState;
+    private readonly IState startState;
 
     protected Enemy owner;
 
-    public StateMachine(Enemy owner, StateTable stateTable)
+    public StateMachine(Enemy owner, StateTable stateTable, Type startType)
     {
         // 상태 초기화
         this.owner = owner;
@@ -19,13 +20,24 @@ public class StateMachine
             ConditionalLogger.LogWarning("StateMachine에 상태가 하나도 없습니다.");
 
         // 초기 상태 설정
-        IState startState = states[stateTable.StartStateType];
-        ChangeState(startState);
+        startState = states[startType];
     }
 
 
     public T GetState<T>() where T : class, IState
         => states[typeof(T)] as T;
+
+    public void Start()
+    {
+        ConditionalLogger.Log("StateMachine Start");
+        ChangeState(startState);
+    }
+
+    public void Stop()
+    {
+        currentState?.Exit();
+        currentState = null;
+    }
 
     public void ChangeState(IState state)
     {

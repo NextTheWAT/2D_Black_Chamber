@@ -35,6 +35,12 @@ public class SuspectState : BaseState
 
         currentDetectionRange = Mathf.Lerp(0, owner.ViewDistance, ratio);
         owner.FindTarget(owner.ViewAngle, currentDetectionRange);
+
+        if (owner.HasTarget)
+        {
+            ConditionalLogger.Log("SuspectState: Target Acquired");
+            GameManager.Instance.IsCombat = true; // 난전 모드 진입
+        }
     }
 
     public override void Exit()
