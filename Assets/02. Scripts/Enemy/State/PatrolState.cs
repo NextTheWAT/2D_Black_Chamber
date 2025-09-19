@@ -89,15 +89,9 @@ public class PatrolState : BaseState
                 owner.LookPoint = (Vector2)owner.transform.position + new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
                 
                 // 회전될 때까지 대기
-                
-                while (Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle)) > 1f)
-                {
-                    currentAngle = owner.transform.eulerAngles.z;
-                    ConditionalLogger.Log($"CurrentAngle: {currentAngle}, TargetAngle: {targetAngle} DeltaAngle {Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle))}");
+                while (owner.CurrentLookAngleDelta > 1f)
                     yield return null;
-                }
-                
-                
+
                 yield return new WaitForSeconds(patrolPauseTime);
             }
         }

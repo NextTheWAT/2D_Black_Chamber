@@ -132,6 +132,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public float CurrentLookAngleDelta // 현재 바라보는 각도와 목표 각도의 차이
+    {
+        get
+        {
+            Vector2 direction = (LookPoint - (Vector2)transform.position).normalized;
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // 위쪽을 기준으로 보정
+            return Mathf.DeltaAngle(transform.eulerAngles.z, targetAngle);
+        }
+    }
+
     public Vector2 NextMovePoint
         => Agent.path.corners.Length > 1 ? (Vector2)Agent.path.corners[1] : (Vector2)transform.position;
 
@@ -186,7 +196,6 @@ public class Enemy : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // 위쪽을 기준으로 보정
         angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, angle, Time.deltaTime * angularSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
-        ConditionalLogger.Log($"LookPoint: {LookPoint}, Angle: {angle}, CurrentAngle: {transform.eulerAngles.z}");
     }
 
     /*
