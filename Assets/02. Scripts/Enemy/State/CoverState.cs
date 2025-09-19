@@ -45,7 +45,7 @@ public class CoverState : BaseState
         if (!owner.HasTarget) return owner.transform.position;
 
         Vector3[] corners = GetPathCorners();
-        if (corners == null || corners.Length < 2)
+        if (corners == null || corners.Length <= 2)
         {
             lookPoint = owner.Target.position;
             return owner.transform.position;
