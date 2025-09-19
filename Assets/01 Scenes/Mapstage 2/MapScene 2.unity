@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 142148151}
   - component: {fileID: 142148150}
   - component: {fileID: 142148149}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9895,7 +9895,7 @@ GameObject:
   - component: {fileID: 144888886}
   - component: {fileID: 144888885}
   - component: {fileID: 144888887}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

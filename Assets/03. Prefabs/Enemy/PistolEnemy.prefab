@@ -339,7 +339,7 @@ GameObject:
   - component: {fileID: 5810413119813973091}
   m_Layer: 7
   m_Name: PistolEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -730,6 +730,9 @@ MonoBehaviour:
   fogWar: {fileID: 0}
   additionalRadius: 0
   spotThreshold: 0.01
+  fadeInTime: 0.12
+  fadeOutTime: 0.35
+  disableRendererAtZero: 1
 --- !u!1 &4773010290339460112
 GameObject:
   m_ObjectHideFlags: 0
