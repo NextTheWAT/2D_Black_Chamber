@@ -24,13 +24,16 @@ public class FleeState : BaseState
 
     public override void Update()
     {
-        if (owner.HasTarget)
+        if (owner.HasTargetInFOV)
         {
             fleeTimer = 0f;
             owner.MoveTo(GetFleePoint());
         }
         else
-            fleeTimer += Time.deltaTime;
+        {
+            if(!GameManager.Instance.IsCombat)
+                fleeTimer += Time.deltaTime;
+        }
     }
 
     public override void Exit()

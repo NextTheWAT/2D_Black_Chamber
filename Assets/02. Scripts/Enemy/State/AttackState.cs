@@ -65,5 +65,6 @@ public class AttackState : BaseState
     {
         ConditionalLogger.Log("AttackState Exit");
         owner.AnimationController.SetActiveShoot(false);
+        owner.Agent.isStopped = false;
     }
 }

@@ -33,8 +33,8 @@ public class SoliderFSM : StateMachine
         AddTransition<ReturnState, PatrolState>(() => owner.IsArrived);
 
         // 난전
-        AddGlobalTransition<RetreatState>(() => owner.NearbyDeathTriggered); // 근처 아군 사망시 후퇴
-        AddGlobalTransition<RetreatState>(() => retreatState.ShouldRetreat); // 피격 및 체력 낮으면 후퇴
+        AddGlobalTransition<RetreatState>(() => owner.NearbyDeathTriggered); // 근처 아군 사망하면 후퇴
+        AddGlobalTransition<RetreatState>(() => retreatState.ShouldRetreat); // 자신의 체력 낮으면 후퇴
 
         // Cover
         AddTransition<CoverState, AttackState>(() => owner.HasTargetInFOV); // 사정거리 안에 들어오면 공격

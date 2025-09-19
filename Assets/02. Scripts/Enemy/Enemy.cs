@@ -192,7 +192,6 @@ public class Enemy : MonoBehaviour
         if ((Vector3)destination == agent.destination) return;
         agent.SetDestination(destination);
         LookPoint = lookPoint;
-        ConditionalLogger.Log($"{gameObject.name} MoveTo {destination} LookAt {lookPoint}");
     }
 
     public void MoveTo(Vector2 destination)
