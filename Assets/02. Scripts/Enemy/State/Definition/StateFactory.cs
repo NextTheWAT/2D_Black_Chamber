@@ -2,18 +2,9 @@ using System;
 using System.Collections.Generic;
 using Constants;
 
+
 public static class StateFactory
 {
-    /*
-    public static Dictionary<StateType, IState> CreateStates(Enemy enemy, StateTable table)
-    {
-        var result = new Dictionary<StateType, IState>();
-        foreach (var definition in table.definitions)
-            result[definition.stateType] = definition.CreateState(enemy);
-        return result;
-    }
-    */
-
     public static Dictionary<Type, IState> CreateStates(Enemy enemy, StateTable table)
     {
         var result = new Dictionary<Type, IState>();
@@ -27,5 +18,4 @@ public static class StateFactory
         }
         return result;
     }
-
 }
