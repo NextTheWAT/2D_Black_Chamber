@@ -101,6 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openAngle: 90
   openSpeed: 1
+  doorCollider: {fileID: 553501813842587777}
 --- !u!61 &6336173493331675919
 BoxCollider2D:
   m_ObjectHideFlags: 0

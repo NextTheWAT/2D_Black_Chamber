@@ -12,6 +12,8 @@ public class Door : MonoBehaviour
     private Quaternion closeRotation;   // 각각의 회전값
     private Quaternion openRotation;
 
+    public Collider2D doorCollider;
+
     private void Start()
     {
 
@@ -26,6 +28,9 @@ public class Door : MonoBehaviour
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
             isOpen = !isOpen;
+
+            if (doorCollider != null)
+                doorCollider.enabled = !isOpen;
         }
 
         Quaternion targetRotation = isOpen ? openRotation : closeRotation;
