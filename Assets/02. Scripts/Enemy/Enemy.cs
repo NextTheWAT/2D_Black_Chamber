@@ -69,7 +69,11 @@ public class Enemy : MonoBehaviour
     }
     public Transform Target
     {
-        get => target;
+        get
+        {
+            if (GameManager.Instance.IsCombat) return GameManager.Instance.player;
+            return target;
+        }
         set
         {
             target = value;
@@ -144,6 +148,10 @@ public class Enemy : MonoBehaviour
 
     public Vector2 NextMovePoint
         => Agent.path.corners.Length > 1 ? (Vector2)Agent.path.corners[1] : (Vector2)transform.position;
+
+    public Vector2 MoveDirection
+        => Agent.velocity.normalized;
+
 
     private void Start()
     {
@@ -324,6 +332,9 @@ public class Enemy : MonoBehaviour
                 Gizmos.DrawSphere(corners[i], 0.2f);
 
         }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(LookPoint, 0.2f);
     }
 
 }

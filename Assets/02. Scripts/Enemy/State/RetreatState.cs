@@ -29,6 +29,11 @@ public class RetreatState : BaseState
         {
             owner.LookPoint = owner.Target.position;
         }
+        else
+        {
+            if(!owner.IsArrived)
+                owner.LookPoint = (Vector2)owner.transform.position - owner.MoveDirection;
+        }
     }
 
     public override void Exit()
