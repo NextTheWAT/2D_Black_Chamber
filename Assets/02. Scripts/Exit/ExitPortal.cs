@@ -9,7 +9,7 @@ public class ExitPortal : MonoBehaviour
     public GameObject clearLight;
 
     [SerializeField]
-    public string clearSceneName = "";      // 클리어씬
+    public string clearSceneName = "ClearScene";      // 클리어씬
 
     private void Start()
     {
@@ -43,6 +43,7 @@ public class ExitPortal : MonoBehaviour
         {
             Debug.Log("클리어하였습니다.");
 
+            ClearRunData.lastGameplayScene = SceneManager.GetActiveScene().name;
             MissionManager.Instance.SetPhase(MissionPhase.Completed);   // 페이즈 클리어로 바꿔주기
 
             SceneManager.LoadScene(clearSceneName);
