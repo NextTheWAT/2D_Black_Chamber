@@ -3,11 +3,9 @@ using UnityEngine.InputSystem;
 
 public partial class PlayerInputController : TopDownController
 {
-    [SerializeField] private AudioClip reloadSfx;
-
     public void OnReload(InputAction.CallbackContext ctx)
     {
         animationController.PlayReload();
-        AudioSource.PlayClipAtPoint(reloadSfx, transform.position);
+        WeaponSoundManager.Instance.PlayReloadSound(); // 재장전 사운드 재생
     }
 }
