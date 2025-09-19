@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using System;
-using Random = UnityEngine.Random;
-using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
@@ -41,7 +38,6 @@ public class Enemy : MonoBehaviour
     private Transform target;
     private StateMachine stateMachine;
     private CharacterAnimationController animationController;
-    private AudioSource audioSource;
     public bool IsHit { get; private set; }
     public bool IsDead => health.IsDead;
 
@@ -158,7 +154,6 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
-        audioSource = GetComponent<AudioSource>();
 
         if (isTarget)
             stateMachine = new TargetFSM(this, stateTable);
@@ -245,28 +240,21 @@ public class Enemy : MonoBehaviour
     {
         if (currentHealth == maxHealth) return;
 
+
         if (GameManager.Instance.IsCombat || HasTargetInFOV)
         {
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.player.position;
             IsHit = true;
-
-            Debug.Log(GameManager.Instance.player);
-
-
             CharacterSoundManager.Instance.PlayHitSound();
-                audioSource.PlayOneShot(hitSounds[index]);
-            }
-                audioSource.PlayOneShot(hitSounds[index]);
-            }
         }
         else
             health.TakeDamage(maxHealth);
+    }
+
+    public void Die()
+    {
         CharacterSoundManager.Instance.PlayDieSound();
-        {
-            int index = Random.Range(0, deathSounds.Length);
-            audioSource.PlayOneShot(deathSounds[index]);
-        }
 
         agent.enabled = false;
         animationController.PlayDie();
