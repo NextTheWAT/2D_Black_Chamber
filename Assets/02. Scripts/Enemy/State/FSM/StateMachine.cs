@@ -24,6 +24,18 @@ public class StateMachine
         ChangeState(startState);
     }
 
+    public void SetNonCombatStateTransitions()
+    {
+
+    }
+
+    public void SetCombatStateTransitions()
+    {
+
+    }
+
+
+
     public T GetState<T>() where T : class, IState
         => states[typeof(T)] as T;
 
@@ -69,9 +81,12 @@ public class StateMachine
         // 현재 상태 업데이트
         currentState.Update();
 
+
         // GlobalTransition 체크
         foreach (var t in globalTransitions)
         {
+            if (t.ToState == currentState) continue;
+
             if (t.Condition())
             {
                 t.Callback?.Invoke();
@@ -84,6 +99,7 @@ public class StateMachine
         foreach (var t in transitions)
         {
             if (t.FromState != currentState) continue;
+            if (t.ToState == currentState) continue;
 
             if (t.Condition())
             {

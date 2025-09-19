@@ -1,9 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Constants
 {
+    public enum NonCombatStateType
+    {
+        Common,
+        Elite,
+        Guard,
+    }
+
+    public enum CombatStateType
+    {
+        Hiding, // 은신
+        Discretion, // 신중
+        Tactics, // 전술
+        Bravery, // 용감
+        Temerity, // 무모
+        Coward, // 겁쟁이
+    }
+
     public enum PatrolType
     {
         Waypoint,

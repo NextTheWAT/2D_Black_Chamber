@@ -9,11 +9,6 @@ public class ReturnState : BaseState
             owner.MoveTo(owner.ReturnPoint.position);
     }
 
-    public override void Update()
-    {
-        owner.FindTarget();
-    }
-
     public override void Exit()
     {
         ConditionalLogger.Log("ReturnState Exit");

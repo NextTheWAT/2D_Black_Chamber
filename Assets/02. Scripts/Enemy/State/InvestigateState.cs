@@ -25,11 +25,6 @@ public class InvestigateState : BaseState
         ConditionalLogger.Log("InvestigateState Enter");
     }
 
-    public override void Update()
-    {
-        owner.FindSuspiciousTarget();
-    }
-
     public override void Exit()
     {
         StopInvestigate();
@@ -41,6 +36,8 @@ public class InvestigateState : BaseState
         if (investigateCoroutine != null)
             owner.StopCoroutine(investigateCoroutine);
         investigateCoroutine = owner.StartCoroutine(InvestigateLoop());
+
+        owner.AutoRotate = true;
     }
 
     private void StopInvestigate()
@@ -50,6 +47,8 @@ public class InvestigateState : BaseState
             owner.StopCoroutine(investigateCoroutine);
             investigateCoroutine = null;
         }
+
+        owner.AutoRotate = false;
     }
 
     private IEnumerator InvestigateLoop()

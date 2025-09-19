@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11d56aaf73b4aa94e9ee98e617c6466d, type: 3}
-  m_Name: ChaseStateDefinition
+  m_Script: {fileID: 11500000, guid: 24b84df737a1a164d8d213474cf08b89, type: 3}
+  m_Name: DeathStateDefinition
   m_EditorClassIdentifier: 
-  initialChaseDelay: 2
-  investigateThreshold: 3
+  deathSignalRadius: 5
+  deathSignalMask:
+    serializedVersion: 2
+    m_Bits: 2176

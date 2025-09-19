@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e2cdeee421371479e3ac2c8147c769, type: 3}
   m_Name: AttackStateDefinition
   m_EditorClassIdentifier: 
-  attackRange: 6
+  maxAttackRange: 6
+  desiredAttackDistance: 4
