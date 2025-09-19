@@ -24,6 +24,18 @@ public class StateMachine
         ChangeState(startState);
     }
 
+    public void SetNonCombatStateTransitions()
+    {
+
+    }
+
+    public void SetCombatStateTransitions()
+    {
+
+    }
+
+
+
     public T GetState<T>() where T : class, IState
         => states[typeof(T)] as T;
 
