@@ -18,7 +18,6 @@ GameObject:
   - component: {fileID: 832514891371369143}
   - component: {fileID: 4215764903156184602}
   - component: {fileID: 6262810931504493246}
-  - component: {fileID: 7121977400482476697}
   - component: {fileID: 3191301827752158431}
   m_Layer: 11
   m_Name: AssassinTarget
@@ -136,17 +135,6 @@ MonoBehaviour:
   patrolPoints: []
   startPatrolPointIndex: 0
   shooter: {fileID: 832514891371369143}
-  hitSounds:
-  - {fileID: 8300000, guid: 49c87a52e763d0444b2131a605315930, type: 3}
-  - {fileID: 8300000, guid: 40ade288ff495934da063bc8b10e5c04, type: 3}
-  - {fileID: 8300000, guid: 9c6842fef845f4a4fb9369c01e56e04b, type: 3}
-  - {fileID: 8300000, guid: b2227710932903449b6f2f2fe7cbd929, type: 3}
-  deathSounds:
-  - {fileID: 8300000, guid: 37670623b2aa89a4589af3d795088c80, type: 3}
-  - {fileID: 8300000, guid: 6857c17d0b39a594298d2c0ebc09f389, type: 3}
-  - {fileID: 8300000, guid: 9ac9e455e130968459fc7ff35a33428c, type: 3}
-  - {fileID: 8300000, guid: f325d26adff89d64cb93f78147635cf7, type: 3}
-  - {fileID: 8300000, guid: 8f4f375ffa0090842aeb8c5e2df71b5f, type: 3}
   returnPoint: {fileID: 0}
   stateType: 
   isTarget: 1
@@ -287,102 +275,6 @@ PolygonCollider2D:
       - {x: 0.77692944, y: -0.18338633}
       - {x: 0.7328131, y: 0.11987275}
   m_UseDelaunayMesh: 0
---- !u!82 &7121977400482476697
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701606878684549374}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1.2
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &3191301827752158431
 MonoBehaviour:
   m_ObjectHideFlags: 0

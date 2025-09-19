@@ -29,8 +29,6 @@ public class Enemy : MonoBehaviour
 
     [Header("Attack")]
     [SerializeField] private Shooter shooter;
-    [SerializeField] private AudioClip[] hitSounds;
-    [SerializeField] private AudioClip[] deathSounds;
 
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
@@ -253,22 +251,18 @@ public class Enemy : MonoBehaviour
             LastKnownTargetPos = GameManager.Instance.player.position;
             IsHit = true;
 
-            if (hitSounds.Length > 0)
-            {
-                int index = Random.Range(0, hitSounds.Length);
+            Debug.Log(GameManager.Instance.player);
+
+
+            CharacterSoundManager.Instance.PlayHitSound();
+                audioSource.PlayOneShot(hitSounds[index]);
+            }
                 audioSource.PlayOneShot(hitSounds[index]);
             }
         }
         else
             health.TakeDamage(maxHealth);
-    }
-
-    public void Die()
-    {
-        ConditionalLogger.Log($"{gameObject.name} »ç¸Á");
-        StopAllCoroutines();
-
-        if (deathSounds.Length > 0)
+        CharacterSoundManager.Instance.PlayDieSound();
         {
             int index = Random.Range(0, deathSounds.Length);
             audioSource.PlayOneShot(deathSounds[index]);

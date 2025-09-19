@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
+  m_Name: DieSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 36face8ac33b3814caa19d440d6d33fa, type: 3}
+  - {fileID: 8300000, guid: e5cec87f827407d4c80611da3e064acd, type: 3}
+  - {fileID: 8300000, guid: c9fcdbd8bb5bb9c42981a9ba28089d98, type: 3}
+  - {fileID: 8300000, guid: c5311bb6d7d14a14c80bfdcaf3f07b8c, type: 3}
+  - {fileID: 8300000, guid: ed5d0007a6aca7a4e9cfe74b94ed21a2, type: 3}
+  volume: 1

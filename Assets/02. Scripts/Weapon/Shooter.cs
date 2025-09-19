@@ -44,11 +44,7 @@ public class Shooter : MonoBehaviour
             Destroy(fx, 0.05f);
         }
 
-        //SFX
-        if (gun.shotSfx)
-        {
-            AudioSource.PlayClipAtPoint(gun.shotSfx, gunPoint.position);
-        }
+        WeaponSoundManager.Instance.PlayPistolShootSound();
 
         return true;
     }

@@ -14,7 +14,6 @@ public class GunData : ScriptableObject
     [Header("Assets")]
     public GameObject bulletPrefab;                    // Rigidbody2D + Collider2D(isTrigger)
     public GameObject muzzleFlashPrefab;               // 可记
-    public AudioClip shotSfx;                          // 可记
 
     [Header("Bullet Lifetime")]
     [Min(0.1f)] public float bulletLife = 2f;
