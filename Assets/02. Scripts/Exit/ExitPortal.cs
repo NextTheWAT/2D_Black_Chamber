@@ -48,7 +48,6 @@ public class ExitPortal : MonoBehaviour
         if (mm.Phase == MissionPhase.Escape)
         {
             Debug.Log("클리어하였습니다.");
-            ClearRunData.lastGameplayScene = SceneManager.GetActiveScene().name;
             mm.SetPhase(MissionPhase.Completed);
             SceneManager.LoadScene(clearSceneName);
         }

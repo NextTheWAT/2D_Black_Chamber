@@ -46,3 +46,15 @@ TagManager:
   - name: LightMask
     uniqueID: 3967303837
     locked: 0
+  - name: Mask
+    uniqueID: 310911395
+    locked: 0
+  - name: Prop
+    uniqueID: 1669979877
+    locked: 0
+  - name: Character
+    uniqueID: 1941537719
+    locked: 0
+  - name: Effect
+    uniqueID: 1755473531
+    locked: 0

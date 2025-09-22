@@ -158,6 +158,8 @@ public class Enemy : MonoBehaviour
 
     private bool changeToCombat = false;
 
+    public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
+
     private void Start()
     {
         coll = GetComponent<Collider2D>();
@@ -198,9 +200,9 @@ public class Enemy : MonoBehaviour
         UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
         Rotate(); // 회전
 
-        // 맞았던 상태 초기화
-        if (IsHit)
-            IsHit = false;
+        
+        if (IsHit) IsHit = false; // 맞았던 상태 초기화
+        if (IsNoiseDetected) IsNoiseDetected = false; // 소음 감지 상태 초기화
     }
 
     private void UpdateMoveBlend()
@@ -264,6 +266,14 @@ public class Enemy : MonoBehaviour
 
     public void FindTarget(float viewAngle, float viewDistance)
         => Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+
+    public void HeardNoise(Vector2 noisePosition)
+    {
+        if (GameManager.Instance.IsCombat) return;
+        IsNoiseDetected = true;
+        LastKnownTargetPos = noisePosition;
+        ConditionalLogger.Log("Heard Noise : " + gameObject.name);
+    }
 
     public void Hit(int currentHealth, int maxHealth)
     {
