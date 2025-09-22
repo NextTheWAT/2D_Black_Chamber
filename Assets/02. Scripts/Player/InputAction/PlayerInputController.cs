@@ -8,6 +8,8 @@ public partial class PlayerInputController : TopDownController
 
     private void Awake()
     {
+        shooter = GetComponent<Shooter>();
+        WeaponManager.Instance.ConnectPlayerShooter(shooter);
         _camera = Camera.main;
         shooter = GetComponent<Shooter>();
         animationController = GetComponent<CharacterAnimationController>();

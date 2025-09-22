@@ -7,10 +7,6 @@ public class CharacterAnimationController : MonoBehaviour
     public Animator upperAnimator;   // 없으면 Awake에서 "UpperBody" 자식에서 자동 할당
     public Animator lowerAnimator;   // 없으면 Awake에서 "LowerBody" 자식에서 자동 할당
 
-    [Header("UpperBody Controllers")]
-    [SerializeField] private RuntimeAnimatorController upperPistolController;
-    [SerializeField] private RuntimeAnimatorController upperRifleController;
-
     private void Awake()
     {
         AutoWireIfNull();   // UpperBody / LowerBody 자동 연결
@@ -111,7 +107,7 @@ public class CharacterAnimationController : MonoBehaviour
     /// 무기 타입에 따라 "상체" Animator Controller만 교체.
     /// (하체는 하나만 사용)
     /// </summary>
-    public void ApplyUpperWeaponAnimator(WeaponType type, bool playSwitchAnim = true)
+    public void ApplyUpperWeaponAnimator(GunData gunData, bool playSwitchAnim = true)
     {
         if (!upperAnimator) return;
 
@@ -119,12 +115,8 @@ public class CharacterAnimationController : MonoBehaviour
 
         var snap = TakeSnapshot();
 
-        var next = (type == WeaponType.Rifle) ? upperRifleController : upperPistolController;
-        if (next != null && upperAnimator.runtimeAnimatorController != next)
-        {
-            upperAnimator.runtimeAnimatorController = next;
-            upperAnimator.Update(0f); // 즉시 반영
-        }
+        upperAnimator.runtimeAnimatorController = gunData.upperAnimator;
+        upperAnimator.Update(0f); // 즉시 반영
 
         Restore(snap);
     }

@@ -96,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   player: {fileID: 0}
+  combatDuration: 5
 --- !u!1 &3470070528227405064
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,8 +143,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  currentWeapon: 1
+  weaponSlots:
+  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  currentIndex: 0
   OnWeaponChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAmmoChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnReloaded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &4444015179403229149
@@ -338,12 +348,6 @@ MonoBehaviour:
     magazineCapacity: 30
     currentMagazine: 30
     reserve: 90
-  OnAmmoChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnReloaded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7379851031130033215
 GameObject:
   m_ObjectHideFlags: 0
