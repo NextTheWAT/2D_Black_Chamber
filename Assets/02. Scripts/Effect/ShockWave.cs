@@ -9,11 +9,16 @@ public class ShockWave : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
     private Material instanceMaterial;
-    void Start()
+
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         instanceMaterial = Instantiate(spriteRenderer.material);
         spriteRenderer.material = instanceMaterial;
+    }
+
+    void OnEnable()
+    {
         Play(duration);
     }
 
