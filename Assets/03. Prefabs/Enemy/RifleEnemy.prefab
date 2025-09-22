@@ -306,10 +306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunPistolPoint: {fileID: 0}
-  gunRiflePoint: {fileID: 6434019260681293078}
-  pistol: {fileID: 0}
-  rifle: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  gunPoint: {fileID: 6434019260681293078}
+  gunData: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
   respectFireRate: 1
 --- !u!114 &-5200466512008399858
 MonoBehaviour:

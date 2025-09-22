@@ -15,19 +15,20 @@ public class WeaponSwitchCoordinator : MonoBehaviour
     private void OnEnable()
     {
         if (WeaponManager.Instance != null)
+        {
             WeaponManager.Instance.OnWeaponChanged.AddListener(OnWeaponChanged);
-
-        if (BulletManager.Instance != null)
-            BulletManager.Instance.OnAmmoChanged.AddListener(RefreshAmmo);
+            WeaponManager.Instance.OnAmmoChanged.AddListener(RefreshAmmo);
+        }
     }
 
     private void OnDisable()
     {
         if (WeaponManager.Instance != null)
+        {
             WeaponManager.Instance.OnWeaponChanged.RemoveListener(OnWeaponChanged);
+            WeaponManager.Instance.OnAmmoChanged.RemoveListener(RefreshAmmo);
+        }
 
-        if (BulletManager.Instance != null)
-            BulletManager.Instance.OnAmmoChanged.RemoveListener(RefreshAmmo);
     }
 
     private void Start()
@@ -35,14 +36,12 @@ public class WeaponSwitchCoordinator : MonoBehaviour
         // 시작 상태 반영
         if (WeaponManager.Instance != null)
             OnWeaponChanged(WeaponManager.Instance.CurrentWeapon);
-        else
-            OnWeaponChanged(WeaponType.Pistol);
     }
 
-    private void OnWeaponChanged(WeaponType type)
+    private void OnWeaponChanged(GunData gunData)
     {
         // 1) 상체 애니메이터 컨트롤러 스왑
-        anim?.ApplyUpperWeaponAnimator(type, playSwitchAnim: true);
+        anim?.ApplyUpperWeaponAnimator(gunData, playSwitchAnim: true);
 
         // 2) (선택) 탄 표시는 HUD 스크립트에서 처리 중이면 생략 가능
         RefreshAmmo();
@@ -50,8 +49,7 @@ public class WeaponSwitchCoordinator : MonoBehaviour
 
     private void RefreshAmmo()
     {
-        if (!hud || WeaponManager.Instance == null || BulletManager.Instance == null) return;
-        var type = WeaponManager.Instance.CurrentWeapon;
-        hud.SetAmmo(BulletManager.Instance.GetMagazine(type), BulletManager.Instance.GetReserve(type));
+        if (!hud || WeaponManager.Instance == null) return;
+        hud.SetAmmo(WeaponManager.Instance.GetMagazine(), WeaponManager.Instance.GetReserve());
     }
 }

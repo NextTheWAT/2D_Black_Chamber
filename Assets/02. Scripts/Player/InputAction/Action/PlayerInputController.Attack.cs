@@ -47,21 +47,13 @@ public partial class PlayerInputController : TopDownController
         var cam = Camera.main;
         if (cam == null) return;
 
-        // 현재 무기 타입 기준으로 총구 선택
-        var wm = WeaponManager.Instance;
-        var type = wm ? wm.CurrentWeapon : WeaponType.Pistol;
-
-        Transform muzzle = (type == WeaponType.Rifle)
-            ? shooter.gunRiflePoint
-            : shooter.gunPistolPoint;
-
-        if (muzzle == null) return;
+        if (shooter.gunPoint == null) return;
 
         // 마우스 → 월드 좌표
         Vector3 mouse = cam.ScreenToWorldPoint(Input.mousePosition);
-        mouse.z = muzzle.position.z;
+        mouse.z = shooter.gunPoint.position.z;
 
-        Vector2 dir = ((Vector2)(mouse - muzzle.position)).normalized;
+        Vector2 dir = ((Vector2)(mouse - shooter.gunPoint.position)).normalized;
 
         if (shooter.Shoot(dir))
         {
