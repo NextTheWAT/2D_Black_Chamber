@@ -8,13 +8,13 @@ public class BulletManager : Singleton<BulletManager>
     [Serializable]
     public struct WeaponSlot
     {
-        public WeaponType type;          // Pistol / Rifle
-        public int magazineCapacity;     // 탄창 용량
-        public int currentMagazine;      // 현재 탄창(쏠 수 있는 총알)
-        public int reserve;              // 남아있는 예비탄
+        public WeaponType type;
+        public int magazineCapacity;
+        public int currentMagazine;
+        public int reserve;
     }
 
-    [Header("탄약 설정 (원하면 인스펙터에서 수정)")]
+    [Header("탄약 설정")]
     [SerializeField]
     private WeaponSlot pistol = new()
     {
@@ -32,27 +32,14 @@ public class BulletManager : Singleton<BulletManager>
         reserve = 90
     };
 
-    [Header("현재 상태")]
-    [SerializeField] private WeaponType currentWeapon = WeaponType.Pistol;
+    public UnityEvent OnAmmoChanged;   // HUD가 구독
+    public UnityEvent OnReloaded;
 
-    //[Header("선택: 리로드 애니메이션 재생 연결")]
-    //[SerializeField] private CharacterAnimationController animationController;
-
-    // UI는 여기만 바라보면 됨
-    public UnityEvent OnAmmoChanged;   // 탄 수 바뀔 때 호출
-    public UnityEvent OnReloaded;      // 리로드 완료 시 호출
-
-    // ========== 외부 API ==========
-    public void SetCurrentWeapon(WeaponType type)
-    {
-        currentWeapon = type;
-        OnAmmoChanged?.Invoke();
-    }
-
-    /// <summary>발사 시 탄 1발 소비. 성공 true / 실패(빈 탄창) false</summary>
+    // ---- 외부 API ----
     public bool TryConsumeOneBullet()
     {
-        ref var slot = ref GetSlot(currentWeapon);
+        var type = GetCurrentType();
+        ref var slot = ref GetSlot(type);
         if (slot.currentMagazine <= 0) return false;
 
         slot.currentMagazine--;
@@ -60,13 +47,13 @@ public class BulletManager : Singleton<BulletManager>
         return true;
     }
 
-    /// <summary>R 입력 훅: 즉시 리로드. 예비탄이 허용하는 한에서만 채움</summary>
     public void RequestReload()
     {
-        ref var slot = ref GetSlot(currentWeapon);
+        var type = GetCurrentType();
+        ref var slot = ref GetSlot(type);
 
-        if (slot.currentMagazine >= slot.magazineCapacity) return; // 이미 가득
-        if (slot.reserve <= 0) return;                             // 예비탄 없음
+        if (slot.currentMagazine >= slot.magazineCapacity) return;
+        if (slot.reserve <= 0) return;
 
         int need = slot.magazineCapacity - slot.currentMagazine;
         int take = Mathf.Min(need, slot.reserve);
@@ -74,24 +61,26 @@ public class BulletManager : Singleton<BulletManager>
         slot.reserve -= take;
         slot.currentMagazine += take;
 
-        // 선택: 애니메이션/사운드 재생 (있으면 연결, 아니면 null이므로 무시됨)
-        //animationController?.PlayReload();
-
         OnAmmoChanged?.Invoke();
         OnReloaded?.Invoke();
     }
 
-    // UI에서 바로 쓰기 편하도록 getter 제공
-    //public int GetMagazine() => GetSlot(currentWeapon).currentMagazine;
-    //public int GetReserve() => GetSlot(currentWeapon).reserve;
+    // 조회용
     public int GetMagazine(WeaponType type) => GetSlot(type).currentMagazine;
     public int GetReserve(WeaponType type) => GetSlot(type).reserve;
 
-    // ========== 내부 ==========
+    //public int GetMagazineCurrent() => GetMagazine(GetCurrentType());
+    //public int GetReserveCurrent() => GetReserve(GetCurrentType());
+
+    // ---- 내부 ----
+    private WeaponType GetCurrentType()
+    {
+        return WeaponManager.Instance ? WeaponManager.Instance.CurrentWeapon : WeaponType.Pistol;
+    }
+
     private ref WeaponSlot GetSlot(WeaponType type)
     {
         if (type == WeaponType.Rifle) return ref rifle;
         return ref pistol;
     }
-
 }
