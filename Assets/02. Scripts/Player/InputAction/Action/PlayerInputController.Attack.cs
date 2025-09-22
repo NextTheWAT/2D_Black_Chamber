@@ -57,7 +57,6 @@ public partial class PlayerInputController : TopDownController
 
         if (shooter.Shoot(dir))
         {
-            UIManager.Instance?.PulseCrosshair(); // 크로스헤어 펄스
         }
         // 실패 시(쿨다운/빈 탄창)는 Shooter가 사운드/쿨다운 처리함
     }
