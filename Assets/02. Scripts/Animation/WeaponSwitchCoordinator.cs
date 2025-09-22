@@ -4,12 +4,12 @@ using Constants;
 public class WeaponSwitchCoordinator : MonoBehaviour
 {
     [SerializeField] private CharacterAnimationController anim;
-    [SerializeField] private UIWeaponHUD hud; // 선택: 여기서 탄 표시까지 갱신하려면 사용
+    // [SerializeField] private UIWeaponHUD hud; // 선택: 여기서 탄 표시까지 갱신하려면 사용
 
     private void Awake()
     {
         if (!anim) anim = GetComponent<CharacterAnimationController>();
-        if (!hud) hud = UIWeaponHUD.Instance; // 선택
+        // if (!hud) hud = UIWeaponHUD.Instance; // 선택
     }
 
     private void OnEnable()
@@ -49,7 +49,9 @@ public class WeaponSwitchCoordinator : MonoBehaviour
 
     private void RefreshAmmo()
     {
+        /*
         if (!hud || WeaponManager.Instance == null) return;
         hud.SetAmmo(WeaponManager.Instance.GetMagazine(), WeaponManager.Instance.GetReserve());
+        */
     }
 }

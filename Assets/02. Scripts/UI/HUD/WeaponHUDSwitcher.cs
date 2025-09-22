@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WeaponHUDSwitcher : MonoBehaviour
 {
-    [SerializeField] private UIWeaponHUD hud;
+    // [SerializeField] private UIWeaponHUD hud;
 
     private void OnEnable()
     {
@@ -29,14 +29,18 @@ public class WeaponHUDSwitcher : MonoBehaviour
 
     private void RefreshAll(GunData gunData)
     {
+        /*
         if (!hud) return;
         hud.SetIcon(gunData.weaponSprite);
         RefreshAmmo();
+        */
     }
 
     private void RefreshAmmo()
     {
+        /*
         if (!hud || WeaponManager.Instance == null) return;
         hud.SetAmmo(WeaponManager.Instance.GetMagazine(), WeaponManager.Instance.GetReserve());
+        */
     }
 }
