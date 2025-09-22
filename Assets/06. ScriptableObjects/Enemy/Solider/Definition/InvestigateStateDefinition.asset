@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d88ea9723b96dfb4fb7b59422f224228, type: 3}
   m_Name: InvestigateStateDefinition
   m_EditorClassIdentifier: 
-  investigateDuration: 5
+  investigateDuration: 15
   investigateRange: 2
   pauseDuration: 1

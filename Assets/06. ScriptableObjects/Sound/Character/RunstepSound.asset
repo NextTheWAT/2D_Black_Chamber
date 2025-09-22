@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
+  m_Name: RunstepSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: f98d02d2f9c7fac49b9052d3d1abff1b, type: 3}
+  - {fileID: 8300000, guid: d8029a0df26f97a4396c162a711bb3ab, type: 3}
+  - {fileID: 8300000, guid: 7fcbe0d945560db42b3ddefdf461f05e, type: 3}
+  - {fileID: 8300000, guid: b478518f918bd7941b115a07451734dc, type: 3}
+  - {fileID: 8300000, guid: 1d2512426ff5e214ca20a499fbcea87b, type: 3}
+  volume: 1

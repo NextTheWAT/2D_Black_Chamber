@@ -9,20 +9,24 @@ public class ExitPortal : MonoBehaviour
     public GameObject clearLight;
 
     [SerializeField]
-    public string clearSceneName = "";      // 클리어씬
+    public string clearSceneName = "ClearScene";      // 클리어씬
+
+    private MissionManager mm;
 
     private void Start()
     {
         defaultLight.SetActive(true);
         clearLight.SetActive(false);
 
-        MissionManager.Instance.OnPhaseChanged += ExitPhaseChanged; // 페이즈체인지일때 Exit페이즈체인지도 적용
+        mm = MissionManager.Instance;
+        if (mm != null)
+            mm.OnPhaseChanged += ExitPhaseChanged;
     }
 
     private void OnDestroy()
     {
-        if(MissionManager.Instance != null)
-            MissionManager.Instance.OnPhaseChanged -= ExitPhaseChanged; // 파괴될때 Exit페이즈체인지도 파괴
+        if (mm != null)
+            mm.OnPhaseChanged -= ExitPhaseChanged;
     }
 
     private void ExitPhaseChanged(MissionPhase phase)
@@ -39,12 +43,13 @@ public class ExitPortal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && MissionManager.Instance.Phase == MissionPhase.Escape)
+        if (!other.CompareTag("Player") || mm == null) return;
+
+        if (mm.Phase == MissionPhase.Escape)
         {
             Debug.Log("클리어하였습니다.");
-
-            MissionManager.Instance.SetPhase(MissionPhase.Completed);   // 페이즈 클리어로 바꿔주기
-
+            ClearRunData.lastGameplayScene = SceneManager.GetActiveScene().name;
+            mm.SetPhase(MissionPhase.Completed);
             SceneManager.LoadScene(clearSceneName);
         }
         else
