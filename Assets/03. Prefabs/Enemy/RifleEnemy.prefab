@@ -225,8 +225,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 5175531006165489716}
   stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
+  nonCombatStateType: 0
+  combatStateType: 0
+  health: {fileID: 5175531006165489716}
   angularSpeed: 120
   targetMask:
     serializedVersion: 2
@@ -290,6 +292,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 2024495404396908016}
   lowerAnimator: {fileID: 7094836262401345469}
+  upperPistolController: {fileID: 0}
+  upperRifleController: {fileID: 0}
 --- !u!114 &1894057060115248025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,8 +306,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunPoint: {fileID: 6434019260681293078}
-  gun: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  gunPistolPoint: {fileID: 0}
+  gunRiflePoint: {fileID: 6434019260681293078}
+  pistol: {fileID: 0}
+  rifle: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
   respectFireRate: 1
 --- !u!114 &-5200466512008399858
 MonoBehaviour:

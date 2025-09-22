@@ -12,7 +12,7 @@ public class WeaponSoundManager : SoundManagerBase<WeaponSoundManager>
 
     public void PlayReloadSound() => PlayRandom(reloadSound, weaponVol);
     public void PlayPistolShootSound() => PlayRandom(pistolShootSound, weaponVol);
-    public void PlayShootRifleSound() => PlayRandom(rifleShootSound, weaponVol);
+    public void PlayRifleShootSound() => PlayRandom(rifleShootSound, weaponVol);
     public void PlayEmptySound() => PlayRandom(emptySound, weaponVol);
 
 }
