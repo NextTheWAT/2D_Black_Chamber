@@ -70970,10 +70970,6 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 82587316}
-    - target: {fileID: 3079532760679915296, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-      propertyPath: m_InstanceId
-      value: -302082
-      objectReference: {fileID: 0}
     - target: {fileID: 3507418152336651286, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.742442
@@ -71014,22 +71010,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3834872891024348976, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-      propertyPath: rifle
-      value: 
-      objectReference: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
-    - target: {fileID: 3834872891024348976, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-      propertyPath: pistol
-      value: 
-      objectReference: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
-    - target: {fileID: 3834872891024348976, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-      propertyPath: gunRiflePoint
-      value: 
-      objectReference: {fileID: 1601054730}
-    - target: {fileID: 3834872891024348976, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-      propertyPath: gunPistolPoint
-      value: 
-      objectReference: {fileID: 2123252610}
     - target: {fileID: 6323664180436086190, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
       propertyPath: m_Name
       value: Player
@@ -71043,11 +71023,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
---- !u!4 &1601054730 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8163673487059955540, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-  m_PrefabInstance: {fileID: 1601054729}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1603391178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -73084,11 +73059,6 @@ Transform:
   - {fileID: 1878525174}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2123252610 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3635746013236650576, guid: 2c819f7c3130ed6429b9e7c52ec9bcb7, type: 3}
-  m_PrefabInstance: {fileID: 1601054729}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2132174905
 GameObject:
   m_ObjectHideFlags: 0

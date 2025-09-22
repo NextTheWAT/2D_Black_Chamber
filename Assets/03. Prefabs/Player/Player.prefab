@@ -502,7 +502,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 159398
+  m_InstanceId: -302082
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -712,10 +712,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunPistolPoint: {fileID: 0}
-  gunRiflePoint: {fileID: 0}
-  pistol: {fileID: 0}
-  rifle: {fileID: 0}
+  gunPistolPoint: {fileID: 3635746013236650576}
+  gunRiflePoint: {fileID: 8163673487059955540}
+  pistol: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  rifle: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
   respectFireRate: 1
 --- !u!114 &960190014545231420
 MonoBehaviour:
