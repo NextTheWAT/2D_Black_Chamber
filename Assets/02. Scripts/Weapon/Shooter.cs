@@ -3,10 +3,8 @@
 public class Shooter : MonoBehaviour
 {
     [Header("Refs")]
-    public Transform gunPistonPoint;   // 총구 위치(자식 Transform)
-    public Transform gunRiflePoint;
-    public GunData pistol;          // SO로 총 스펙 지정
-    public GunData rifle;
+    public Transform gunPoint;   // 총구 위치(자식 Transform)
+    public GunData gun;          // SO로 총 스펙 지정
 
     [Header("Options")]
     public bool respectFireRate = true; // true면 fireRate(초당 발사수) 준수
@@ -24,7 +22,7 @@ public class Shooter : MonoBehaviour
     /// </summary>
     public bool Shoot(Vector2 direction)
     {
-        if (gun == null || gunPistonPoint == null || pistol.bulletPrefab == null) return false;
+        if (gun == null || gunPoint == null || gun.bulletPrefab == null) return false;
         if (respectFireRate && cooldown > 0f) return false;
 
         // 1) 탄약 소비 시도 (탄창에 없으면 false)
@@ -33,24 +31,24 @@ public class Shooter : MonoBehaviour
             // 빈 탄창: 틱틱 사운드만
             WeaponSoundManager.Instance.PlayEmptySound(); // 사운드 매니저에 이 메서드 하나만 추가해줘
             if (respectFireRate)
-                cooldown = 1f / Mathf.Max(0.001f, pistol.fireRate); // 연사속도에 맞춰 틱틱 템포 유지(선택)
+                cooldown = 1f / Mathf.Max(0.001f, gun.fireRate); // 연사속도에 맞춰 틱틱 템포 유지(선택)
             return false;
         }
 
         // 2) 발사 처리
-        int count = Mathf.Max(1, pistol.projectilesPerShot);
+        int count = Mathf.Max(1, gun.projectilesPerShot);
         for (int i = 0; i < count; i++)
         {
-            Vector2 dir = ApplySpread(direction.normalized, pistol.spread);
+            Vector2 dir = ApplySpread(direction.normalized, gun.spread);
             SpawnBullet(dir);
         }
 
         if (respectFireRate)
-            cooldown = 1f / Mathf.Max(0.001f, pistol.fireRate);
+            cooldown = 1f / Mathf.Max(0.001f, gun.fireRate);
 
-        if (pistol.muzzleFlashPrefab)
+        if (gun.muzzleFlashPrefab)
         {
-            var fx = Instantiate(pistol.muzzleFlashPrefab, gunPistonPoint.position, gunPistonPoint.rotation);
+            var fx = Instantiate(gun.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
             Destroy(fx, 0.05f);
         }
 
@@ -61,7 +59,7 @@ public class Shooter : MonoBehaviour
 
     private void SpawnBullet(Vector2 dir)
     {
-        var go = Instantiate(pistol.bulletPrefab);
+        var go = Instantiate(gun.bulletPrefab);
         var b = go.GetComponent<Bullet>();
         if (!b)
         {
@@ -71,11 +69,11 @@ public class Shooter : MonoBehaviour
         }
 
         b.Init(
-            position: gunPistonPoint.position,
+            position: gunPoint.position,
             dir: dir,
-            speed: pistol.bulletSpeed,
-            damage: pistol.damage,
-            lifetime: pistol.bulletLife,
+            speed: gun.bulletSpeed,
+            damage: gun.damage,
+            lifetime: gun.bulletLife,
             ignoreLayer: gameObject.layer  // 자기 레이어는 무시
         );
     }
