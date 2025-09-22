@@ -88,6 +88,8 @@ public class CharacterAnimationController : MonoBehaviour
     {
         int hash = AnimationHash.Reload;
         upperAnimator.SetTrigger(hash);
+
+        WeaponSoundManager.Instance.PlayReloadSound(); // 재장전 사운드 재생
     }
 
     public void PlaySwitch()

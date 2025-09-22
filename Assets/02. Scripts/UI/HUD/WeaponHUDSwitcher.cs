@@ -3,29 +3,33 @@ using UnityEngine;
 
 public class WeaponHUDSwitcher : MonoBehaviour
 {
-    [SerializeField] private UIWeaponHUD hud; //실제 무기 아이콘, 탄약 표시 담당
+    [SerializeField] private UIWeaponHUD hud; // 실제 무기 아이콘, 탄약 표시 담당
 
     [Header("Icons")]
-    [SerializeField] private Sprite pistolIcon; //권총 상태 아이콘
-    [SerializeField] private Sprite rifleIcon; //라이플 상태 아이콘
+    [SerializeField] private Sprite pistolIcon; // 권총 상태 아이콘
+    [SerializeField] private Sprite rifleIcon;  // 라이플 상태 아이콘
 
-    [Header("Ammo Settings")]
-    [SerializeField] private int pistolMagazineSize = 6; //권총 장탄수
-    [SerializeField] private int rifleMagazineSize = 40; //라이플 장탄수
-    [SerializeField] private int reserveAmmo = 120; //공용 예비탄
-
-    private int currentMagazine; //현재 탄창에 남은 수
+    // (선택) 인스펙터 숨기고 싶으면 [HideInInspector]
+    private WeaponType activeType = WeaponType.Pistol;
 
     private void OnEnable()
     {
+        // GamePhase 구독
         if (GameManager.Instance != null)
             GameManager.Instance.OnPhaseChanged += HandlePhaseChanged;
+
+        // BulletManager 구독 (탄 수 변할 때마다 HUD 갱신)
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.OnAmmoChanged.AddListener(RefreshAmmoUI);
     }
 
     private void OnDisable()
     {
         if (GameManager.Instance != null)
             GameManager.Instance.OnPhaseChanged -= HandlePhaseChanged;
+
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.OnAmmoChanged.RemoveListener(RefreshAmmoUI);
     }
 
     private void Start()
@@ -44,15 +48,33 @@ public class WeaponHUDSwitcher : MonoBehaviour
 
     private void ApplyPistol()
     {
-        currentMagazine = pistolMagazineSize; // 권총 장탄 가득 채움
-        hud.SetIcon(pistolIcon);
-        hud.SetAmmo(currentMagazine, reserveAmmo);
+        activeType = WeaponType.Pistol;
+
+        // BulletManager에도 현재 무기 타입을 알려줘서 소비/표시 일치
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.SetCurrentWeapon(activeType);
+
+        if (hud != null) hud.SetIcon(pistolIcon);
+        RefreshAmmoUI();
     }
 
     private void ApplyRifle()
     {
-        currentMagazine = rifleMagazineSize; // 라이플 장탄 가득 채움
-        hud.SetIcon(rifleIcon);
-        hud.SetAmmo(currentMagazine, reserveAmmo);
+        activeType = WeaponType.Rifle;
+
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.SetCurrentWeapon(activeType);
+
+        if (hud != null) hud.SetIcon(rifleIcon);
+        RefreshAmmoUI();
+    }
+
+    private void RefreshAmmoUI()
+    {
+        if (hud == null || BulletManager.Instance == null) return;
+
+        int mag = BulletManager.Instance.GetMagazine(activeType);
+        int res = BulletManager.Instance.GetReserve(activeType);
+        hud.SetAmmo(mag, res);
     }
 }
