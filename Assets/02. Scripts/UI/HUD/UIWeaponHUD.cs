@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Constants;
 
 public class UIWeaponHUD : MonoBehaviour //무기 아이콘, 탄약 표시
 {

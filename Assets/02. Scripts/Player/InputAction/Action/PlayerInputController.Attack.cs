@@ -5,8 +5,6 @@ public partial class PlayerInputController : TopDownController
 {
     //[SerializeField] private CrosshairUI crosshair; // 인스펙터에서 할당
 
-    [SerializeField] Shooter shooter;
-
     private bool shootPressed = false;
     public bool ShootPressed => shootPressed;
 
