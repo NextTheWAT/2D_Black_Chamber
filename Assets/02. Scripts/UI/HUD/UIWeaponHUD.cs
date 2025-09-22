@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Constants;
 
-public class UIWeaponHUD : MonoBehaviour //무기 아이콘, 탄약 표시
+public class UIWeaponHUD : Singleton<UIWeaponHUD>
+    //무기 아이콘, 탄약 표시
+    //제너릭 싱글톤으로 교체
 {
     [Header("UI Refs")]
     [SerializeField] private Image iconImage; //무기 아이콘

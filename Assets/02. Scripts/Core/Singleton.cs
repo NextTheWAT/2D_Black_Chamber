@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     public static bool AppIsQuitting { get; private set; } = false;
@@ -10,51 +11,45 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         get
         {
             if (AppIsQuitting) return null;
+            if (instance == null)
+                instance = FindObjectOfType<T>(true); // 씬/프리팹에 있는 것만 찾기
 
-            lock (lockObj)
+            if (instance == null)
             {
-                if (instance == null)
+                lock (lockObj)
                 {
-                    instance = FindObjectOfType<T>();
                     if (instance == null)
                     {
-                        GameObject singletonObject = new(typeof(T).Name);
-                        instance = singletonObject.AddComponent<T>();
+                        GameObject singletonObj = new(typeof(T).Name);
+                        instance = singletonObj.AddComponent<T>();
                     }
                 }
-                return instance;
             }
+
+            return instance; // 없으면 null 반환
         }
     }
 
-
     protected virtual void Awake()
     {
-        if (instance == null)
-        {
-            instance = this as T;
-            Initialize();
+        if (instance != null && instance != this) { Destroy(gameObject); return; }
+        instance = this as T;
 
-            if (dontDestroyOnLoad)
-                DontDestroyOnLoad(gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
+        if (dontDestroyOnLoad)
+            DontDestroyOnLoad(gameObject);
+
+        Initialize();
     }
 
     protected virtual void Initialize() { }
 
     protected virtual void OnDestroy()
     {
-        if (instance == this)
-            instance = null;
-
-        if (!Application.isPlaying)
-            AppIsQuitting = true;
+        if (instance == this) instance = null;
     }
 
     private void OnApplicationQuit()
-        => AppIsQuitting = true;
+    {
+        AppIsQuitting = true;
+    }
 }

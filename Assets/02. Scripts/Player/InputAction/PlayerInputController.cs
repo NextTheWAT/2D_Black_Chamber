@@ -3,13 +3,16 @@ using UnityEngine.InputSystem;
 
 public partial class PlayerInputController : TopDownController
 {
+    [SerializeField] Shooter shooter;
     private CharacterAnimationController animationController;
+    private WeaponSwitchCoordinator weaponSwitchCoordinator;
 
     private void Awake()
     {
         _camera = Camera.main;
         shooter = GetComponent<Shooter>();
         animationController = GetComponent<CharacterAnimationController>();
+        weaponSwitchCoordinator = GetComponent<WeaponSwitchCoordinator>();
     }
 
     private void LateUpdate()

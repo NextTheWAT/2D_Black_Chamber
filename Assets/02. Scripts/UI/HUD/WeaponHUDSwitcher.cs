@@ -1,58 +1,45 @@
+// WeaponHUDSwitcher.cs (전체 교체)
 using Constants;
 using UnityEngine;
 
 public class WeaponHUDSwitcher : MonoBehaviour
 {
-    [SerializeField] private UIWeaponHUD hud; //실제 무기 아이콘, 탄약 표시 담당
-
-    [Header("Icons")]
-    [SerializeField] private Sprite pistolIcon; //권총 상태 아이콘
-    [SerializeField] private Sprite rifleIcon; //라이플 상태 아이콘
-
-    [Header("Ammo Settings")]
-    [SerializeField] private int pistolMagazineSize = 6; //권총 장탄수
-    [SerializeField] private int rifleMagazineSize = 40; //라이플 장탄수
-    [SerializeField] private int reserveAmmo = 120; //공용 예비탄
-
-    private int currentMagazine; //현재 탄창에 남은 수
+    [SerializeField] private UIWeaponHUD hud;
+    [SerializeField] private Sprite pistolIcon;
+    [SerializeField] private Sprite rifleIcon;
 
     private void OnEnable()
     {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnPhaseChanged += HandlePhaseChanged;
+        if (WeaponManager.Instance != null)
+            WeaponManager.Instance.OnWeaponChanged.AddListener(RefreshAll);
+
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.OnAmmoChanged.AddListener(RefreshAmmo);
+
+        // 초기 1회 갱신
+        RefreshAll(WeaponManager.Instance ? WeaponManager.Instance.CurrentWeapon : WeaponType.Pistol);
     }
 
     private void OnDisable()
     {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnPhaseChanged -= HandlePhaseChanged;
+        if (WeaponManager.Instance != null)
+            WeaponManager.Instance.OnWeaponChanged.RemoveListener(RefreshAll);
+
+        if (BulletManager.Instance != null)
+            BulletManager.Instance.OnAmmoChanged.RemoveListener(RefreshAmmo);
     }
 
-    private void Start()
+    private void RefreshAll(WeaponType type)
     {
-        // 시작은 권총 상태
-        ApplyPistol();
+        if (!hud) return;
+        hud.SetIcon(type == WeaponType.Rifle ? rifleIcon : pistolIcon);
+        RefreshAmmo();
     }
 
-    private void HandlePhaseChanged(GamePhase phase)
+    private void RefreshAmmo()
     {
-        if (phase == GamePhase.Stealth)
-            ApplyPistol();
-        else if (phase == GamePhase.Combat)
-            ApplyRifle();
-    }
-
-    private void ApplyPistol()
-    {
-        currentMagazine = pistolMagazineSize; // 권총 장탄 가득 채움
-        hud.SetIcon(pistolIcon);
-        hud.SetAmmo(currentMagazine, reserveAmmo);
-    }
-
-    private void ApplyRifle()
-    {
-        currentMagazine = rifleMagazineSize; // 라이플 장탄 가득 채움
-        hud.SetIcon(rifleIcon);
-        hud.SetAmmo(currentMagazine, reserveAmmo);
+        if (!hud || WeaponManager.Instance == null || BulletManager.Instance == null) return;
+        var type = WeaponManager.Instance.CurrentWeapon;
+        hud.SetAmmo(BulletManager.Instance.GetMagazine(type), BulletManager.Instance.GetReserve(type));
     }
 }

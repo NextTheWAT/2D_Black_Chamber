@@ -25,7 +25,17 @@ public class Shooter : MonoBehaviour
         if (gun == null || gunPoint == null || gun.bulletPrefab == null) return false;
         if (respectFireRate && cooldown > 0f) return false;
 
-        // 발사
+        // 1) 탄약 소비 시도 (탄창에 없으면 false)
+        if (!BulletManager.Instance.TryConsumeOneBullet())
+        {
+            // 빈 탄창: 틱틱 사운드만
+            WeaponSoundManager.Instance.PlayEmptySound(); // 사운드 매니저에 이 메서드 하나만 추가해줘
+            if (respectFireRate)
+                cooldown = 1f / Mathf.Max(0.001f, gun.fireRate); // 연사속도에 맞춰 틱틱 템포 유지(선택)
+            return false;
+        }
+
+        // 2) 발사 처리
         int count = Mathf.Max(1, gun.projectilesPerShot);
         for (int i = 0; i < count; i++)
         {
@@ -33,22 +43,16 @@ public class Shooter : MonoBehaviour
             SpawnBullet(dir);
         }
 
-        // 쿨다운 설정
         if (respectFireRate)
             cooldown = 1f / Mathf.Max(0.001f, gun.fireRate);
 
-        //VFX
         if (gun.muzzleFlashPrefab)
         {
             var fx = Instantiate(gun.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
             Destroy(fx, 0.05f);
         }
 
-        //SFX
-        if (gun.shotSfx)
-        {
-            AudioSource.PlayClipAtPoint(gun.shotSfx, gunPoint.position);
-        }
+        WeaponSoundManager.Instance.PlayPistolShootSound(); // 필요하면 무기 타입에 따라 분기
 
         return true;
     }
