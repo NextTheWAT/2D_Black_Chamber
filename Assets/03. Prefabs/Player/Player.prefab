@@ -406,6 +406,7 @@ GameObject:
   - component: {fileID: 5297714505067383858}
   - component: {fileID: 3834872891024348976}
   - component: {fileID: 960190014545231420}
+  - component: {fileID: 2375955192712751179}
   - component: {fileID: 5750304085905906524}
   - component: {fileID: 6640463618591403365}
   m_Layer: 6
@@ -500,7 +501,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -90178
+  m_InstanceId: -182848
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -626,9 +627,37 @@ MonoBehaviour:
     m_ActionId: be43fb08-492d-43ab-9129-cf4ff351c3a5
     m_ActionName: Player/Look[/Mouse/delta]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5297714505067383858}
+        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+        m_MethodName: OnReload
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b9d94c20-438b-471c-a578-678b8e5ed264
     m_ActionName: Player/Reload[/Keyboard/r]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5297714505067383858}
+        m_TargetAssemblyTypeName: PlayerInputController, Assembly-CSharp
+        m_MethodName: OnSwitch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d28cf8d8-d01f-4be7-9a94-863c5046917b
+    m_ActionName: Player/Switch[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -667,9 +696,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40202bc6237c8df4da5466cb23925928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shooter: {fileID: 0}
   continuousMouseAim: 1
   condition: {fileID: 0}
+  shooter: {fileID: 0}
 --- !u!114 &3834872891024348976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -699,6 +728,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 8944864754343972750}
   lowerAnimator: {fileID: 2294372615916966701}
+  upperPistolController: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
+  upperRifleController: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
+--- !u!114 &2375955192712751179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4faf771166152c4c884321a7e1d7a84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  hud: {fileID: 0}
 --- !u!60 &5750304085905906524
 PolygonCollider2D:
   m_ObjectHideFlags: 0
