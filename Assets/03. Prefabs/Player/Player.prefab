@@ -432,6 +432,7 @@ Transform:
   - {fileID: 3577211585311607969}
   - {fileID: 593076399287293149}
   - {fileID: 3635746013236650576}
+  - {fileID: 8163673487059955540}
   - {fileID: 6897331150039959142}
   - {fileID: 8485142863907274931}
   m_Father: {fileID: 0}
@@ -501,7 +502,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -182848
+  m_InstanceId: 159398
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -711,8 +712,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunPoint: {fileID: 3635746013236650576}
-  gun: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  gunPistolPoint: {fileID: 0}
+  gunRiflePoint: {fileID: 0}
+  pistol: {fileID: 0}
+  rifle: {fileID: 0}
   respectFireRate: 1
 --- !u!114 &960190014545231420
 MonoBehaviour:
@@ -960,7 +963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3635746013236650576}
   m_Layer: 6
-  m_Name: GunPoint
+  m_Name: GunPistolPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -975,7 +978,38 @@ Transform:
   m_GameObject: {fileID: 7579643628302968377}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.953, z: 0}
+  m_LocalPosition: {x: 0.031, y: 1.056, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3507418152336651286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8549629543999225851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8163673487059955540}
+  m_Layer: 6
+  m_Name: GunRiflePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8163673487059955540
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8549629543999225851}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.241, y: 1.093, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
