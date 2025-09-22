@@ -68,6 +68,7 @@ public class Bullet : MonoBehaviour
                     effect.transform.up = hit.normal; //법선 방향으로 이펙트 방향 설정
                 }
 
+                NoiseManager.Instance.EmitNoise(hit.point, 1.0f);
                 Destroy(gameObject);
                 return;
             }
@@ -82,6 +83,8 @@ public class Bullet : MonoBehaviour
                     GameObject effect = Instantiate(obstacleHitEffect, hit.point, Quaternion.identity);
                     effect.transform.up = hit.normal; //법선 방향으로 이펙트 방향 설정
                 }
+
+                NoiseManager.Instance.EmitNoise(hit.point, 1.0f);
                 Destroy(gameObject);
                 return;
             }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Constants;
 
-
 public static class StateFactory
 {
     public static Dictionary<Type, IState> CreateStates(Enemy enemy, StateTable table)

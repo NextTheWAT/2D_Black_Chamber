@@ -13,6 +13,19 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             if (AppIsQuitting) return null;
             if (instance == null)
                 instance = FindObjectOfType<T>(true); // 씬/프리팹에 있는 것만 찾기
+
+            if (instance == null)
+            {
+                lock (lockObj)
+                {
+                    if (instance == null)
+                    {
+                        GameObject singletonObj = new(typeof(T).Name);
+                        instance = singletonObj.AddComponent<T>();
+                    }
+                }
+            }
+
             return instance; // 없으면 null 반환
         }
     }

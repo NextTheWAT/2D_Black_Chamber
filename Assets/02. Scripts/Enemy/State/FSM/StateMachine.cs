@@ -1,55 +1,42 @@
 using System;
 using System.Collections.Generic;
-
 public class StateMachine
 {
+    private readonly Dictionary<Type, IState> states = new();
+    private readonly List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
+    private readonly List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
     private IState currentState;
-    private Dictionary<Type, IState> states = new();
-    private List<Transition> transitions = new(); // 특정 상태에서 적용되는 전환
-    private List<Transition> globalTransitions = new(); // 모든 상태에서 적용되는 전환
-
     public IState CurrentState => currentState;
+    private readonly IState startState;
 
     protected Enemy owner;
 
-    public StateMachine(Enemy owner, StateTable stateTable)
+    public StateMachine(Enemy owner, StateTable stateTable, Type startType)
     {
+        // 상태 초기화
         this.owner = owner;
         states = StateFactory.CreateStates(owner, stateTable);
         if (states.Count == 0)
             ConditionalLogger.LogWarning("StateMachine에 상태가 하나도 없습니다.");
 
         // 초기 상태 설정
-        IState startState = states[stateTable.StartStateType];
-        ChangeState(startState);
+        startState = states[startType];
     }
-
-    public void SetNonCombatStateTransitions()
-    {
-
-    }
-
-    public void SetCombatStateTransitions()
-    {
-
-    }
-
 
 
     public T GetState<T>() where T : class, IState
         => states[typeof(T)] as T;
 
-    public void AddState(IState state)
+    public void Start()
     {
-        Type type = state.GetType();
+        ConditionalLogger.Log("StateMachine Start");
+        ChangeState(startState);
+    }
 
-        if (states.ContainsKey(type))
-        {
-            ConditionalLogger.LogWarning($"이미 {state} 상태가 존재합니다.");
-            return;
-        }
-
-        states[type] = state;
+    public void Stop()
+    {
+        currentState?.Exit();
+        currentState = null;
     }
 
     public void ChangeState(IState state)
@@ -64,13 +51,31 @@ public class StateMachine
     {
         Type from = typeof(TFrom);
         Type to = typeof(TTo);
+
+        if (!states.ContainsKey(from))
+        {
+            ConditionalLogger.LogWarning($"StateMachine에 {from} 상태가 존재하지 않습니다.");
+            return;
+        }
+        if (!states.ContainsKey(to))
+        {
+            ConditionalLogger.LogWarning($"StateMachine에 {to} 상태가 존재하지 않습니다.");
+            return;
+        }
+
         transitions.Add(new Transition(states[from], states[to], condition, callback));
     }
-
 
     public void AddGlobalTransition<TTo>(Func<bool> condition, Action callback = null) where TTo : IState
     {
         Type to = typeof(TTo);
+
+        if (!states.ContainsKey(to))
+        {
+            ConditionalLogger.LogWarning($"StateMachine에 {to} 상태가 존재하지 않습니다.");
+            return;
+        }
+
         globalTransitions.Add(new Transition(null, states[to], condition, callback));
     }
 
@@ -80,7 +85,6 @@ public class StateMachine
 
         // 현재 상태 업데이트
         currentState.Update();
-
 
         // GlobalTransition 체크
         foreach (var t in globalTransitions)

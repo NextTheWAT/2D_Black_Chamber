@@ -1,12 +1,17 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
+using Constants;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("FSM")]
+    [SerializeField] private StateTable stateTable;
+    [SerializeField] private NonCombatStateType nonCombatStateType;
+    [SerializeField] private CombatStateType combatStateType;
+
     [Header("Stat")]
     [SerializeField] private Health health;
-    [SerializeField] private StateTable stateTable;
     [SerializeField] private float angularSpeed = 120f;
 
     [Header("Detection")]
@@ -36,10 +41,12 @@ public class Enemy : MonoBehaviour
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
-    private StateMachine stateMachine;
+    private StateMachine noncombatStateMachine;
+    private StateMachine combatStateMachine;
     private CharacterAnimationController animationController;
     public bool IsHit { get; private set; }
     public bool IsDead => health.IsDead;
+    public StateMachine CurrentStateMachine => GameManager.Instance.IsCombat ? combatStateMachine : noncombatStateMachine;
 
     public float ViewDistance => forwardLight.pointLightOuterRadius;
     public float ViewAngle => forwardLight.pointLightOuterAngle;
@@ -133,7 +140,7 @@ public class Enemy : MonoBehaviour
     private Transform targetInFOV;
     public Transform TargetInFOV
     {
-        get { return targetInFOV; }
+        get => targetInFOV;
         set
         {
             targetInFOV = value;
@@ -149,6 +156,10 @@ public class Enemy : MonoBehaviour
 
     public bool AutoRotate { get; set; }
 
+    private bool changeToCombat = false;
+
+    public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
+
     private void Start()
     {
         coll = GetComponent<Collider2D>();
@@ -156,22 +167,42 @@ public class Enemy : MonoBehaviour
         animationController = GetComponent<CharacterAnimationController>();
 
         if (isTarget)
-            stateMachine = new TargetFSM(this, stateTable);
+        {
+            noncombatStateMachine = new TargetFSM(this, stateTable, typeof(PatrolState));
+            combatStateMachine = new TargetFSM(this, stateTable, typeof(FleeState));
+        }
         else
-            stateMachine = new SoliderFSM(this, stateTable);
+        {
+            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(PatrolState), nonCombatStateType);
+            combatStateMachine = StateMachineFactory.CreatetStateMachine(this, stateTable, typeof(CoverState), combatStateType);
+        }
+
+        CurrentStateMachine.Start();
     }
 
     private void Update()
     {
+        if (GameManager.Instance.IsCombat)
+        {
+            if (!changeToCombat)
+            {
+                ConditionalLogger.Log("Switch to Combat State Machine");
+                noncombatStateMachine.Stop();
+                combatStateMachine.Start();
+                changeToCombat = true;
+            }
+        }
+
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
-        stateMachine?.UpdateState(); // 상태 머신 업데이트
-        stateType = stateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
+
+        CurrentStateMachine?.UpdateState(); // 상태 머신 업데이트
+        stateType = CurrentStateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
         UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
         Rotate(); // 회전
 
-        // 맞았던 상태 초기화
-        if(IsHit)
-            IsHit = false;
+        
+        if (IsHit) IsHit = false; // 맞았던 상태 초기화
+        if (IsNoiseDetected) IsNoiseDetected = false; // 소음 감지 상태 초기화
     }
 
     private void UpdateMoveBlend()
@@ -235,6 +266,14 @@ public class Enemy : MonoBehaviour
 
     public void FindTarget(float viewAngle, float viewDistance)
         => Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+
+    public void HeardNoise(Vector2 noisePosition)
+    {
+        if (GameManager.Instance.IsCombat) return;
+        IsNoiseDetected = true;
+        LastKnownTargetPos = noisePosition;
+        ConditionalLogger.Log("Heard Noise : " + gameObject.name);
+    }
 
     public void Hit(int currentHealth, int maxHealth)
     {
