@@ -9,7 +9,7 @@ public class WeaponManager : Singleton<WeaponManager>
 
     public GunData[] intializeDatas;
     [HideInInspector] public Shooter[] weaponSlots;
-    private int currentIndex = 0;
+    public int currentIndex = 0;
 
     [Serializable] public class WeaponChangedEvent : UnityEvent<Shooter> { }
     public WeaponChangedEvent OnWeaponChanged = new();         // HUD/애니/사운드가 구독
