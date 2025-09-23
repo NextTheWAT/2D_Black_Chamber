@@ -196,7 +196,7 @@ public class Enemy : MonoBehaviour
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
 
         CurrentStateMachine?.UpdateState(); // 상태 머신 업데이트
-        stateType = CurrentStateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
+        // stateType = CurrentStateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
         UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
         Rotate(); // 회전
 
@@ -299,6 +299,9 @@ public class Enemy : MonoBehaviour
         animationController.PlayDie();
         coll.enabled = false;
         enabled = false;
+
+        // 미션 카운팅 감소
+        GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

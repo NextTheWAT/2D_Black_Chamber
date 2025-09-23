@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 2207446290490613089}
   - component: {fileID: 208123243127908645}
   - component: {fileID: 2697154082547761088}
-  - component: {fileID: 832514891371369143}
   - component: {fileID: 4215764903156184602}
   - component: {fileID: 6262810931504493246}
   - component: {fileID: 3191301827752158431}
@@ -118,8 +117,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 208123243127908645}
   stateTable: {fileID: 11400000, guid: 9c3c562fcbfdaf64e8d911c666c77053, type: 2}
+  nonCombatStateType: 0
+  combatStateType: 0
+  health: {fileID: 208123243127908645}
   angularSpeed: 120
   targetMask:
     serializedVersion: 2
@@ -134,7 +135,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
-  shooter: {fileID: 832514891371369143}
+  shooter: {fileID: 0}
   returnPoint: {fileID: 0}
   stateType: 
   isTarget: 1
@@ -195,21 +196,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 4582954057272408066}
   lowerAnimator: {fileID: 8081028850479260102}
---- !u!114 &832514891371369143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701606878684549374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gunPoint: {fileID: 0}
-  gun: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
-  respectFireRate: 1
+  upperPistolController: {fileID: 0}
+  upperRifleController: {fileID: 0}
 --- !u!114 &4215764903156184602
 MonoBehaviour:
   m_ObjectHideFlags: 0

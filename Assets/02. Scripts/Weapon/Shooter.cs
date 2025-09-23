@@ -4,93 +4,114 @@ using Constants;
 public class Shooter : MonoBehaviour
 {
     [Header("Refs")]
-    public Transform gunPistolPoint;  // 피스톨 총구
-    public Transform gunRiflePoint;   // 라이플 총구
-    public GunData pistol;            // 피스톨 스펙
-    public GunData rifle;             // 라이플 스펙
+    public Transform gunPoint; // 현재 무기 총구 (WeaponManager에서 세팅)
+    public GunData gunData; // 현재 무기 데이터
+    private int currentMagazine; // 현재 탄창
+    private int currentAmmo;  // 현재 탄약
+
+    public int CurrentMagazine => currentMagazine;
+    public int CurrentAmmo => currentAmmo;
 
     [Header("Options")]
     public bool respectFireRate = true;
 
     // 무기별 쿨다운을 별도로 관리 (전환 시 쿨다운 꼬임 방지)
-    private float cooldownPistol;
-    private float cooldownRifle;
+    private float cooldown;
+
+    private void Awake()
+    {
+        gunPoint = new GameObject("GunPoint").transform;
+        gunPoint.SetParent(transform);
+    }
+
+    private void Start()
+    {
+        Initialize(gunData);
+    }
 
     private void Update()
     {
         if (!respectFireRate) return;
-        if (cooldownPistol > 0f) cooldownPistol -= Time.deltaTime;
-        if (cooldownRifle > 0f) cooldownRifle -= Time.deltaTime;
+        if (cooldown > 0f) cooldown -= Time.deltaTime;
+    }
+
+    public void Initialize(GunData gunData)
+    {
+        this.gunData = gunData;
+        currentMagazine = gunData.maxMagazine;
+        currentAmmo = gunData.maxAmmo;
+        gunPoint.localPosition = gunData.firePointOffset;
+        cooldown = 0f;
+        WeaponManager.Instance.OnAmmoChanged?.Invoke();
     }
 
     /// <summary>현재 무기 타입에 맞춰 발사</summary>
     public bool Shoot(Vector2 direction)
     {
-        var wm = WeaponManager.Instance;
-        var type = wm ? wm.CurrentWeapon : WeaponType.Pistol;
-
-        // 현재 무기에 맞는 데이터/총구/쿨다운 선택
-        GunData gun;
-        Transform muzzle;
-        ref float cd = ref cooldownPistol;
-
-        if (type == WeaponType.Rifle)
-        {
-            gun = rifle;
-            muzzle = gunRiflePoint;
-            cd = ref cooldownRifle;
-        }
-        else
-        {
-            gun = pistol;
-            muzzle = gunPistolPoint;
-            cd = ref cooldownPistol;
-        }
-
         // 필수 레퍼런스 검사
-        if (gun == null || muzzle == null || gun.bulletPrefab == null) return false;
+        if (gunData == null || gunPoint == null || gunData.bulletPrefab == null) return false;
 
         // 발사 간격 체크
-        if (respectFireRate && cd > 0f) return false;
+        if (respectFireRate && cooldown > 0f) return false;
 
-        // 탄약 소비 (현재 무기 기준으로 BulletManager가 알아서 처리)
-        if (!BulletManager.Instance.TryConsumeOneBullet())
+        // 탄약 소비
+        if (currentAmmo <= 0)
         {
             // 빈 탄창: 틱틱 사운드만
-            WeaponSoundManager.Instance?.PlayEmptySound();
+            WeaponSoundManager.Instance.PlayEmptySound();
             if (respectFireRate)
-                cd = 1f / Mathf.Max(0.001f, gun.fireRate); // 틱틱 템포 유지(선택)
+                cooldown = 1f / Mathf.Max(0.001f, gunData.fireRate); // 틱틱 템포 유지(선택)
             return false;
         }
 
+        currentAmmo--;
+        WeaponManager.Instance.OnAmmoChanged?.Invoke();
+
         // 발사 처리
-        int count = Mathf.Max(1, gun.projectilesPerShot);
+        int count = Mathf.Max(1, gunData.projectilesPerShot);
         Vector2 baseDir = direction.sqrMagnitude > 0.0001f ? direction.normalized
-                                                           : (Vector2)muzzle.right;
+                                                           : (Vector2)gunPoint.right;
 
         for (int i = 0; i < count; i++)
         {
-            Vector2 dir = ApplySpread(baseDir, gun.spread);
-            SpawnBullet(gun, muzzle, dir);
+            Vector2 dir = ApplySpread(baseDir, gunData.spread);
+            SpawnBullet(gunData, gunPoint, dir);
         }
 
         // 다음 발사까지 쿨다운
         if (respectFireRate)
-            cd = 1f / Mathf.Max(0.001f, gun.fireRate);
+            cooldown = 1f / Mathf.Max(0.001f, gunData.fireRate);
 
-        // 이펙트/사운드
-        if (gun.muzzleFlashPrefab)
+        // 이펙트
+        if (gunData.muzzleFlashPrefab)
         {
-            var fx = Instantiate(gun.muzzleFlashPrefab, muzzle.position, muzzle.rotation);
+            var fx = Instantiate(gunData.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
             Destroy(fx, 0.05f);
         }
 
-        if (type == WeaponType.Rifle)
-            WeaponSoundManager.Instance?.PlayRifleShootSound();
-        else
-            WeaponSoundManager.Instance?.PlayPistolShootSound();
+        // 사운드
+        if (gunData.displayName.Contains("Pistol"))
+            WeaponSoundManager.Instance.PlayPistolShootSound();
+        else if(gunData.displayName.Contains("Rifle"))
+            WeaponSoundManager.Instance.PlayRifleShootSound();
 
         return true;
+    }
+
+    public void Reload()
+    {
+        if (gunData == null) return;
+        if (currentAmmo >= gunData.maxAmmo) return; // 이미 가득
+        if (currentMagazine <= 0) return; 
+
+        currentMagazine--;
+        currentAmmo = gunData.maxAmmo;
+
+        WeaponManager.Instance.OnAmmoChanged?.Invoke();
+        WeaponManager.Instance.OnReloaded?.Invoke();
+
+        // 리로드 사운드
+        WeaponSoundManager.Instance.PlayReloadSound();
     }
 
     private void SpawnBullet(GunData gun, Transform muzzle, Vector2 dir)

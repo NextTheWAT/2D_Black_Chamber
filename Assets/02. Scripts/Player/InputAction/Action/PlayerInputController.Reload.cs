@@ -9,6 +9,6 @@ public partial class PlayerInputController : TopDownController
         if (!ctx.performed) return;
 
         animationController.PlayReload();
-        BulletManager.Instance?.RequestReload();
+        WeaponManager.Instance.RequestReload();
     }
 }
