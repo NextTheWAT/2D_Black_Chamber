@@ -90,7 +90,10 @@ public class Shooter : MonoBehaviour
         }
 
         // 사운드
-        WeaponSoundManager.Instance.PlayRandom(gunData.shootSound);
+        if (gunData.displayName.Contains("Pistol"))
+            WeaponSoundManager.Instance.PlayPistolShootSound();
+        else if(gunData.displayName.Contains("Rifle"))
+            WeaponSoundManager.Instance.PlayRifleShootSound();
 
         return true;
     }
