@@ -31,19 +31,19 @@ public class GameManager : Singleton<GameManager>
 
                 if (CurrentPhase == GamePhase.Combat)
                 {
-                    exitCombatTime = Time.time + combatDuration;
+                    RefreshCombatTimer();
                     exitCombatCoroutine ??= StartCoroutine(ExitCombat());
                     ConditionalLogger.Log("Entered Combat Mode");
                 }
                 else
                 {
                     if (exitCombatCoroutine != null)
+                    {
                         StopCoroutine(exitCombatCoroutine);
+                        exitCombatCoroutine = null;
+                    }
                 }
-
-
             }
-
         }
     }
 
@@ -58,7 +58,14 @@ public class GameManager : Singleton<GameManager>
         while (Time.time < exitCombatTime)
             yield return null;
         IsCombat = false;
+        exitCombatCoroutine = null;
         ConditionalLogger.Log("Exited Combat Mode");
+    }
+
+    public void RefreshCombatTimer()
+    {
+        if (IsCombat)
+            exitCombatTime = Time.time + combatDuration;
     }
 
 }

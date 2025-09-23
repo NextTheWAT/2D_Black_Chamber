@@ -106,6 +106,7 @@ public class Shooter : MonoBehaviour
 
         currentMagazine--;
         currentAmmo = gunData.maxAmmo;
+        cooldown = 0.5f; // 리로드 시간 (임시)
 
         WeaponManager.Instance.OnAmmoChanged?.Invoke();
         WeaponManager.Instance.OnReloaded?.Invoke();
@@ -130,6 +131,7 @@ public class Shooter : MonoBehaviour
             dir: dir,
             speed: gun.bulletSpeed,
             damage: gun.damage,
+            noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
             ignoreLayer: gameObject.layer
         );

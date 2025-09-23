@@ -6,8 +6,9 @@ public class AttackStateDefinition : StateDefinition
 {
     public float maxAttackRange = 6f;
     public float desiredAttackDistance = 3f;
+    public float meleeAttackRange = 1.5f;
 
     public override Type StateType => typeof(AttackState);
     public override IState CreateState(Enemy enemy)
-        => new AttackState(enemy, maxAttackRange, desiredAttackDistance);
+        => new AttackState(enemy, maxAttackRange, desiredAttackDistance, meleeAttackRange);
 }
