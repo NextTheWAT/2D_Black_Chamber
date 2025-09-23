@@ -47,6 +47,7 @@ public class Enemy : MonoBehaviour
     public bool IsHit { get; private set; }
     public bool IsDead => health.IsDead;
     public StateMachine CurrentStateMachine => GameManager.Instance.IsCombat ? combatStateMachine : noncombatStateMachine;
+    public StateMachine PreviousStateMachine => previousGamePhase == GamePhase.Combat ? combatStateMachine : noncombatStateMachine;
 
     public float ViewDistance => forwardLight.pointLightOuterRadius;
     public float ViewAngle => forwardLight.pointLightOuterAngle;
@@ -156,7 +157,7 @@ public class Enemy : MonoBehaviour
 
     public bool AutoRotate { get; set; }
 
-    private bool changeToCombat = false;
+    private GamePhase previousGamePhase;
 
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
 
@@ -178,25 +179,24 @@ public class Enemy : MonoBehaviour
         }
 
         CurrentStateMachine.Start();
+
+        previousGamePhase = GameManager.Instance.CurrentPhase;
     }
 
     private void Update()
     {
-        if (GameManager.Instance.IsCombat)
+        if(previousGamePhase != GameManager.Instance.CurrentPhase)
         {
-            if (!changeToCombat)
-            {
-                ConditionalLogger.Log("Switch to Combat State Machine");
-                noncombatStateMachine.Stop();
-                combatStateMachine.Start();
-                changeToCombat = true;
-            }
+            PreviousStateMachine?.Stop();
+            CurrentStateMachine?.Start();
+            previousGamePhase = GameManager.Instance.CurrentPhase;
+            ConditionalLogger.Log($"Switch State Machine {GameManager.Instance.CurrentPhase}");
         }
 
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
 
         CurrentStateMachine?.UpdateState(); // 상태 머신 업데이트
-        // stateType = CurrentStateMachine?.CurrentState.ToString(); // 디버그용 상태 타입 문자열
+        stateType = CurrentStateMachine?.CurrentState?.ToString(); // 디버그용 상태 타입 문자열
         UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
         Rotate(); // 회전
 
@@ -237,8 +237,16 @@ public class Enemy : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
-    public void Attack()
-        => shooter.Shoot(transform.up);
+    public void Attack(){
+        if(shooter.CurrentAmmo <= 0 && shooter.CurrentMagazine > 0)
+        {
+            shooter.Reload();
+        }
+        else
+        {
+            shooter.Shoot(transform.up);
+        }
+    }
 
     public void UpdateLight()
     {

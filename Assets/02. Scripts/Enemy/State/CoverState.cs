@@ -53,7 +53,6 @@ public class CoverState : BaseState
         Vector3[] corners = GetPathCorners();
         if (corners == null || corners.Length <= 2)
         {
-            ConditionalLogger.Log("CoverState: No Path or Too Short");
             lookPoint = owner.Target.position;
             return owner.transform.position;
         }
