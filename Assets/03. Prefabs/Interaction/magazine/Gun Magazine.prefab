@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7382323547300228458}
   - component: {fileID: 7425541864686750561}
   m_Layer: 0
-  m_Name: Mini_G17_Magazine
+  m_Name: Gun Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
