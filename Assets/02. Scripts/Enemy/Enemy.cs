@@ -299,6 +299,9 @@ public class Enemy : MonoBehaviour
         animationController.PlayDie();
         coll.enabled = false;
         enabled = false;
+
+        // 미션 카운팅 감소
+        GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
