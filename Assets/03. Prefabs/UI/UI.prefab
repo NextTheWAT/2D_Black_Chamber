@@ -962,7 +962,6 @@ GameObject:
   - component: {fileID: 6185940029360178104}
   - component: {fileID: 5854626819363750629}
   - component: {fileID: 2814853604724991721}
-  - component: {fileID: 2499160681632630039}
   m_Layer: 0
   m_Name: GameCanvas
   m_TagString: Untagged
@@ -1073,22 +1072,6 @@ MonoBehaviour:
   rifleObject: {fileID: 8341841006860028452}
   knifeObject: {fileID: 8710064594400648582}
   ammoText: {fileID: 3986576744510390965}
---- !u!114 &2499160681632630039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256957165345634949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa832d967c04fef408d617fc7947514c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pistolIndex: 0
-  rifleIndex: 1
-  knifeIndex: 2
-  ammoCheckInterval: 0.25
 --- !u!1 &1352692629158807695
 GameObject:
   m_ObjectHideFlags: 0

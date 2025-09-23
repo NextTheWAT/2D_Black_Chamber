@@ -105,13 +105,13 @@ public class UIHUDSlots : MonoBehaviour
 
     private void RefreshWeaponUI()
     {
+        if (WeaponManager.Instance == null || WeaponManager.Instance.CurrentWeapon == null)
+            return;
+
         // 총알이 하나도 없으면 Knife 표시
         bool hasAnyAmmo = false;
-        if (WeaponManager.Instance)
-        {
-            int total = WeaponManager.Instance.GetMagazine() + WeaponManager.Instance.GetReserve();
-            hasAnyAmmo = total > 0;
-        }
+        int total = WeaponManager.Instance.GetMagazine() + WeaponManager.Instance.GetReserve();
+        hasAnyAmmo = total > 0;
 
         if (!hasAnyAmmo)
         {
@@ -121,7 +121,8 @@ public class UIHUDSlots : MonoBehaviour
         }
 
         // 전투 상태면 Rifle, 잠입 상태면 Pistol
-        bool isCombat = GameManager.Instance && GameManager.Instance.CurrentPhase == Constants.GamePhase.Combat;
+        bool isCombat = GameManager.Instance &&
+                        GameManager.Instance.CurrentPhase == Constants.GamePhase.Combat;
         ShowOnly(isCombat ? rifleObject : pistolObject);
 
         RefreshAmmo();
