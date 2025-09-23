@@ -57,6 +57,7 @@ public class Enemy : MonoBehaviour
 
     public Transform ReturnPoint => returnPoint;
 
+    public Shooter Shooter => shooter;
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
@@ -161,6 +162,7 @@ public class Enemy : MonoBehaviour
 
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
 
+
     private void Start()
     {
         coll = GetComponent<Collider2D>();
@@ -240,6 +242,7 @@ public class Enemy : MonoBehaviour
     public void Attack(){
         if(shooter.CurrentAmmo <= 0 && shooter.CurrentMagazine > 0)
         {
+            animationController.PlayReload();
             shooter.Reload();
         }
         else

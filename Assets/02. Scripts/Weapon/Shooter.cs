@@ -106,6 +106,7 @@ public class Shooter : MonoBehaviour
 
         currentMagazine--;
         currentAmmo = gunData.maxAmmo;
+        cooldown = 0.5f; // 리로드 시간 (임시)
 
         WeaponManager.Instance.OnAmmoChanged?.Invoke();
         WeaponManager.Instance.OnReloaded?.Invoke();
