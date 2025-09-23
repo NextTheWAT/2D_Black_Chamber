@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5794643144253643122}
   - component: {fileID: 8122615885707096387}
   m_Layer: 0
-  m_Name: coins-chests-etc-2-0_2
+  m_Name: coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
