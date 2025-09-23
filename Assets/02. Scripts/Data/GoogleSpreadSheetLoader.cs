@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class GoogleSpreadSheetLoader : EditorWindow
 {
     private GoogleSpreadSheetConfig config;
-    private string folderPath = "Assets/06.ScriptableObjects"; // 기본 경로
+    private string folderPath = "Assets/06. ScriptableObjects"; // 기본 경로
 
     [MenuItem("Tools/Google Sheet Loader")]
     public static void ShowWindow()
@@ -92,7 +92,8 @@ public class GoogleSpreadSheetLoader : EditorWindow
         string assetPath = $"{path}/{data.assetName}.asset";
         AssetDatabase.CreateAsset(sheetAsset, assetPath);
         AssetDatabase.SaveAssets();
-
+        
+        SheetToSOConverter.ConvertEnemySheet(sheetAsset, path);
         Debug.Log($"[GoogleSheetLoader] 저장 완료: {assetPath}");
     }
 

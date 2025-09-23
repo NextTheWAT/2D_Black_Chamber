@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   datas:
   - startCell: A4
-    endCell: Y10
+    endCell: Y12
     mainURL: https://docs.google.com/spreadsheets/d/14mVVS4Zx4tCKRM31gx-LvHmIB6PplHoEWJJ_PAecss4
     gid: 0
-    assetName: EnemySheet
+    assetName: SheetData
