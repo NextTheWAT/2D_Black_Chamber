@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
-  m_Name: PistolShootSound
+  m_Name: SteathSound
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 10195cb9d76b0d245b52df7e6569a743, type: 3}
+  - {fileID: 8300000, guid: d4e2ebe6b515a314b861ac83cace2358, type: 3}
   volume: 0.5
