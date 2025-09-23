@@ -16,6 +16,11 @@ public class Door : MonoBehaviour, Iinteraction
 
     private void Start()
     {
+        if (!player)
+        {
+            var p = GameObject.FindGameObjectWithTag("Player");
+            if (p) player = p.transform;
+        }
 
         closeRotation = transform.rotation;    // 처음 닫혀있을때 회전값 저장
         targetRotation = closeRotation;
