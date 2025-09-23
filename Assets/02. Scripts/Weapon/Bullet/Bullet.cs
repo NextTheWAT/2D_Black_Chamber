@@ -10,8 +10,6 @@ public class Bullet : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayers;
     [SerializeField] private GameObject damageHitEffect; // 적 충돌 이펙트 프리팹
     [SerializeField] private GameObject obstacleHitEffect; // 장애물 충돌 이펙트 프리팹
-    //[SerializeField] private bool useTagFilter = false;
-    //[SerializeField] private string[] damageTags;         // 예: "Enemy", "Player"
 
     private int dmg;
     private float life;
@@ -27,7 +25,7 @@ public class Bullet : MonoBehaviour
         col.isTrigger = true; // 간단하게 Trigger 충돌만
     }
 
-    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float noiseRange, float lifetime, int ignoreLayer)
+    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float noiseRange, float lifetime, int ignoreLayer, string bulletTag)
     {
         transform.position = position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -38,6 +36,7 @@ public class Bullet : MonoBehaviour
         spawnTime = Time.time;
         this.ignoreLayer = ignoreLayer;
         this.noiseRange = noiseRange;
+        gameObject.tag = bulletTag;
 
         previousPos = transform.position;
         rb.velocity = dir.normalized * speed;
@@ -60,6 +59,8 @@ public class Bullet : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(previousPos, moveDir, moveDist, damageLayers);
             if (hit.collider != null)
             {
+                if (hit.collider.CompareTag(gameObject.tag)) return; //자기 자신과 같은 태그는 무시
+
                 //충돌 처리
                 IDamageable target = hit.collider.GetComponent<IDamageable>();
                 target?.TakeDamage(dmg);
@@ -79,6 +80,8 @@ public class Bullet : MonoBehaviour
             hit = Physics2D.Raycast(previousPos, moveDir, moveDist, obstacleLayers);
             if (hit.collider != null)
             {
+                if (hit.collider.CompareTag(gameObject.tag)) return; //자기 자신과 같은 태그는 무시
+
                 //충돌 처리
                 if (obstacleHitEffect != null)
                 {
@@ -94,35 +97,4 @@ public class Bullet : MonoBehaviour
 
         previousPos = transform.position;
     }
-    /*
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        //1. 발사자 레이어는 무시
-        if (other.gameObject.layer == ignoreLayer) return;
-        ConditionalLogger.Log("Bullet hit: " + other.name);
-
-        //2. 레이어 필터링
-        int otherLayerBit = 1 << other.gameObject.layer;
-        if((damageLayers.value & otherLayerBit) == 0) return; // 데미지 레이어 필터링
-
-        // 3) 태그 필터
-        //if (useTagFilter && (damageTags == null || damageTags.Length == 0))
-        //    return;
-        //if (useTagFilter)
-        //{
-        //    bool tagOK = false;
-        //    for (int i = 0; i < damageTags.Length; i++)
-        //    {
-        //        if (other.CompareTag(damageTags[i])) { tagOK = true; break; }
-        //    }
-        //    if (!tagOK) return;
-        //}
-
-        //인터페이스로 데미지 전달
-        IDamageable target = other.GetComponent<IDamageable>();
-        target?.TakeDamage(dmg);
-
-        Destroy(gameObject);
-    }
-    */
 }

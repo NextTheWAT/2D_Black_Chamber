@@ -292,8 +292,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 2024495404396908016}
   lowerAnimator: {fileID: 7094836262401345469}
-  upperPistolController: {fileID: 0}
-  upperRifleController: {fileID: 0}
 --- !u!114 &1894057060115248025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,7 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunPoint: {fileID: 6434019260681293078}
-  gunData: {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  gunData: {fileID: 11400000, guid: 9933e2e930c924f4bac18e8e28cda6d3, type: 2}
   respectFireRate: 1
 --- !u!114 &-5200466512008399858
 MonoBehaviour:
