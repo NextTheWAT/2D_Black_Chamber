@@ -9,6 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd1e8a6830e42f74aa061913eca692a1, type: 3}
-  m_Name: SheetData
+  m_Script: {fileID: 11500000, guid: 533ab14d0703e064db8b37d9a0dedd17, type: 3}
+  m_Name: GoogleSpreadSheetConfig
   m_EditorClassIdentifier: 
+  datas:
+  - startCell: A4
+    endCell: Y10
+    mainURL: https://docs.google.com/spreadsheets/d/14mVVS4Zx4tCKRM31gx-LvHmIB6PplHoEWJJ_PAecss4
+    gid: 0
+    assetName: EnemySheet

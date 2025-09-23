@@ -1,65 +1,115 @@
-using System.Collections;
-using UnityEngine;
-using UnityEngine.Networking;
 #if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
-#endif
+using UnityEngine.Networking;
 
-public class GoogleSpreadSheetLoader : MonoBehaviour
+public class GoogleSpreadSheetLoader : EditorWindow
 {
-    public string startCell = "A1";
-    public string endCell = "C10";
-    public string mainURL = "https://docs.google.com/spreadsheets/d/1uI-9xo0u57DOf1XYX-oInEzX1HNYdYHlMcPgnsXe1cc";
-    public string gid = "0"; // 기본 시트의 GID
-    public string assetName = "SheetData"; // 저장될 SO 이름
+    private GoogleSpreadSheetConfig config;
+    private string folderPath = "Assets/06.ScriptableObjects"; // 기본 경로
 
-    public string URL => mainURL + Format + Range + GID;
-    public string Format => "/export?format=tsv";
-    public string Range => "&range=" + startCell + ":" + endCell;
-    public string GID => "&gid=" + gid;
-
-    private void Start()
+    [MenuItem("Tools/Google Sheet Loader")]
+    public static void ShowWindow()
     {
-        StartCoroutine(DownloadSheet());
+        GetWindow<GoogleSpreadSheetLoader>("Google Sheet Loader");
     }
 
-    IEnumerator DownloadSheet()
+    private void OnGUI()
     {
-        UnityWebRequest unityWebRequest = UnityWebRequest.Get(URL);
-        yield return unityWebRequest.SendWebRequest();
+        GUILayout.Label("Google Sheet Loader", EditorStyles.boldLabel);
 
-        if (unityWebRequest.result != UnityWebRequest.Result.Success)
+        // ScriptableObject 드래그해서 할당
+        config = (GoogleSpreadSheetConfig)EditorGUILayout.ObjectField("Config", config, typeof(GoogleSpreadSheetConfig), false);
+
+        if (config == null)
         {
-            Debug.LogError(unityWebRequest.error);
-            yield break;
+            EditorGUILayout.HelpBox("GoogleSpreadSheetConfig.asset 을 선택하세요.", MessageType.Info);
+            return;
         }
 
-        string text = unityWebRequest.downloadHandler.text;
-        string[] rows = text.Split('\n');
+        // datas 리스트 수정 가능하게 표시
+        SerializedObject so = new(config);
+        SerializedProperty datasProp = so.FindProperty("datas");
+        EditorGUILayout.PropertyField(datasProp, true);
+        so.ApplyModifiedProperties();
 
-        int rowCount = rows.Length;
-        int colCount = rows[0].Split('\t').Length;
-        string[,] cells = new string[rowCount, colCount];
+        GUILayout.Space(10);
 
-        for (int r = 0; r < rowCount; r++)
+        // 폴더 선택 버튼
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("저장 폴더:", folderPath);
+        if (GUILayout.Button("Select Folder", GUILayout.Width(120)))
         {
-            string[] cols = rows[r].Split('\t');
-            for (int c = 0; c < colCount; c++)
+            string selectedPath = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
+            if (!string.IsNullOrEmpty(selectedPath))
             {
-                cells[r, c] = cols[c];
+                // 절대 경로를 상대 경로로 변환
+                if (selectedPath.StartsWith(Application.dataPath))
+                {
+                    folderPath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
+                }
+                else
+                {
+                    Debug.LogWarning("폴더는 프로젝트 내부에 있어야 합니다.");
+                }
             }
         }
+        EditorGUILayout.EndHorizontal();
 
-#if UNITY_EDITOR
-        // ScriptableObject 생성 및 저장
-        Sheet sheetAsset = ScriptableObject.CreateInstance<Sheet>();
+        GUILayout.Space(10);
+
+        // 다운로드 버튼
+        if (GUILayout.Button("Download All"))
+        {
+            if (!AssetDatabase.IsValidFolder(folderPath))
+                AssetDatabase.CreateFolder("Assets", folderPath.Replace("Assets/", ""));
+
+            foreach (var data in config.datas)
+            {
+                if (string.IsNullOrEmpty(data.assetName)) continue;
+                DownloadSheetSync(data, folderPath);
+            }
+        }
+    }
+
+    private void DownloadSheetSync(GoogleSpreadSheetData data, string path)
+    {
+        using var request = UnityWebRequest.Get(data.URL);
+        request.SendWebRequest();
+        while (!request.isDone) { }
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"[GoogleSheetLoader] {data.assetName} : {request.error}");
+            return;
+        }
+
+        string[,] cells = ParseTSV(request.downloadHandler.text);
+
+        var sheetAsset = CreateInstance<Sheet>();
         sheetAsset.SetData(cells);
 
-        string assetPath = $"Assets/06. ScriptableObjects/{assetName}.asset";
+        string assetPath = $"{path}/{data.assetName}.asset";
         AssetDatabase.CreateAsset(sheetAsset, assetPath);
         AssetDatabase.SaveAssets();
 
-        Debug.Log($"Sheet ScriptableObject 저장 완료: {assetPath}");
-#endif
+        Debug.Log($"[GoogleSheetLoader] 저장 완료: {assetPath}");
+    }
+
+    private string[,] ParseTSV(string text)
+    {
+        var rows = text.Split('\n');
+        int rowCount = rows.Length;
+        int colCount = rows[0].Split('\t').Length;
+        var cells = new string[rowCount, colCount];
+
+        for (int r = 0; r < rowCount; r++)
+        {
+            var cols = rows[r].Split('\t');
+            for (int c = 0; c < cols.Length; c++)
+                cells[r, c] = cols[c];
+        }
+        return cells;
     }
 }
+#endif
