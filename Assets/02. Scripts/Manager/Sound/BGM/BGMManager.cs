@@ -14,6 +14,11 @@ public class BGMManager : SoundManagerBase<BGMManager>
     bool _useA = true;
     Coroutine _fade;
 
+    // 상태 기본 볼륨(SoundData.volume)을 저장
+    float _phaseBaseVolume = 1f;
+    // 직전 타겟(= base × master)을 저장해 마스터 변경 시 비율 보존
+    float _lastTargetVolume = 1f;
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -27,12 +32,17 @@ public class BGMManager : SoundManagerBase<BGMManager>
             gm.OnPhaseChanged += OnPhaseChanged;
             SetPhase(gm.CurrentPhase, instant: true);
         }
+
+        // BGM 마스터 볼륨 변경에 실시간 반응
+        VolumeSettings.OnBgmChanged += ApplyMasterBgm;
     }
 
     void OnDestroy()
     {
         var gm = GameManager.Instance;
         if (gm != null) gm.OnPhaseChanged -= OnPhaseChanged;
+
+        VolumeSettings.OnBgmChanged -= ApplyMasterBgm;
     }
 
     AudioSource CreateLoopingSource(string name)
@@ -56,13 +66,14 @@ public class BGMManager : SoundManagerBase<BGMManager>
         var nextClip = ExtractRandomClip(data);
         if (nextClip == null) return;
 
-        float targetVolume = Mathf.Clamp01(data.volume);
+        _phaseBaseVolume = Mathf.Clamp01(data.volume);
+        float targetVolume = _phaseBaseVolume * VolumeSettings.Bgm;
 
         var from = _useA ? _a : _b;
         var to = _useA ? _b : _a;
         _useA = !_useA;
 
-        // 같은 클립이면 재생 유지하고 볼륨만 조정해도 됨
+        // 같은 클립이면 재생 유지하고 볼륨만 조정해도 OK
         if (to.clip != nextClip) to.clip = nextClip;
         if (!to.isPlaying) to.Play();
 
@@ -72,20 +83,21 @@ public class BGMManager : SoundManagerBase<BGMManager>
         {
             to.volume = targetVolume;
             if (from.isPlaying) from.Stop();
+            _lastTargetVolume = targetVolume;
         }
         else
         {
             // 시작 시점 볼륨 초기화
-            to.volume = 0f;
-            _fade = StartCoroutine(CrossFade(from, to, targetVolume));
+            float toStart = 0f;
+            to.volume = toStart;
+            _fade = StartCoroutine(CrossFade(from, to, toStart, targetVolume));
         }
     }
 
-    IEnumerator CrossFade(AudioSource from, AudioSource to, float targetVolume)
+    IEnumerator CrossFade(AudioSource from, AudioSource to, float toStart, float targetVolume)
     {
         float t = 0f;
-        float fromStart = from != null ? from.volume : 0f;
-        float toStart = to.volume;
+        float fromStart = from ? from.volume : 0f;
 
         while (t < fadeTime)
         {
@@ -98,7 +110,27 @@ public class BGMManager : SoundManagerBase<BGMManager>
         }
 
         to.volume = targetVolume;
-        if (from != null && from.isPlaying) from.Stop();
+        if (from && from.isPlaying) from.Stop();
+
+        _lastTargetVolume = targetVolume;
+    }
+
+    // 마스터(BGM) 변경 시, 현재 볼륨을 비율 유지하며 스케일
+    void ApplyMasterBgm(float master)
+    {
+        float newTarget = _phaseBaseVolume * Mathf.Clamp01(master);
+
+        if (_a && _a.isPlaying)
+        {
+            float ratio = (_lastTargetVolume > 0f) ? (_a.volume / _lastTargetVolume) : 0f;
+            _a.volume = newTarget * ratio;
+        }
+        if (_b && _b.isPlaying)
+        {
+            float ratio = (_lastTargetVolume > 0f) ? (_b.volume / _lastTargetVolume) : 0f;
+            _b.volume = newTarget * ratio;
+        }
+        _lastTargetVolume = newTarget;
     }
 
     // SoundData 내부에서 랜덤 곡 하나 뽑기
@@ -106,12 +138,11 @@ public class BGMManager : SoundManagerBase<BGMManager>
     {
         if (data == null) return null;
 
-        // 프로젝트의 SoundData 정의에 맞게 필드명만 확인
-        var list = data.clips; // AudioClip[] 예상
+        var list = data.clips; // AudioClip[] 예상 (프로젝트 정의에 맞게 필드명만 확인)
         if (list != null && list.Length > 0)
             return list[Random.Range(0, list.Length)];
 
-        // 단일 clip만 쓰는 구조라면 아래 주석 사용
+        // 단일 clip만 쓰는 구조라면:
         // return data.clip;
 
         return null;
