@@ -131,6 +131,7 @@ public class Shooter : MonoBehaviour
             dir: dir,
             speed: gun.bulletSpeed,
             damage: gun.damage,
+            noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
             ignoreLayer: gameObject.layer
         );
