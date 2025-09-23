@@ -9,7 +9,8 @@ public class NoiseManager : Singleton<NoiseManager>
 
     public void EmitNoise(Vector3 position, float noiseRange)
     {
-        if(noiseRange <= 0) return;
+        if (GameManager.Instance.IsCombat) return;
+        if (noiseRange <= 0) return;
 
         // 충격파 오브젝트 생성
         GameObject shockWaveObject = Instantiate(shockWavePrefab.gameObject, position, Quaternion.identity);
