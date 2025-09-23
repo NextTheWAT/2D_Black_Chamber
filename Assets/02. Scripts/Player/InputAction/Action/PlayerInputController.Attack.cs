@@ -58,6 +58,10 @@ public partial class PlayerInputController : TopDownController
         if (shooter.Shoot(dir))
         {
         }
+        else
+        {
+            animationController.SetActiveShoot(false);
+        }
         // ½ÇÆÐ ½Ã(Äð´Ù¿î/ºó ÅºÃ¢)´Â Shooter°¡ »ç¿îµå/Äð´Ù¿î Ã³¸®ÇÔ
     }
 }

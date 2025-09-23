@@ -27,7 +27,7 @@ public class WeaponHUDSwitcher : MonoBehaviour
         }
     }
 
-    private void RefreshAll(GunData gunData)
+    private void RefreshAll(Shooter shooter)
     {
         /*
         if (!hud) return;
