@@ -20,8 +20,8 @@ public class GunData : ScriptableObject
     public RuntimeAnimatorController upperAnimator; // 상체 애니메이터
     public Sprite weaponSprite;                         // 무기 이미지
 
-    [Header("SFX")]
-    public SoundData shootSound;                      // 옵션
+    //[Header("SFX")]
+    //public SoundData shootSound;                      // 옵션
 
     [Header("Bullet Lifetime")]
     [Min(0.1f)] public float bulletLife = 2f;
