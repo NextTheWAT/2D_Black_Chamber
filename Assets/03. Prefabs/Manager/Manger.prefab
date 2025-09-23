@@ -201,12 +201,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  poolSize: 20
-  stealthClips:
-  - {fileID: 8300000, guid: d4e2ebe6b515a314b861ac83cace2358, type: 3}
-  combatClips:
-  - {fileID: 8300000, guid: 037329804af4cde4493bbdf758c9e5f7, type: 3}
-  bgmVolume: 0.5
+  poolSize: 2
+  stealthBGM: {fileID: 11400000, guid: fd18eced3dbdaea40ba4df5e065772e7, type: 2}
+  combatBGM: {fileID: 11400000, guid: f1f3781bfb5d1644287e818554d6200d, type: 2}
   fadeTime: 0.8
 --- !u!1 &4444015179403229149
 GameObject:
