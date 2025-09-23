@@ -5,40 +5,57 @@ using Constants;
 
 public class WeaponManager : Singleton<WeaponManager>
 {
-    public GunData CurrentWeapon => weaponSlots[currentIndex];
+    public Shooter CurrentWeapon => weaponSlots[currentIndex];
 
-    public GunData[] weaponSlots;
-    public int currentIndex = 0;
-    private Shooter playerShooter;
+    public GunData[] intializeDatas;
+    [HideInInspector] public Shooter[] weaponSlots;
+    private int currentIndex = 0;
 
-    [Serializable] public class WeaponChangedEvent : UnityEvent<GunData> { }
+    [Serializable] public class WeaponChangedEvent : UnityEvent<Shooter> { }
     public WeaponChangedEvent OnWeaponChanged = new();         // HUD/애니/사운드가 구독
 
     public UnityEvent OnAmmoChanged;   // HUD가 구독
     public UnityEvent OnReloaded;
 
+    public int CurrentWeaponIndex
+    {
+        get => currentIndex;
+        set
+        {
+            if(currentIndex == value) return; // 같은 무기 선택 방지
+            if (value < 0 || value >= weaponSlots.Length) return; // 범위 검사
+
+            currentIndex = value;
+
+            OnWeaponChanged.Invoke(CurrentWeapon);
+        }
+    }
+
     private void Start()
     {
-        SetWeapon(CurrentWeapon);
+        CurrentWeaponIndex = 0;
+
+        // 무기 초기화
+        weaponSlots = new Shooter[intializeDatas.Length];
+
+        for (int i = 0; i < intializeDatas.Length; i++)
+        {
+            var go = new GameObject(intializeDatas[i].displayName);
+            go.transform.SetParent(GameManager.Instance.player);
+            go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            var shooter = go.AddComponent<Shooter>();
+            shooter.Initialize(intializeDatas[i]);
+            weaponSlots[i] = shooter;
+        }
     }
 
-    public void ConnectPlayerShooter(Shooter shooter)
-        => playerShooter = shooter;
-
-    // 명시 전환
-    public void SetWeapon(GunData gunData)
-    {
-        playerShooter.Initialize(gunData);
-        OnWeaponChanged.Invoke(gunData);
-    }
-    public int GetMagazine() => playerShooter.CurrentMagazine;
-    public int GetReserve() => playerShooter.CurrentAmmo;
-    public void RequestReload() => playerShooter.Reload();
+    public int GetMagazine() => CurrentWeapon.CurrentMagazine;
+    public int GetReserve() => CurrentWeapon.CurrentAmmo;
+    public void RequestReload() => CurrentWeapon.Reload();
 
     public void Toggle()
     {
-        currentIndex = (currentIndex + 1) % weaponSlots.Length;
-        SetWeapon(weaponSlots[currentIndex]);
+        CurrentWeaponIndex = (currentIndex + 1) % weaponSlots.Length;
         /*
         var next = (currentWeapon == WeaponType.Pistol) ? WeaponType.Rifle : WeaponType.Pistol;
         SetWeapon(next);
