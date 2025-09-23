@@ -395,6 +395,6 @@ MonoBehaviour:
     m_Bits: 2176
   obstacleLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 513
   damageHitEffect: {fileID: 3355093780470377054, guid: dee555a4c7f65fb4e89482fb1b39e088, type: 3}
   obstacleHitEffect: {fileID: 31258431754281099, guid: 091de20db6325294d9946af1a9930159, type: 3}
