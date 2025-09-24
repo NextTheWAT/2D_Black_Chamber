@@ -36,8 +36,15 @@ public class Door : MonoBehaviour, Iinteraction
     {
         if (!isOpen)
         {
-            Vector3 openPosition = Quaternion.AngleAxis(90, Vector3.up) * player.forward;   // 오픈위치를 플레이어앞의 90도로 열리게
-            targetRotation = Quaternion.LookRotation(openPosition, Vector3.up);
+            Vector2 doorPosition = new Vector2(transform.position.x, transform.position.y);    // 문 위치
+            Vector2 playerPosition = new Vector2(player.position.x, player.position.y);        // 플레이어 위치
+            Vector2 direction = (playerPosition - doorPosition);
+
+            Vector2 localDirection = transform.InverseTransformPoint(player.position);  // 월드좌표를 로컬좌표로 바꿔줌
+
+            float angle = (localDirection.x >= 0) ? -90f : 90f;
+
+            targetRotation = closeRotation * Quaternion.Euler(0, 0, angle);
         }
         else
         {
