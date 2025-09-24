@@ -259,6 +259,9 @@ public class Enemy : MonoBehaviour
         forwardLight.color = originalColor;
         backwardLight.color = originalColor;
 
+        forwardLight.enabled = true;
+        backwardLight.enabled = true;
+
         if (HasTargetInFOV)
         {
             forwardLight.color = suspiciousColor;
