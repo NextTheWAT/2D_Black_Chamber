@@ -12,7 +12,7 @@ public class AssaultState : BaseState
 
     public override void Enter()
     {
-        owner.Target = GameManager.Instance.player;
+        owner.Target = GameManager.Instance.Player;
         ConditionalLogger.Log("AssaultState Enter");
     }
 

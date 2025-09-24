@@ -6,20 +6,36 @@ using UnityEngine.Networking;
 public class GoogleSpreadSheetLoader : EditorWindow
 {
     private GoogleSpreadSheetConfig config;
-    private string folderPath = "Assets/06. ScriptableObjects"; // 기본 경로
+    private SerializedObject serializedConfig;
+
+    private const string PREF_KEY = "GoogleSpreadSheetLoader_LastConfigPath";
 
     [MenuItem("Tools/Google Sheet Loader")]
     public static void ShowWindow()
     {
-        GetWindow<GoogleSpreadSheetLoader>("Google Sheet Loader");
+        var window = GetWindow<GoogleSpreadSheetLoader>("Google Sheet Loader");
+
+        // EditorPrefs에서 마지막 사용 Config 불러오기
+        string lastPath = EditorPrefs.GetString(PREF_KEY, "");
+        if (!string.IsNullOrEmpty(lastPath))
+        {
+            var lastConfig = AssetDatabase.LoadAssetAtPath<GoogleSpreadSheetConfig>(lastPath);
+            if (lastConfig != null)
+            {
+                window.SetConfig(lastConfig);
+            }
+        }
     }
 
     private void OnGUI()
     {
         GUILayout.Label("Google Sheet Loader", EditorStyles.boldLabel);
 
-        // ScriptableObject 드래그해서 할당
-        config = (GoogleSpreadSheetConfig)EditorGUILayout.ObjectField("Config", config, typeof(GoogleSpreadSheetConfig), false);
+        var newConfig = (GoogleSpreadSheetConfig)EditorGUILayout.ObjectField("Config", config, typeof(GoogleSpreadSheetConfig), false);
+        if (newConfig != config)
+        {
+            SetConfig(newConfig);
+        }
 
         if (config == null)
         {
@@ -27,52 +43,84 @@ public class GoogleSpreadSheetLoader : EditorWindow
             return;
         }
 
-        // datas 리스트 수정 가능하게 표시
-        SerializedObject so = new(config);
-        SerializedProperty datasProp = so.FindProperty("datas");
-        EditorGUILayout.PropertyField(datasProp, true);
-        so.ApplyModifiedProperties();
+        serializedConfig.Update();
 
-        GUILayout.Space(10);
-
-        // 폴더 선택 버튼
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("저장 폴더:", folderPath);
-        if (GUILayout.Button("Select Folder", GUILayout.Width(120)))
+        // datas 리스트 직접 그리기
+        SerializedProperty datasProp = serializedConfig.FindProperty("datas");
+        for (int i = 0; i < datasProp.arraySize; i++)
         {
-            string selectedPath = EditorUtility.OpenFolderPanel("Select Folder", "Assets", "");
-            if (!string.IsNullOrEmpty(selectedPath))
+            SerializedProperty element = datasProp.GetArrayElementAtIndex(i);
+            SerializedProperty assetNameProp = element.FindPropertyRelative("assetName");
+            SerializedProperty startCellProp = element.FindPropertyRelative("startCell");
+            SerializedProperty endCellProp = element.FindPropertyRelative("endCell");
+            SerializedProperty mainURLProp = element.FindPropertyRelative("mainURL");
+            SerializedProperty gidProp = element.FindPropertyRelative("gid");
+            SerializedProperty typeProp = element.FindPropertyRelative("sheetType");
+            SerializedProperty pathProp = element.FindPropertyRelative("path");
+
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.PropertyField(assetNameProp);
+            EditorGUILayout.PropertyField(startCellProp);
+            EditorGUILayout.PropertyField(endCellProp);
+            EditorGUILayout.PropertyField(mainURLProp);
+            EditorGUILayout.PropertyField(gidProp);
+            EditorGUILayout.PropertyField(typeProp);
+
+            // path는 버튼으로만 설정
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Save Path", GUILayout.Width(70));
+            EditorGUILayout.SelectableLabel(string.IsNullOrEmpty(pathProp.stringValue) ? "Not Set" : pathProp.stringValue, GUILayout.Height(16));
+
+            if (GUILayout.Button("Select Folder", GUILayout.Width(120)))
             {
-                // 절대 경로를 상대 경로로 변환
-                if (selectedPath.StartsWith(Application.dataPath))
+                string selected = EditorUtility.OpenFolderPanel("Select Save Folder", "Assets", "");
+                if (!string.IsNullOrEmpty(selected))
                 {
-                    folderPath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
-                }
-                else
-                {
-                    Debug.LogWarning("폴더는 프로젝트 내부에 있어야 합니다.");
+                    if (selected.StartsWith(Application.dataPath))
+                        selected = "Assets" + selected.Substring(Application.dataPath.Length);
+
+                    pathProp.stringValue = selected;
                 }
             }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
         }
-        EditorGUILayout.EndHorizontal();
+
+        serializedConfig.ApplyModifiedProperties();
+        EditorUtility.SetDirty(config);
 
         GUILayout.Space(10);
 
-        // 다운로드 버튼
         if (GUILayout.Button("Download All"))
         {
-            if (!AssetDatabase.IsValidFolder(folderPath))
-                AssetDatabase.CreateFolder("Assets", folderPath.Replace("Assets/", ""));
-
-            foreach (var data in config.datas)
+            for (int i = 0; i < config.datas.Count; i++)
             {
-                if (string.IsNullOrEmpty(data.assetName)) continue;
-                DownloadSheetSync(data, folderPath);
+                var data = config.datas[i];
+                if (string.IsNullOrEmpty(data.assetName) || string.IsNullOrEmpty(data.path))
+                {
+                    Debug.LogWarning($"[GoogleSheetLoader] {data.assetName} : 저장 경로가 설정되지 않음.");
+                    continue;
+                }
+                DownloadSheetSync(data);
             }
+
         }
     }
 
-    private void DownloadSheetSync(GoogleSpreadSheetData data, string path)
+    private void SetConfig(GoogleSpreadSheetConfig newConfig)
+    {
+        config = newConfig;
+        serializedConfig = config != null ? new SerializedObject(config) : null;
+
+        if (config != null)
+        {
+            string path = AssetDatabase.GetAssetPath(config);
+            EditorPrefs.SetString(PREF_KEY, path); // 마지막 선택 Config 저장
+        }
+    }
+
+    private void DownloadSheetSync(GoogleSpreadSheetData data)
     {
         using var request = UnityWebRequest.Get(data.URL);
         request.SendWebRequest();
@@ -85,15 +133,14 @@ public class GoogleSpreadSheetLoader : EditorWindow
         }
 
         string[,] cells = ParseTSV(request.downloadHandler.text);
-
         var sheetAsset = CreateInstance<Sheet>();
         sheetAsset.SetData(cells);
 
-        string assetPath = $"{path}/{data.assetName}.asset";
+        string assetPath = $"{data.path}/{data.assetName}.asset";
         AssetDatabase.CreateAsset(sheetAsset, assetPath);
         AssetDatabase.SaveAssets();
-        
-        SheetToSOConverter.ConvertEnemySheet(sheetAsset, path);
+
+        SheetToSOConverter.ConvertSOData(sheetAsset, data.sheetType, data.path);
         Debug.Log($"[GoogleSheetLoader] 저장 완료: {assetPath}");
     }
 
