@@ -70,8 +70,8 @@ MonoBehaviour:
   LevelDataToLoad: {fileID: 0}
   saveDataOnScan: 1
   levelNameToSave: Default
-  levelDimensionX: 60
-  levelDimensionY: 60
+  levelDimensionX: 70
+  levelDimensionY: 70
   unitScale: 1
   scanSpacingPerUnit: 0.25
   rayStartHeight: 5

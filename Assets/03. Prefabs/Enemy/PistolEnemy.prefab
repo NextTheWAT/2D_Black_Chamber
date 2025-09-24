@@ -168,10 +168,10 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 9d4078ec
+  m_ApplyToSortingLayers: 000000009d4078eca3218812e5de8963b783b9737b66a268
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -440,7 +440,7 @@ MonoBehaviour:
   forwardLight: {fileID: 5105342054748008689}
   backwardLight: {fileID: 2490828225547866822}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
-  suspiciousColor: {r: 1, g: 0.67058825, b: 0.20784314, a: 1}
+  suspiciousColor: {r: 1, g: 1, b: 0, a: 1}
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 9d4078ec
+  m_ApplyToSortingLayers: 000000009d4078eca3218812e5de8963b783b9737b66a268
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
