@@ -21,7 +21,7 @@ public class SteelDoor : MonoBehaviour
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange && Input.GetKeyDown(KeyCode.F))
             isOpen = !isOpen;
 
         Vector2 door = isOpen ? openTransform : closeTransform;
