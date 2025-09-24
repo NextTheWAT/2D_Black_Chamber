@@ -31,7 +31,13 @@ public class Door : MonoBehaviour, Iinteraction
     {
         if (!isOpen)
         {
-            Vector3 openPosition = Quaternion.AngleAxis(90, Vector3.up) * player.forward;   // 오픈위치를 플레이어앞의 90도로 열리게
+            Vector3 playerPosition = (player.position - transform.position).normalized; // 플레이어가 어디 서있는지 판단
+            float dot = Vector3.Dot(transform.forward, playerPosition); // 내적 계산으로 플레이어가 앞인지 뒤인지
+
+            float angle = (dot > 0) ? 90f : -90f;
+
+            Vector3 openPosition = Quaternion.AngleAxis(angle, Vector3.up) * transform.forward;
+
             targetRotation = Quaternion.LookRotation(openPosition, Vector3.up);
         }
         else
