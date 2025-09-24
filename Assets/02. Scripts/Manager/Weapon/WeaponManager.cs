@@ -1,16 +1,16 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
-using Constants;
+using UnityEngine.SceneManagement;
 
 public class WeaponManager : Singleton<WeaponManager>
 {
-    public Shooter CurrentWeapon => 
-        (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
+    public Shooter CurrentWeapon 
+        => (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
 
     public GunData[] intializeDatas;
     [HideInInspector] public Shooter[] weaponSlots;
-    public int currentIndex = 0;
+    private int currentIndex = 0;
 
     [Serializable] public class WeaponChangedEvent : UnityEvent<Shooter> { }
     public WeaponChangedEvent OnWeaponChanged = new();         // HUD/애니/사운드가 구독
@@ -18,41 +18,57 @@ public class WeaponManager : Singleton<WeaponManager>
     public UnityEvent OnAmmoChanged { get; private set; } = new UnityEvent();
     public UnityEvent OnReloaded { get; private set; } = new UnityEvent();
 
-
     public int CurrentWeaponIndex
     {
         get => currentIndex;
         set
         {
-            if(currentIndex == value) return; // 같은 무기 선택 방지
-            if (value < 0 || value >= weaponSlots.Length) return; // 범위 검사
+            if (currentIndex == value) return; // 같은 무기 선택 방지
+            if (weaponSlots == null || weaponSlots.Length == 0) return; // 무기 없음 방지
 
-            currentIndex = value;
-
+            currentIndex = value % weaponSlots.Length;
             OnWeaponChanged.Invoke(CurrentWeapon);
+            OnAmmoChanged.Invoke();
         }
     }
 
-    private void Start()
+    protected override void Initialize()
     {
-        CurrentWeaponIndex = 0;
+        base.Initialize();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬 전환 시 무기 초기화
+        InitializeWeapon();
+    }
+
+    public void InitializeWeapon()
+    {
+        if (weaponSlots != null)
+        {
+            foreach (var weapon in weaponSlots)
+            {
+                if (weapon != null)
+                    Destroy(weapon.gameObject);
+            }
+        }
 
         weaponSlots = new Shooter[intializeDatas.Length];
 
         for (int i = 0; i < intializeDatas.Length; i++)
         {
             var go = new GameObject(intializeDatas[i].displayName);
-            go.transform.SetParent(GameManager.Instance.player);
+            go.transform.SetParent(GameManager.Instance.Player);
             go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             var shooter = go.AddComponent<Shooter>();
             shooter.Initialize(intializeDatas[i]);
             weaponSlots[i] = shooter;
         }
 
-        currentIndex = 0;
-
-        OnWeaponChanged?.Invoke(CurrentWeapon);
-        OnAmmoChanged?.Invoke();
+        OnWeaponChanged.Invoke(CurrentWeapon);
+        OnAmmoChanged.Invoke();
     }
 
     public int GetMagazine() => CurrentWeapon ? CurrentWeapon.CurrentMagazine : 0;
@@ -61,10 +77,7 @@ public class WeaponManager : Singleton<WeaponManager>
 
     public void Toggle()
     {
-        CurrentWeaponIndex = (currentIndex + 1) % weaponSlots.Length;
-        /*
-        var next = (currentWeapon == WeaponType.Pistol) ? WeaponType.Rifle : WeaponType.Pistol;
-        SetWeapon(next);
-        */
+        ConditionalLogger.Log("[WeaponManager] Toggle weapon");
+        CurrentWeaponIndex++;
     }
 }

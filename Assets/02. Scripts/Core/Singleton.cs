@@ -5,6 +5,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     public static bool AppIsQuitting { get; private set; } = false;
     private static T instance;
     [SerializeField] protected bool dontDestroyOnLoad = true;
+    [SerializeField] protected bool root_DontDestroyOnLoad = false;
     private static readonly object lockObj = new();
     public static T Instance
     {
@@ -35,8 +36,11 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         if (instance != null && instance != this) { Destroy(gameObject); return; }
         instance = this as T;
 
-        if (dontDestroyOnLoad)
+        if (dontDestroyOnLoad && transform.parent == null)
             DontDestroyOnLoad(gameObject);
+
+        if (root_DontDestroyOnLoad && transform.parent != null)
+            DontDestroyOnLoad(transform.root);
 
         Initialize();
     }

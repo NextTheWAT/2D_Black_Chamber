@@ -65,7 +65,7 @@ public class Enemy : MonoBehaviour
     {
         get
         {
-            if (GameManager.Instance.IsCombat) return GameManager.Instance.player;
+            if (GameManager.Instance.IsCombat) return GameManager.Instance.Player;
             return target;
         }
         set
@@ -297,7 +297,7 @@ public class Enemy : MonoBehaviour
         if (GameManager.Instance.IsCombat || HasTargetInFOV)
         {
             animationController.PlayHit();
-            LastKnownTargetPos = GameManager.Instance.player.position;
+            LastKnownTargetPos = GameManager.Instance.Player.position;
             IsHit = true;
             CharacterSoundManager.Instance.PlayHitSound();
         }
