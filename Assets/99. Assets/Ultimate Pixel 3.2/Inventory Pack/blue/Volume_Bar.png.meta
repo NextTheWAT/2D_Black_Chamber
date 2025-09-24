@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8615ec1636b8df748bc58b2d1d7c2cee
+guid: c0461c1fe4fde6c48ad54d902d1130aa
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -72,19 +72,6 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -136,64 +123,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Volume_slider_0
+      name: Volume_Bar_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 50
-        height: 13
+        x: 49
+        y: 3
+        width: 25
+        height: 6
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d011e5fa9a9e95e439845b3c9dfd3de8
-      internalID: 1270088878
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Volume_slider_1
-      rect:
-        serializedVersion: 2
-        x: 50
-        y: 0
-        width: 50
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4a4959c368a4ecb478120e3bf0ec086f
-      internalID: 742584262
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Volume_slider_2
-      rect:
-        serializedVersion: 2
-        x: 100
-        y: 0
-        width: 50
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2978da4791dc0674f995cd57155eea9b
-      internalID: -1150758791
+      spriteID: cd5a8cf1f6287c042b1edd0a525c4fc8
+      internalID: 874520820
       vertices: []
       indices: 
       edges: []
@@ -209,10 +154,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Volume_bar_0: -1546014624
-      Volume_slider_0: 1270088878
-      Volume_slider_1: 742584262
-      Volume_slider_2: -1150758791
+      Volume_Bar_0: 874520820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
