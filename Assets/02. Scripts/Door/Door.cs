@@ -40,7 +40,7 @@ public class Door : MonoBehaviour, Iinteraction
             Vector2 playerPosition = new Vector2(player.position.x, player.position.y);        // ÇÃ·¹ÀÌ¾î À§Ä¡
             Vector2 direction = (playerPosition - doorPosition);
 
-            Vector2 localDirection = transform.InverseTransformPoint(player.position);
+            Vector2 localDirection = transform.InverseTransformPoint(player.position);  // ¿ùµåÁÂÇ¥¸¦ ·ÎÄÃÁÂÇ¥·Î ¹Ù²ãÁÜ
 
             float angle = (localDirection.x >= 0) ? -90f : 90f;
 
