@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: GoogleSpreadSheetConfig
   m_EditorClassIdentifier: 
   datas:
-  - startCell: A4
+  - assetName: EnemyData
+    startCell: A4
     endCell: Y12
     mainURL: https://docs.google.com/spreadsheets/d/14mVVS4Zx4tCKRM31gx-LvHmIB6PplHoEWJJ_PAecss4
     gid: 0
-    assetName: SheetData
+    sheetType: 0
+    path: Assets/06. ScriptableObjects/Sheet

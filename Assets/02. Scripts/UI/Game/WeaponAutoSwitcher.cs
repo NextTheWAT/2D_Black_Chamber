@@ -62,7 +62,7 @@ public class WeaponAutoSwitcher : MonoBehaviour
 
         // 2) 탄약 있음 > 상태에 따라 권총/라이플
         bool combat = (GM != null && GM.IsCombat);
-        SetWeaponIfDifferent(combat ? RifleIndex : PistolIndex);
+        // SetWeaponIfDifferent(combat ? RifleIndex : PistolIndex);
     }
 
     private int SafeGetMagazine() { try { return WM.GetMagazine(); } catch { return 0; } }
@@ -71,8 +71,7 @@ public class WeaponAutoSwitcher : MonoBehaviour
     private void SetWeaponIfDifferent(int slotIndex)
     {
         slotIndex = Mathf.Clamp(slotIndex, 0, WM.weaponSlots.Length - 1);
-        if (WM.currentIndex == slotIndex) return;
-        WM.currentIndex = slotIndex;
+        if (WM.CurrentWeaponIndex == slotIndex) return;
         WM.CurrentWeaponIndex = slotIndex;
     }
 }

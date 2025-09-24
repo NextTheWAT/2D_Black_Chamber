@@ -22,7 +22,7 @@ public class RetreatState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("RetreatState Enter");
-        owner.Target = GameManager.Instance.player;
+        owner.Target = GameManager.Instance.Player;
         owner.MoveTo(CalculateRetreatPoint());
         retreatTimer = 0f;
     }

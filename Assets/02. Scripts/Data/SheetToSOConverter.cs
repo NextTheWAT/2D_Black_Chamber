@@ -2,14 +2,16 @@
 using UnityEngine;
 using UnityEditor;
 using System;
+using System.Reflection;
+using Constants;
 
 public static class SheetToSOConverter
 {
-    public static void ConvertEnemySheet(Sheet sheet, string folderPath)
+    public static void ConvertSOData(Sheet sheet, SheetType type, string folderPath)
     {
         if (sheet == null) return;
 
-        // 첫 행을 헤더로 사용
+        // 첫 행은 헤더
         var headers = sheet.GetRow(0);
 
         for (int r = 1; r < sheet.RowCount; r++)
@@ -20,31 +22,54 @@ public static class SheetToSOConverter
             {
                 string key = headers[c];
                 string value = sheet[r, c];
-                
-                switch (key)
+
+                if (string.IsNullOrWhiteSpace(key)) continue;
+
+                // EnemySheetData의 필드 가져오기
+                FieldInfo field = typeof(EnemySheetData).GetField(key, BindingFlags.Public | BindingFlags.Instance);
+                if (field == null) continue; // 없는 필드는 무시
+
+                try
                 {
-                    case "enemyName": data.enemyName = value; break;
-                    case "hp": int.TryParse(value, out data.hp); break;
-                    case "speed": float.TryParse(value, out data.speed); break;
-                    case "viewDistance": float.TryParse(value, out data.viewDistance); break;
-                    case "viewAngle": float.TryParse(value, out data.viewAngle); break;
-                    case "equipWeapon": int.TryParse(value, out data.equipWepaon); break;
-                    case "attackRange": float.TryParse(value, out data.attackRange); break;
-                    case "patrolType": int.TryParse(value, out data.patrolType); break;
-                    case "patrolPauseTime": float.TryParse(value, out data.patrolPauseTime); break;
-                    case "FixedPatrolAngle": float.TryParse(value, out data.FixedPatrolAngle); break;
-                    case "suspectTime": float.TryParse(value, out data.suspectTime); break;
-                    case "investigateDuration": float.TryParse(value, out data.investigateDuration); break;
-                    case "investigateRange": float.TryParse(value, out data.investigateRange); break;
+                    object parsedValue = ParseValue(value, field.FieldType);
+                    field.SetValue(data, parsedValue);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[SheetToSO] {key} 변환 실패 ({value}) → {ex.Message}");
                 }
             }
 
-            string path = $"{folderPath}/{data.enemyName}.asset";
-            AssetDatabase.CreateAsset(data, path);
+            string assetPath = $"{folderPath}/{data.enemyName}.asset";
+            AssetDatabase.CreateAsset(data, assetPath);
         }
 
         AssetDatabase.SaveAssets();
         Debug.Log($"[SheetToSO] {sheet.RowCount - 1}개의 EnemySheetData 생성 완료!");
+    }
+
+    private static ScriptableObject CreateSOInstance(SheetType type)
+    {
+        return type switch
+        {
+            SheetType.Enemy => ScriptableObject.CreateInstance<EnemySheetData>(),
+            // 다른 타입 추가 가능
+            _ => null,
+        };
+    }
+
+    private static object ParseValue(string value, Type fieldType)
+    {
+        if (fieldType == typeof(string)) return value;
+        if (fieldType == typeof(int)) return int.TryParse(value, out var i) ? i : 0;
+        if (fieldType == typeof(float)) return float.TryParse(value, out var f) ? f : 0f;
+        if (fieldType == typeof(bool)) return bool.TryParse(value, out var b) && b;
+
+        // enum 지원
+        if (fieldType.IsEnum && Enum.TryParse(fieldType, value, true, out var e))
+            return e;
+
+        return null;
     }
 }
 #endif

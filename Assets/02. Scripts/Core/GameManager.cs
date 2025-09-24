@@ -6,8 +6,19 @@ using System.Collections;
 
 public class GameManager : Singleton<GameManager>
 {
-    public Transform player;
+    private Transform player;
+    public Transform Player
+    {
+        get
+        {
+            if(player == null)
+                player = GameObject.FindGameObjectWithTag("Player").transform;
+
+            return player;
+        }
+    }
     public float combatDuration = 5f; // 전투 상태 지속 시간
+
 
     public GamePhase CurrentPhase { get; set; } = GamePhase.Stealth;
 
@@ -45,12 +56,6 @@ public class GameManager : Singleton<GameManager>
                 }
             }
         }
-    }
-
-    protected override void Initialize()
-    {
-        base.Initialize();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     IEnumerator ExitCombat()
