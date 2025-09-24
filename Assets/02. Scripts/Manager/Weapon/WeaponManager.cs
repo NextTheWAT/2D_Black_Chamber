@@ -5,17 +5,19 @@ using Constants;
 
 public class WeaponManager : Singleton<WeaponManager>
 {
-    public Shooter CurrentWeapon => weaponSlots[currentIndex];
+    public Shooter CurrentWeapon => 
+        (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
 
     public GunData[] intializeDatas;
     [HideInInspector] public Shooter[] weaponSlots;
-    private int currentIndex = 0;
+    public int currentIndex = 0;
 
     [Serializable] public class WeaponChangedEvent : UnityEvent<Shooter> { }
     public WeaponChangedEvent OnWeaponChanged = new();         // HUD/애니/사운드가 구독
 
-    public UnityEvent OnAmmoChanged;   // HUD가 구독
-    public UnityEvent OnReloaded;
+    public UnityEvent OnAmmoChanged { get; private set; } = new UnityEvent();
+    public UnityEvent OnReloaded { get; private set; } = new UnityEvent();
+
 
     public int CurrentWeaponIndex
     {
@@ -35,7 +37,6 @@ public class WeaponManager : Singleton<WeaponManager>
     {
         CurrentWeaponIndex = 0;
 
-        // 무기 초기화
         weaponSlots = new Shooter[intializeDatas.Length];
 
         for (int i = 0; i < intializeDatas.Length; i++)
@@ -47,10 +48,15 @@ public class WeaponManager : Singleton<WeaponManager>
             shooter.Initialize(intializeDatas[i]);
             weaponSlots[i] = shooter;
         }
+
+        currentIndex = 0;
+
+        OnWeaponChanged?.Invoke(CurrentWeapon);
+        OnAmmoChanged?.Invoke();
     }
 
-    public int GetMagazine() => CurrentWeapon.CurrentMagazine;
-    public int GetReserve() => CurrentWeapon.CurrentAmmo;
+    public int GetMagazine() => CurrentWeapon ? CurrentWeapon.CurrentMagazine : 0;
+    public int GetReserve() => CurrentWeapon ? CurrentWeapon.CurrentAmmo : 0;
     public void RequestReload() => CurrentWeapon.Reload();
 
     public void Toggle()

@@ -133,7 +133,8 @@ public class Shooter : MonoBehaviour
             damage: gun.damage,
             noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
-            ignoreLayer: gameObject.layer
+            ignoreLayer: gameObject.layer,
+            bulletTag: gameObject.tag
         );
     }
 

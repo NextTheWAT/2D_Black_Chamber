@@ -409,6 +409,7 @@ GameObject:
   - component: {fileID: 2375955192712751179}
   - component: {fileID: 5750304085905906524}
   - component: {fileID: 6640463618591403365}
+  - component: {fileID: 7828618959994928263}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -500,7 +501,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -1656
+  m_InstanceId: 35670
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -845,6 +846,22 @@ PolygonCollider2D:
       - {x: 0.699434, y: -0.2507723}
       - {x: 0.7197842, y: 0.21331781}
   m_UseDelaunayMesh: 0
+--- !u!114 &7828618959994928263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa832d967c04fef408d617fc7947514c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolIndex: 0
+  rifleIndex: 1
+  knifeIndex: 2
+  ammoCheckInterval: 0.25
 --- !u!1 &6801737039481996848
 GameObject:
   m_ObjectHideFlags: 0

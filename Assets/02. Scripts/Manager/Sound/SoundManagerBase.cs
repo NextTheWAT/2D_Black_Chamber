@@ -1,14 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
+using UnityEngine.Audio;
 
+/// ê³µí†µ SFX í’€ + í•œ ê°œì˜ Mixer Groupë§Œ í• ë‹¹í•´ì„œ ì‚¬ìš©
 public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
 {
     [Header("Sound Pool")]
     [SerializeField, Range(1, 32)] private int poolSize = 20;
     private AudioSource[] _pool;
-    private int _next; // ¶ó¿îµå·Îºó ÀÎµ¦½º
+    private int _next;
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    /// <summary>´ÜÀÏ Å¬¸³ Àç»ı (2D ¿ø¼¦, Ç® »ç¿ë)</summary>
+    [Header("Output (1ê°œë§Œ)")]
+    [SerializeField] protected AudioMixerGroup outputGroup; // â† ê° ë§¤ë‹ˆì €ì—ì„œ SFX ë˜ëŠ” BGM í• ë‹¹
+
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     public void PlayOne(AudioClip clip, float volume = 1f)
     {
         if (!clip) return;
@@ -17,28 +21,22 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
         src.PlayOneShot(clip, Mathf.Clamp01(volume));
     }
 
-    /// <summary>SoundData¿¡¼­ ·£´ı ¼±ÅÃ Àç»ı (2D ¿ø¼¦, Ç® »ç¿ë)</summary>
     public void PlayRandom(SoundData data, float volume = 1f)
     {
         if (data == null || data.clips == null || data.clips.Length == 0) return;
-        int i = Random.Range(0, data.clips.Length);
-        var clip = data.clips[i];
-        if (!clip) return;
-
-        float finalVol = Mathf.Clamp01(volume * data.volume);
+        var clip = data.clips[Random.Range(0, data.clips.Length)];
         var src = AcquireSource();
         if (!src) return;
-        src.PlayOneShot(clip, finalVol);
+        src.PlayOneShot(clip, Mathf.Clamp01(volume * Mathf.Clamp01(data.volume)));
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ³»ºÎ: Ç® °ü¸®
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private AudioSource AcquireSource()
     {
         EnsurePool();
         if (_pool == null || _pool.Length == 0) return null;
 
-        // 1) Àç»ıÁßÀÌ ¾Æ´Ñ ¼Ò½º ¿ì¼±
+        // ì¬ìƒì¤‘ ì•„ë‹Œ ì†ŒìŠ¤ ìš°ì„ 
         for (int i = 0; i < _pool.Length; i++)
         {
             int idx = (_next + i) % _pool.Length;
@@ -49,8 +47,7 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
                 return s;
             }
         }
-
-        // 2) ¸ğµÎ Àç»ı ÁßÀÌ¸é ¶ó¿îµå·ÎºóÀ¸·Î µ¤¾î¾²±â
+        // ëª¨ë‘ ì¬ìƒì¤‘ì´ë©´ ë¼ìš´ë“œë¡œë¹ˆ
         var ret = _pool[_next];
         _next = (_next + 1) % _pool.Length;
         return ret;
@@ -60,30 +57,28 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
     {
         if (_pool != null && _pool.Length == Mathf.Max(1, poolSize)) return;
 
-        // ±âÁ¸ Ç® Á¦°Å(»çÀÌÁî º¯°æ ´ëºñ)
+        // ê¸°ì¡´ í’€ ì œê±°(ì‚¬ì´ì¦ˆ ë³€ê²½ ëŒ€ë¹„)
         if (_pool != null)
         {
             for (int i = 0; i < _pool.Length; i++)
-            {
                 if (_pool[i] != null) Destroy(_pool[i].gameObject);
-            }
         }
 
         int size = Mathf.Max(1, poolSize);
         _pool = new AudioSource[size];
+        _next = 0;
 
         for (int i = 0; i < size; i++)
         {
             var go = new GameObject($"{typeof(T).Name}_SFX_{i:00}");
-            go.transform.SetParent(transform);
-            var src = go.AddComponent<AudioSource>();
+            go.transform.SetParent(transform, false);
 
+            var src = go.AddComponent<AudioSource>();
             src.playOnAwake = false;
             src.loop = false;
-
+            src.spatialBlend = 0f;                      // 2D
+            src.outputAudioMixerGroup = outputGroup;    // â˜… í•œ ì¤„ë¡œ ë¼ìš°íŒ… ë
             _pool[i] = src;
         }
-
-        _next = 0;
     }
 }

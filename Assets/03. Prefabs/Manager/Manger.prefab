@@ -147,13 +147,8 @@ MonoBehaviour:
   weaponSlots:
   - {fileID: 0}
   - {fileID: 0}
+  currentIndex: 0
   OnWeaponChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnAmmoChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnReloaded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &3567171574248799592
@@ -201,7 +196,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  poolSize: 2
+  poolSize: 4
+  outputGroup: {fileID: -5603891810564795059, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
+  titleBGM: {fileID: 11400000, guid: 61cb9ab3536623b4497b076ac87c281d, type: 2}
+  lobbyBGM: {fileID: 11400000, guid: 00f291de359cf4646af46b284b14de08, type: 2}
   stealthBGM: {fileID: 11400000, guid: fd18eced3dbdaea40ba4df5e065772e7, type: 2}
   combatBGM: {fileID: 11400000, guid: f1f3781bfb5d1644287e818554d6200d, type: 2}
   fadeTime: 0.8
@@ -286,6 +284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   poolSize: 32
+  outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   pistolShootSound: {fileID: 11400000, guid: edd8152834ca18f40a7a6e0d40550541, type: 2}
   rifleShootSound: {fileID: 11400000, guid: ad608595013ddba4dbb15f1d39e26993, type: 2}
   reloadSound: {fileID: 11400000, guid: b673ffba9edd01f4c99b1dfc42a50493, type: 2}
@@ -337,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   poolSize: 32
+  outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   runstepSound: {fileID: 11400000, guid: d5c5580a6e34bd14ba4a56fa2edd7cfe, type: 2}
   walkstepSound: {fileID: 11400000, guid: 56eef4f388223c046abef783cb46ef48, type: 2}
   dieSound: {fileID: 11400000, guid: 9fd662bbd06975c4fa465064f81910de, type: 2}

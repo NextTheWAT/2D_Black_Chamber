@@ -5,115 +5,147 @@ using Constants; // GamePhase
 public class BGMManager : SoundManagerBase<BGMManager>
 {
     [Header("BGM (SoundData)")]
-    public SoundData stealthBGM; // 잠입
-    public SoundData combatBGM;  // 난전
+    public SoundData titleBGM;     // 타이틀
+    public SoundData lobbyBGM;     // 로비
+    public SoundData stealthBGM;   // 게임: 잠입
+    public SoundData combatBGM;    // 게임: 난전
 
     [SerializeField] float fadeTime = 0.8f;
 
-    AudioSource _a, _b;   // 교차 페이드용
+    AudioSource _a, _b;
     bool _useA = true;
     Coroutine _fade;
 
-    protected override void Initialize()
+    bool _inGameContext = false;   // UI 상태가 Game일 때만 Phase 이벤트 반영
+
+    void Awake()
     {
-        base.Initialize();
-
-        _a = CreateLoopingSource("BGM_A");
-        _b = CreateLoopingSource("BGM_B");
-
-        var gm = GameManager.Instance;
-        if (gm != null)
-        {
-            gm.OnPhaseChanged += OnPhaseChanged;
-            SetPhase(gm.CurrentPhase, instant: true);
-        }
+        // A/B 교차 페이드용 소스 생성 (outputGroup은 Inspector에서 BGM 그룹으로 할당)
+        _a = CreateLooping("BGM_A");
+        _b = CreateLooping("BGM_B");
     }
 
-    void OnDestroy()
+    void OnEnable()
+    {
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    void OnDisable()
     {
         var gm = GameManager.Instance;
         if (gm != null) gm.OnPhaseChanged -= OnPhaseChanged;
     }
 
-    AudioSource CreateLoopingSource(string name)
+    AudioSource CreateLooping(string name)
     {
         var go = new GameObject(name);
         go.transform.SetParent(transform, false);
         var src = go.AddComponent<AudioSource>();
         src.loop = true;
         src.playOnAwake = false;
-        src.volume = 0f;
-        src.spatialBlend = 0f; // 2D BGM 권장
+        src.spatialBlend = 0f;     // 2D
+        src.volume = 0f;           // 페이드로 올림
+        src.outputAudioMixerGroup = outputGroup; // 반드시 BGM 그룹
         return src;
     }
 
-    void OnPhaseChanged(GamePhase phase) => SetPhase(phase);
+    // ───────────── UI 컨텍스트 전환 ─────────────
+    public void SetUiContext(UIKey key, bool instant = false)
+    {
+        switch (key)
+        {
+            case UIKey.Title:
+                _inGameContext = false;
+                PlayData(titleBGM, instant);
+                break;
+
+            case UIKey.Lobby:
+                _inGameContext = false;
+                PlayData(lobbyBGM, instant);
+                break;
+
+            case UIKey.Game:
+                _inGameContext = true;
+                // 현재 Phase로 즉시 맞춤(또는 페이드)
+                var gm = GameManager.Instance;
+                var phase = gm ? gm.CurrentPhase : GamePhase.Stealth;
+                SetPhase(phase, instant);
+                break;
+
+            default:
+                // 정의 안 한 UI 상태는 일단 타이틀로 폴백
+                _inGameContext = false;
+                PlayData(titleBGM, instant);
+                break;
+        }
+    }
+
+    // ───────────── 게임 Phase 전환(잠입/난전) ─────────────
+    void OnPhaseChanged(GamePhase phase)
+    {
+        if (_inGameContext) SetPhase(phase, instant: false);
+    }
 
     public void SetPhase(GamePhase phase, bool instant = false)
     {
-        // 상태별 SoundData 선택
         var data = (phase == GamePhase.Combat) ? combatBGM : stealthBGM;
-        var nextClip = ExtractRandomClip(data);
-        if (nextClip == null) return;
+        PlayData(data, instant);
+    }
 
-        float targetVolume = Mathf.Clamp01(data.volume);
+    // ───────────── 공통 재생 로직 ─────────────
+    void PlayData(SoundData data, bool instant)
+    {
+        var clip = ExtractRandomClip(data);
+        if (!clip) return;
 
         var from = _useA ? _a : _b;
         var to = _useA ? _b : _a;
         _useA = !_useA;
 
-        // 같은 클립이면 재생 유지하고 볼륨만 조정해도 됨
-        if (to.clip != nextClip) to.clip = nextClip;
+        if (to.clip != clip) to.clip = clip;
         if (!to.isPlaying) to.Play();
 
-        if (_fade != null) StopCoroutine(_fade);
+        float target = Mathf.Clamp01(data.volume);
 
         if (instant)
         {
-            to.volume = targetVolume;
-            if (from.isPlaying) from.Stop();
+            if (from) { from.volume = 0f; if (from.isPlaying) from.Stop(); }
+            to.volume = target;
+            return;
         }
-        else
-        {
-            // 시작 시점 볼륨 초기화
-            to.volume = 0f;
-            _fade = StartCoroutine(CrossFade(from, to, targetVolume));
-        }
+
+        if (_fade != null) StopCoroutine(_fade);
+        _fade = StartCoroutine(CrossFade(from, to, target));
     }
 
-    IEnumerator CrossFade(AudioSource from, AudioSource to, float targetVolume)
+    IEnumerator CrossFade(AudioSource from, AudioSource to, float target)
     {
         float t = 0f;
-        float fromStart = from != null ? from.volume : 0f;
+        float fromStart = from ? from.volume : 0f;
         float toStart = to.volume;
 
         while (t < fadeTime)
         {
-            t += Time.unscaledDeltaTime; // 일시정지에도 부드럽게
+            t += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(t / fadeTime);
-
-            to.volume = Mathf.Lerp(toStart, targetVolume, k);
-            from.volume = Mathf.Lerp(fromStart, 0f, k);
+            if (from) from.volume = Mathf.Lerp(fromStart, 0f, k);
+            to.volume = Mathf.Lerp(toStart, target, k);
             yield return null;
         }
-
-        to.volume = targetVolume;
-        if (from != null && from.isPlaying) from.Stop();
+        if (from && from.isPlaying) from.Stop();
+        to.volume = target;
+        _fade = null;
     }
 
-    // SoundData 내부에서 랜덤 곡 하나 뽑기
     AudioClip ExtractRandomClip(SoundData data)
     {
-        if (data == null) return null;
-
-        // 프로젝트의 SoundData 정의에 맞게 필드명만 확인
-        var list = data.clips; // AudioClip[] 예상
-        if (list != null && list.Length > 0)
-            return list[Random.Range(0, list.Length)];
-
-        // 단일 clip만 쓰는 구조라면 아래 주석 사용
-        // return data.clip;
-
-        return null;
+        if (!data || data.clips == null || data.clips.Length == 0) return null;
+        return data.clips[Random.Range(0, data.clips.Length)];
     }
+
+    // 필요하면 버튼/애니메이션에서 직접 호출할 단축 메서드
+    public void PlayTitle(bool instant = false) => SetUiContext(UIKey.Title, instant);
+    public void PlayLobby(bool instant = false) => SetUiContext(UIKey.Lobby, instant);
+    public void EnterGame(bool instant = false) => SetUiContext(UIKey.Game, instant);
 }
