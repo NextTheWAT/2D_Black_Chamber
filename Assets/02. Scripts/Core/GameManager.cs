@@ -38,7 +38,7 @@ public class GameManager : Singleton<GameManager>
             {
                 CurrentPhase = next;
                 OnPhaseChanged?.Invoke(CurrentPhase); //총 UI 변경 이벤트 발행
-
+                WeaponManager.Instance.Toggle();
 
                 if (CurrentPhase == GamePhase.Combat)
                 {
