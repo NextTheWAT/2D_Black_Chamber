@@ -40,8 +40,10 @@ public class WeaponSwitchCoordinator : MonoBehaviour
 
     private void OnWeaponChanged(Shooter shooter)
     {
+        if (shooter == null || shooter.gunData == null) return;
+
         // 1) 상체 애니메이터 컨트롤러 스왑
-        anim?.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
+        anim.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
 
         // 2) (선택) 탄 표시는 HUD 스크립트에서 처리 중이면 생략 가능
         RefreshAmmo();

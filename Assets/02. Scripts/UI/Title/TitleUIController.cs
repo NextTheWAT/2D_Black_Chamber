@@ -34,14 +34,4 @@ public class TitleUIController : MonoBehaviour
 #endif
     }
 
-    private void Update()
-    {
-        //ESC·Î ¼³Á¤ ÆË¾÷ ´Ý±â
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            var popup = Object.FindFirstObjectByType<SettingPopup>(FindObjectsInactive.Include);
-            if (popup != null && popup.gameObject.activeInHierarchy)
-                popup.RequestClose();
-        }
-    }
 }

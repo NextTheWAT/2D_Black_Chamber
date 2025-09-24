@@ -15,8 +15,10 @@ public partial class PlayerInputController : TopDownController
 
         WeaponManager.Instance.OnWeaponChanged.AddListener((shooter) =>
         {
+            if (shooter == null || shooter.gunData == null) return;
+
             this.shooter = shooter;
-            animationController?.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
+            animationController.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
         });
     }
 

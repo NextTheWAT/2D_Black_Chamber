@@ -22,7 +22,7 @@ public class CoverState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("CoverState Enter");
-        owner.Target = GameManager.Instance.player;
+        owner.Target = GameManager.Instance.Player;
     }
 
     public override void Update()

@@ -65,6 +65,10 @@ public class StageSelectDialogueUI : UIBase
             Debug.LogError($"[StageSelectDialogueUI] 씬 '{sceneName}' 를 찾을 수 없음");
             return;
         }
+
+        PlayerPrefs.SetString("LastStage", sceneName);
+        PlayerPrefs.Save();
+
         SceneManager.LoadScene(sceneName);
     }
 }
