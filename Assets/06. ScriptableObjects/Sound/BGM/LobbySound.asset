@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: LobbySound
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: c7c81ec52b0e6144988e4e395aa574fa, type: 3}
+  - {fileID: 8300000, guid: 2cae127e7a91cbf4fbc1cb9a51358803, type: 3}
   volume: 0.5
