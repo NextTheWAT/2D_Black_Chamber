@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEditor.Timeline.Actions;
 
 public class UIClearResult : UIBase
 {
@@ -27,8 +26,9 @@ public class UIClearResult : UIBase
         Apply();
     }
 
-    protected override void OnOpen()
+    private void OnEnable()
     {
+        Debug.Log("[UIClearResult] OnEnable");
         if (!Initialized)
         {
             if (backToLobbyButton) backToLobbyButton.onClick.AddListener(GoLobby);
@@ -59,19 +59,63 @@ public class UIClearResult : UIBase
 
     private void GoLobby()
     {
+        Debug.Log("[UIClearResult] GoLobby() clicked");
         Time.timeScale = 1f;
-        if (string.IsNullOrEmpty(lobbySceneName)) return;
-        SceneManager.LoadScene(lobbySceneName);
+
+        if (string.IsNullOrEmpty(lobbySceneName))
+        {
+            Debug.LogError("[UIClearResult] lobbySceneName 비어있음");
+            return;
+        }
+
+        Debug.Log($"[UIClearResult] CurrentScene = {SceneManager.GetActiveScene().name}");
+        Debug.Log($"[UIClearResult] Try load lobbySceneName = '{lobbySceneName}'");
+
+        if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
+        {
+            Debug.LogError($"[UIClearResult] 빌드세팅에서 씬을 못찾음: '{lobbySceneName}'");
+            return;
+        }
+
+        try
+        {
+            SceneManager.LoadScene(lobbySceneName);
+            Debug.Log("[UIClearResult] LoadScene(lobby) 호출 완료");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
-    private void Retry() // 마지막 플레이한 스테이지 불러오기
+    private void Retry()
     {
+        Debug.Log("[UIClearResult] Retry() clicked");
         Time.timeScale = 1f;
 
         string lastStage = PlayerPrefs.GetString("LastStage", string.Empty);
-        if (!string.IsNullOrEmpty(lastStage))
+        Debug.Log($"[UIClearResult] LastStage(PlayerPrefs) = '{lastStage}'");
+
+        if (string.IsNullOrEmpty(lastStage))
+        {
+            Debug.LogError("[UIClearResult] 마지막 스테이지 정보가 없음 (PlayerPrefs 'LastStage' 미기록)");
+            return;
+        }
+
+        if (!Application.CanStreamedLevelBeLoaded(lastStage))
+        {
+            Debug.LogError($"[UIClearResult] 빌드세팅에서 씬을 못찾음: '{lastStage}'");
+            return;
+        }
+
+        try
+        {
             SceneManager.LoadScene(lastStage);
-        else
-            Debug.LogError("[UIClearResult] 마지막 스테이지 정보가 없음");
+            Debug.Log("[UIClearResult] LoadScene(lastStage) 호출 완료");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 }
