@@ -36,7 +36,7 @@ public static class SheetToSOConverter
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogWarning($"[SheetToSO] {key} 변환 실패 ({value}) → {ex.Message}");
+                    ConditionalLogger.LogWarning($"[SheetToSO] {key} 변환 실패 ({value}) → {ex.Message}");
                 }
             }
 
@@ -45,7 +45,7 @@ public static class SheetToSOConverter
         }
 
         AssetDatabase.SaveAssets();
-        Debug.Log($"[SheetToSO] {sheet.RowCount - 1}개의 EnemySheetData 생성 완료!");
+        ConditionalLogger.Log($"[SheetToSO] {sheet.RowCount - 1}개의 EnemySheetData 생성 완료!");
     }
 
     private static ScriptableObject CreateSOInstance(SheetType type)
