@@ -409,6 +409,7 @@ GameObject:
   - component: {fileID: 2375955192712751179}
   - component: {fileID: 5750304085905906524}
   - component: {fileID: 6640463618591403365}
+  - component: {fileID: 7828618959994928263}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -431,7 +432,6 @@ Transform:
   m_Children:
   - {fileID: 3577211585311607969}
   - {fileID: 593076399287293149}
-  - {fileID: 3635746013236650576}
   - {fileID: 6897331150039959142}
   - {fileID: 8485142863907274931}
   m_Father: {fileID: 0}
@@ -501,7 +501,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -182848
+  m_InstanceId: 35670
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -711,8 +711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c107944d2a94e064aaccca128a8b46c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunPoint: {fileID: 3635746013236650576}
-  gun: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  gunPoint: {fileID: 0}
+  gunData: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
   respectFireRate: 1
 --- !u!114 &960190014545231420
 MonoBehaviour:
@@ -728,8 +728,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 8944864754343972750}
   lowerAnimator: {fileID: 2294372615916966701}
-  upperPistolController: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
-  upperRifleController: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
 --- !u!114 &2375955192712751179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,7 +741,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
-  hud: {fileID: 0}
 --- !u!60 &5750304085905906524
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -849,6 +846,22 @@ PolygonCollider2D:
       - {x: 0.699434, y: -0.2507723}
       - {x: 0.7197842, y: 0.21331781}
   m_UseDelaunayMesh: 0
+--- !u!114 &7828618959994928263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa832d967c04fef408d617fc7947514c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolIndex: 0
+  rifleIndex: 1
+  knifeIndex: 2
+  ammoCheckInterval: 0.25
 --- !u!1 &6801737039481996848
 GameObject:
   m_ObjectHideFlags: 0
@@ -950,34 +963,3 @@ MonoBehaviour:
   fillColor: {r: 1, g: 1, b: 1, a: 1}
   textureSize: 256
   offset: -90
---- !u!1 &7579643628302968377
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3635746013236650576}
-  m_Layer: 6
-  m_Name: GunPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3635746013236650576
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7579643628302968377}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.953, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3507418152336651286}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -1,23 +1,25 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
 {
     [Header("Sound Pool")]
     [SerializeField, Range(1, 32)] private int poolSize = 20;
     private AudioSource[] _pool;
-    private int _next; // ¶ó¿îµå·Îºó ÀÎµ¦½º
+    private int _next; // ë¼ìš´ë“œë¡œë¹ˆ ì¸ë±ìŠ¤
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    /// <summary>´ÜÀÏ Å¬¸³ Àç»ı (2D ¿ø¼¦, Ç® »ç¿ë)</summary>
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    /// <summary>ë‹¨ì¼ í´ë¦½ ì¬ìƒ (2D ì›ìƒ·, í’€ ì‚¬ìš©)</summary>
     public void PlayOne(AudioClip clip, float volume = 1f)
     {
         if (!clip) return;
         var src = AcquireSource();
         if (!src) return;
-        src.PlayOneShot(clip, Mathf.Clamp01(volume));
+
+        // ìµœì¢… ë³¼ë¥¨ ê³„ì‚°: í˜¸ì¶œìê°€ ì¤€ volume Ã— SFX ë§ˆìŠ¤í„°
+        float finalVol = Mathf.Clamp01(volume) * VolumeSettings.Sfx;
+        src.PlayOneShot(clip, finalVol);
     }
 
-    /// <summary>SoundData¿¡¼­ ·£´ı ¼±ÅÃ Àç»ı (2D ¿ø¼¦, Ç® »ç¿ë)</summary>
     public void PlayRandom(SoundData data, float volume = 1f)
     {
         if (data == null || data.clips == null || data.clips.Length == 0) return;
@@ -25,20 +27,21 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
         var clip = data.clips[i];
         if (!clip) return;
 
-        float finalVol = Mathf.Clamp01(volume * data.volume);
+        // â¬‡í˜¸ì¶œì volume Ã— SoundData.volume Ã— SFX ë§ˆìŠ¤í„°
+        float finalVol = Mathf.Clamp01(volume * data.volume) * VolumeSettings.Sfx;
         var src = AcquireSource();
         if (!src) return;
         src.PlayOneShot(clip, finalVol);
     }
 
-    // ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    // ³»ºÎ: Ç® °ü¸®
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ë‚´ë¶€: í’€ ê´€ë¦¬
     private AudioSource AcquireSource()
     {
         EnsurePool();
         if (_pool == null || _pool.Length == 0) return null;
 
-        // 1) Àç»ıÁßÀÌ ¾Æ´Ñ ¼Ò½º ¿ì¼±
+        // 1) ì¬ìƒì¤‘ì´ ì•„ë‹Œ ì†ŒìŠ¤ ìš°ì„ 
         for (int i = 0; i < _pool.Length; i++)
         {
             int idx = (_next + i) % _pool.Length;
@@ -50,7 +53,7 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
             }
         }
 
-        // 2) ¸ğµÎ Àç»ı ÁßÀÌ¸é ¶ó¿îµå·ÎºóÀ¸·Î µ¤¾î¾²±â
+        // 2) ëª¨ë‘ ì¬ìƒ ì¤‘ì´ë©´ ë¼ìš´ë“œë¡œë¹ˆìœ¼ë¡œ ë®ì–´ì“°ê¸°
         var ret = _pool[_next];
         _next = (_next + 1) % _pool.Length;
         return ret;
@@ -60,7 +63,7 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
     {
         if (_pool != null && _pool.Length == Mathf.Max(1, poolSize)) return;
 
-        // ±âÁ¸ Ç® Á¦°Å(»çÀÌÁî º¯°æ ´ëºñ)
+        // ê¸°ì¡´ í’€ ì œê±°(ì‚¬ì´ì¦ˆ ë³€ê²½ ëŒ€ë¹„)
         if (_pool != null)
         {
             for (int i = 0; i < _pool.Length; i++)

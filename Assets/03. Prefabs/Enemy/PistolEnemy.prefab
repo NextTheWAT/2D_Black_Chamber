@@ -426,8 +426,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 4119749525860128978}
   stateTable: {fileID: 11400000, guid: ab0c08bdb9ccec44fb8f3222c151f868, type: 2}
+  nonCombatStateType: 0
+  combatStateType: 0
+  health: {fileID: 4119749525860128978}
   angularSpeed: 120
   targetMask:
     serializedVersion: 2
@@ -504,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunPoint: {fileID: 239226948978297036}
-  gun: {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  gunData: {fileID: 11400000, guid: 4bb63e61a7b69a049939fa44f42c8415, type: 2}
   respectFireRate: 1
 --- !u!114 &7725595448719031270
 MonoBehaviour:

@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   shockWavePrefab: {fileID: 4437841805958431267, guid: 903a22cc79e3f67488bf25a8504f599b, type: 3}
-  maxScale: 5
   lisenerMask:
     serializedVersion: 2
     m_Bits: 2176
@@ -96,6 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   player: {fileID: 0}
+  combatDuration: 5
 --- !u!1 &3470070528227405064
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,8 +125,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7815421039330853386}
+  m_Children: []
   m_Father: {fileID: 5115538189022398859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1565455357107576381
@@ -142,10 +141,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
-  currentWeapon: 1
+  intializeDatas:
+  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  weaponSlots:
+  - {fileID: 0}
+  - {fileID: 0}
   OnWeaponChanged:
     m_PersistentCalls:
       m_Calls: []
+  OnAmmoChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnReloaded:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!1 &3567171574248799592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7520988284234869695}
+  - component: {fileID: 1843441366892414272}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7520988284234869695
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3567171574248799592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8573067385202639865}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1843441366892414272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3567171574248799592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74cf222dd9d05e45930fbd1bd786c6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  poolSize: 2
+  stealthBGM: {fileID: 11400000, guid: fd18eced3dbdaea40ba4df5e065772e7, type: 2}
+  combatBGM: {fileID: 11400000, guid: f1f3781bfb5d1644287e818554d6200d, type: 2}
+  fadeTime: 0.8
 --- !u!1 &4444015179403229149
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,67 +342,6 @@ MonoBehaviour:
   dieSound: {fileID: 11400000, guid: 9fd662bbd06975c4fa465064f81910de, type: 2}
   hitSound: {fileID: 11400000, guid: d51e4c1d6ec65684a8442b078629d638, type: 2}
   characterVol: 0.2
---- !u!1 &6415287943466318816
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7815421039330853386}
-  - component: {fileID: 7493691282974568288}
-  m_Layer: 0
-  m_Name: Bullet
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7815421039330853386
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6415287943466318816}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5847062149088214940}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7493691282974568288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6415287943466318816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa80f0ce25515f348836192dd825ae6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  pistol:
-    type: 1
-    magazineCapacity: 12
-    currentMagazine: 12
-    reserve: 36
-  rifle:
-    type: 2
-    magazineCapacity: 30
-    currentMagazine: 30
-    reserve: 90
-  OnAmmoChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnReloaded:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &7379851031130033215
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +374,7 @@ Transform:
   - {fileID: 4276630320577878599}
   - {fileID: 668456609489717666}
   - {fileID: 7023295764075890177}
+  - {fileID: 7520988284234869695}
   m_Father: {fileID: 5115538189022398859}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8129387095671507109

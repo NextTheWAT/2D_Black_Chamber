@@ -5,14 +5,19 @@ public partial class PlayerInputController : TopDownController
 {
     [SerializeField] Shooter shooter;
     private CharacterAnimationController animationController;
-    private WeaponSwitchCoordinator weaponSwitchCoordinator;
 
     private void Awake()
     {
+        shooter = GetComponent<Shooter>();
         _camera = Camera.main;
         shooter = GetComponent<Shooter>();
         animationController = GetComponent<CharacterAnimationController>();
-        weaponSwitchCoordinator = GetComponent<WeaponSwitchCoordinator>();
+
+        WeaponManager.Instance.OnWeaponChanged.AddListener((shooter) =>
+        {
+            this.shooter = shooter;
+            animationController?.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
+        });
     }
 
     private void LateUpdate()

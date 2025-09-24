@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
+  m_Name: Rifle
+  m_EditorClassIdentifier: 
+  displayName: Rifle
+  damage: 10
+  bulletSpeed: 100
+  maxMagazine: 6
+  maxAmmo: 30
+  fireRate: 10
+  spread: 0
+  projectilesPerShot: 1
+  firePointOffset: {x: 0.24, y: 1.19}
+  noiseRange: 8
+  bulletPrefab: {fileID: 8908556986258763193, guid: 9b1e99386de2bae45b00a487fd55718e, type: 3}
+  muzzleFlashPrefab: {fileID: 7841737132505529772, guid: 421645e252778e543a5b70ed673861f0, type: 3}
+  upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
+  weaponSprite: {fileID: -555052648, guid: d5771c71321d5c5429d875cd0219fc91, type: 3}
+  bulletLife: 2
