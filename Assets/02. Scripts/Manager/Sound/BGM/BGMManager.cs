@@ -5,10 +5,8 @@ using Constants; // GamePhase
 public class BGMManager : SoundManagerBase<BGMManager>
 {
     [Header("BGM (SoundData)")]
-    public SoundData titleBGM;     // 타이틀
-    public SoundData lobbyBGM;     // 로비
-    public SoundData stealthBGM;   // 게임: 잠입
-    public SoundData combatBGM;    // 게임: 난전
+    public SoundData stealthBGM;   // 잠입
+    public SoundData combatBGM;    // 난전
 
     [SerializeField] float fadeTime = 0.8f;
 
@@ -16,19 +14,25 @@ public class BGMManager : SoundManagerBase<BGMManager>
     bool _useA = true;
     Coroutine _fade;
 
-    bool _inGameContext = false;   // UI 상태가 Game일 때만 Phase 이벤트 반영
-
     void Awake()
     {
-        // A/B 교차 페이드용 소스 생성 (outputGroup은 Inspector에서 BGM 그룹으로 할당)
+        // A/B 소스 생성 (Inspector에서 outputGroup = MainMixer/BGM 할당 필요)
         _a = CreateLooping("BGM_A");
         _b = CreateLooping("BGM_B");
     }
 
     void OnEnable()
     {
+        // GameManager 상태 변경 이벤트 구독
         var gm = GameManager.Instance;
         if (gm != null) gm.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    void Start()
+    {
+        // 시작 시 현재 상태로 즉시 재생(없으면 잠입으로)
+        var gm = GameManager.Instance;
+        SetPhase(gm ? gm.CurrentPhase : GamePhase.Stealth, instant: true);
     }
 
     void OnDisable()
@@ -37,54 +41,20 @@ public class BGMManager : SoundManagerBase<BGMManager>
         if (gm != null) gm.OnPhaseChanged -= OnPhaseChanged;
     }
 
+    void OnPhaseChanged(GamePhase phase) => SetPhase(phase, instant: false);
+
     AudioSource CreateLooping(string name)
     {
         var go = new GameObject(name);
         go.transform.SetParent(transform, false);
+
         var src = go.AddComponent<AudioSource>();
         src.loop = true;
         src.playOnAwake = false;
-        src.spatialBlend = 0f;     // 2D
-        src.volume = 0f;           // 페이드로 올림
+        src.spatialBlend = 0f;   // 2D
+        src.volume = 0f;         // 페이드로 올림
         src.outputAudioMixerGroup = outputGroup; // 반드시 BGM 그룹
         return src;
-    }
-
-    // ───────────── UI 컨텍스트 전환 ─────────────
-    public void SetUiContext(UIKey key, bool instant = false)
-    {
-        switch (key)
-        {
-            case UIKey.Title:
-                _inGameContext = false;
-                PlayData(titleBGM, instant);
-                break;
-
-            case UIKey.Lobby:
-                _inGameContext = false;
-                PlayData(lobbyBGM, instant);
-                break;
-
-            case UIKey.Game:
-                _inGameContext = true;
-                // 현재 Phase로 즉시 맞춤(또는 페이드)
-                var gm = GameManager.Instance;
-                var phase = gm ? gm.CurrentPhase : GamePhase.Stealth;
-                SetPhase(phase, instant);
-                break;
-
-            default:
-                // 정의 안 한 UI 상태는 일단 타이틀로 폴백
-                _inGameContext = false;
-                PlayData(titleBGM, instant);
-                break;
-        }
-    }
-
-    // ───────────── 게임 Phase 전환(잠입/난전) ─────────────
-    void OnPhaseChanged(GamePhase phase)
-    {
-        if (_inGameContext) SetPhase(phase, instant: false);
     }
 
     public void SetPhase(GamePhase phase, bool instant = false)
@@ -93,7 +63,6 @@ public class BGMManager : SoundManagerBase<BGMManager>
         PlayData(data, instant);
     }
 
-    // ───────────── 공통 재생 로직 ─────────────
     void PlayData(SoundData data, bool instant)
     {
         var clip = ExtractRandomClip(data);
@@ -127,7 +96,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
         while (t < fadeTime)
         {
-            t += Time.unscaledDeltaTime;
+            t += Time.unscaledDeltaTime;   // 일시정지 중에도 페이드 유지
             float k = Mathf.Clamp01(t / fadeTime);
             if (from) from.volume = Mathf.Lerp(fromStart, 0f, k);
             to.volume = Mathf.Lerp(toStart, target, k);
@@ -144,8 +113,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
         return data.clips[Random.Range(0, data.clips.Length)];
     }
 
-    // 필요하면 버튼/애니메이션에서 직접 호출할 단축 메서드
-    public void PlayTitle(bool instant = false) => SetUiContext(UIKey.Title, instant);
-    public void PlayLobby(bool instant = false) => SetUiContext(UIKey.Lobby, instant);
-    public void EnterGame(bool instant = false) => SetUiContext(UIKey.Game, instant);
+    // 필요하면 애니메이션 이벤트/버튼에서 직접 호출
+    public void EnterCombat() => SetPhase(GamePhase.Combat);
+    public void EnterStealth() => SetPhase(GamePhase.Stealth);
 }
