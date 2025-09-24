@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Magazine : MonoBehaviour
 {
     public interface IInteractable
     {
@@ -21,11 +21,11 @@ public class Enemy : MonoBehaviour
     //    }
     //}
 
-    void Die()
-    {
-        // 적 위치에 탄창 프리팹 생성
-        Instantiate(ammoPickupPrefab, transform.position, Quaternion.identity);
-        Destroy(gameObject); // 적 사라짐
-    }
+    //void Die()
+    //{
+    //    // 적 위치에 탄창 프리팹 생성
+    //    Instantiate(ammoPickupPrefab, transform.position, Quaternion.identity);
+    //    Destroy(gameObject); // 적 사라짐
+    //}
 }
 
