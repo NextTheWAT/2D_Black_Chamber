@@ -14,6 +14,12 @@ public class SettingPopup : UIBase
 
     private Coroutine _fadeCo;
 
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
+
     private void Reset()
     {
         if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
