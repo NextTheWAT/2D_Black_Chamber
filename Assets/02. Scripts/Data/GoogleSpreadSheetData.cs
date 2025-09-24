@@ -1,3 +1,4 @@
+using Constants;
 
 [System.Serializable]
 public class GoogleSpreadSheetData
@@ -7,9 +8,12 @@ public class GoogleSpreadSheetData
     public string endCell = "C10";
     public string mainURL = "https://docs.google.com/spreadsheets/d/1uI-9xo0u57DOf1XYX-oInEzX1HNYdYHlMcPgnsXe1cc";
     public string gid = "0"; // 기본 시트의 GID
+    public SheetType sheetType = SheetType.Enemy;
 
     public string URL => mainURL + Format + Range + GID;
     public string Format => "/export?format=tsv";
     public string Range => "&range=" + startCell + ":" + endCell;
     public string GID => "&gid=" + gid;
+
+    public string path; // Editor에서 설정할 경로
 }

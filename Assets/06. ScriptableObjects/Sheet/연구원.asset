@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64ea5e52300fc824a90cb5ba0547d4fe, type: 3}
   m_Name: "\uC5F0\uAD6C\uC6D0"
   m_EditorClassIdentifier: 
+  id: 1003001
   enemyName: "\uC5F0\uAD6C\uC6D0"
   hp: 10
   speed: 1
@@ -25,3 +26,4 @@ MonoBehaviour:
   suspectTime: 0
   investigateDuration: 0
   investigateRange: 0
+  dropItemId: 0

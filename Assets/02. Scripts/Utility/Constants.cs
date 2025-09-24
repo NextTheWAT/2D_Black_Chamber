@@ -37,6 +37,13 @@ namespace Constants
         Combat // ³­Àü
     }
 
+    public enum SheetType
+    {
+        Enemy,
+        Weapon
+        
+    }
+
     public static class AnimationHash
     {
         public static readonly int MoveBlend = Animator.StringToHash("MoveBlend");
