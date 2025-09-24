@@ -1,150 +1,105 @@
 using UnityEngine;
 using System.Collections;
-using Constants; // GamePhase
+using Constants; // GamePhase (없어도 됨)
 
 public class BGMManager : SoundManagerBase<BGMManager>
 {
     [Header("BGM (SoundData)")]
-    public SoundData stealthBGM; // 잠입
-    public SoundData combatBGM;  // 난전
+    public SoundData stealthBGM;   // 잠입용
+    public SoundData combatBGM;    // 난전용
 
     [SerializeField] float fadeTime = 0.8f;
 
-    AudioSource _a, _b;   // 교차 페이드용
+    AudioSource _a, _b;
     bool _useA = true;
     Coroutine _fade;
 
-    // 상태 기본 볼륨(SoundData.volume)을 저장
-    float _phaseBaseVolume = 1f;
-    // 직전 타겟(= base × master)을 저장해 마스터 변경 시 비율 보존
-    float _lastTargetVolume = 1f;
-
-    protected override void Initialize()
+    void Awake()
     {
-        base.Initialize();
-
-        _a = CreateLoopingSource("BGM_A");
-        _b = CreateLoopingSource("BGM_B");
-
-        var gm = GameManager.Instance;
-        if (gm != null)
-        {
-            gm.OnPhaseChanged += OnPhaseChanged;
-            SetPhase(gm.CurrentPhase, instant: true);
-        }
-
-        // BGM 마스터 볼륨 변경에 실시간 반응
-        VolumeSettings.OnBgmChanged += ApplyMasterBgm;
+        // A/B 소스 생성 (outputGroup은 인스펙터에서 BGM 그룹으로 할당되어 있어야 함)
+        _a = CreateLooping("BGM_A");
+        _b = CreateLooping("BGM_B");
     }
 
-    void OnDestroy()
+    void Start()
     {
-        var gm = GameManager.Instance;
-        if (gm != null) gm.OnPhaseChanged -= OnPhaseChanged;
-
-        VolumeSettings.OnBgmChanged -= ApplyMasterBgm;
+        // 핵심: 시작하자마자 기본 BGM을 한 번 틀어준다.
+        //    stealth가 없으면 combat으로 폴백
+        PlayData(stealthBGM ? stealthBGM : combatBGM, instant: true);
     }
 
-    AudioSource CreateLoopingSource(string name)
+    AudioSource CreateLooping(string name)
     {
         var go = new GameObject(name);
         go.transform.SetParent(transform, false);
         var src = go.AddComponent<AudioSource>();
         src.loop = true;
         src.playOnAwake = false;
+        src.spatialBlend = 0f;
         src.volume = 0f;
-        src.spatialBlend = 0f; // 2D BGM 권장
+        src.outputAudioMixerGroup = outputGroup; // BGM 그룹이어야 함
         return src;
     }
 
-    void OnPhaseChanged(GamePhase phase) => SetPhase(phase);
-
+    // 외부에서 Phase 바꿀 때 호출하면 됨 (원래 쓰던 API 유지)
     public void SetPhase(GamePhase phase, bool instant = false)
     {
-        // 상태별 SoundData 선택
         var data = (phase == GamePhase.Combat) ? combatBGM : stealthBGM;
-        var nextClip = ExtractRandomClip(data);
-        if (nextClip == null) return;
+        PlayData(data, instant);
+    }
 
-        _phaseBaseVolume = Mathf.Clamp01(data.volume);
-        float targetVolume = _phaseBaseVolume * VolumeSettings.Bgm;
+    // 실제 재생 로직
+    void PlayData(SoundData data, bool instant)
+    {
+        var clip = ExtractRandomClip(data);
+        if (!clip) return;
 
         var from = _useA ? _a : _b;
         var to = _useA ? _b : _a;
         _useA = !_useA;
 
-        // 같은 클립이면 재생 유지하고 볼륨만 조정해도 OK
-        if (to.clip != nextClip) to.clip = nextClip;
+        if (to.clip != clip) to.clip = clip;
         if (!to.isPlaying) to.Play();
 
-        if (_fade != null) StopCoroutine(_fade);
+        float target = Mathf.Clamp01(data.volume); // SoundData 내부 볼륨 사용
 
         if (instant)
         {
-            to.volume = targetVolume;
-            if (from.isPlaying) from.Stop();
-            _lastTargetVolume = targetVolume;
+            if (from) { from.volume = 0f; if (from.isPlaying) from.Stop(); }
+            to.volume = target;
+            return;
         }
-        else
-        {
-            // 시작 시점 볼륨 초기화
-            float toStart = 0f;
-            to.volume = toStart;
-            _fade = StartCoroutine(CrossFade(from, to, toStart, targetVolume));
-        }
+
+        if (_fade != null) StopCoroutine(_fade);
+        _fade = StartCoroutine(CrossFade(from, to, target));
     }
 
-    IEnumerator CrossFade(AudioSource from, AudioSource to, float toStart, float targetVolume)
+    IEnumerator CrossFade(AudioSource from, AudioSource to, float target)
     {
         float t = 0f;
         float fromStart = from ? from.volume : 0f;
+        float toStart = to.volume;
 
         while (t < fadeTime)
         {
-            t += Time.unscaledDeltaTime; // 일시정지에도 부드럽게
+            t += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(t / fadeTime);
-
-            to.volume = Mathf.Lerp(toStart, targetVolume, k);
-            from.volume = Mathf.Lerp(fromStart, 0f, k);
+            if (from) from.volume = Mathf.Lerp(fromStart, 0f, k);
+            to.volume = Mathf.Lerp(toStart, target, k);
             yield return null;
         }
-
-        to.volume = targetVolume;
         if (from && from.isPlaying) from.Stop();
-
-        _lastTargetVolume = targetVolume;
+        to.volume = target;
+        _fade = null;
     }
 
-    // 마스터(BGM) 변경 시, 현재 볼륨을 비율 유지하며 스케일
-    void ApplyMasterBgm(float master)
-    {
-        float newTarget = _phaseBaseVolume * Mathf.Clamp01(master);
-
-        if (_a && _a.isPlaying)
-        {
-            float ratio = (_lastTargetVolume > 0f) ? (_a.volume / _lastTargetVolume) : 0f;
-            _a.volume = newTarget * ratio;
-        }
-        if (_b && _b.isPlaying)
-        {
-            float ratio = (_lastTargetVolume > 0f) ? (_b.volume / _lastTargetVolume) : 0f;
-            _b.volume = newTarget * ratio;
-        }
-        _lastTargetVolume = newTarget;
-    }
-
-    // SoundData 내부에서 랜덤 곡 하나 뽑기
     AudioClip ExtractRandomClip(SoundData data)
     {
         if (data == null) return null;
-
-        var list = data.clips; // AudioClip[] 예상 (프로젝트 정의에 맞게 필드명만 확인)
+        var list = data.clips; // 배열 구조라고 가정
         if (list != null && list.Length > 0)
             return list[Random.Range(0, list.Length)];
-
-        // 단일 clip만 쓰는 구조라면:
-        // return data.clip;
-
+        // 단일 clip 하나만 쓰는 구조면 여기서 data.clip 반환하도록 변경
         return null;
     }
 }
