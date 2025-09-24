@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
-using Constants; // GamePhase (없어도 됨)
+using Constants; // GamePhase
 
 public class BGMManager : SoundManagerBase<BGMManager>
 {
     [Header("BGM (SoundData)")]
-    public SoundData stealthBGM;   // 잠입용
-    public SoundData combatBGM;    // 난전용
+    public SoundData stealthBGM;   // 잠입
+    public SoundData combatBGM;    // 난전
 
     [SerializeField] float fadeTime = 0.8f;
 
@@ -16,39 +16,53 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
     void Awake()
     {
-        // A/B 소스 생성 (outputGroup은 인스펙터에서 BGM 그룹으로 할당되어 있어야 함)
+        // A/B 소스 생성 (Inspector에서 outputGroup = MainMixer/BGM 할당 필요)
         _a = CreateLooping("BGM_A");
         _b = CreateLooping("BGM_B");
     }
 
+    void OnEnable()
+    {
+        // GameManager 상태 변경 이벤트 구독
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged += OnPhaseChanged;
+    }
+
     void Start()
     {
-        // 핵심: 시작하자마자 기본 BGM을 한 번 틀어준다.
-        //    stealth가 없으면 combat으로 폴백
-        PlayData(stealthBGM ? stealthBGM : combatBGM, instant: true);
+        // 시작 시 현재 상태로 즉시 재생(없으면 잠입으로)
+        var gm = GameManager.Instance;
+        SetPhase(gm ? gm.CurrentPhase : GamePhase.Stealth, instant: true);
     }
+
+    void OnDisable()
+    {
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged -= OnPhaseChanged;
+    }
+
+    void OnPhaseChanged(GamePhase phase) => SetPhase(phase, instant: false);
 
     AudioSource CreateLooping(string name)
     {
         var go = new GameObject(name);
         go.transform.SetParent(transform, false);
+
         var src = go.AddComponent<AudioSource>();
         src.loop = true;
         src.playOnAwake = false;
-        src.spatialBlend = 0f;
-        src.volume = 0f;
-        src.outputAudioMixerGroup = outputGroup; // BGM 그룹이어야 함
+        src.spatialBlend = 0f;   // 2D
+        src.volume = 0f;         // 페이드로 올림
+        src.outputAudioMixerGroup = outputGroup; // 반드시 BGM 그룹
         return src;
     }
 
-    // 외부에서 Phase 바꿀 때 호출하면 됨 (원래 쓰던 API 유지)
     public void SetPhase(GamePhase phase, bool instant = false)
     {
         var data = (phase == GamePhase.Combat) ? combatBGM : stealthBGM;
         PlayData(data, instant);
     }
 
-    // 실제 재생 로직
     void PlayData(SoundData data, bool instant)
     {
         var clip = ExtractRandomClip(data);
@@ -61,7 +75,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
         if (to.clip != clip) to.clip = clip;
         if (!to.isPlaying) to.Play();
 
-        float target = Mathf.Clamp01(data.volume); // SoundData 내부 볼륨 사용
+        float target = Mathf.Clamp01(data.volume);
 
         if (instant)
         {
@@ -82,7 +96,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
         while (t < fadeTime)
         {
-            t += Time.unscaledDeltaTime;
+            t += Time.unscaledDeltaTime;   // 일시정지 중에도 페이드 유지
             float k = Mathf.Clamp01(t / fadeTime);
             if (from) from.volume = Mathf.Lerp(fromStart, 0f, k);
             to.volume = Mathf.Lerp(toStart, target, k);
@@ -95,11 +109,11 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
     AudioClip ExtractRandomClip(SoundData data)
     {
-        if (data == null) return null;
-        var list = data.clips; // 배열 구조라고 가정
-        if (list != null && list.Length > 0)
-            return list[Random.Range(0, list.Length)];
-        // 단일 clip 하나만 쓰는 구조면 여기서 data.clip 반환하도록 변경
-        return null;
+        if (!data || data.clips == null || data.clips.Length == 0) return null;
+        return data.clips[Random.Range(0, data.clips.Length)];
     }
+
+    // 필요하면 애니메이션 이벤트/버튼에서 직접 호출
+    public void EnterCombat() => SetPhase(GamePhase.Combat);
+    public void EnterStealth() => SetPhase(GamePhase.Stealth);
 }
