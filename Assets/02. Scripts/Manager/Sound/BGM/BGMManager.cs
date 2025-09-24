@@ -15,12 +15,10 @@ public class BGMManager : SoundManagerBase<BGMManager>
     AudioSource _a, _b;
     bool _useA = true;
     Coroutine _fade;
-
-    bool _inGameContext = false;   // UI 상태가 Game일 때만 Phase 이벤트 반영
+    bool _inGameContext = false;   // Game 컨텍스트일 때만 Phase 이벤트 반영
 
     void Awake()
     {
-        // A/B 교차 페이드용 소스 생성 (outputGroup은 Inspector에서 BGM 그룹으로 할당)
         _a = CreateLooping("BGM_A");
         _b = CreateLooping("BGM_B");
     }
@@ -28,7 +26,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
     void OnEnable()
     {
         var gm = GameManager.Instance;
-        if (gm != null) gm.OnPhaseChanged += OnPhaseChanged;
+        if (gm != null) gm.OnPhaseChanged += OnPhaseChanged; // 게임상태 바뀔 때 받음
     }
 
     void OnDisable()
@@ -41,16 +39,17 @@ public class BGMManager : SoundManagerBase<BGMManager>
     {
         var go = new GameObject(name);
         go.transform.SetParent(transform, false);
+
         var src = go.AddComponent<AudioSource>();
         src.loop = true;
         src.playOnAwake = false;
-        src.spatialBlend = 0f;     // 2D
-        src.volume = 0f;           // 페이드로 올림
-        src.outputAudioMixerGroup = outputGroup; // 반드시 BGM 그룹
+        src.spatialBlend = 0f;      // 2D
+        src.volume = 0f;            // 페이드로 올림
+        src.outputAudioMixerGroup = outputGroup; // 인스펙터에서 MainMixer/BGM 할당
         return src;
     }
 
-    // ───────────── UI 컨텍스트 전환 ─────────────
+    // ───────────── 씬/UI 컨텍스트 전환 ─────────────
     public void SetUiContext(UIKey key, bool instant = false)
     {
         switch (key)
@@ -67,14 +66,12 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
             case UIKey.Game:
                 _inGameContext = true;
-                // 현재 Phase로 즉시 맞춤(또는 페이드)
                 var gm = GameManager.Instance;
                 var phase = gm ? gm.CurrentPhase : GamePhase.Stealth;
-                SetPhase(phase, instant);
+                SetPhase(phase, instant); // 현재 Phase에 맞춰 재생(잠입/난전)
                 break;
 
             default:
-                // 정의 안 한 UI 상태는 일단 타이틀로 폴백
                 _inGameContext = false;
                 PlayData(titleBGM, instant);
                 break;
@@ -93,7 +90,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
         PlayData(data, instant);
     }
 
-    // ───────────── 공통 재생 로직 ─────────────
+    // ───────────── 공통 재생 로직(교차 페이드) ─────────────
     void PlayData(SoundData data, bool instant)
     {
         var clip = ExtractRandomClip(data);
@@ -106,7 +103,8 @@ public class BGMManager : SoundManagerBase<BGMManager>
         if (to.clip != clip) to.clip = clip;
         if (!to.isPlaying) to.Play();
 
-        float target = Mathf.Clamp01(data.volume);
+        float target = 1f; // volume 미설정 대비 폴백
+        if (data != null && data.volume > 0f) target = Mathf.Clamp01(data.volume);
 
         if (instant)
         {
@@ -127,7 +125,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
 
         while (t < fadeTime)
         {
-            t += Time.unscaledDeltaTime;
+            t += Time.unscaledDeltaTime;   // 일시정지에도 페이드 유지
             float k = Mathf.Clamp01(t / fadeTime);
             if (from) from.volume = Mathf.Lerp(fromStart, 0f, k);
             to.volume = Mathf.Lerp(toStart, target, k);
@@ -144,7 +142,7 @@ public class BGMManager : SoundManagerBase<BGMManager>
         return data.clips[Random.Range(0, data.clips.Length)];
     }
 
-    // 필요하면 버튼/애니메이션에서 직접 호출할 단축 메서드
+    // 버튼/애니메이션에서 쓰기 편한 단축 함수
     public void PlayTitle(bool instant = false) => SetUiContext(UIKey.Title, instant);
     public void PlayLobby(bool instant = false) => SetUiContext(UIKey.Lobby, instant);
     public void EnterGame(bool instant = false) => SetUiContext(UIKey.Game, instant);
