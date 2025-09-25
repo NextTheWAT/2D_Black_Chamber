@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Pistol
   damage: 10
   bulletSpeed: 100
-  maxMagazine: 6
-  maxAmmo: 30
+  maxMagazine: 12
+  maxAmmo: 36
   fireRate: 1
   spread: 0
   projectilesPerShot: 1

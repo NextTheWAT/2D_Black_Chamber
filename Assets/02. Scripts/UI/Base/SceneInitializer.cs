@@ -13,7 +13,13 @@ public class SceneInitializer : MonoBehaviour
         else
             Debug.LogError("[SceneInitializer] uiRoot 참조가 비였음");
 
-        //추가: 씬 컨텍스트를 BGMManager에 전달
         BGMManager.Instance?.SetUiContext(activeUI, instant: true);
+
+        var pause = FindFirstObjectByType<PausePopup>(FindObjectsInactive.Include);
+        if (pause)
+        {
+            bool showLobby = (activeUI == UIKey.Game);
+            pause.transform.Find("Window/ButtonGroup/LobbyButton")?.gameObject.SetActive(showLobby);
+        }
     }
 }
