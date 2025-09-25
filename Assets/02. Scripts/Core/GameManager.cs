@@ -63,6 +63,25 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        IsCombat = false;
+        OnPhaseChanged?.Invoke(CurrentPhase);
+        targetFoundEnemies.Clear();
+        enterCombatCoroutine = null;
+        exitCombatCoroutine = null;
+    }
+
     public void StartCombatAfterDelay(Enemy enemy)
     {
         targetFoundEnemies.Add(enemy);
@@ -75,7 +94,7 @@ public class GameManager : Singleton<GameManager>
         targetFoundEnemies.Remove(enemy);
 
         if (targetFoundEnemies.Count > 0) return;
-        if(enterCombatCoroutine == null) return;
+        if (enterCombatCoroutine == null) return;
         StopCoroutine(enterCombatCoroutine);
         enterCombatCoroutine = null;
     }
