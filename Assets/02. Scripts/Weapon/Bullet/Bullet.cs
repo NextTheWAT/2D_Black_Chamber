@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviour
         col.isTrigger = true; // 간단하게 Trigger 충돌만
     }
 
-    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float noiseRange, float lifetime, int ignoreLayer, string bulletTag)
+    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float noiseRange, float lifetime, int ignoreLayer)
     {
         transform.position = position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -36,7 +36,6 @@ public class Bullet : MonoBehaviour
         spawnTime = Time.time;
         this.ignoreLayer = ignoreLayer;
         this.noiseRange = noiseRange;
-        gameObject.tag = bulletTag;
 
         previousPos = transform.position;
         rb.velocity = dir.normalized * speed;
@@ -59,8 +58,6 @@ public class Bullet : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(previousPos, moveDir, moveDist, damageLayers);
             if (hit.collider != null)
             {
-                if (hit.collider.CompareTag(gameObject.tag)) return; //자기 자신과 같은 태그는 무시
-
                 //충돌 처리
                 IDamageable target = hit.collider.GetComponent<IDamageable>();
                 target?.TakeDamage(dmg);
@@ -80,8 +77,6 @@ public class Bullet : MonoBehaviour
             hit = Physics2D.Raycast(previousPos, moveDir, moveDist, obstacleLayers);
             if (hit.collider != null)
             {
-                if (hit.collider.CompareTag(gameObject.tag)) return; //자기 자신과 같은 태그는 무시
-
                 //충돌 처리
                 if (obstacleHitEffect != null)
                 {

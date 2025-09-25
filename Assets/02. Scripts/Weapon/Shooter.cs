@@ -40,14 +40,14 @@ public class Shooter : MonoBehaviour
         this.gunData = gunData;
         currentMagazine = gunData.maxMagazine;
         currentAmmo = gunData.maxAmmo;
-        gunPoint.localPosition = gunData.firePointOffset;
+        gunPoint.SetLocalPositionAndRotation(gunData.firePointOffset, Quaternion.identity);
         cooldown = 0f;
         WeaponManager.Instance.OnAmmoChanged?.Invoke();
     }
 
     /// <summary>현재 무기 타입에 맞춰 발사</summary>
     public bool Shoot()
-        => Shoot(gunPoint.right);
+        => Shoot(gunPoint.up);
 
     public bool Shoot(Vector2 direction)
     {
@@ -136,8 +136,7 @@ public class Shooter : MonoBehaviour
             damage: gun.damage,
             noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
-            ignoreLayer: gameObject.layer,
-            bulletTag: transform.root.tag
+            ignoreLayer: gameObject.layer
         );
     }
 

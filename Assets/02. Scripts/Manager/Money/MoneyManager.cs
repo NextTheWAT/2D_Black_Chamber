@@ -8,6 +8,11 @@ public class MoneyManager : MonoBehaviour
 
     private int money;
 
+    [Header("Mission Phase")]
+    public int nomalState = 100;    // 기본 100% 금액
+    public int combatState = 50;    // 전투 상태 = 50% 금액
+
+    private bool combatTrigger = false;
 
     private void Awake()
     {
@@ -22,8 +27,12 @@ public class MoneyManager : MonoBehaviour
 
     public void AddMoney(int amount)
     {
-        // 프리펩 별로 다르게 돈 획득?
-        money += amount;
+        bool combatActive = GameManager.Instance.IsCombat;  // 전투상태 구분
+        int playerState = combatTrigger ? combatState : nomalState;
+
+        int finalAmount = Mathf.RoundToInt(amount * playerState / 100f);
+
+        money += finalAmount;
     }
 
     public void SpendMoney(int amount)

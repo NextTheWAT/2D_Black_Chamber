@@ -1,8 +1,9 @@
 using System;
-using UnityEngine;
-using Constants;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
+using Constants;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -20,6 +21,7 @@ public class GameManager : Singleton<GameManager>
     public float combatDuration = 5f; // 전투 상태 지속 시간
 
 
+    public string gameOverSceneName = "GameOverScene";
     public GamePhase CurrentPhase { get; set; } = GamePhase.Stealth;
 
     public event Action<GamePhase> OnPhaseChanged;
@@ -72,5 +74,11 @@ public class GameManager : Singleton<GameManager>
         if (IsCombat)
             exitCombatTime = Time.time + combatDuration;
     }
+
+    public void TriggerGameOver()
+        => Invoke(nameof(LoadGameOverScene), 2f);
+
+    private void LoadGameOverScene()
+        => SceneManager.LoadScene(gameOverSceneName);
 
 }
