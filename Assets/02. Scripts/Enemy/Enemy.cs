@@ -46,8 +46,8 @@ public class Enemy : MonoBehaviour
     private CharacterAnimationController animationController;
     public bool IsHit { get; private set; }
     public bool IsDead => health.IsDead;
-    public StateMachine CurrentStateMachine => GameManager.Instance.IsCombat ? combatStateMachine : noncombatStateMachine;
-    public StateMachine PreviousStateMachine => previousGamePhase == GamePhase.Combat ? combatStateMachine : noncombatStateMachine;
+    public StateMachine CurrentStateMachine => HasTarget ? combatStateMachine : noncombatStateMachine;
+    public StateMachine PreviousStateMachine => previousHasTarget ? combatStateMachine : noncombatStateMachine;
 
     public float ViewDistance => forwardLight.pointLightOuterRadius;
     public float ViewAngle => forwardLight.pointLightOuterAngle;
@@ -158,10 +158,10 @@ public class Enemy : MonoBehaviour
 
     public bool AutoRotate { get; set; }
 
-    private GamePhase previousGamePhase;
-
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
 
+
+    private bool previousHasTarget = false;
 
     private void Start()
     {
@@ -182,17 +182,30 @@ public class Enemy : MonoBehaviour
 
         CurrentStateMachine.Start();
 
-        previousGamePhase = GameManager.Instance.CurrentPhase;
+        previousHasTarget = HasTarget;
+
+        GameManager.Instance.OnPhaseChanged += (phase) =>
+        {
+            if (phase == GamePhase.Combat)
+            {
+                Target = GameManager.Instance.Player;
+            }
+            else
+            {
+                Target = null;
+            }
+        };
     }
 
     private void Update()
     {
-        if(previousGamePhase != GameManager.Instance.CurrentPhase || HasTarget)
+        if (previousHasTarget != HasTarget)
         {
             PreviousStateMachine?.Stop();
             CurrentStateMachine?.Start();
-            previousGamePhase = GameManager.Instance.CurrentPhase;
-            ConditionalLogger.Log($"Switch State Machine {GameManager.Instance.CurrentPhase}");
+
+            previousHasTarget = HasTarget;
+            ConditionalLogger.Log($"Switch State Machine {(HasTarget ? "Combat" : "Non-Combat")}");
         }
 
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
@@ -293,7 +306,7 @@ public class Enemy : MonoBehaviour
         if (currentHealth == maxHealth) return;
 
 
-        if (GameManager.Instance.IsCombat || HasTargetInFOV)
+        if (GameManager.Instance.IsCombat || HasTarget || HasTargetInFOV)
         {
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.Player.position;
