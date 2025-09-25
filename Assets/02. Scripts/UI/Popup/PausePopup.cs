@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PausePopup : UIBase
@@ -14,6 +15,8 @@ public class PausePopup : UIBase
 
     [Header("Anim")]
     [SerializeField] private float fadeDuration = 0.18f;
+
+    [SerializeField] private string lobbySceneName = "LobbyScene";
 
     private Coroutine fadeCo;
     private float prevTimeScale = 1f; // ´ÝÀ» ¶§ º¹¿ø¿ë
@@ -153,8 +156,20 @@ public class PausePopup : UIBase
 
     private void OnClickLobby()
     {
+        StartCoroutine(ReturnToLobby());
+    }
+
+    private IEnumerator ReturnToLobby()
+    {
         RequestClose();
-        // SceneSystem.Instance?.LoadLobby();
+        while (gameObject.activeInHierarchy) yield return null; // ´ÝÈú ¶§±îÁö ´ë±â
+        if (Time.timeScale == 0f) Time.timeScale = 1f;
+        if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
+        {
+            Debug.LogError($"¾À '{lobbySceneName}' ¾øÀ½");
+            yield break;
+        }
+        SceneManager.LoadScene(lobbySceneName);
     }
 
     private void OnClickQuit()
