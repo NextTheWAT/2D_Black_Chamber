@@ -53,9 +53,9 @@ public partial class PlayerInputController : TopDownController
         Vector3 mouse = cam.ScreenToWorldPoint(Input.mousePosition);
         mouse.z = shooter.gunPoint.position.z;
 
-        Vector2 dir = ((Vector2)(mouse - shooter.gunPoint.position)).normalized;
+        // Vector2 dir = ((Vector2)(mouse - shooter.gunPoint.position)).normalized;
 
-        if (shooter.Shoot(dir))
+        if (shooter.Shoot())
         {
         }
         else
