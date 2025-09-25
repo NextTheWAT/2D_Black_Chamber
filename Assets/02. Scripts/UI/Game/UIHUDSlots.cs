@@ -152,7 +152,7 @@ public class UIHUDSlots : MonoBehaviour
 
         int mag = WeaponManager.Instance.GetMagazine();
         int res = WeaponManager.Instance.GetReserve();
-        ammoText.text = $"{res} / {mag}";
+        ammoText.text = $"{mag} / {res}";
     }
 
     private void ShowOnly(GameObject go)

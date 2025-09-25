@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Rifle
   damage: 10
   bulletSpeed: 100
-  maxMagazine: 6
-  maxAmmo: 30
+  maxMagazine: 30
+  maxAmmo: 90
   fireRate: 3
   spread: 0
   projectilesPerShot: 1
