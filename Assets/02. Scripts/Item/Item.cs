@@ -10,7 +10,6 @@ public class Item : MonoBehaviour
 
     private Transform player;    // 플레이어 Transform
     private bool playerInRange = false; // 플레이어가 근처에 있는지 여부
-    public GameObject Enemy;  //드랍 프리팹
     void Start()
     {
         // Inspector에 player를 안 넣으면 씬에서 자동으로 찾기
