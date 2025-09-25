@@ -5,7 +5,7 @@ using UnityEngine;
 public class SimpleItem : MonoBehaviour
 {
     [Header("아이템 설정")]
-    public string itemName = "탄창";    // 아이템 이름
+    public string itemName;    // 아이템 이름
     public float pickupRange = 2f;        // 플레이어 접근 감지 거리
 
     private Transform player;             // 플레이어 Transform
