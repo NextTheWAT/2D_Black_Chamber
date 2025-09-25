@@ -27,12 +27,7 @@ public class MoneyManager : MonoBehaviour
 
     public void AddMoney(int amount)
     {
-        bool combatActive = GameManager.Instance.IsCombat;  // 전투상태 구분
-        int playerState = combatTrigger ? combatState : nomalState;
-
-        int finalAmount = Mathf.RoundToInt(amount * playerState / 100f);
-
-        money += finalAmount;
+        money += amount;
     }
 
     public void SpendMoney(int amount)
