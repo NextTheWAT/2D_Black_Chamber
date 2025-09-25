@@ -39,7 +39,7 @@ public class SuspectState : BaseState
         if (owner.HasTarget)
         {
             ConditionalLogger.Log("SuspectState: Target Acquired");
-            GameManager.Instance.IsCombat = true; // 난전 모드 진입
+            GameManager.Instance.StartCombatAfterDelay(owner);
         }
     }
 

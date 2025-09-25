@@ -187,7 +187,7 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        if(previousGamePhase != GameManager.Instance.CurrentPhase)
+        if(previousGamePhase != GameManager.Instance.CurrentPhase || HasTarget)
         {
             PreviousStateMachine?.Stop();
             CurrentStateMachine?.Start();
@@ -286,7 +286,6 @@ public class Enemy : MonoBehaviour
         if (GameManager.Instance.IsCombat) return;
         IsNoiseDetected = true;
         LastKnownTargetPos = noisePosition;
-        ConditionalLogger.Log("Heard Noise : " + gameObject.name);
     }
 
     public void Hit(int currentHealth, int maxHealth)
@@ -314,6 +313,8 @@ public class Enemy : MonoBehaviour
         coll.enabled = false;
         enabled = false;
 
+        GameManager.Instance.CancelCombatDelay(this);
+
         // 미션 카운팅 감소
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
     }
@@ -323,7 +324,8 @@ public class Enemy : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Target = collision.transform;
-            GameManager.Instance.IsCombat = true;
+            GameManager.Instance.StartCombatAfterDelay(this);
+            // GameManager.Instance.IsCombat = true;
         }
     }
 
