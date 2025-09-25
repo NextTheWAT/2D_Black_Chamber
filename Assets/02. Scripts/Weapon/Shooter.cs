@@ -58,7 +58,7 @@ public class Shooter : MonoBehaviour
         if (respectFireRate && cooldown > 0f) return false;
 
         // 탄약 소비
-        if (currentAmmo <= 0)
+        if (currentMagazine <= 0)
         {
             // 빈 탄창: 틱틱 사운드만
             WeaponSoundManager.Instance.PlayEmptySound();
@@ -67,7 +67,7 @@ public class Shooter : MonoBehaviour
             return false;
         }
 
-        currentAmmo--;
+        currentMagazine--;
         WeaponManager.Instance.OnAmmoChanged?.Invoke();
 
         // 발사 처리
@@ -104,19 +104,32 @@ public class Shooter : MonoBehaviour
     public void Reload()
     {
         if (gunData == null) return;
-        if (currentAmmo >= gunData.maxAmmo) return; // 이미 가득
-        if (currentMagazine <= 0) return; 
 
-        currentMagazine--;
-        currentAmmo = gunData.maxAmmo;
-        cooldown = 0.5f; // 리로드 시간 (임시)
+        // 1) 현재 탄창이 이미 가득이면 종료
+        if (currentMagazine >= gunData.maxMagazine) return;
 
-        WeaponManager.Instance.OnAmmoChanged?.Invoke();
-        WeaponManager.Instance.OnReloaded?.Invoke();
+        // 2) 리저브(오른쪽)가 없으면 종료
+        if (currentAmmo <= 0) return;
 
-        // 리로드 사운드
-        WeaponSoundManager.Instance.PlayReloadSound();
+        // 3) 채워야 할 탄수 = (탄창 용량 - 현재 탄창 탄수)
+        int need = gunData.maxMagazine - currentMagazine;
+        if (need <= 0) return;
+
+        // 4) 실제로 옮길 수 있는 탄수 = min(need, 리저브)
+        int move = Mathf.Min(need, currentAmmo);
+
+        // 5) 오른쪽(리저브) → 왼쪽(탄창)으로 이동
+        currentMagazine += move;   // 왼쪽 채워짐
+        currentAmmo -= move;   // 오른쪽 줄어듦
+
+
+        cooldown = 0.5f; // 필요 시 데이터화
+
+        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
+        WeaponManager.Instance?.OnReloaded?.Invoke();
+        WeaponSoundManager.Instance?.PlayReloadSound();
     }
+
 
     private void SpawnBullet(GunData gun, Transform muzzle, Vector2 dir)
     {

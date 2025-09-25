@@ -32,15 +32,16 @@ public class UIManager : MonoBehaviour
         return null;
     }
 
-    public void OpenUI<T>() where T : UIBase 
+    public T OpenUI<T>() where T : UIBase 
     {
         var ui = FindOrCache<T>();
         if (ui == null)
         {
             Debug.LogError($"[UIManager] {typeof(T).Name}를 씬에서 찾을 수 없음");
-            return;
+            return null;
         }
         ui.OpenUI();
+        return ui;
     }
 
     public void CloseUI<T>() where T : UIBase
