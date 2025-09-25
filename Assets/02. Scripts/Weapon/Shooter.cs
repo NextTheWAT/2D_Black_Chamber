@@ -18,6 +18,9 @@ public class Shooter : MonoBehaviour
     // 무기별 쿨다운을 별도로 관리 (전환 시 쿨다운 꼬임 방지)
     private float cooldown;
 
+    public bool HasAnyAmmo => (currentMagazine + currentAmmo) > 0;
+    public bool IsClipEmpty => currentMagazine <= 0;
+
     private void Awake()
     {
         gunPoint = new GameObject("GunPoint").transform;
