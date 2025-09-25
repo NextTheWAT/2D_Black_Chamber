@@ -95,6 +95,9 @@ public class Shooter : MonoBehaviour
             Destroy(fx, 0.05f);
         }
 
+        // 소음
+        NoiseManager.Instance.EmitNoise(gunPoint.position, gunData.noiseRange);
+
         // 사운드
         if (gunData.displayName.Contains("Pistol"))
             WeaponSoundManager.Instance.PlayPistolShootSound();
