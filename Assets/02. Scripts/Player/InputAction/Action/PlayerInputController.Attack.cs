@@ -50,12 +50,13 @@ public partial class PlayerInputController : TopDownController
         if (shooter.gunPoint == null) return;
 
         // 마우스 → 월드 좌표
+        /*
         Vector3 mouse = cam.ScreenToWorldPoint(Input.mousePosition);
         mouse.z = shooter.gunPoint.position.z;
-
         Vector2 dir = ((Vector2)(mouse - shooter.gunPoint.position)).normalized;
+        */
 
-        if (shooter.Shoot(dir))
+        if (shooter.Shoot())
         {
         }
         else

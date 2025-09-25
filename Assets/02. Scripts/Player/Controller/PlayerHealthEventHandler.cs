@@ -33,6 +33,7 @@ public class PlayerHealthEventHandler : MonoBehaviour
         topDownMovement.enabled = false; // 이동 비활성화
         playerInputController.enabled = false; // 입력 비활성화
         animController.PlayDie();
+        GameManager.Instance.TriggerGameOver();
     }
 
 
