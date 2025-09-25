@@ -46,6 +46,9 @@ public class Shooter : MonoBehaviour
     }
 
     /// <summary>현재 무기 타입에 맞춰 발사</summary>
+    public bool Shoot()
+        => Shoot(gunPoint.right);
+
     public bool Shoot(Vector2 direction)
     {
         // 필수 레퍼런스 검사
