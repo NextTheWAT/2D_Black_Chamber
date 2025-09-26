@@ -3,13 +3,26 @@ using UnityEngine.InputSystem;
 
 public partial class PlayerInputController : TopDownController
 {
-    //public void OnMenu(InputAction.CallbackContext ctx)
-    //{
-    //    if (!ctx.performed) return; // 키를 눌렀을 때만 반응
+    public void OnMenu(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed) return;
 
-    //    //ESC로 설정 팝업 닫기
-    //        var popup = Object.FindFirstObjectByType<SettingPopup>(FindObjectsInactive.Include);
-    //        if (popup != null && popup.gameObject.activeInHierarchy)
-    //            popup.RequestClose();
-    //}
+        // 1) 설정 팝업이 떠 있으면 닫기
+        var setting = Object.FindFirstObjectByType<SettingPopup>(FindObjectsInactive.Include);
+        if (setting != null && setting.gameObject.activeInHierarchy)
+        {
+            setting.RequestClose();
+            return;
+        }
+
+        // 2) 일시정지 
+        var pause = Object.FindFirstObjectByType<PausePopup>(FindObjectsInactive.Include);
+        if (pause != null)
+        {
+            if (pause.gameObject.activeInHierarchy)
+                pause.RequestClose();
+            else
+                UIManager.Instance.OpenUI<PausePopup>();
+        }
+    }
 }
