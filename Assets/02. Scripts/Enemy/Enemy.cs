@@ -63,11 +63,7 @@ public class Enemy : MonoBehaviour
 
     public Transform Target
     {
-        get
-        {
-            if (GameManager.Instance.IsCombat) return GameManager.Instance.Player;
-            return target;
-        }
+        get => target;
         set
         {
             target = value;
@@ -77,7 +73,7 @@ public class Enemy : MonoBehaviour
             UpdateLight();
         }
     }
-    public bool HasTarget => target;
+    public bool HasTarget => Target;
     public Vector2 LastKnownTargetPos { get; set; }
 
     public bool IsTargetInSight
@@ -184,18 +180,19 @@ public class Enemy : MonoBehaviour
 
         previousHasTarget = HasTarget;
 
-        GameManager.Instance.OnPhaseChanged += (phase) =>
-        {
-            if (phase == GamePhase.Combat)
-            {
-                Target = GameManager.Instance.Player;
-            }
-            else
-            {
-                Target = null;
-            }
-        };
     }
+
+    private void OnEnable()
+    {
+        if (GameManager.AppIsQuitting) return;
+        GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    void OnDisable(){
+        if (GameManager.AppIsQuitting) return;
+        GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+    }
+
 
     private void Update()
     {
@@ -215,10 +212,13 @@ public class Enemy : MonoBehaviour
         UpdateMoveBlend(); // 이동 애니메이션 블렌드값 갱신
         Rotate(); // 회전
 
-        
+
         if (IsHit) IsHit = false; // 맞았던 상태 초기화
         if (IsNoiseDetected) IsNoiseDetected = false; // 소음 감지 상태 초기화
     }
+
+    void OnPhaseChanged(GamePhase phase)
+        => Target = phase == GamePhase.Combat ? GameManager.Instance.Player : null;
 
     private void UpdateMoveBlend()
     {
@@ -252,8 +252,9 @@ public class Enemy : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
-    public void Attack(){
-        if(shooter.CurrentAmmo <= 0 && shooter.CurrentMagazine > 0)
+    public void Attack()
+    {
+        if (shooter.CurrentAmmo <= 0 && shooter.CurrentMagazine > 0)
         {
             animationController.PlayReload();
             shooter.Reload();
@@ -266,6 +267,12 @@ public class Enemy : MonoBehaviour
 
     public void UpdateLight()
     {
+        if (forwardLight == null || backwardLight == null)
+        {
+            ConditionalLogger.LogWarning($"{gameObject} Enemy Light2D is not assigned.");
+            return;
+        }
+
         forwardLight.enabled = HasTarget || HasTargetInFOV;
         backwardLight.enabled = HasTarget || HasTargetInFOV;
 
@@ -325,6 +332,8 @@ public class Enemy : MonoBehaviour
         animationController.PlayDie();
         coll.enabled = false;
         enabled = false;
+        forwardLight.enabled = false;
+        backwardLight.enabled = false;
 
         GameManager.Instance.CancelCombatDelay(this);
 

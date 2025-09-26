@@ -25,7 +25,10 @@ public class GameManager : Singleton<GameManager>
         get
         {
             if (player == null)
-                player = GameObject.FindGameObjectWithTag("Player").transform;
+            {
+                GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+                player = playerObject ? playerObject.transform : null;
+            }
 
             return player;
         }
@@ -41,18 +44,19 @@ public class GameManager : Singleton<GameManager>
             {
                 CurrentPhase = next;
                 OnPhaseChanged?.Invoke(CurrentPhase); //총 UI 변경 이벤트 발행
-                WeaponManager.Instance.CurrentWeaponIndex = 0;
             }
         }
     }
 
     private void OnEnable()
     {
+        if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDisable()
     {
+        if (AppIsQuitting) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
@@ -61,6 +65,10 @@ public class GameManager : Singleton<GameManager>
         IsCombat = false;
         OnPhaseChanged?.Invoke(CurrentPhase);
         targetFoundEnemies.Clear();
+
+        if (enterCombatCoroutine != null)
+            StopCoroutine(enterCombatCoroutine);
+
         enterCombatCoroutine = null;
     }
 

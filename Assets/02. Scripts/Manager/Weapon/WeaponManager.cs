@@ -1,3 +1,4 @@
+using Constants;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,25 +6,26 @@ using UnityEngine.SceneManagement;
 
 public class WeaponManager : Singleton<WeaponManager>
 {
-    public Shooter CurrentWeapon 
-        => (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
-
-    public GunData[] intializeDatas;
-    [HideInInspector] public Shooter[] weaponSlots;
-    private int currentIndex = 0;
-
     [Serializable] public class WeaponChangedEvent : UnityEvent<Shooter> { }
     public WeaponChangedEvent OnWeaponChanged = new();         // HUD/애니/사운드가 구독
 
     public UnityEvent OnAmmoChanged { get; private set; } = new UnityEvent();
     public UnityEvent OnReloaded { get; private set; } = new UnityEvent();
 
+    public GunData[] intializeDatas;
+    [HideInInspector] public Shooter[] weaponSlots;
+
+    [SerializeField] private int initializeIndex = 0; // 초기 무기 인덱스
+    private int currentIndex = 0;
+
+    public Shooter CurrentWeapon
+        => (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
+
     public int CurrentWeaponIndex
     {
         get => currentIndex;
         set
         {
-            if (currentIndex == value) return; // 같은 무기 선택 방지
             if (weaponSlots == null || weaponSlots.Length == 0) return; // 무기 없음 방지
 
             currentIndex = value % weaponSlots.Length;
@@ -32,10 +34,26 @@ public class WeaponManager : Singleton<WeaponManager>
         }
     }
 
-    protected override void Initialize()
+    private void OnEnable()
     {
-        base.Initialize();
+        if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (AppIsQuitting) return;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+    }
+
+    private void OnPhaseChanged(GamePhase phase)
+    {
+        if (phase == Constants.GamePhase.Combat)
+            CurrentWeaponIndex = 1;
+        else
+            CurrentWeaponIndex = 0;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -67,6 +85,7 @@ public class WeaponManager : Singleton<WeaponManager>
             weaponSlots[i] = shooter;
         }
 
+        CurrentWeaponIndex = initializeIndex;
         OnWeaponChanged.Invoke(CurrentWeapon);
         OnAmmoChanged.Invoke();
     }
