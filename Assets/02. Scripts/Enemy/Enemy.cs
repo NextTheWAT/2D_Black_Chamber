@@ -37,9 +37,11 @@ public class Enemy : MonoBehaviour
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
 
+
     public string stateType;
     public bool isTarget = false;
 
+    public GameObject[] dropItems;
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
@@ -360,6 +362,16 @@ public class Enemy : MonoBehaviour
 
         // 미션 카운팅 감소
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
+
+        if (dropItems.Length > 0)
+        {
+            int r = Random.Range(0, dropItems.Length);
+            Vector3 dropPos = transform.position + Vector3.up * 0.2f;
+            Instantiate(dropItems[r], dropPos, Quaternion.identity);
+        }
+
+        Destroy(gameObject);
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -388,5 +400,6 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(LookPoint, 0.2f);
     }
+
 
 }
