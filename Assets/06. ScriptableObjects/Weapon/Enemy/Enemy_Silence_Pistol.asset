@@ -22,7 +22,7 @@ MonoBehaviour:
   projectilesPerShot: 1
   firePointOffset: {x: 0.04, y: 1.09}
   noiseRange: 8
-  bulletPrefab: {fileID: 8908556986258763193, guid: e6199e5bc8a5ecc40b6bee74a672bcef, type: 3}
+  bulletPrefab: {fileID: 8908556986258763193, guid: 31971c2a0ebeb4046a7e923603d71f7d, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
   upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
   weaponSprite: {fileID: 671012679, guid: d5771c71321d5c5429d875cd0219fc91, type: 3}

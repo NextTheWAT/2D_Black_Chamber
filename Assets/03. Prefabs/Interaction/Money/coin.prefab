@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 835906410717678853}
   - component: {fileID: 2770013388060293780}
   - component: {fileID: 4245727464908798769}
-  - component: {fileID: 135261166902105794}
   m_Layer: 0
   m_Name: coin
   m_TagString: Untagged
@@ -99,18 +98,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\uCF54\uC778"
-  pickupRange: 1.2
-  Enemy: {fileID: 0}
---- !u!114 &135261166902105794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8470961088537889561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9beae23bacd68d4f95f382ded26d7df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  money: 0
+  pickupRange: 1

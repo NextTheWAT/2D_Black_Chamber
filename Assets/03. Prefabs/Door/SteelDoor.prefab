@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7333647792130928584}
   m_Layer: 0
   m_Name: SteelDoor.Trigger
-  m_TagString: Untagged
+  m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   steelDoor: {fileID: 8247351586227046266}
-  openDistance: 3
+  openDistance: 6
   openSpeed: 0.5
 --- !u!61 &7333647792130928584
 BoxCollider2D:
@@ -173,7 +173,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 30.702417, y: -1.405122, z: -10.086358}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8867318890245224704}

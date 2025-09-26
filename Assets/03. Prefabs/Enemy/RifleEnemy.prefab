@@ -233,6 +233,9 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 64
+  bodyMask:
+    serializedVersion: 2
+    m_Bits: 128
   obstacleMask:
     serializedVersion: 2
     m_Bits: 513
@@ -307,6 +310,7 @@ MonoBehaviour:
   gunPoint: {fileID: 6434019260681293078}
   gunData: {fileID: 11400000, guid: 9933e2e930c924f4bac18e8e28cda6d3, type: 2}
   respectFireRate: 1
+  shooterLocked: 0
 --- !u!114 &-5200466512008399858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,7 +446,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 000000009d4078eca3218812e5de8963b783b9737b66a268
+  m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -674,7 +678,7 @@ MonoBehaviour:
   m_Intensity: 0.4
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 000000009d4078eca3218812e5de8963b783b9737b66a268
+  m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 1

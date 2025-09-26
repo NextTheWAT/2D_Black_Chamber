@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SteelDoor : MonoBehaviour
+public class SteelDoor : MonoBehaviour, Iinteraction
 {
     public Transform steelDoor;
     public float openDistance;
@@ -21,22 +21,14 @@ public class SteelDoor : MonoBehaviour
 
     private void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.F))
-            isOpen = !isOpen;
-
         Vector2 door = isOpen ? openTransform : closeTransform;
 
         steelDoor.localPosition = Vector2.Lerp(steelDoor.localPosition, door, openSpeed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void Interaction()
     {
-        if (collision.CompareTag("Player"))
-            playerInRange = true;
+        isOpen = !isOpen;
     }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-            playerInRange = false;
-    }
+
 }
