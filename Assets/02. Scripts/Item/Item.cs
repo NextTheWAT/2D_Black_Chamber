@@ -44,7 +44,7 @@ public class Item : MonoBehaviour
 
     public void PickUp()
     {
-        Debug.Log(itemName + "주웠습니다");
+        Debug.Log(itemName + "을 주웠습니다");
         Destroy(gameObject);
     }
 
