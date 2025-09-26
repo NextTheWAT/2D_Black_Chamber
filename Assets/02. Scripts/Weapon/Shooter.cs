@@ -14,6 +14,7 @@ public class Shooter : MonoBehaviour
 
     [Header("Options")]
     public bool respectFireRate = true;
+    public bool shooterLocked = false; // 발사 금지
 
     // 무기별 쿨다운을 별도로 관리 (전환 시 쿨다운 꼬임 방지)
     private float cooldown;
@@ -61,7 +62,7 @@ public class Shooter : MonoBehaviour
         if (respectFireRate && cooldown > 0f) return false;
 
         // 탄약 소비
-        if (currentMagazine <= 0)
+        if (currentMagazine <= 0 || shooterLocked)
         {
             // 빈 탄창: 틱틱 사운드만
             WeaponSoundManager.Instance.PlayEmptySound();
@@ -150,7 +151,6 @@ public class Shooter : MonoBehaviour
             dir: dir,
             speed: gun.bulletSpeed,
             damage: gun.damage,
-            noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
             ignoreLayer: gameObject.layer
         );

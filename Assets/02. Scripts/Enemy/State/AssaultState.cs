@@ -19,10 +19,7 @@ public class AssaultState : BaseState
     public override void Update()
     {
         if (owner.HasTarget)
-        {
             owner.MoveTo(owner.Target.position);
-            GameManager.Instance.RefreshCombatTimer();
-        }
     }
 
     public override void Exit()

@@ -13,6 +13,8 @@ public class SceneInitializer : MonoBehaviour
         else
             Debug.LogError("[SceneInitializer] uiRoot 참조가 비였음");
 
+        CursorManager.Instance?.ApplyByUIKey(activeUI);
+
         BGMManager.Instance?.SetUiContext(activeUI, instant: true);
 
         var pause = FindFirstObjectByType<PausePopup>(FindObjectsInactive.Include);

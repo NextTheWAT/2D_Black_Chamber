@@ -182,6 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b5c97902b6dcd14284b5263c02998c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  root_DontDestroyOnLoad: 0
 --- !u!1 &867227550
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,6 +215,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1157580178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4557656376884689273, guid: 0d9c331dac48c9147bb6f6aeeeb2bc8e, type: 3}
+  m_PrefabInstance: {fileID: 389419298051134394}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1453504667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -265,6 +272,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6495020972562880201, guid: 527c978593557c949a62db3296c465cf, type: 3}
+      propertyPath: crosshairUI
+      value: 
+      objectReference: {fileID: 1157580178}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

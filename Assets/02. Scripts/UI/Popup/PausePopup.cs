@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PausePopup : UIBase
@@ -14,6 +15,8 @@ public class PausePopup : UIBase
 
     [Header("Anim")]
     [SerializeField] private float fadeDuration = 0.18f;
+
+    [SerializeField] private string lobbySceneName = "LobbyScene";
 
     private Coroutine fadeCo;
     private float prevTimeScale = 1f; // 닫을 때 복원용
@@ -34,11 +37,13 @@ public class PausePopup : UIBase
 
     private void Start()
     {
-        gameObject.SetActive(false); // 기본 비활성
+        //gameObject.SetActive(false); // 기본 비활성   이녀석이 문제였어
     }
 
     protected override void OnOpen()
     {
+        CursorManager.Instance?.SetGameplayCursor(false);
+
         if (!Initialized)
         {
             if (dimmerButton) dimmerButton.onClick.AddListener(RequestClose);
@@ -68,6 +73,8 @@ public class PausePopup : UIBase
             if (fadeCo != null) StopCoroutine(fadeCo);
             fadeCo = StartCoroutine(Fade(0f, 1f, fadeDuration));
         }
+
+        UpdateLobbyButtonVisibility();
     }
 
     public void RequestClose()
@@ -90,6 +97,8 @@ public class PausePopup : UIBase
 
     protected override void OnClose()
     {
+        CursorManager.Instance?.SetGameplayCursor(true);
+
         // 설정으로 배턴 넘기는 상황이면 이번 한 번은 복원 생략 (일시정지 유지)
         if (!suppressRestoreOnce)
             Time.timeScale = prevTimeScale;
@@ -153,8 +162,30 @@ public class PausePopup : UIBase
 
     private void OnClickLobby()
     {
+        StartCoroutine(ReturnToLobby());
+    }
+
+    private IEnumerator ReturnToLobby()
+    {
         RequestClose();
-        // SceneSystem.Instance?.LoadLobby();
+        while (gameObject.activeInHierarchy) yield return null; // 닫힐 때까지 대기
+        if (Time.timeScale == 0f) Time.timeScale = 1f;
+        if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
+        {
+            Debug.LogError($"씬 '{lobbySceneName}' 없음");
+            yield break;
+        }
+        SceneManager.LoadScene(lobbySceneName);
+    }
+
+    private void UpdateLobbyButtonVisibility()
+    {
+        if (!lobbyButton) return;
+
+        bool isLobby = SceneManager.GetActiveScene().name == lobbySceneName;
+        lobbyButton.gameObject.SetActive(!isLobby);   // 로비면 숨김, 그 외엔 표시
+                                                      // 만약 레이아웃 유지하고 싶으면 ↓로 교체
+                                                      // lobbyButton.interactable = !isLobby;
     }
 
     private void OnClickQuit()
