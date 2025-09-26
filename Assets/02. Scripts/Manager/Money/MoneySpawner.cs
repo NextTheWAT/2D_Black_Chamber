@@ -32,9 +32,15 @@ public class MoneySpawner : MonoBehaviour
             int randomIndex = Random.Range(i, randomList.Count);
             randomList[i] = randomList[randomIndex];
             randomList[randomIndex] = random;
-            // 프리팹을 생성
-
-            // 금액에따른 프리팹이 생성되게 구분
         }
+        // 프리팹을 생성
+        for (int i = 0; i < Mathf.Min(spawnCount,randomList.Count); i++)
+        {
+            MoneySpawnZone zone =  randomList[i];
+
+            //int amount = Random.Range();
+        }
+
+        // 금액에따른 프리팹이 생성되게 구분
     }
 }
