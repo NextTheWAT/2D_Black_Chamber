@@ -11,7 +11,6 @@ public class AnimationEventHandler : MonoBehaviour
     }
     public void OnRunStep()
     {
-        NoiseManager.Instance.EmitNoise(transform.position, 4f);
         CharacterSoundManager.Instance.PlayRunstepSound();
     }
 }

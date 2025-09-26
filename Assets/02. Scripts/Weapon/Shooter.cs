@@ -96,9 +96,6 @@ public class Shooter : MonoBehaviour
             Destroy(fx, 0.05f);
         }
 
-        // 소음
-        NoiseManager.Instance.EmitNoise(gunPoint.position, gunData.noiseRange);
-
         // 사운드
         if (gunData.displayName.Contains("Pistol"))
             WeaponSoundManager.Instance.PlayPistolShootSound();
@@ -154,7 +151,6 @@ public class Shooter : MonoBehaviour
             dir: dir,
             speed: gun.bulletSpeed,
             damage: gun.damage,
-            noiseRange: gun.noiseRange,
             lifetime: gun.bulletLife,
             ignoreLayer: gameObject.layer
         );

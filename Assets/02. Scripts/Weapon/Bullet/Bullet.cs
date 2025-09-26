@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviour
         col.isTrigger = true; // 간단하게 Trigger 충돌만
     }
 
-    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float noiseRange, float lifetime, int ignoreLayer)
+    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float lifetime, int ignoreLayer)
     {
         transform.position = position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -35,7 +35,6 @@ public class Bullet : MonoBehaviour
         life = lifetime;
         spawnTime = Time.time;
         this.ignoreLayer = ignoreLayer;
-        this.noiseRange = noiseRange;
 
         previousPos = transform.position;
         rb.velocity = dir.normalized * speed;
@@ -68,7 +67,6 @@ public class Bullet : MonoBehaviour
                     effect.transform.up = hit.normal; //법선 방향으로 이펙트 방향 설정
                 }
 
-                NoiseManager.Instance.EmitNoise(hit.point, noiseRange);
                 Destroy(gameObject);
                 return;
             }
@@ -84,7 +82,6 @@ public class Bullet : MonoBehaviour
                     effect.transform.up = hit.normal; //법선 방향으로 이펙트 방향 설정
                 }
 
-                NoiseManager.Instance.EmitNoise(hit.point, noiseRange);
                 Destroy(gameObject);
                 return;
             }

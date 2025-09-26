@@ -13,7 +13,6 @@ public class GunData : ScriptableObject
     [Range(0f, 20f)] public float spread = 0f;        // 도(°)
     [Min(1)] public int projectilesPerShot = 1;        // 샷건/버스트도 지원, 기본 1발
     public Vector2 firePointOffset; // 발사 위치 오프셋
-    [Range(0f, 20f)] public float noiseRange = 8f;               // 발사 소음 범위(0이면 소음 없음)
 
     [Header("Assets")]
     public GameObject bulletPrefab;                    // Rigidbody2D + Collider2D(isTrigger)
