@@ -73,6 +73,8 @@ public class PausePopup : UIBase
             if (fadeCo != null) StopCoroutine(fadeCo);
             fadeCo = StartCoroutine(Fade(0f, 1f, fadeDuration));
         }
+
+        UpdateLobbyButtonVisibility();
     }
 
     public void RequestClose()
@@ -174,6 +176,16 @@ public class PausePopup : UIBase
             yield break;
         }
         SceneManager.LoadScene(lobbySceneName);
+    }
+
+    private void UpdateLobbyButtonVisibility()
+    {
+        if (!lobbyButton) return;
+
+        bool isLobby = SceneManager.GetActiveScene().name == lobbySceneName;
+        lobbyButton.gameObject.SetActive(!isLobby);   // 로비면 숨김, 그 외엔 표시
+                                                      // 만약 레이아웃 유지하고 싶으면 ↓로 교체
+                                                      // lobbyButton.interactable = !isLobby;
     }
 
     private void OnClickQuit()
