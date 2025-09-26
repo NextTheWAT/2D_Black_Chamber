@@ -332,6 +332,8 @@ public class Enemy : MonoBehaviour
         animationController.PlayDie();
         coll.enabled = false;
         enabled = false;
+        forwardLight.enabled = false;
+        backwardLight.enabled = false;
 
         GameManager.Instance.CancelCombatDelay(this);
 
