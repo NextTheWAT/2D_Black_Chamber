@@ -98,4 +98,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\uD0C4\uCC3D"
-  pickupRange: 1.2
+  pickupRange: 1
