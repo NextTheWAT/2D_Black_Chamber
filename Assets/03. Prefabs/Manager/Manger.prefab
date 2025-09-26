@@ -95,15 +95,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
-  intializeDatas:
-  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
-  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
-  weaponSlots:
-  - {fileID: 0}
-  - {fileID: 0}
   OnWeaponChanged:
     m_PersistentCalls:
       m_Calls: []
+  intializeDatas:
+  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  weaponSlots:
+  - {fileID: 0}
+  - {fileID: 0}
+  initializeIndex: 0
 --- !u!1 &3567171574248799592
 GameObject:
   m_ObjectHideFlags: 0
