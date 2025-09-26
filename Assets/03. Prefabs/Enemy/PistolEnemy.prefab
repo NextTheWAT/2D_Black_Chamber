@@ -434,6 +434,9 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 64
+  bodyMask:
+    serializedVersion: 2
+    m_Bits: 128
   obstacleMask:
     serializedVersion: 2
     m_Bits: 513
@@ -508,6 +511,7 @@ MonoBehaviour:
   gunPoint: {fileID: 239226948978297036}
   gunData: {fileID: 11400000, guid: 4bb63e61a7b69a049939fa44f42c8415, type: 2}
   respectFireRate: 1
+  shooterLocked: 0
 --- !u!114 &7725595448719031270
 MonoBehaviour:
   m_ObjectHideFlags: 0

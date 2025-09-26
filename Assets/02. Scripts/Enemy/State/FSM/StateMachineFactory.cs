@@ -12,6 +12,8 @@ public static class StateMachineFactory
         // 공용
         stateMachine.AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
         stateMachine.AddGlobalTransition<CoverState>(() => owner.IsHit && stateMachine.CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.StartCombatAfterDelay(owner)); // 맞았을 때 의심상태면 추격 및 난전 시작
+        stateMachine.AddGlobalTransition<InvestigateState>(() => owner.IsBodyDetected);
+
 
         switch (nonCombatStateType)
         {

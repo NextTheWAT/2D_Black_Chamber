@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using Constants;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Detection")]
     [SerializeField] private LayerMask targetMask;
+    [SerializeField] private LayerMask bodyMask;
     [SerializeField] private LayerMask obstacleMask;
 
     [SerializeField] private Light2D forwardLight;
@@ -102,6 +104,10 @@ public class Enemy : MonoBehaviour
 
     public Health Health => health;
 
+    private Transform newFoundBody; // 새로 발견한 시체
+
+    private HashSet<Transform> foundBodies; // 발견했던 적 시체들 
+
     // 목적지에 도착했는지
     public bool IsArrived
     {
@@ -156,6 +162,9 @@ public class Enemy : MonoBehaviour
 
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
 
+    public bool IsBodyDetected
+        => newFoundBody;
+
 
     private bool previousHasTarget = false;
 
@@ -164,6 +173,7 @@ public class Enemy : MonoBehaviour
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
+        foundBodies = new();
 
         if (isTarget)
         {
@@ -206,6 +216,19 @@ public class Enemy : MonoBehaviour
         }
 
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
+        Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // 시체 갱신
+
+        // 새로운 시체 발견시 기록
+        if (body && !foundBodies.Contains(body))
+        {
+            Enemy enemy = body.GetComponent<Enemy>();
+            if(enemy && enemy.IsDead)
+            {
+                newFoundBody = body;
+                foundBodies.Add(newFoundBody);
+                LastKnownTargetPos = body.position;
+            }
+        }
 
         CurrentStateMachine?.UpdateState(); // 상태 머신 업데이트
         stateType = CurrentStateMachine?.CurrentState?.ToString(); // 디버그용 상태 타입 문자열
@@ -215,6 +238,7 @@ public class Enemy : MonoBehaviour
 
         if (IsHit) IsHit = false; // 맞았던 상태 초기화
         if (IsNoiseDetected) IsNoiseDetected = false; // 소음 감지 상태 초기화
+        if (IsBodyDetected) newFoundBody = null; // 시체 감지 상태 초기화
     }
 
     void OnPhaseChanged(GamePhase phase)
@@ -327,7 +351,7 @@ public class Enemy : MonoBehaviour
 
         agent.enabled = false;
         animationController.PlayDie();
-        coll.enabled = false;
+        coll.isTrigger = true;
         enabled = false;
         forwardLight.enabled = false;
         backwardLight.enabled = false;
