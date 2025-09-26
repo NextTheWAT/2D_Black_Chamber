@@ -16,7 +16,7 @@ public class SettingPopup : UIBase
 
     private void Start()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);  이녀석도 문제야
     }
 
 
