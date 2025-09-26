@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Money : MonoBehaviour, Iinteraction
 {
-    public int money = 10;
+    public int money;
+
+    public void SetAmount(int value)    // 생성된프리펩 금액을 가져온걸 저장
+    {
+        money = value;
+    }
 
     public void Interaction()
     {
