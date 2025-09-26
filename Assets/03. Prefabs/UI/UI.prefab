@@ -5407,7 +5407,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uCE58\uD0A8 \uBA39\uACE0\uC2F6\uB2E4\n\uD53C\uC790 \uBA39\uACE0\uC2F6\uB2E4"
+  m_text: "\uB300\uC0AC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 179e4f55f0354bc4e8d202f220781e89, type: 2}
   m_sharedMaterial: {fileID: -1752076412980135675, guid: 179e4f55f0354bc4e8d202f220781e89, type: 2}
@@ -6166,7 +6166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uCD5C\uC815\uB0A8"
+  m_text: "\uC774\uB984"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 179e4f55f0354bc4e8d202f220781e89, type: 2}
   m_sharedMaterial: {fileID: -1752076412980135675, guid: 179e4f55f0354bc4e8d202f220781e89, type: 2}
@@ -9876,6 +9876,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75c0b98b7fd2904d84cb0046d3f98fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueData: {fileID: 11400000, guid: 74eb3434dadc4cd4c8b33c9a04e9ba3a, type: 2}
+  nameText: {fileID: 6809827909998860160}
+  lineText: {fileID: 6805724452112806232}
   stage1Button: {fileID: 4034550619826235150}
   stage2Button: {fileID: 6552074615848449511}
   stage3Button: {fileID: 4425441852864123705}

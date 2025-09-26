@@ -1,9 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
+using TMPro;
 
 public class StageSelectDialogueUI : UIBase
 {
+    [Header("Dialogue Data")]
+    [SerializeField] private NPCDialogueData dialogueData;
+
+    [Header("UI Texts")]
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text lineText;
+
     [Header("Buttons")]
     [SerializeField] private Button stage1Button;
     [SerializeField] private Button stage2Button;
@@ -43,6 +52,17 @@ public class StageSelectDialogueUI : UIBase
             }
 
             Initialized = true;
+
+            if (dialogueData != null)
+            {
+                if (nameText) nameText.text = dialogueData.npcName;
+
+                var pool = dialogueData.randomDialogues;
+                if (pool != null && pool.Count > 0)
+                    if (lineText) lineText.text = pool[Random.Range(0, pool.Count)];
+                    else
+                    if (lineText) lineText.text = "";
+            }
         }
     }
 
@@ -68,7 +88,6 @@ public class StageSelectDialogueUI : UIBase
 
         PlayerPrefs.SetString("LastStage", sceneName);
         PlayerPrefs.Save();
-
         SceneManager.LoadScene(sceneName);
     }
 }
