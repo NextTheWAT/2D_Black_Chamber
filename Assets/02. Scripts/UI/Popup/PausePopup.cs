@@ -42,6 +42,8 @@ public class PausePopup : UIBase
 
     protected override void OnOpen()
     {
+        CursorManager.Instance?.SetGameplayCursor(false);
+
         if (!Initialized)
         {
             if (dimmerButton) dimmerButton.onClick.AddListener(RequestClose);
@@ -93,6 +95,8 @@ public class PausePopup : UIBase
 
     protected override void OnClose()
     {
+        CursorManager.Instance?.SetGameplayCursor(true);
+
         // 설정으로 배턴 넘기는 상황이면 이번 한 번은 복원 생략 (일시정지 유지)
         if (!suppressRestoreOnce)
             Time.timeScale = prevTimeScale;

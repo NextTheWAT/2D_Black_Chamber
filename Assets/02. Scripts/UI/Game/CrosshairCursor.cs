@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 public class CrosshairCursor : MonoBehaviour
@@ -14,6 +15,8 @@ public class CrosshairCursor : MonoBehaviour
         rect = GetComponent<RectTransform>();
         if (!canvas) canvas = GetComponentInParent<Canvas>();
         canvasRect = canvas.transform as RectTransform;
+        foreach (var g in GetComponentsInChildren<Graphic>(true))
+            g.raycastTarget = false;
     }
 
     private void Update()
