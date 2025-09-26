@@ -46,12 +46,16 @@ public class MoneySpawner : MonoBehaviour
             amount = Mathf.Min(amount, stageMaxTotal);
 
             // 금액에따른 프리팹이 생성되게 구분
-            GameObject prefab = coinPrefab;
-            // if() prefab = coinPrefab;
-            // else if() prefab = billPrefab;
-            // else () prefab = tripleBillPrefab;
+            GameObject prefab;
+            if (amount < 100) prefab = coinPrefab;
+            else if (amount < 600) prefab = billPrefab;
+            else prefab = tripleBillPrefab;
 
-            Instantiate(prefab, random.position, Quaternion.identity);
+            GameObject moneyPrefabs = Instantiate(prefab, random.position, Quaternion.identity);
+            Money moneyComponent = moneyPrefabs.GetComponent<Money>();          // 생성한 머니프리펩의 컴포넌트를 머니로 가져가기 (금액 정보)
+
+            if ( moneyComponent != null)
+                moneyComponent.SetAmount(amount);
 
             stageMaxTotal -= amount;
         }

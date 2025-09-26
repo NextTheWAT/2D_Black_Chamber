@@ -6,7 +6,7 @@ public class Money : MonoBehaviour, Iinteraction
 {
     public int money;
 
-    public void SetAmount(int value)    // 생성된프리펩 금액을 지정
+    public void SetAmount(int value)    // 생성된프리펩 금액을 가져온걸 저장
     {
         money = value;
     }

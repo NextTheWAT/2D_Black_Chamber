@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1426286716065544856}
   - component: {fileID: 7188119101497803400}
   - component: {fileID: 106713459098035126}
+  - component: {fileID: -6187750175033696662}
   m_Layer: 0
   m_Name: bill x3
   m_TagString: Untagged
@@ -102,6 +103,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uB3C8"
   pickupRange: 1.2
+  Enemy: {fileID: 0}
+--- !u!114 &-6187750175033696662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551931887593524672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9beae23bacd68d4f95f382ded26d7df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  money: 0
 --- !u!1 &3655768776007883911
 GameObject:
   m_ObjectHideFlags: 0
