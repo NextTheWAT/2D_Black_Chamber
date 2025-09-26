@@ -664,7 +664,7 @@ namespace FischlWorks_FogWar
                 {
                     Vector2 center = new Vector2(GetWorldX(xIterator), GetWorldY(yIterator));
                     Vector2 size = new Vector2(unitScale - scanSpacingPerUnit, unitScale - scanSpacingPerUnit);
-                    var hits = Physics2D.OverlapBoxAll(center, size, 0f, obstacleLayers);
+                    var hits = Physics2D.OverlapBoxAll(center, size, 0.02f, obstacleLayers);
 
                     bool isObstacleHit = false;
                     for (int i = 0; i < hits.Length; i++)
@@ -680,11 +680,44 @@ namespace FischlWorks_FogWar
 
                 }
             }
+            FillEnclosedSpaces();
 
             Debug.LogFormat("Successfully scanned level with a scale of {0} x {1}", levelDimensionX, levelDimensionY);
         }
 
+        // 스캔/팽창 후 호출: 방처럼 막힌 내부 Empty를 전부 Obstacle로 메꿔줌
+        private void FillEnclosedSpaces()
+        {
+            int X = levelDimensionX, Y = levelDimensionY;
+            bool[,] vis = new bool[X, Y];
+            Queue<Vector2Int> q = new Queue<Vector2Int>();
 
+            void TryEnq(int x, int y)
+            {
+                if (x < 0 || x >= X || y < 0 || y >= Y) return;
+                if (vis[x, y]) return;
+                if (levelData[x][y] == csFogWar.LevelColumn.ETileState.Obstacle) return;
+                vis[x, y] = true; q.Enqueue(new Vector2Int(x, y));
+            }
+
+            // 바깥 테두리에서부터 도달 가능한 Empty 마킹
+            for (int x = 0; x < X; x++) { TryEnq(x, 0); TryEnq(x, Y - 1); }
+            for (int y = 0; y < Y; y++) { TryEnq(0, y); TryEnq(X - 1, y); }
+
+            int[] dx4 = { 1, -1, 0, 0 };
+            int[] dy4 = { 0, 0, 1, -1 };
+            while (q.Count > 0)
+            {
+                var p = q.Dequeue();
+                for (int i = 0; i < 4; i++) TryEnq(p.x + dx4[i], p.y + dy4[i]);
+            }
+
+            // 밖에서 못 닿은 Empty = 밀폐 공간 → 장애물로 채우기
+            for (int x = 0; x < X; x++)
+                for (int y = 0; y < Y; y++)
+                    if (!vis[x, y] && levelData[x][y] == csFogWar.LevelColumn.ETileState.Empty)
+                        levelData[x][y] = csFogWar.LevelColumn.ETileState.Obstacle;
+        }
 
         // We intend to use Application.dataPath only for accessing project files directory (only in unity editor)
 #if UNITY_EDITOR
