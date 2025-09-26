@@ -14,8 +14,6 @@ public class CrosshairCursor : MonoBehaviour
         rect = GetComponent<RectTransform>();
         if (!canvas) canvas = GetComponentInParent<Canvas>();
         canvasRect = canvas.transform as RectTransform;
-
-        gameObject.SetActive(false);
     }
 
     private void Update()
