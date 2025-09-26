@@ -16,9 +16,7 @@ public class GameManager : Singleton<GameManager>
     public GamePhase CurrentPhase { get; set; } = GamePhase.Stealth;
     private Transform player;
 
-    private float exitCombatTime;
     private Coroutine enterCombatCoroutine;
-    private Coroutine exitCombatCoroutine;
     private HashSet<Enemy> targetFoundEnemies = new();
 
 
@@ -43,22 +41,7 @@ public class GameManager : Singleton<GameManager>
             {
                 CurrentPhase = next;
                 OnPhaseChanged?.Invoke(CurrentPhase); //총 UI 변경 이벤트 발행
-                WeaponManager.Instance.Toggle();
-
-                if (CurrentPhase == GamePhase.Combat)
-                {
-                    RefreshCombatTimer();
-                    exitCombatCoroutine ??= StartCoroutine(ExitCombatAfterDelay());
-                    ConditionalLogger.Log("Entered Combat Mode");
-                }
-                else
-                {
-                    if (exitCombatCoroutine != null)
-                    {
-                        StopCoroutine(exitCombatCoroutine);
-                        exitCombatCoroutine = null;
-                    }
-                }
+                WeaponManager.Instance.CurrentWeaponIndex = 0;
             }
         }
     }
@@ -79,7 +62,6 @@ public class GameManager : Singleton<GameManager>
         OnPhaseChanged?.Invoke(CurrentPhase);
         targetFoundEnemies.Clear();
         enterCombatCoroutine = null;
-        exitCombatCoroutine = null;
     }
 
     public void StartCombatAfterDelay(Enemy enemy)
@@ -103,21 +85,6 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(combatDelay);
         IsCombat = true;
-    }
-
-    IEnumerator ExitCombatAfterDelay()
-    {
-        while (Time.time < exitCombatTime)
-            yield return null;
-        IsCombat = false;
-        exitCombatCoroutine = null;
-        ConditionalLogger.Log("Exited Combat Mode");
-    }
-
-    public void RefreshCombatTimer()
-    {
-        if (IsCombat)
-            exitCombatTime = Time.time + combatDuration;
     }
 
     public void TriggerGameOver()

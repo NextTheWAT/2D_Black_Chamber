@@ -83,10 +83,4 @@ public class WeaponManager : Singleton<WeaponManager>
     public int GetMagazine() => CurrentWeapon ? CurrentWeapon.CurrentMagazine : 0;
     public int GetReserve() => CurrentWeapon ? CurrentWeapon.CurrentAmmo : 0;
     public void RequestReload() => CurrentWeapon.Reload();
-
-    public void Toggle()
-    {
-        ConditionalLogger.Log("[WeaponManager] Toggle weapon");
-        CurrentWeaponIndex++;
-    }
 }

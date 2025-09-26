@@ -55,7 +55,6 @@ public class AttackState : BaseState
     {
         if (!owner.HasTargetInFOV) return;
 
-        GameManager.Instance.RefreshCombatTimer();
         owner.LookPoint = owner.Target.position;
         owner.Agent.isStopped = false;
 
