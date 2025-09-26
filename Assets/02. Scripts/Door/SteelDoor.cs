@@ -16,7 +16,7 @@ public class SteelDoor : MonoBehaviour, Iinteraction
     private void Start()
     {
         closeTransform = steelDoor.localPosition;
-        openTransform = closeTransform + new Vector2(0, openDistance);
+        openTransform = closeTransform + (Vector2)transform.TransformDirection(new Vector2(0, openDistance));
     }
 
     private void Update()
