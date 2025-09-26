@@ -65,12 +65,9 @@ public class Bullet : MonoBehaviour
     {
         Vector2 moveDir = (Vector2)transform.position - previousPos;
         float moveDist = moveDir.magnitude;
+        previousPos = transform.position;
 
-        if (moveDist <= 0.01f)
-        {
-            previousPos = transform.position;
-            return;
-        }
+        if (moveDist <= 0.01f) return;
 
         // 데미지 충돌
         if (TryRaycastHit(damageFilter, moveDir, moveDist, out RaycastHit2D damageHit))
@@ -85,8 +82,6 @@ public class Bullet : MonoBehaviour
             HandleObstacleHit(obstacleHit);
             return;
         }
-
-        previousPos = transform.position;
     }
 
     private bool TryRaycastHit(ContactFilter2D filter, Vector2 dir, float dist, out RaycastHit2D hit)
