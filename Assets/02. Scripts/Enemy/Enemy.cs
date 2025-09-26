@@ -173,7 +173,7 @@ public class Enemy : MonoBehaviour
         else
         {
             noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(PatrolState), nonCombatStateType);
-            combatStateMachine = StateMachineFactory.CreatetStateMachine(this, stateTable, typeof(CoverState), combatStateType);
+            combatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(CoverState), combatStateType);
         }
 
         CurrentStateMachine.Start();
@@ -273,14 +273,11 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        forwardLight.enabled = HasTarget || HasTargetInFOV;
-        backwardLight.enabled = HasTarget || HasTargetInFOV;
+        forwardLight.enabled = true;
+        backwardLight.enabled = true;
 
         forwardLight.color = originalColor;
         backwardLight.color = originalColor;
-
-        forwardLight.enabled = true;
-        backwardLight.enabled = true;
 
         if (HasTargetInFOV)
         {
@@ -347,7 +344,6 @@ public class Enemy : MonoBehaviour
         {
             Target = collision.transform;
             GameManager.Instance.StartCombatAfterDelay(this);
-            // GameManager.Instance.IsCombat = true;
         }
     }
 
