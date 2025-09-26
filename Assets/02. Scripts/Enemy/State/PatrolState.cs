@@ -13,6 +13,8 @@ public class PatrolState : BaseState
     private int currentPointIndex = 0;
     private Coroutine patrolCoroutine;
 
+    public int NextPointIndex => (currentPointIndex + 1) % owner.PatrolPoints.Length;
+
     public PatrolState(Enemy owner, PatrolType patrolType, float patrolPauseTime, float fixedPatrolAngle) : base(owner)
     {
         this.patrolType = patrolType;
@@ -61,13 +63,21 @@ public class PatrolState : BaseState
                 if (owner.PatrolPoints[currentPointIndex] == null) yield break;
 
                 Vector2 destination = owner.PatrolPoints[currentPointIndex].position;
+                Vector2 dir = (destination - (Vector2)owner.transform.position).normalized;
                 owner.MoveTo(destination);
+                owner.LookPoint = destination + dir;
 
-                while (owner.Agent.pathPending || owner.Agent.remainingDistance > 0.1f)
+                while (!owner.IsArrived)
                     yield return null;
 
                 yield return new WaitForSeconds(patrolPauseTime);
-                currentPointIndex = (currentPointIndex + 1) % owner.PatrolPoints.Length;
+                owner.LookPoint = owner.PatrolPoints[NextPointIndex].position;
+
+                // 회전될 때까지 대기
+                while (owner.CurrentLookAngleDelta > 1f)
+                    yield return null;
+
+                currentPointIndex = NextPointIndex;
             }
             else if (patrolType == PatrolType.Fixed)
             {
