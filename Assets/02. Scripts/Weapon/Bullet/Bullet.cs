@@ -5,7 +5,6 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
 
-    [Header("Hit Filter")]
     [SerializeField] private LayerMask damageLayers = ~0; // 기본: 전부 허용
     [SerializeField] private LayerMask obstacleLayers;
     [SerializeField] private GameObject damageHitEffect; // 적 충돌 이펙트 프리팹
@@ -16,7 +15,6 @@ public class Bullet : MonoBehaviour
     private float spawnTime;
     private int ignoreLayer;
     private Vector2 previousPos;
-    private float noiseRange;
     private ContactFilter2D damageFilter; // 데미지 충돌 필터
     private ContactFilter2D obstacleFilter; // 장애물 충돌 필터
 
