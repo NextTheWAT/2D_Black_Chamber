@@ -49,6 +49,14 @@ public class ExitPortal : MonoBehaviour
         {
             Debug.Log("클리어하였습니다.");
             mm.SetPhase(MissionPhase.Completed);
+
+            string clearStateText = (GameManager.Instance != null && !GameManager.Instance.IsCombat)
+                ? "잠입 상태 클리어" : "난전 상태 클리어";
+
+            int reward = 1500; //보상 임시
+
+            TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
+
             SceneManager.LoadScene(clearSceneName);
         }
         else
