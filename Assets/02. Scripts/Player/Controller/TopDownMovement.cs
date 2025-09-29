@@ -40,6 +40,8 @@ public class TopDownMovement : MonoBehaviour
         input = GetComponent<PlayerInputController>();
         condition = GetComponent<PlayerConditionManager>();
 
+        condition = PlayerConditionManager.Instance;
+
         rb.gravityScale = 0f;
         rb.freezeRotation = false;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
