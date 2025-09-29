@@ -24,6 +24,11 @@ public class StageSelectDialogueUI : UIBase
     [SerializeField] private string stage2SceneName = "ProtoTypeScene";
     [SerializeField] private string stage3SceneName = "ProtoTypeScene";
 
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
     protected override void OnOpen()
     {
         Time.timeScale = 0f; //일시정지
