@@ -36,6 +36,9 @@ public class MoneySpawner : MonoBehaviour
             randomList[i] = randomList[randomIndex];
             randomList[randomIndex] = random;
         }
+
+        int totalSpawnedAmount = 0;
+
         // 프리팹을 생성
         for (int i = 0; i < Mathf.Min(spawnCount,randomList.Count); i++)
         {
@@ -61,7 +64,9 @@ public class MoneySpawner : MonoBehaviour
                 moneyComponent.SetAmount(amount);
 
             stageMaxTotal -= amount;
+            totalSpawnedAmount += amount;
         }
 
+        Debug.Log($"총 생성 금액 합계: {totalSpawnedAmount}");
     }
 }
