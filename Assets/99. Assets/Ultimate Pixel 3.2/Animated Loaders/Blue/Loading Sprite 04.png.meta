@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -134,7 +134,175 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Loading Sprite 04_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1707961e55e65904e8d9877b995df44a
+      internalID: 2023755671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_1
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a633b8ca7b0139044aa1215115a281bf
+      internalID: -233822048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_2
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad7583513f78dc045a29d7314e0d57b2
+      internalID: -649082036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_3
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50af66b34e3008f4cb3d732a84e58cf7
+      internalID: -1776996111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_4
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a9cb0409df05714590d25482912324b
+      internalID: 329478373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_5
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acce76614ed519c40805ce2ab4ca3c05
+      internalID: -967665059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_6
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d9b199e9deaca446b8ac282a0bb8fe3
+      internalID: -455044520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_7
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 1
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6184c698715a0134ba58fe209b40d4d6
+      internalID: 1946175103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -145,7 +313,40 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Loading Sprite 04_0: 2023755671
+      Loading Sprite 04_1: -233822048
+      Loading Sprite 04_10: -1498466251
+      Loading Sprite 04_11: -1393056537
+      Loading Sprite 04_12: -56473890
+      Loading Sprite 04_13: -180672940
+      Loading Sprite 04_14: 1686368575
+      Loading Sprite 04_15: -715889218
+      Loading Sprite 04_16: 161290558
+      Loading Sprite 04_17: 1182450731
+      Loading Sprite 04_18: -114501433
+      Loading Sprite 04_19: -1892631531
+      Loading Sprite 04_2: -649082036
+      Loading Sprite 04_20: 161685842
+      Loading Sprite 04_21: 464896323
+      Loading Sprite 04_22: -1326233638
+      Loading Sprite 04_23: 1853275759
+      Loading Sprite 04_24: 416428315
+      Loading Sprite 04_25: 2014109727
+      Loading Sprite 04_26: -1798359717
+      Loading Sprite 04_27: -1636037311
+      Loading Sprite 04_28: -27652284
+      Loading Sprite 04_29: 1917008192
+      Loading Sprite 04_3: -1776996111
+      Loading Sprite 04_30: -1196921464
+      Loading Sprite 04_31: 300396553
+      Loading Sprite 04_32: 1407153813
+      Loading Sprite 04_4: 329478373
+      Loading Sprite 04_5: -967665059
+      Loading Sprite 04_6: -455044520
+      Loading Sprite 04_7: 1946175103
+      Loading Sprite 04_8: -2120997838
+      Loading Sprite 04_9: -190165667
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
