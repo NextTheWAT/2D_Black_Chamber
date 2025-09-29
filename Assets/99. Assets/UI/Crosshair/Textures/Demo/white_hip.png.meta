@@ -109,7 +109,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -154,7 +154,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
     maxTextureSize: 2048
@@ -167,7 +167,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
@@ -180,7 +180,7 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Server
     maxTextureSize: 2048
@@ -193,20 +193,33 @@ TextureImporter:
     overridden: 0
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 1
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: white_hip_0
+      name: up_bar
       rect:
         serializedVersion: 2
-        x: 540
-        y: 2440
-        width: 17
-        height: 161
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 542
+        y: 2441
+        width: 10
+        height: 158
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -219,36 +232,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: white_hip_1
+      name: right_bar
       rect:
         serializedVersion: 2
-        x: 297
-        y: 2340
-        width: 162
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1066f8b3c63e40e469b021002e378e41
-      internalID: 21300002
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: white_hip_2
-      rect:
-        serializedVersion: 2
-        x: 635
-        y: 2340
-        width: 161
-        height: 13
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 637
+        y: 2342
+        width: 157
+        height: 10
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -340,27 +332,6 @@ TextureImporter:
       bones: []
       spriteID: b8632fce5ae7e9c47892a74f68e010af
       internalID: 21300012
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: white_hip_7
-      rect:
-        serializedVersion: 2
-        x: 540
-        y: 2101
-        width: 17
-        height: 161
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5fbec48603423f34db41f386758a5f82
-      internalID: 21300014
       vertices: []
       indices: 
       edges: []
@@ -702,22 +673,43 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: white_hip_24
+      name: down_bar
       rect:
         serializedVersion: 2
-        x: 285
-        y: 2093
-        width: 521
-        height: 516
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 542
+        y: 2103
+        width: 10
+        height: 158
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4551d901d232850438c3ad70da31e130
-      internalID: 21300048
+      spriteID: d88f9278e82db6044a1624e49c766273
+      internalID: 21300002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: left_bar
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 2342
+        width: 158
+        height: 9
+      alignment: 5
+      pivot: {x: 1, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d8bcd66a46dee24fa76d9fcd58d9769
+      internalID: 21300014
       vertices: []
       indices: 
       edges: []
@@ -733,8 +725,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      white_hip_0: 21300000
-      white_hip_1: 21300002
+      down_bar: 21300002
+      left_bar: 21300014
+      right_bar: 21300004
+      up_bar: 21300000
       white_hip_10: 21300020
       white_hip_11: 21300022
       white_hip_12: 21300024
@@ -745,7 +739,6 @@ TextureImporter:
       white_hip_17: 21300034
       white_hip_18: 21300036
       white_hip_19: 21300038
-      white_hip_2: 21300004
       white_hip_20: 21300040
       white_hip_21: 21300042
       white_hip_22: 21300044
@@ -755,7 +748,6 @@ TextureImporter:
       white_hip_4: 21300008
       white_hip_5: 21300010
       white_hip_6: 21300012
-      white_hip_7: 21300014
       white_hip_8: 21300016
       white_hip_9: 21300018
   mipmapLimitGroupName: 
