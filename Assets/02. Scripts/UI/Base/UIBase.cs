@@ -5,6 +5,7 @@ public abstract class UIBase : MonoBehaviour
     public bool IsOpen { get; private set; }
     protected bool Initialized;
 
+
     public virtual void OpenUI()
     {
         gameObject.SetActive(true);

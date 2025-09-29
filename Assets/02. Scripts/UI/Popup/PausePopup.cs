@@ -37,7 +37,7 @@ public class PausePopup : UIBase
 
     private void Start()
     {
-        //gameObject.SetActive(false); // 기본 비활성   이녀석이 문제였어
+        gameObject.SetActive(false); // 기본 비활성   이녀석이 문제였어
     }
 
     protected override void OnOpen()
