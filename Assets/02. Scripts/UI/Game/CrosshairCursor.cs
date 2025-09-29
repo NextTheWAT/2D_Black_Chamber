@@ -53,8 +53,8 @@ public class CrosshairCursor : MonoBehaviour
         float distance = Vector2.Distance(gunPoint, mousePos);
         float angle = shooter.CurrentSpread * Mathf.Deg2Rad;
 
-        float deltaWorld = distance * Mathf.Tan(angle);
-        SetCrosshairDelta(deltaWorld * 0.5f);
+        float delta = distance * Mathf.Tan(angle);
+        SetCrosshairDelta(delta * 0.5f);
     }
 
     public void SetCrosshairDelta(float delta)
