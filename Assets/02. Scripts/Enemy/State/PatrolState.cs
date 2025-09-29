@@ -4,7 +4,6 @@ using Constants;
 
 public class PatrolState : BaseState
 {
-    private readonly PatrolType patrolType; // 순찰 유형
     private readonly float patrolPauseTime = 2f; // 순찰 지점에서 대기 시간
     private readonly float fixedPatrolAngle = 180f; // 고정 순찰 시 회전 각도
     private readonly float originalEulerAngle = 0f;
@@ -15,9 +14,19 @@ public class PatrolState : BaseState
 
     public int NextPointIndex => (currentPointIndex + 1) % owner.PatrolPoints.Length;
 
-    public PatrolState(Enemy owner, PatrolType patrolType, float patrolPauseTime, float fixedPatrolAngle) : base(owner)
+    public PatrolType PatrolType
     {
-        this.patrolType = patrolType;
+        get
+        {
+            if(owner.PatrolPoints == null || owner.PatrolPoints.Length <= 1)
+                return PatrolType.Fixed;
+            else
+                return PatrolType.Waypoint;
+        }
+    }
+
+    public PatrolState(Enemy owner, float patrolPauseTime, float fixedPatrolAngle) : base(owner)
+    {
         this.patrolPauseTime = patrolPauseTime;
         this.fixedPatrolAngle = fixedPatrolAngle;
         originalEulerAngle = owner.transform.eulerAngles.z;
@@ -57,7 +66,7 @@ public class PatrolState : BaseState
     {
         while (true)
         {
-            if (patrolType == PatrolType.Waypoint)
+            if (PatrolType == PatrolType.Waypoint)
             {
                 if (owner.PatrolPoints.Length == 0) yield break;
                 if (owner.PatrolPoints[currentPointIndex] == null) yield break;
@@ -79,7 +88,7 @@ public class PatrolState : BaseState
 
                 currentPointIndex = NextPointIndex;
             }
-            else if (patrolType == PatrolType.Fixed)
+            else if (PatrolType == PatrolType.Fixed)
             {
                 // 랜덤 각도 결정
                 float randomAngle = Random.Range(-halfFixedPatrolAngle, halfFixedPatrolAngle);
