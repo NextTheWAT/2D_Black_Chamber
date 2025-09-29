@@ -5,12 +5,14 @@ public partial class PlayerInputController : TopDownController
 {
     [SerializeField] Shooter shooter;
     private CharacterAnimationController animationController;
+    private Health health;
 
     private void Awake()
     {
         shooter = GetComponent<Shooter>();
         _camera = Camera.main;
         animationController = GetComponent<CharacterAnimationController>();
+        health = GetComponent<Health>();
 
         WeaponManager.Instance.OnWeaponChanged.AddListener((shooter) =>
         {
