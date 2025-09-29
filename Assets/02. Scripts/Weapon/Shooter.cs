@@ -8,6 +8,7 @@ public class Shooter : MonoBehaviour
     public GunData gunData; // 현재 무기 데이터
     private int currentMagazine; // 현재 탄창
     private int currentAmmo;  // 현재 탄약
+    private float currentSpread; // 현재 반동
 
     public int CurrentMagazine => currentMagazine;
     public int CurrentAmmo => currentAmmo;
@@ -21,6 +22,12 @@ public class Shooter : MonoBehaviour
 
     public bool HasAnyAmmo => (currentMagazine + currentAmmo) > 0;
     public bool IsClipEmpty => currentMagazine <= 0;
+
+    public float CurrentSpread
+    {
+        get => currentSpread;
+        set => currentSpread = Mathf.Clamp(value, 0f, gunData != null ? gunData.spread : 0f);
+    }
 
     private void Awake()
     {
@@ -37,6 +44,16 @@ public class Shooter : MonoBehaviour
     {
         if (!respectFireRate) return;
         if (cooldown > 0f) cooldown -= Time.deltaTime;
+
+        RecoverSpread(); // 반동 회복
+    }
+
+    public void RecoverSpread()
+    {
+        if (gunData == null) return;
+
+        // 반동 회복
+        CurrentSpread -= gunData.recoilRecovery * Time.deltaTime;
     }
 
     public void Initialize(GunData gunData)
@@ -81,9 +98,12 @@ public class Shooter : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            Vector2 dir = ApplySpread(baseDir, gunData.spread);
+            Vector2 dir = ApplySpread(baseDir, CurrentSpread);
             SpawnBullet(gunData, gunPoint, dir);
         }
+
+        // 반동 증가
+        CurrentSpread += gunData.recoilAmount;
 
         // 다음 발사까지 쿨다운
         if (respectFireRate)
