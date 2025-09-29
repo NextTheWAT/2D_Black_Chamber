@@ -103,6 +103,12 @@ public class TopDownMovement : MonoBehaviour
             mousePos = Vector2.ClampMagnitude(mousePos - (Vector2)transform.position, maxMouseDistance) + (Vector2)transform.position;
             mouseTr.position = mousePos;
         }
+
+        // 8) 무기 반동 처리
+        Shooter shooter = WeaponManager.Instance.CurrentWeapon;
+
+        if (shooter && shooter.gunData)
+            shooter.CurrentSpread += curVel.magnitude * Time.fixedDeltaTime;
     }
 
     private void HandleMove(Vector2 v) => moveInput = v;

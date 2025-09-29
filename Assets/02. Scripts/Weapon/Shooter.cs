@@ -26,7 +26,7 @@ public class Shooter : MonoBehaviour
     public float CurrentSpread
     {
         get => currentSpread;
-        set => currentSpread = Mathf.Clamp(value, 0f, gunData != null ? gunData.spread : 0f);
+        set => currentSpread = Mathf.Clamp(value, 0f, gunData ? gunData.spread : 0f);
     }
 
     private void Awake()
