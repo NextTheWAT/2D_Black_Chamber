@@ -70,6 +70,7 @@ public class WeaponAutoSwitcher : MonoBehaviour
 
     private void SetWeaponIfDifferent(int slotIndex)
     {
+        if (slotIndex == knifeIndex) return;
         slotIndex = Mathf.Clamp(slotIndex, 0, WM.weaponSlots.Length - 1);
         if (WM.CurrentWeaponIndex == slotIndex) return;
         WM.CurrentWeaponIndex = slotIndex;
