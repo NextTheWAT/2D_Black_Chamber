@@ -10,9 +10,13 @@ public class GunData : ScriptableObject
     [Min(1)] public int maxMagazine = 6; // 탄창 용량
     [Min(1)] public int maxAmmo = 30;     // 총 보유 탄약
     [Tooltip("Shots per second")][Min(0.1f)] public float fireRate = 6f;
-    [Range(0f, 20f)] public float spread = 0f;        // 도(°)
     [Min(1)] public int projectilesPerShot = 1;        // 샷건/버스트도 지원, 기본 1발
     public Vector2 firePointOffset; // 발사 위치 오프셋
+
+    [Header("Recoil")]
+    [Range(0f, 20f)] public float spread = 0f; // 도(°)
+    [Min(0f)] public float recoilAmount; // 발사당 반동 증가량
+    [Min(0f)] public float recoilRecovery; // 반동 초당 회복량
 
     [Header("Assets")]
     public GameObject bulletPrefab;                    // Rigidbody2D + Collider2D(isTrigger)

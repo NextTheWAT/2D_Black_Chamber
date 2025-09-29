@@ -21,6 +21,7 @@ public partial class PlayerInputController : TopDownController
 
     public void OnAttack(InputAction.CallbackContext ctx)
     {
+        if (health.IsDead) return; // 사망 시 무시
         if (shooter == null) return;
 
         // 1) 클릭 시작 시점
