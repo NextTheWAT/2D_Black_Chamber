@@ -41,10 +41,18 @@ public class Item : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, pickupRange);
     }
-
+    
     public void PickUp()
     {
         Debug.Log(itemName + "À» ÁÖ¿ü½À´Ï´Ù");
+
+        //±ÇÃÑ ÅºÃ¢ Ãß°¡
+        Shooter shooter = player.GetComponentInChildren<Shooter>();
+        if (shooter != null)
+        {
+           // shooter.AddAmmo(15);
+        }
+        
         Destroy(gameObject);
     }
 
