@@ -11,6 +11,7 @@ public class SceneInitializer : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log($"[SceneInitializer] ActiveUI: {activeUI}");
         if (uiRoot != null)
             uiRoot.ShowOnly(activeUI);
         else
