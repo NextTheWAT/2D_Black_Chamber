@@ -14450,7 +14450,7 @@ MonoBehaviour:
   loadingCamera: {fileID: 5263127303204965091}
   fadeIn: 0.25
   fadeOut: 0.2
-  minShowTime: 5
+  minShowTime: 2
   keepAcrossScenes: 1
   disableOtherCameras: 0
 --- !u!1 &8632424916128684826
