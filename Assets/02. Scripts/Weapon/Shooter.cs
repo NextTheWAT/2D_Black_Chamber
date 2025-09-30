@@ -125,19 +125,19 @@ public class Shooter : MonoBehaviour
         return true;
     }
 
-    public void Reload()
+    public bool Reload()
     {
-        if (gunData == null) return;
+        if (gunData == null) return false;
 
         // 1) 현재 탄창이 이미 가득이면 종료
-        if (currentMagazine >= gunData.maxMagazine) return;
+        if (currentMagazine >= gunData.maxMagazine) return false;
 
         // 2) 리저브(오른쪽)가 없으면 종료
-        if (currentAmmo <= 0) return;
+        if (currentAmmo <= 0) return false;
 
         // 3) 채워야 할 탄수 = (탄창 용량 - 현재 탄창 탄수)
         int need = gunData.maxMagazine - currentMagazine;
-        if (need <= 0) return;
+        if (need <= 0) return false;
 
         // 4) 실제로 옮길 수 있는 탄수 = min(need, 리저브)
         int move = Mathf.Min(need, currentAmmo);
@@ -152,6 +152,8 @@ public class Shooter : MonoBehaviour
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
         WeaponManager.Instance?.OnReloaded?.Invoke();
         WeaponSoundManager.Instance?.PlayReloadSound();
+
+        return true;
     }
 
 

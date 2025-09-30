@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class GameStats : Singleton<GameStats>
 {
-    private float startTime;
-    private int killCount;
+    [SerializeField] private float startTime;
+    [SerializeField] private int killCount;
 
     public void StartStage()
     {

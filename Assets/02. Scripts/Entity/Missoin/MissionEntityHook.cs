@@ -25,6 +25,7 @@ public class MissionEntityHook : MonoBehaviour
     {
         if (MissionManager.Instance == null || deactivated) return;
         DeactivateOnce();
+        GameStats.Instance.AddKill();
     }
 
     private void DeactivateOnce()

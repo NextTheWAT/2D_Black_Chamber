@@ -293,6 +293,8 @@ namespace FischlWorks_FogWar
         [SerializeField]
         private LayerMask obstacleLayers = new LayerMask();
         [SerializeField]
+        private LayerMask doorLayers = new LayerMask();
+        [SerializeField]
         private bool ignoreTriggers = true;
 
         [BigHeader("Debug Options")]
@@ -316,8 +318,6 @@ namespace FischlWorks_FogWar
 
 
         // --- --- ---
-
-
 
         private void Start()
         {
@@ -516,8 +516,24 @@ namespace FischlWorks_FogWar
 
             UpdateFogPlaneTextureBuffer();
         }
+        bool IsVisible(Vector2 origin, Vector2 target)
+        {
+            Vector2 dir = (target - origin).normalized;
+            float dist = Vector2.Distance(origin, target);
 
+            // 결과를 담을 배열
+            RaycastHit2D[] hits = new RaycastHit2D[10];
 
+            // ContactFilter2D 설정
+            ContactFilter2D filter = new ContactFilter2D();
+            filter.SetLayerMask(doorLayers);
+            filter.useTriggers = false; // 트리거 무시
+
+            int count = Physics2D.Raycast(origin, dir, filter, hits, dist);
+
+            // 충돌이 없으면 막히지 않은 것
+            return count == 0;
+        }
 
         private void UpdateFogField()
         {
@@ -564,6 +580,8 @@ namespace FischlWorks_FogWar
                             continue;
 
                         Vector2 p = new Vector2(GetWorldX(x), GetWorldY(y));
+
+                        if (!IsVisible(revealerPos, p)) continue;
                         Vector2 to = p - revealerPos;
                         float d2 = to.sqrMagnitude;
                         if (d2 > outerR2) continue;

@@ -7,8 +7,11 @@ public class SceneInitializer : MonoBehaviour
     [SerializeField] private UIRoot uiRoot;   // UIRoot 프리팹 참조
     [SerializeField] private UIKey activeUI;  // 이 씬에서 보여줄 Canvas 선택
 
+    public UIKey ActiveUI => activeUI;
+
     private void Start()
     {
+        Debug.Log($"[SceneInitializer] ActiveUI: {activeUI}");
         if (uiRoot != null)
             uiRoot.ShowOnly(activeUI);
         else
@@ -29,6 +32,7 @@ public class SceneInitializer : MonoBehaviour
         {
             GameStats.Instance.StartStage();
             PlayerPrefs.SetString("LastStage", SceneManager.GetActiveScene().name);
+            MissionManager.Instance.Phase = MissionPhase.Assassination;
         }
 
     }

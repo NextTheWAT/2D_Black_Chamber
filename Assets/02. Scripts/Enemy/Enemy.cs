@@ -280,14 +280,15 @@ public class Enemy : MonoBehaviour
 
     public void Attack()
     {
-        if (shooter.CurrentAmmo <= 0 && shooter.CurrentMagazine > 0)
+        if (shooter.CurrentMagazine > 0)
         {
-            animationController.PlayReload();
-            shooter.Reload();
+            if (shooter.Shoot(transform.up))
+                animationController.PlayShoot();
         }
         else
         {
-            shooter.Shoot(transform.up);
+            animationController.PlayReload();
+            shooter.Reload();
         }
     }
 

@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 100
   m_Sprite: {fileID: -809858648, guid: cadeb748bd3343642b645a2b02105dc8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -345,7 +345,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 99
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -503,7 +503,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -38910
+  m_InstanceId: 74714
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -701,7 +701,6 @@ MonoBehaviour:
   fKeyPrompt: {fileID: 2767415711330821616}
   continuousMouseAim: 1
   condition: {fileID: 0}
-  shooter: {fileID: 0}
 --- !u!114 &960190014545231420
 MonoBehaviour:
   m_ObjectHideFlags: 0
