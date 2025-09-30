@@ -41,7 +41,8 @@ public class UIGameOVer : UIBase
             Debug.LogError($"[UIGameOver] 빌드세팅에서 씬을 못찾음: '{lobbySceneName}'");
             return;
         }
-        SceneManager.LoadScene(lobbySceneName);
+        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        //SceneManager.LoadScene(lobbySceneName);
     }
 
     private void OnClickRetry()
@@ -59,6 +60,7 @@ public class UIGameOVer : UIBase
             Debug.LogError($"[UIGameOver] 빌드세팅에서 씬을 못찾음");
             return;
         }
-        SceneManager.LoadScene(lastStage);
+        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        //SceneManager.LoadScene(lastStage);
     }
 }
