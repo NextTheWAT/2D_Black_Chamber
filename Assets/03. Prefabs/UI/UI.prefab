@@ -3289,7 +3289,7 @@ RectTransform:
   m_GameObject: {fileID: 2580354806307691199}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1155024201891117304}
@@ -4477,6 +4477,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6350400a26a9ce49b2bca2a7f2a175c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   killText: {fileID: 4153023283395230582}
   stateText: {fileID: 4381097563750254706}
   timeText: {fileID: 8856395782486851480}
@@ -6894,6 +6903,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95da351fe0f2a194e9a80c327b262fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   canvasGroup: {fileID: 0}
   dimmerButton: {fileID: 0}
   continueButton: {fileID: 3400938532708689963}
@@ -10428,7 +10446,7 @@ RectTransform:
   m_GameObject: {fileID: 5720878426164881076}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6201650196085101431}
@@ -12450,6 +12468,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f065b48522bd3d41972d747cdc6296e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   retryButton: {fileID: 1966834366684596093}
   lobbyButton: {fileID: 8247101985503882562}
   lobbySceneName: LobbyScene
@@ -12505,6 +12532,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b88393a9f5f9574ca404fc860f6f72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   canvasGroup: {fileID: 0}
   closeButton: {fileID: 629798573419610740}
   dimmerButton: {fileID: 6185923386840829208}
@@ -13473,6 +13509,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75c0b98b7fd2904d84cb0046d3f98fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   dialogueData: {fileID: 11400000, guid: 74eb3434dadc4cd4c8b33c9a04e9ba3a, type: 2}
   nameText: {fileID: 6809827909998860160}
   lineText: {fileID: 6805724452112806232}
@@ -14445,6 +14490,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7699bea1e3c77384d9b4195ce69c008b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableTween: 1
+  useUnscaledTime: 1
+  openDuration: 0.35
+  closeDuration: 0.22
+  root: {fileID: 0}
+  canvasGroup: {fileID: 0}
+  vignette: {fileID: 0}
+  microJitterOnOpen: 1
+  jitterStrength: 3
   canvasGroup: {fileID: 0}
   overlayCanvas: {fileID: 0}
   loadingCamera: {fileID: 5263127303204965091}
