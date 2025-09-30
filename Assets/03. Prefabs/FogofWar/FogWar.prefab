@@ -54,7 +54,7 @@ MonoBehaviour:
     updateOnlyOnMove: 1
     lastSeenAt: {x: 0, y: 0}
   levelMidPoint: {fileID: 0}
-  FogRefreshRate: 10
+  FogRefreshRate: 30
   fogPlaneZ: -0.1
   sortingLayerName: Default
   sortingOrder: 100
@@ -62,7 +62,7 @@ MonoBehaviour:
   fogPlaneMaterial: {fileID: 2100000, guid: 36b93ac6fcf129c449491654e397fe4a, type: 2}
   fogColor: {r: 0.019607844, g: 0.05882353, b: 0.09803922, a: 1}
   fogPlaneAlpha: 1
-  fogLerpSpeed: 2.5
+  fogLerpSpeed: 5
   keepRevealedTiles: 0
   revealedTileOpacity: 0.5
   fogPlaneTextureLerpTarget: {fileID: 0}
@@ -70,7 +70,7 @@ MonoBehaviour:
   LevelDataToLoad: {fileID: 0}
   saveDataOnScan: 1
   levelNameToSave: Default
-  levelDimensionX: 70
+  levelDimensionX: 60
   levelDimensionY: 70
   unitScale: 1
   scanSpacingPerUnit: 0.25
@@ -79,6 +79,9 @@ MonoBehaviour:
   obstacleLayers:
     serializedVersion: 2
     m_Bits: 512
+  doorLayers:
+    serializedVersion: 2
+    m_Bits: 32768
   ignoreTriggers: 1
   drawGizmos: 1
   LogOutOfRange: 0
