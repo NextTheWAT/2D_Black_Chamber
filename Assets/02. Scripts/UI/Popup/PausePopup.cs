@@ -175,7 +175,8 @@ public class PausePopup : UIBase
             Debug.LogError($"씬 '{lobbySceneName}' 없음");
             yield break;
         }
-        SceneManager.LoadScene(lobbySceneName);
+        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        //SceneManager.LoadScene(lobbySceneName);
     }
 
     private void UpdateLobbyButtonVisibility()

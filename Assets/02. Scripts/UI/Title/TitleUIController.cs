@@ -13,8 +13,9 @@ public class TitleUIController : MonoBehaviour
             Debug.LogError($"[TitleUIController] 씬 '{lobbySceneName}'을 찾을 수 없음");
             return;
         }
-
-        SceneManager.LoadScene(lobbySceneName);
+        
+        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        //SceneManager.LoadScene(lobbySceneName);
     }
 
     public void OpenSetting()

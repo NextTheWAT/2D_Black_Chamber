@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class UIRoot : MonoBehaviour
@@ -26,14 +26,36 @@ public class UIRoot : MonoBehaviour
         }
     }
 
-    public void ShowOnly(UIKey key) //¸Â´Â Äµ¹ö½º¸¸ È°¼ºÈ­, ³ª¸ÓÁö ºñÈ°¼ºÈ­
+    public void ShowOnly(UIKey key) //ë§ëŠ” ìº”ë²„ìŠ¤ë§Œ í™œì„±í™”, ë‚˜ë¨¸ì§€ ë¹„í™œì„±í™”
     {
-        // ¾Àº° Äµ¹ö½º¸¸ Åä±Û
+        // ì”¬ë³„ ìº”ë²„ìŠ¤ë§Œ í† ê¸€
         foreach (var pair in _map)
             pair.Value.gameObject.SetActive(pair.Key == key);
 
-        // Ç×»ó ÄÑµÑ Äµ¹ö½º´Â À¯Áö
+        // í•­ìƒ ì¼œë‘˜ ìº”ë²„ìŠ¤ëŠ” ìœ ì§€
         foreach (var c in alwaysOnCanvases)
             if (c) c.gameObject.SetActive(true);
+    }
+
+    // ì”¬ ë‚´ UIRootê°€ ê´€ë¦¬í•˜ëŠ” ìº”ë²„ìŠ¤ë“¤ì„ ì „ë¶€ ëˆë‹¤.
+    public void HideAllSceneUIs(bool includeAlwaysOn = false)
+    {
+        foreach (var pair in _map)
+            if (pair.Value) pair.Value.gameObject.SetActive(false);
+
+        if (includeAlwaysOn)
+            foreach (var c in alwaysOnCanvases)
+                if (c) c.gameObject.SetActive(false);
+    }
+
+    // ë©”ì¸ í•˜ë‚˜ë§Œ ì¼œë˜, ì¶”ê°€ë¡œ ëª‡ ê°œ ë” ì¼œê³  ì‹¶ì„ ë•Œ(ì˜¤ë²„ë ˆì´ ë“±)
+    public void ShowOnlyWithAlsoOn(UIKey key, params UIKey[] alsoOn)
+    {
+        ShowOnly(key); // ê¸°ì¡´ í•¨ìˆ˜ ì¬ì‚¬ìš©  :contentReference[oaicite:0]{index=0}
+        foreach (var k in alsoOn)
+        {
+            if (_map.TryGetValue(k, out var cv) && cv)
+                cv.gameObject.SetActive(true);
+        }
     }
 }
