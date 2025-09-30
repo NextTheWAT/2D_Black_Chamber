@@ -35,6 +35,14 @@ public class UIClearResult : UIBase
             if (retryButton) retryButton.onClick.AddListener(Retry);
             Initialized = true;
         }
+
+        if (_data == null && TempResultHolder.Data != null)
+        {
+            SetResult(TempResultHolder.Data);
+            TempResultHolder.Data = null;
+            return;
+        }
+
         Apply();
     }
 
