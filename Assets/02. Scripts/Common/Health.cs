@@ -46,5 +46,6 @@ public class Health : MonoBehaviour, IDamageable
     private void Die()
     {
         OnDie?.Invoke();
+        GameStats.Instance.AddKill();
     }
 }

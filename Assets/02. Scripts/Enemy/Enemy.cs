@@ -369,9 +369,6 @@ public class Enemy : MonoBehaviour
             Vector3 dropPos = transform.position + Vector3.up * 0.2f;
             Instantiate(dropItems[r], dropPos, Quaternion.identity);
         }
-
-        Destroy(gameObject);
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
