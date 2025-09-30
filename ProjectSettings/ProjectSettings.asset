@@ -783,11 +783,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: d9336645-464b-4b79-be9a-41612e941dc3
+  cloudProjectId: 4e0f6baa-a3f6-4778-9807-37ca847f8c02
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: 2D_TopView_kleptomania
-  organizationId: 2cdcdf65-7d67-4571-ae6f-333705b9d28c
+  organizationId: w_w_water
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
