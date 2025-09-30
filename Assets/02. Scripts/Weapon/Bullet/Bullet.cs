@@ -54,8 +54,9 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        CheckCollision();
         if (Time.time - spawnTime >= life) Destroy(gameObject);
+        CheckCollision();
+        previousPos = transform.position;
     }
 
     // 이동 중 충돌 체크 (총알이 너무 빠르면 터널링을 하기에 Ray로 검사)
@@ -63,29 +64,28 @@ public class Bullet : MonoBehaviour
     {
         Vector2 moveDir = (Vector2)transform.position - previousPos;
         float moveDist = moveDir.magnitude;
-        previousPos = transform.position;
 
         if (moveDist <= 0.01f) return;
 
         // 데미지 충돌
-        if (TryRaycastHit(damageFilter, moveDir, moveDist, out RaycastHit2D damageHit))
+        if (TryRaycastHit(damageFilter, out RaycastHit2D damageHit))
         {
             HandleDamageHit(damageHit);
             return;
         }
 
         // 장애물 충돌
-        if (TryRaycastHit(obstacleFilter, moveDir, moveDist, out RaycastHit2D obstacleHit))
+        if (TryRaycastHit(obstacleFilter, out RaycastHit2D obstacleHit))
         {
             HandleObstacleHit(obstacleHit);
             return;
         }
     }
 
-    private bool TryRaycastHit(ContactFilter2D filter, Vector2 dir, float dist, out RaycastHit2D hit)
+    private bool TryRaycastHit(ContactFilter2D filter, out RaycastHit2D hit)
     {
         RaycastHit2D[] results = new RaycastHit2D[1];
-        int count = Physics2D.Raycast(previousPos, dir, filter, results, dist);
+        int count = Physics2D.Linecast(previousPos, transform.position, filter, results);
         hit = results[0];
         return count > 0 && hit.collider != null;
     }
