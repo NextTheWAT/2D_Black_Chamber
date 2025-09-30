@@ -186,4 +186,18 @@ public class Shooter : MonoBehaviour
         return new Vector2(baseDir.x * c - baseDir.y * s,
                            baseDir.x * s + baseDir.y * c).normalized;
     }
+
+    public void AddAmmo(int amount)  //권총 탄창 추가
+    {
+        currentAmmo += amount;
+
+        // 최대 탄창 제한
+        if (currentAmmo > gunData.maxAmmo)
+            currentAmmo = gunData.maxAmmo;
+
+        // UI 이벤트 호출
+        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
+    }
+
+
 }

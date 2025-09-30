@@ -1,3 +1,4 @@
+using Constants;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,13 +47,13 @@ public class Item : MonoBehaviour
     {
         Debug.Log(itemName + "À» ÁÖ¿ü½À´Ï´Ù");
 
-        //±ÇÃÑ ÅºÃ¢ Ãß°¡
+        //ÅºÃ¢ Ãß°¡
         Shooter shooter = player.GetComponentInChildren<Shooter>();
         if (shooter != null)
         {
-           // shooter.AddAmmo(15);
+            shooter.AddAmmo(12);
         }
-        
+
         Destroy(gameObject);
     }
 
