@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Constants;
 using System.Collections;
 public partial class PlayerInputController : TopDownController
 {
@@ -36,7 +35,6 @@ public partial class PlayerInputController : TopDownController
 
             // 탄이 있으면 슈팅
             shootPressed = true;
-            animationController.SetActiveShoot(true);
             GunForward(); // 즉시 1발
             return;
         }
@@ -50,18 +48,13 @@ public partial class PlayerInputController : TopDownController
                 return;
             }
 
-            animationController.SetActiveShoot(true);
             GunForward();
-            animationController.SetActiveShoot(false);
             return;
         }
 
         // 3) 키/마우스 뗐을 때
         if (ctx.phase == InputActionPhase.Canceled)
-        {
             shootPressed = false;
-            animationController.SetActiveShoot(false);
-        }
     }
 
     private void GunForward()
@@ -72,11 +65,11 @@ public partial class PlayerInputController : TopDownController
         if (shooter.Shoot())
         {
             // 정상 발사
+            animationController.PlayShoot();
         }
         else
         {
             // 쿨다운/기타 사유로 미발사 시
-            animationController.SetActiveShoot(false);
         }
     }
 
@@ -89,7 +82,6 @@ public partial class PlayerInputController : TopDownController
 
     private IEnumerator CoPunchPulse(float holdTime)
     {
-        animationController.SetActiveShoot(false);  // 슈팅 애니 끄기(충돌 방지)
         animationController.SetActivePunch(true);   // Punch BOOL ON
         yield return null;                          // 한 프레임 보장
         yield return new WaitForSeconds(holdTime);  // 최소 유지 시간

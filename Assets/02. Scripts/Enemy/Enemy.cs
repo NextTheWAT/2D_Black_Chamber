@@ -282,7 +282,8 @@ public class Enemy : MonoBehaviour
     {
         if (shooter.CurrentMagazine > 0)
         {
-            shooter.Shoot(transform.up);
+            if (shooter.Shoot(transform.up))
+                animationController.PlayShoot();
         }
         else
         {

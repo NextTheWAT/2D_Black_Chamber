@@ -26,7 +26,6 @@ public class CharacterAnimationController : MonoBehaviour
     {
         SetMoveBlend(0f);
         SetMoveSpeed(1f);
-        SetActiveShoot(false);
         SetActiveUse(false);
         SetActivePunch(false);
     }
@@ -54,10 +53,10 @@ public class CharacterAnimationController : MonoBehaviour
         if (lowerAnimator) lowerAnimator.SetFloat(AnimationHash.MoveBlend, blend);
     }
 
-    public void SetActiveShoot(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Shoot, v); }
     public void SetActiveUse(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Use, v); }
     public void SetActivePunch(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Punch, v); }
 
+    public void PlayShoot() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Shoot); }
     public void PlayThrow() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Throw); }
     public void PlayDie() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Die); }
     public void PlayHit() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Hit); }
@@ -98,7 +97,6 @@ public class CharacterAnimationController : MonoBehaviour
     {
         SetMoveBlend(s.blend);
         SetMoveSpeed(s.speed);
-        SetActiveShoot(s.shoot);
         SetActiveUse(s.use);
         SetActivePunch(s.punch);
     }

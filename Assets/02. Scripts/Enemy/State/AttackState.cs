@@ -67,7 +67,6 @@ public class AttackState : BaseState
             if (IsTargetInAttackRange)
             {
                 owner.Attack();
-                owner.AnimationController.SetActiveShoot(true);
                 if (!IsTargetInDesiredAttackDistance)
                     owner.MoveTo(owner.Target.position);
                 else
@@ -76,12 +75,10 @@ public class AttackState : BaseState
             else
             {
                 owner.MoveTo(owner.Target.position);
-                owner.AnimationController.SetActiveShoot(false);
             }
         }
         else
         {
-            owner.AnimationController.SetActiveShoot(false);
             // 타겟이 근접 공격 범위 내에 있는지 확인
             if (IsTargetInMeleeRange)
             {
@@ -112,7 +109,6 @@ public class AttackState : BaseState
     public override void Exit()
     {
         ConditionalLogger.Log("AttackState Exit");
-        owner.AnimationController.SetActiveShoot(false);
         owner.Agent.isStopped = false;
     }
 }
