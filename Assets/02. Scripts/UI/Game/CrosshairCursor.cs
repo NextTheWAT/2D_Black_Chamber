@@ -7,6 +7,11 @@ public class CrosshairCursor : MonoBehaviour
     [Header("크로스헤어")]
     [SerializeField] private Canvas canvas;
 
+    [SerializeField] private Image upBar;
+    [SerializeField] private Image downBar;
+    [SerializeField] private Image leftBar;
+    [SerializeField] private Image rightBar;
+
     private RectTransform rect;
     private RectTransform canvasRect;
 
@@ -33,5 +38,30 @@ public class CrosshairCursor : MonoBehaviour
         {
             rect.anchoredPosition = local;
         }
+
+        UpdateCrosshairSpread();
+    }
+
+    public void UpdateCrosshairSpread()
+    {
+        if (WeaponManager.Instance.CurrentWeapon == null) return;
+
+        Shooter shooter = WeaponManager.Instance.CurrentWeapon;
+        Vector2 gunPoint = Camera.main.WorldToScreenPoint(shooter.gunPoint.position);
+        Vector2 mousePos = Input.mousePosition;
+
+        float distance = Vector2.Distance(gunPoint, mousePos);
+        float angle = shooter.CurrentSpread * Mathf.Deg2Rad;
+
+        float delta = distance * Mathf.Tan(angle);
+        SetCrosshairDelta(delta * 0.5f);
+    }
+
+    public void SetCrosshairDelta(float delta)
+    {
+        upBar.rectTransform.anchoredPosition = new Vector2(0, delta);
+        downBar.rectTransform.anchoredPosition = new Vector2(0, -delta);
+        leftBar.rectTransform.anchoredPosition = new Vector2(-delta, 0);
+        rightBar.rectTransform.anchoredPosition = new Vector2(delta, 0);
     }
 }

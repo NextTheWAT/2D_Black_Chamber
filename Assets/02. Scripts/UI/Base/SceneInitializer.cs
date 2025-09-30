@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // 씬이 시작될 때, 이 씬에서 보여야 할 UIKey를 UIRoot에 알려주는 초기화 스크립트.
 public class SceneInitializer : MonoBehaviour
@@ -23,5 +24,12 @@ public class SceneInitializer : MonoBehaviour
             bool showLobby = (activeUI == UIKey.Game);
             pause.transform.Find("Window/ButtonGroup/LobbyButton")?.gameObject.SetActive(showLobby);
         }
+
+        if (activeUI == UIKey.Game)
+        {
+            GameStats.Instance.StartStage();
+            PlayerPrefs.SetString("LastStage", SceneManager.GetActiveScene().name);
+        }
+
     }
 }

@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 7905008452251158660}
   - component: {fileID: 2934995451585205486}
   m_Layer: 10
-  m_Name: EnemyBullet
+  m_Name: Enemy_Pistol_Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -396,5 +396,5 @@ MonoBehaviour:
   obstacleLayers:
     serializedVersion: 2
     m_Bits: 513
-  damageHitEffect: {fileID: 0}
-  obstacleHitEffect: {fileID: 0}
+  damageHitEffect: {fileID: 3355093780470377054, guid: dee555a4c7f65fb4e89482fb1b39e088, type: 3}
+  obstacleHitEffect: {fileID: 31258431754281099, guid: 091de20db6325294d9946af1a9930159, type: 3}

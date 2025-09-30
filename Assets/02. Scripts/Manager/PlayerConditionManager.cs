@@ -8,7 +8,7 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     [SerializeField] private float maxStamina = 100f;
     [SerializeField] private float runDrainPerSec = 20f;      // 달릴 때 초당 소모
     [SerializeField] private float regenPerSec = 12f;         // 재생 속도
-    [SerializeField] private float regenDelayAfterRun = 0.75f;// 달리기 멈춘 뒤 재생 지연
+    [SerializeField] private float regenDelayAfterRun = 2f;   // 달리기 멈춘 뒤 재생 지연
     [SerializeField] private float minStaminaToRun = 5f;      // 이 값 미만이면 달리기 불가
 
     private float stamina;
@@ -16,7 +16,7 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     public event Action<float> OnStamina01Changed; // UI 바인딩용(0~1)
 
     public float Stamina01 => Mathf.InverseLerp(0f, maxStamina, stamina);
-    public bool CanRun => stamina > minStaminaToRun;
+    public bool CanRun => stamina > 0f;
 
     private void Awake()
     {
@@ -31,6 +31,8 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
         stamina = Mathf.Max(0f, stamina);
         regenUnlockTime = Time.time + regenDelayAfterRun;
         Notify();
+
+        Debug.Log($"[Stamina] 달리기 → {stamina}/{maxStamina}");
     }
 
     public void TickRegen(float dt)
@@ -41,6 +43,8 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
         stamina += regenPerSec * dt;
         stamina = Mathf.Min(maxStamina, stamina);
         Notify();
+
+        Debug.Log($"[Stamina] 회복 → {stamina}/{maxStamina}");
     }
 
     private void Notify() => OnStamina01Changed?.Invoke(Stamina01);
