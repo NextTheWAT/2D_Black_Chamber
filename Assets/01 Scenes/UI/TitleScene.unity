@@ -972,6 +972,10 @@ PrefabInstance:
       propertyPath: uiRoot
       value: 
       objectReference: {fileID: 1993837686}
+    - target: {fileID: 5673899516655988925, guid: c7e4a766b58d38f4dbecaafc7264b19a, type: 3}
+      propertyPath: root_DontDestroyOnLoad
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5796976880768653730, guid: c7e4a766b58d38f4dbecaafc7264b19a, type: 3}
       propertyPath: m_Name
       value: System
