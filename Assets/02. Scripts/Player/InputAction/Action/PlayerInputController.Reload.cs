@@ -8,7 +8,7 @@ public partial class PlayerInputController : TopDownController
     {
         if (!ctx.performed) return;
 
-        animationController.PlayReload();
-        WeaponManager.Instance.RequestReload();
+        if(WeaponManager.Instance.RequestReload())
+            animationController.PlayReload();
     }
 }
