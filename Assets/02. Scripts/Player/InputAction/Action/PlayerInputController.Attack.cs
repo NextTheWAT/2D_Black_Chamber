@@ -23,6 +23,9 @@ public partial class PlayerInputController : TopDownController
         if (health.IsDead) return; // 사망 시 무시
         if (shooter == null) return;
 
+        // UI 위에 있으면 무시
+        if (UIUtility.IsPointerOverUI()) return;
+
         // 1) 클릭 시작 시점
         if (ctx.phase == InputActionPhase.Started)
         {

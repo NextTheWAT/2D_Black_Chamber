@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5b06f2f0c13152b4498b689814444a99
+guid: 366f7baeb8da4f84188b1dae21399cfe
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -139,10 +139,10 @@ TextureImporter:
       name: pxkw_f_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 15
-        height: 16
+        x: 1
+        y: 4
+        width: 13
+        height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
