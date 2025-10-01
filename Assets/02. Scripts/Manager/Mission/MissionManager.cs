@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MissionManager : Singleton<MissionManager>
 {
@@ -17,6 +18,7 @@ public class MissionManager : Singleton<MissionManager>
 
     public int RemainingTargets => remainingTargets;
     public int RemainingEnemies => remainingEnemies;
+
     public MissionPhase Phase
     {
         get => phase;
@@ -32,6 +34,16 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (missionBell_Obj) missionBell_Obj.SetActive(false);
         if (missionBell_Obj2) missionBell_Obj2.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded_UpdateUIKey;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded_UpdateUIKey;
     }
 
     // --- 암살 대상 ---
@@ -60,6 +72,7 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (remainingEnemies > 0) remainingEnemies--;
         OnEnemiesChanged?.Invoke(remainingEnemies);
+
     }
 
     // 암살 대상이 0이면 도주 단계로
@@ -67,8 +80,6 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (phase == MissionPhase.Assassination && remainingTargets <= 0)
             SetPhase(MissionPhase.Escape);
-
-        UIKey = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include)?.ActiveUI ?? UIKey;
     }
 
     public void SetPhase(MissionPhase next)
@@ -83,8 +94,6 @@ public class MissionManager : Singleton<MissionManager>
         if (phase == MissionPhase.Escape && UIKey == UIKey.Game)
         {
             StartCoroutine(Mission_Clear_Text());
-
-            UIKey = UIKey.Title;
         }
 
     }
@@ -99,12 +108,17 @@ public class MissionManager : Singleton<MissionManager>
         OnEnemiesChanged?.Invoke(remainingEnemies);
     }
 
-
+    private void OnSceneLoaded_UpdateUIKey(Scene scene, LoadSceneMode mode)
+    {
+        var init = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include);
+        if (init != null)
+            UIKey = init.ActiveUI;   // 씬의 SceneInitializer가 정한 UIKey로 갱신
+    }
 
 
     //예비 미션 클리어 텍스트 처리
 
-     IEnumerator Mission_Clear_Text()
+    IEnumerator Mission_Clear_Text()
     {
         missionBell_Obj.SetActive(true);
         yield return new WaitForSeconds(2f);
