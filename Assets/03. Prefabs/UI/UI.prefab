@@ -3287,7 +3287,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -5.583008, y: -29.466003}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1376020874756153231
@@ -4468,15 +4468,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6350400a26a9ce49b2bca2a7f2a175c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableTween: 1
-  useUnscaledTime: 1
-  openDuration: 0.35
-  closeDuration: 0.22
+  enableTween: 0
+  useUnscaledTime: 0
+  openDuration: 0
+  closeDuration: 0
   root: {fileID: 0}
   canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
-  microJitterOnOpen: 1
-  jitterStrength: 3
+  microJitterOnOpen: 0
+  jitterStrength: 0
   killText: {fileID: 4153023283395230582}
   stateText: {fileID: 4381097563750254706}
   timeText: {fileID: 8856395782486851480}
@@ -4741,9 +4741,9 @@ RectTransform:
   - {fileID: 6302655373199978415}
   m_Father: {fileID: 391708586415965387}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 189.61325, y: -180.8174}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 239.2265, y: 45.9566}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3948513469763790627
@@ -5745,7 +5745,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 4.846588, y: -2.554596}
   m_SizeDelta: {x: 700, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4847291394109539315
@@ -6371,9 +6371,9 @@ RectTransform:
   - {fileID: 5753340584681966948}
   m_Father: {fileID: 391708586415965387}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.39655, y: -72.9783}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 234.7931, y: 45.9566}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2351669259579965777
@@ -12459,15 +12459,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f065b48522bd3d41972d747cdc6296e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableTween: 1
-  useUnscaledTime: 1
-  openDuration: 0.35
-  closeDuration: 0.22
+  enableTween: 0
+  useUnscaledTime: 0
+  openDuration: 0
+  closeDuration: 0
   root: {fileID: 0}
   canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
-  microJitterOnOpen: 1
-  jitterStrength: 3
+  microJitterOnOpen: 0
+  jitterStrength: 0
   retryButton: {fileID: 1966834366684596093}
   lobbyButton: {fileID: 8247101985503882562}
   lobbySceneName: LobbyScene
@@ -13465,7 +13465,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8637503510299770584
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13500,15 +13500,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75c0b98b7fd2904d84cb0046d3f98fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableTween: 1
-  useUnscaledTime: 1
-  openDuration: 0.35
-  closeDuration: 0.22
+  enableTween: 0
+  useUnscaledTime: 0
+  openDuration: 0
+  closeDuration: 0
   root: {fileID: 0}
   canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
-  microJitterOnOpen: 1
-  jitterStrength: 3
+  microJitterOnOpen: 0
+  jitterStrength: 0
   dialogueData: {fileID: 11400000, guid: 74eb3434dadc4cd4c8b33c9a04e9ba3a, type: 2}
   nameText: {fileID: 6809827909998860160}
   lineText: {fileID: 6805724452112806232}
@@ -13817,9 +13817,9 @@ RectTransform:
   - {fileID: 7063123327466394460}
   m_Father: {fileID: 391708586415965387}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 189.61499, y: -288.6565}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 239.23, y: 45.9566}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6010536279648774845
@@ -14483,13 +14483,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableTween: 0
   useUnscaledTime: 0
-  openDuration: 0.35
-  closeDuration: 0.22
+  openDuration: 0
+  closeDuration: 0
   root: {fileID: 0}
   canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
-  microJitterOnOpen: 1
-  jitterStrength: 3
+  microJitterOnOpen: 0
+  jitterStrength: 0
   canvasGroup: {fileID: 0}
   overlayCanvas: {fileID: 0}
   loadingCamera: {fileID: 5263127303204965091}
