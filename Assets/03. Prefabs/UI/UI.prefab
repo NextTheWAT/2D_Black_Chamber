@@ -4473,7 +4473,7 @@ MonoBehaviour:
   openDuration: 0
   closeDuration: 0
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 0
   jitterStrength: 0
@@ -4483,7 +4483,7 @@ MonoBehaviour:
   rewardText: {fileID: 2030662241946415274}
   backToLobbyButton: {fileID: 2958992778206055333}
   retryButton: {fileID: 6792524800861917577}
-  lobbySceneName: LobbyScene
+  lobbySceneName: 02. LobbyScene
 --- !u!1 &3054893127191897553
 GameObject:
   m_ObjectHideFlags: 0
@@ -6899,18 +6899,17 @@ MonoBehaviour:
   openDuration: 0.35
   closeDuration: 0.22
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 1
   jitterStrength: 3
-  canvasGroup: {fileID: 0}
   dimmerButton: {fileID: 0}
   continueButton: {fileID: 3400938532708689963}
   settingButton: {fileID: 4416274866191631119}
   lobbyButton: {fileID: 8584057074610067213}
   quitButton: {fileID: 6179079859931480173}
   fadeDuration: 0.18
-  lobbySceneName: LobbyScene
+  lobbySceneName: 02. LobbyScene
 --- !u!1 &4811582685977269709
 GameObject:
   m_ObjectHideFlags: 0
@@ -10193,7 +10192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a4585a688984341959cfd7bec9bb6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbySceneName: LobbyScene
+  lobbySceneName: 02. LobbyScene
 --- !u!1 &5606503643169317800
 GameObject:
   m_ObjectHideFlags: 0
@@ -12464,13 +12463,13 @@ MonoBehaviour:
   openDuration: 0
   closeDuration: 0
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 0
   jitterStrength: 0
   retryButton: {fileID: 1966834366684596093}
   lobbyButton: {fileID: 8247101985503882562}
-  lobbySceneName: LobbyScene
+  lobbySceneName: 02. LobbyScene
 --- !u!1 &7382932213252964530
 GameObject:
   m_ObjectHideFlags: 0
@@ -12528,11 +12527,10 @@ MonoBehaviour:
   openDuration: 0.35
   closeDuration: 0.22
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 1
   jitterStrength: 3
-  canvasGroup: {fileID: 0}
   closeButton: {fileID: 629798573419610740}
   dimmerButton: {fileID: 6185923386840829208}
   fadeDuration: 0.18
@@ -13505,7 +13503,7 @@ MonoBehaviour:
   openDuration: 0
   closeDuration: 0
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 0
   jitterStrength: 0
@@ -13516,9 +13514,9 @@ MonoBehaviour:
   stage2Button: {fileID: 6552074615848449511}
   stage3Button: {fileID: 4425441852864123705}
   exitButton: {fileID: 8916110917186219660}
-  stage1SceneName: ProtoTypeScene
-  stage2SceneName: ProtoTypeScene
-  stage3SceneName: ProtoTypeScene
+  stage1SceneName: Stage1Scene
+  stage2SceneName: Stage2Scene
+  stage3SceneName: Stage3Scene
 --- !u!1 &8012486254610864180
 GameObject:
   m_ObjectHideFlags: 0
@@ -14486,11 +14484,10 @@ MonoBehaviour:
   openDuration: 0
   closeDuration: 0
   root: {fileID: 0}
-  canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 0}
   vignette: {fileID: 0}
   microJitterOnOpen: 0
   jitterStrength: 0
-  canvasGroup: {fileID: 0}
   overlayCanvas: {fileID: 0}
   loadingCamera: {fileID: 5263127303204965091}
   fadeIn: 0.25
