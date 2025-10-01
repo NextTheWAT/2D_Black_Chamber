@@ -14481,8 +14481,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7699bea1e3c77384d9b4195ce69c008b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableTween: 1
-  useUnscaledTime: 1
+  enableTween: 0
+  useUnscaledTime: 0
   openDuration: 0.35
   closeDuration: 0.22
   root: {fileID: 0}
@@ -14490,6 +14490,7 @@ MonoBehaviour:
   vignette: {fileID: 0}
   microJitterOnOpen: 1
   jitterStrength: 3
+  canvasGroup: {fileID: 0}
   overlayCanvas: {fileID: 0}
   loadingCamera: {fileID: 5263127303204965091}
   fadeIn: 0.25
