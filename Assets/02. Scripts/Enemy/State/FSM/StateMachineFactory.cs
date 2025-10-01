@@ -81,6 +81,7 @@ public static class StateMachineFactory
                 break;
 
             case CombatStateType.Temerity: // 무모
+                stateMachine.AddTransition<CoverState, AssaultState>(() => true); // 근처에 타겟 있으면 공격
                 stateMachine.AddTransition<AssaultState, AttackState>(() => owner.HasTargetInFOV); // 근처에 타겟 있으면 공격
                 stateMachine.AddTransition<AttackState, AssaultState>(() => !owner.HasTargetInFOV); // 근처에 타겟 없으면 다시 돌격
                 break;
