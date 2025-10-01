@@ -52,12 +52,20 @@ public class GameManager : Singleton<GameManager>
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        LoadingCanvas.OnLoading += OnLoading;
     }
 
     private void OnDisable()
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        LoadingCanvas.OnLoading -= OnLoading;
+    }
+
+    private void OnLoading(bool isLoading)
+    {
+        if (Player == null) return;
+        Player.gameObject.SetActive(!isLoading);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

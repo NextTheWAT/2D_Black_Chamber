@@ -1807,7 +1807,6 @@ GameObject:
   m_Component:
   - component: {fileID: 175703087603414171}
   - component: {fileID: 5263127303204965091}
-  - component: {fileID: 2308850768528878012}
   - component: {fileID: 1409182080042208546}
   m_Layer: 0
   m_Name: Camera
@@ -1882,14 +1881,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &2308850768528878012
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1128031401981052951}
-  m_Enabled: 1
 --- !u!114 &1409182080042208546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14499,7 +14490,6 @@ MonoBehaviour:
   vignette: {fileID: 0}
   microJitterOnOpen: 1
   jitterStrength: 3
-  canvasGroup: {fileID: 0}
   overlayCanvas: {fileID: 0}
   loadingCamera: {fileID: 5263127303204965091}
   fadeIn: 0.25
