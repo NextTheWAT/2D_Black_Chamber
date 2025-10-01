@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Item : MonoBehaviour, Iinteraction
 {
     public string itemName;
     public float pickupRange;  // 플레이어 접근 감지 거리
@@ -21,21 +21,6 @@ public class Item : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (!player) return;
-
-        // 플레이어가 범위 안에 있는지 체크
-        float distance = Vector3.Distance(transform.position, player.position);
-        playerInRange = distance <= pickupRange;
-
-        
-        if (playerInRange && Input.GetKeyDown(KeyCode.F))
-        {
-            PickUp();
-        }
-    }
-
     void OnDrawGizmosSelected()
     {
         // Scene 뷰에서 범위 표시
@@ -43,6 +28,13 @@ public class Item : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, pickupRange);
     }
     
+    public void Interaction()
+    {
+        if (playerInRange)
+        {
+            PickUp();
+        }
+    }
     public void PickUp()
     {
         Debug.Log(itemName + "을 주웠습니다");
