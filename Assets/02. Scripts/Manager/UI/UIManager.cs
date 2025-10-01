@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
+    public Action<UIBase, bool> OnUIActiveChanged;
     private readonly Dictionary<string, UIBase> _cache = new();
 
     private T FindOrCache<T>() where T : UIBase
@@ -29,6 +31,7 @@ public class UIManager : Singleton<UIManager>
             return null;
         }
         ui.OpenUI();
+        OnUIActiveChanged?.Invoke(ui, true);
         return ui;
     }
 
@@ -37,5 +40,6 @@ public class UIManager : Singleton<UIManager>
         var ui = FindOrCache<T>();
         if (ui == null) return;
         ui.CloseUI();
+        OnUIActiveChanged?.Invoke(ui, false);
     }
 }

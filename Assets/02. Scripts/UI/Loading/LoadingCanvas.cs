@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class LoadingCanvas : UIBase
 {
     public static LoadingCanvas Instance { get; private set; }
+    public static Action<bool> OnLoading;
 
     [Header("Refs")]
     [SerializeField] private CanvasGroup canvasGroup;
@@ -86,6 +88,7 @@ public class LoadingCanvas : UIBase
     {
         if (isLoading) yield break;
         isLoading = true;
+        OnLoading?.Invoke(true);
 
         // 로딩 표시
         OpenUI();                  // UIBase: CanvasGroup 세팅
@@ -119,6 +122,7 @@ public class LoadingCanvas : UIBase
         EnableLoadingCamera(false); // 전용 카메라 끄기
         CloseUI();                  // UIBase가 비활성 처리
         isLoading = false;
+        OnLoading?.Invoke(false);
     }
 
     protected override void OnOpen()
