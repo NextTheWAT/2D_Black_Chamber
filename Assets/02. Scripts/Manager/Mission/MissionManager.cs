@@ -68,6 +68,7 @@ public class MissionManager : Singleton<MissionManager>
         if (phase == MissionPhase.Assassination && remainingTargets <= 0)
             SetPhase(MissionPhase.Escape);
 
+        UIKey = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include)?.ActiveUI ?? UIKey;
     }
 
     public void SetPhase(MissionPhase next)
@@ -79,13 +80,12 @@ public class MissionManager : Singleton<MissionManager>
         Debug.Log($"[MissionManager] Phase -> {phase}");
 #endif
 
-        UIKey = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include)?.ActiveUI ?? UIKey;
-
         if (phase == MissionPhase.Escape && UIKey == UIKey.Game)
         {
             StartCoroutine(Mission_Clear_Text());
+
+            UIKey = UIKey.Title;
         }
-        UIKey = UIKey.Title;
 
     }
 
