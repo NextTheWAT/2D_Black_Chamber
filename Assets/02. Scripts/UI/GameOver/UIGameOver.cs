@@ -41,8 +41,8 @@ public class UIGameOVer : UIBase
             Debug.LogError($"[UIGameOver] 빌드세팅에서 씬을 못찾음: '{lobbySceneName}'");
             return;
         }
-        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
-        //SceneManager.LoadScene(lobbySceneName);
+        Time.timeScale = 1f;
+        LoadingCanvas.LoadScene(lobbySceneName);
     }
 
     private void OnClickRetry()
@@ -52,15 +52,15 @@ public class UIGameOVer : UIBase
         string lastStage = PlayerPrefs.GetString("LastStage", string.Empty);
         if (string.IsNullOrEmpty(lastStage))
         {
-            Debug.LogError("[UIGameOver] LastStage 없음");
-            return;
+            lastStage = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            Debug.LogWarning("[UIGameOver] LastStage 없음 > 현재 씬으로 재시도: " + lastStage);
         }
         if (!Application.CanStreamedLevelBeLoaded(lastStage))
         {
-            Debug.LogError($"[UIGameOver] 빌드세팅에서 씬을 못찾음");
+            Debug.LogError($"[UIGameOver] 빌드세팅에서 씬을 못찾음: '{lastStage}'");
             return;
         }
-        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
-        //SceneManager.LoadScene(lastStage);
+        Time.timeScale = 1f;
+        LoadingCanvas.LoadScene(lastStage);
     }
 }

@@ -5,6 +5,8 @@ public class GameStats : Singleton<GameStats>
     [SerializeField] private float startTime;
     [SerializeField] private int killCount;
 
+    public int KillCount => killCount;
+
     public void StartStage()
     {
         startTime = Time.time;
