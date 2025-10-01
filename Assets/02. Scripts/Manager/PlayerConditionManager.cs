@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public class PlayerConditionManager : Singleton<PlayerConditionManager>
@@ -21,6 +22,22 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     private void Awake()
     {
         base.Awake();
+        stamina = maxStamina;
+        Notify();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
         stamina = maxStamina;
         Notify();
     }
