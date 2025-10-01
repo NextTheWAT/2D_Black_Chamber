@@ -16,7 +16,7 @@ public partial class PlayerInputController : TopDownController
         // if (_current == null) fKeyPrompt?.SetActive(false);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (other.CompareTag("Interaction"))
         {
