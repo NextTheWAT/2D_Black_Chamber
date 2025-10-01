@@ -98,8 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c073b94aa1b4d3b4f81d3752bbb595f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pickupRange: 0
   itemName: "\uD0C4\uCC3D"
-  pickupRange: 1
+  weaponType: 0
+  ammoAmount: 12
 --- !u!58 &-8879945937805799764
 CircleCollider2D:
   m_ObjectHideFlags: 0
