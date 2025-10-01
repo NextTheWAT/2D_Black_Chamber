@@ -16,12 +16,14 @@ public abstract class UIBase : MonoBehaviour
 
     [Header("Tween: Refs")]
     [SerializeField] private RectTransform root;   // 비워두면 자동 할당
-    [SerializeField] private CanvasGroup canvasGroup; // 비워두면 자동 추가
+    [SerializeField] protected CanvasGroup _canvasGroup; 
     [SerializeField] private Image vignette;       // 선택(없어도 됨). 검은 비네트 이미지
 
     [Header("Tween: Options")]
     [SerializeField] private bool microJitterOnOpen = true; // 살짝 거친 느낌
     [SerializeField] private float jitterStrength = 3f;     // 앵커 포지션 잔진동 강도
+
+    protected CanvasGroup canvasGroup => _canvasGroup;
 
     Sequence _openSeq, _closeSeq;
 
@@ -65,8 +67,8 @@ public abstract class UIBase : MonoBehaviour
     void EnsureRefs()
     {
         if (!root) root = transform as RectTransform;
-        if (!canvasGroup) canvasGroup = GetComponent<CanvasGroup>();
-        if (!canvasGroup) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        if (!canvasGroup) _canvasGroup = GetComponent<CanvasGroup>();
+        if (!canvasGroup) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     void KillAll()
