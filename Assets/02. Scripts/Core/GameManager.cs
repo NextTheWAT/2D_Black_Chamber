@@ -52,12 +52,28 @@ public class GameManager : Singleton<GameManager>
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        LoadingCanvas.OnLoading += OnLoading;
+        UIManager.Instance.OnUIActiveChanged += OnUIActiveChanged;
     }
 
     private void OnDisable()
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        LoadingCanvas.OnLoading -= OnLoading;
+        UIManager.Instance.OnUIActiveChanged -= OnUIActiveChanged;
+    }
+
+    private void OnLoading(bool isLoading)
+    {
+        if (Player == null) return;
+        Player.gameObject.SetActive(!isLoading);
+    }
+
+    private void OnUIActiveChanged(UIBase uIBase, bool active)
+    {
+        if(uIBase is PausePopup)
+            Cursor.visible = active;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
