@@ -22,7 +22,6 @@ public class CoverState : BaseState
     public override void Enter()
     {
         ConditionalLogger.Log("CoverState Enter");
-        owner.Target = GameManager.Instance.Player;
     }
 
     public override void Update()
@@ -30,9 +29,8 @@ public class CoverState : BaseState
         Vector2 coverPoint = GetCoverPoint();
         if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
         {
-            owner.MoveTo(coverPoint);
             owner.Agent.isStopped = false;
-
+            owner.MoveTo(coverPoint);
         }
         else
         {
@@ -51,10 +49,13 @@ public class CoverState : BaseState
         if (!owner.HasTarget) return owner.transform.position;
 
         Vector3[] corners = GetPathCorners();
-        if (corners == null || corners.Length <= 2)
+        if (corners == null || corners.Length <= 1)
+            return owner.transform.position;
+
+        if (corners.Length <= 2)
         {
             lookPoint = owner.Target.position;
-            return owner.transform.position;
+            return owner.Target.position;
         }
 
         for (int i = corners.Length - 1; i > 0; i--)

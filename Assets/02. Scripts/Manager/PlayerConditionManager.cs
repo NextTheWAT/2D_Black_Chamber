@@ -79,6 +79,6 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
 
     private bool IsLobbyScene()
     {
-        return SceneManager.GetActiveScene().name == "LobbyScene";
+        return SceneManager.GetActiveScene().name == "02. LobbyScene";
     }
 }
