@@ -13,6 +13,8 @@ public class MissionManager : Singleton<MissionManager>
     [SerializeField] private GameObject missionBell_Obj;
     [SerializeField] private GameObject missionBell_Obj2;
 
+    [SerializeField] private UIKey UIKey;
+
     public int RemainingTargets => remainingTargets;
     public int RemainingEnemies => remainingEnemies;
     public MissionPhase Phase
@@ -77,10 +79,13 @@ public class MissionManager : Singleton<MissionManager>
         Debug.Log($"[MissionManager] Phase -> {phase}");
 #endif
 
-        if (phase == MissionPhase.Escape)
+        UIKey = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include)?.ActiveUI ?? UIKey;
+
+        if (phase == MissionPhase.Escape && UIKey == UIKey.Game)
         {
             StartCoroutine(Mission_Clear_Text());
         }
+        UIKey = UIKey.Title;
 
     }
 
