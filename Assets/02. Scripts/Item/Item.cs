@@ -7,33 +7,30 @@ using UnityEngine;
 public class Item : MonoBehaviour, Iinteraction
 {
     public string itemName;
-    public float pickupRange;  // 플레이어 접근 감지 거리
 
-    private Transform player;    // 플레이어 Transform
-    private bool playerInRange = false; // 플레이어가 근처에 있는지 여부
+    private GameObject player;    // 플레이어 Transform
+    //private bool playerInRange = false; // 플레이어가 근처에 있는지 여부
     void Start()
     {
         // Inspector에 player를 안 넣으면 씬에서 자동으로 찾기
         if (!player)
         {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p) player = p.transform;
+            player  = GameObject.FindGameObjectWithTag("Player");
+            //GameObject p = GameObject.FindGameObjectWithTag("Player");
+            //if (p) player = p.transform;
         }
     }
 
     void OnDrawGizmosSelected()
     {
         // Scene 뷰에서 범위 표시
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, pickupRange);
+        //Gizmos.color = Color.yellow;
+        //Gizmos.DrawWireSphere(transform.position, pickupRange);
     }
     
     public void Interaction()
     {
-        if (playerInRange)
-        {
-            PickUp();
-        }
+        PickUp();
     }
     public void PickUp()
     {
