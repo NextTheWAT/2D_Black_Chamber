@@ -51,7 +51,6 @@ public class MissionManager : Singleton<MissionManager>
     {
         remainingTargets++;
         OnTargetsChanged?.Invoke(remainingTargets);
-        EvaluatePhase();
     }
 
     public void TargetDeactivated()
@@ -91,7 +90,7 @@ public class MissionManager : Singleton<MissionManager>
         Debug.Log($"[MissionManager] Phase -> {phase}");
 #endif
 
-        if (phase == MissionPhase.Escape && UIKey == UIKey.Game)
+        if (phase == MissionPhase.Escape)
         {
             StartCoroutine(Mission_Clear_Text());
         }
@@ -120,11 +119,16 @@ public class MissionManager : Singleton<MissionManager>
 
     IEnumerator Mission_Clear_Text()
     {
-        missionBell_Obj.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        missionBell_Obj.SetActive(false);
-        missionBell_Obj2.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        missionBell_Obj2.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+
+        if(UIKey == UIKey.Game)
+        {
+            missionBell_Obj.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            missionBell_Obj.SetActive(false);
+            missionBell_Obj2.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            missionBell_Obj2.SetActive(false);
+        }
     }
 }
