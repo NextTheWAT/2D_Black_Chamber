@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class SettingPopup : UIBase
 {
     [Header("Refs")]
-    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button closeButton;
     [SerializeField] private Button dimmerButton;
 
@@ -22,7 +21,7 @@ public class SettingPopup : UIBase
 
     private void Reset()
     {
-        if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
         if (closeButton == null) closeButton = GetComponentInChildren<Button>(true);
         if (dimmerButton == null)
         {

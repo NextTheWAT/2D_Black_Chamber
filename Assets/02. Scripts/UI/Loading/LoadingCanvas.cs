@@ -11,7 +11,6 @@ public class LoadingCanvas : UIBase
     public static Action<bool> OnLoading;
 
     [Header("Refs")]
-    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Canvas overlayCanvas;   // 로딩 UI용 캔버스
     [SerializeField] private Camera loadingCamera;   // 전용 카메라
 
@@ -39,7 +38,7 @@ public class LoadingCanvas : UIBase
 
         if (keepAcrossScenes) DontDestroyOnLoad(gameObject);
 
-        if (!canvasGroup) canvasGroup = GetComponent<CanvasGroup>();
+        if (!canvasGroup) _canvasGroup = GetComponent<CanvasGroup>();
         canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = false;
 
