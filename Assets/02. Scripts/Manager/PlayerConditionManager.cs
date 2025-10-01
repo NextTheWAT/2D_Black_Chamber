@@ -17,7 +17,16 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     public event Action<float> OnStamina01Changed; // UI 바인딩용(0~1)
 
     public float Stamina01 => Mathf.InverseLerp(0f, maxStamina, stamina);
-    public bool CanRun => stamina > 0f;
+    public bool CanRun
+    {
+        get
+        {
+            if (IsLobbyScene())
+                return true;
+            return stamina > 0f;
+        }
+
+    }
 
     private void Awake()
     {
@@ -67,4 +76,9 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     private void Notify() => OnStamina01Changed?.Invoke(Stamina01);
 
     // 필요 시 외부에서 값 세팅/읽기 메서드 추가 가능
+
+    private bool IsLobbyScene()
+    {
+        return SceneManager.GetActiveScene().name == "LobbyScene";
+    }
 }
