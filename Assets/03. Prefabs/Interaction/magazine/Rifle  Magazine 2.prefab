@@ -99,7 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: "\uD0C4\uCC3D"
-  pickupRange: 1
+  weaponType: 1
+  ammoAmount: 30
 --- !u!58 &7259077012605059704
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Papermoney;
 
 public class MoneySpawner : MonoBehaviour
 {
     public List<Transform> spawnerPoint;
 
     public GameObject coinPrefab;
-    public GameObject billPrefab;
+    public GameObject papermoneyPrefab;
     public GameObject tripleBillPrefab;
 
 
@@ -64,7 +65,7 @@ public class MoneySpawner : MonoBehaviour
             else if (amount <= stageMaxTotal / 2f)
                 prefab = coinPrefab;
             else
-                prefab = billPrefab;
+                prefab = papermoneyPrefab;
 
             GameObject moneyPrefabs = Instantiate(prefab, choosePoint[i].position, Quaternion.identity);
 

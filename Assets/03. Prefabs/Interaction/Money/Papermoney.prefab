@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4186759540446479719
+--- !u!1 &9081247867040112379
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,39 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2382548564722740659}
-  - component: {fileID: 3802193720646242697}
-  - component: {fileID: 8680816016338319859}
-  - component: {fileID: 7925952335069167328}
+  - component: {fileID: 843378307678313003}
+  - component: {fileID: 9131204886094185372}
+  - component: {fileID: 6893306512061728476}
+  - component: {fileID: 2387594992770674469}
   m_Layer: 0
-  m_Name: bill
+  m_Name: Papermoney
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2382548564722740659
+--- !u!4 &843378307678313003
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4186759540446479719}
+  m_GameObject: {fileID: 9081247867040112379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.12, y: -7.39, z: 0}
+  m_LocalPosition: {x: -17.26, y: -15.43, z: 0}
   m_LocalScale: {x: 6.5, y: 6.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &3802193720646242697
+--- !u!212 &9131204886094185372
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4186759540446479719}
+  m_GameObject: {fileID: 9081247867040112379}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -86,27 +86,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8680816016338319859
+--- !u!114 &6893306512061728476
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4186759540446479719}
+  m_GameObject: {fileID: 9081247867040112379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c073b94aa1b4d3b4f81d3752bbb595f5, type: 3}
+  m_Script: {fileID: 11500000, guid: 9adc30e8d3c934d4b8d3cdb00f1c8f35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: money
-  pickupRange: 1
---- !u!58 &7925952335069167328
+  itemName: "\uC9C0\uD3D0"
+  moneyType: 1
+--- !u!58 &2387594992770674469
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4186759540446479719}
+  m_GameObject: {fileID: 9081247867040112379}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -134,4 +134,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.5
