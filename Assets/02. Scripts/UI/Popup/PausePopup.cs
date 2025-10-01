@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class PausePopup : UIBase
 {
     [Header("Refs")]
-    [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Button dimmerButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button settingButton;
@@ -27,7 +26,7 @@ public class PausePopup : UIBase
 
     private void Reset()
     {
-        if (!canvasGroup) canvasGroup = GetComponent<CanvasGroup>();
+        if (!canvasGroup) _canvasGroup = GetComponent<CanvasGroup>();
         if (!dimmerButton) dimmerButton = transform.Find("Dimmer")?.GetComponent<Button>();
         if (!continueButton) continueButton = transform.Find("Window/ButtonGroup/ContinueButton")?.GetComponent<Button>();
         if (!settingButton) settingButton = transform.Find("Window/ButtonGroup/SettingButton")?.GetComponent<Button>();
@@ -167,6 +166,7 @@ public class PausePopup : UIBase
 
     private IEnumerator ReturnToLobby()
     {
+        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
         RequestClose();
         while (gameObject.activeInHierarchy) yield return null; // 닫힐 때까지 대기
         if (Time.timeScale == 0f) Time.timeScale = 1f;
