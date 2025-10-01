@@ -117,8 +117,4 @@ public class GameManager : Singleton<GameManager>
     private void LoadGameOverScene()
         => SceneManager.LoadScene(gameOverSceneName);
 
-    private void SetActiveMouseCursor(bool active)
-    {
-    }
-
 }
