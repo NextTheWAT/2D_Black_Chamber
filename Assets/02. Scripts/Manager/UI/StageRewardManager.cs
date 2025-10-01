@@ -1,22 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StageRewardManager : MonoBehaviour //스테이지별 클리어 보상 관리
+public class StageRewardManager : Singleton<StageRewardManager>
+    //스테이지별 클리어 보상 관리
 {
-    public static StageRewardManager Instance;
 
     private Dictionary<int, StageReward> rewards = new();
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
         InitRewards();
     }
 

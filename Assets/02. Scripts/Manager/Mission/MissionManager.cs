@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class MissionManager : Singleton<MissionManager>
@@ -8,13 +9,28 @@ public class MissionManager : Singleton<MissionManager>
     [SerializeField] private int remainingEnemies = 0;
     [SerializeField] private MissionPhase phase = MissionPhase.Assassination;
 
+    [Header("Mission Bell")]
+    [SerializeField] private GameObject missionBell_Obj;
+    [SerializeField] private GameObject missionBell_Obj2;
+
     public int RemainingTargets => remainingTargets;
     public int RemainingEnemies => remainingEnemies;
-    public MissionPhase Phase => phase;
+    public MissionPhase Phase
+    {
+        get => phase;
+        set => SetPhase(value);
+    }
 
     public event Action<int> OnTargetsChanged;
     public event Action<int> OnEnemiesChanged;
     public event Action<MissionPhase> OnPhaseChanged;
+
+
+    private void Start()
+    {
+        if (missionBell_Obj) missionBell_Obj.SetActive(false);
+        if (missionBell_Obj2) missionBell_Obj2.SetActive(false);
+    }
 
     // --- 암살 대상 ---
     public void TargetActivated()
@@ -49,6 +65,7 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (phase == MissionPhase.Assassination && remainingTargets <= 0)
             SetPhase(MissionPhase.Escape);
+
     }
 
     public void SetPhase(MissionPhase next)
@@ -59,6 +76,12 @@ public class MissionManager : Singleton<MissionManager>
 #if UNITY_EDITOR
         Debug.Log($"[MissionManager] Phase -> {phase}");
 #endif
+
+        if (phase == MissionPhase.Escape)
+        {
+            StartCoroutine(Mission_Clear_Text());
+        }
+
     }
 
     // 선택: 초기화가 필요할 때
@@ -69,5 +92,20 @@ public class MissionManager : Singleton<MissionManager>
         SetPhase(startPhase);
         OnTargetsChanged?.Invoke(remainingTargets);
         OnEnemiesChanged?.Invoke(remainingEnemies);
+    }
+
+
+
+
+    //예비 미션 클리어 텍스트 처리
+
+     IEnumerator Mission_Clear_Text()
+    {
+        missionBell_Obj.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        missionBell_Obj.SetActive(false);
+        missionBell_Obj2.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        missionBell_Obj2.SetActive(false);
     }
 }

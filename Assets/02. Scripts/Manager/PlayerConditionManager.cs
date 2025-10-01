@@ -49,7 +49,7 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
         regenUnlockTime = Time.time + regenDelayAfterRun;
         Notify();
 
-        Debug.Log($"[Stamina] 달리기 → {stamina}/{maxStamina}");
+        //Debug.Log($"[Stamina] 달리기 → {stamina}/{maxStamina}");
     }
 
     public void TickRegen(float dt)
@@ -61,7 +61,7 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
         stamina = Mathf.Min(maxStamina, stamina);
         Notify();
 
-        Debug.Log($"[Stamina] 회복 → {stamina}/{maxStamina}");
+        //Debug.Log($"[Stamina] 회복 → {stamina}/{maxStamina}");
     }
 
     private void Notify() => OnStamina01Changed?.Invoke(Stamina01);

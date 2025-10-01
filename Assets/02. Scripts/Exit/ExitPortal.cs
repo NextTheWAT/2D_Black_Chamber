@@ -8,6 +8,7 @@ public class ExitPortal : MonoBehaviour
     public GameObject clearLight;
 
     [SerializeField] public string clearSceneName = "ClearScene";  // 클리어씬
+    [SerializeField] private int stageNumber = 1;
 
     private MissionManager mm;
 
@@ -56,11 +57,7 @@ public class ExitPortal : MonoBehaviour
         bool isStealthClear = (GameManager.Instance != null && !GameManager.Instance.IsCombat);
         string clearStateText = isStealthClear ? "잠입 상태 클리어" : "난전 상태 클리어";
 
-        // 2) 현재 스테이지 번호 추출 (예: "Stage1" → 1)
-        string sceneName = SceneManager.GetActiveScene().name;
-        int stageNumber = ExtractStageNumber(sceneName);
-
-        // 3) 스테이지별 보상 데이터 조회
+        // 2) 스테이지별 보상 데이터 조회
         int reward = 0;
         var srm = StageRewardManager.Instance;
         if (srm != null && stageNumber > 0)
@@ -77,25 +74,18 @@ public class ExitPortal : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[ExitPortal] StageRewardManager 미배치 또는 스테이지 번호 추출 실패. scene='{sceneName}', num={stageNumber}");
+            Debug.LogWarning("[ExitPortal] StageRewardManager 없음 또는 stageNumber 잘못 설정됨");
         }
 
-        // 4) 플레이어 소지금에 반영
+        // 3) 플레이어 소지금에 반영
         if (MoneyManager.Instance != null && reward > 0)
             MoneyManager.Instance.AddMoney(reward);
 
-        // 5) 결과 데이터 생성(클리어 씬 UI에서 사용)
+        // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)
             TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
 
-        // 6) 클리어 씬 로드
+        // 5) 클리어 씬 로드
         SceneManager.LoadScene(clearSceneName);
-    }
-
-    // 씬 이름에서 숫자만 추출하여 스테이지 번호로 사용 (숫자 없으면 0)
-    private int ExtractStageNumber(string sceneName)
-    {
-        string num = Regex.Replace(sceneName, "[^0-9]", "");
-        return int.TryParse(num, out int v) ? v : 0;
     }
 }
