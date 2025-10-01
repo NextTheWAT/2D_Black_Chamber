@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c073b94aa1b4d3b4f81d3752bbb595f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupRange: 0
   itemName: "\uD0C4\uCC3D"
   weaponType: 0
   ammoAmount: 12
