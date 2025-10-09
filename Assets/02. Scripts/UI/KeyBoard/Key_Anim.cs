@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class F_Key_Anim : MonoBehaviour
+public class Key_Anim : MonoBehaviour
 {
     [Header("따라갈 대상(플레이어)")]
     [SerializeField] private Transform target;
@@ -25,7 +25,7 @@ public class F_Key_Anim : MonoBehaviour
 
     void Start()
     {
-        gameObject.SetActive(false); // 시작할 때는 숨기기
+        //gameObject.SetActive(false); // 시작할 때는 숨기기
     }
 
     private void LateUpdate()
