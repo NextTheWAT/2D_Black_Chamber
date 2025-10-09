@@ -1,3 +1,4 @@
+using Constants;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -13,6 +14,11 @@ public class MissionManager : Singleton<MissionManager>
     [Header("Mission Bell")]
     [SerializeField] private GameObject missionBell_Obj;
     [SerializeField] private GameObject missionBell_Obj2;
+
+    [Header("Combat Alert UI")]
+    [SerializeField] private GameObject combatAlertUI;   // 난전 진입 시 3초 표시할 UI
+    [SerializeField] private float combatAlertDuration = 3f;
+    private Coroutine _combatUiRoutine;
 
     [SerializeField] private UIKey UIKey;
 
@@ -34,16 +40,54 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (missionBell_Obj) missionBell_Obj.SetActive(false);
         if (missionBell_Obj2) missionBell_Obj2.SetActive(false);
+
+        // 기본은 꺼둡니다.
+        if (combatAlertUI) combatAlertUI.SetActive(false);
     }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded_UpdateUIKey;
+
+        // 난전 상태 변경 이벤트 구독
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged += HandleGamePhaseChanged;   // Combat/Stealth 전환 수신  :contentReference[oaicite:2]{index=2}
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded_UpdateUIKey;
+
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged -= HandleGamePhaseChanged;
+
+        if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+    }
+    private void HandleGamePhaseChanged(GamePhase phase)
+    {
+        // 난전 진입 시 3초간 표시, 스텔스 복귀 시 즉시 숨김
+        if (phase == GamePhase.Combat)
+        {
+            if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+            _combatUiRoutine = StartCoroutine(ShowCombatAlertUI());
+        }
+        else
+        {
+            if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+            _combatUiRoutine = null;
+            if (combatAlertUI) combatAlertUI.SetActive(false);
+        }
+    }
+
+    private IEnumerator ShowCombatAlertUI()
+    {
+        if (UIKey == UIKey.Game && combatAlertUI)  // 게임 UI일 때만 노출  :contentReference[oaicite:3]{index=3}
+        {
+            combatAlertUI.SetActive(true);
+            yield return new WaitForSeconds(combatAlertDuration);
+            combatAlertUI.SetActive(false);
+        }
+        _combatUiRoutine = null;
     }
 
     // --- 암살 대상 ---
