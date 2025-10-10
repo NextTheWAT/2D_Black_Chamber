@@ -46,42 +46,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fogRevealers:
   - revealerTransform: {fileID: 0}
-    outerRadius: 60
-    innerRadius: 0
-    outerAngleDeg: 30
-    innerAngleDeg: 0
     forwardIsRight: 0
-    updateOnlyOnMove: 1
+    updateOnlyOnMove: 0
+    outerRadius: 0
+    innerRadius: 0
+    outerAngleDeg: 0
+    innerAngleDeg: 0
+    shapeAsset: {fileID: 11400000, guid: 2e1599a0c259af7469af735d1a575aed, type: 2}
+    shapeOffset: {x: 0, y: 0}
+    shapeScale: {x: 1, y: 1}
+    shapeRotationDeg: 0
     lastSeenAt: {x: 0, y: 0}
   levelMidPoint: {fileID: 0}
   FogRefreshRate: 30
-  fogPlaneZ: -0.1
-  sortingLayerName: Default
-  sortingOrder: 100
-  fogPlaneHeight: 1
   fogPlaneMaterial: {fileID: 2100000, guid: 36b93ac6fcf129c449491654e397fe4a, type: 2}
   fogColor: {r: 0.019607844, g: 0.05882353, b: 0.09803922, a: 1}
   fogPlaneAlpha: 1
   fogLerpSpeed: 5
   keepRevealedTiles: 0
   revealedTileOpacity: 0.5
-  fogPlaneTextureLerpTarget: {fileID: 0}
-  fogPlaneTextureLerpBuffer: {fileID: 0}
   LevelDataToLoad: {fileID: 0}
   saveDataOnScan: 1
   levelNameToSave: Default
-  levelDimensionX: 60
-  levelDimensionY: 70
-  unitScale: 1
-  scanSpacingPerUnit: 0.25
-  rayStartHeight: 5
-  rayMaxDistance: 10
   obstacleLayers:
     serializedVersion: 2
     m_Bits: 512
+  ignoreTriggers: 1
+  scanSpacingPerUnit: 0
   doorLayers:
     serializedVersion: 2
     m_Bits: 32768
-  ignoreTriggers: 1
+  levelDimensionX: 60
+  levelDimensionY: 70
+  unitScale: 1
   drawGizmos: 1
   LogOutOfRange: 0
