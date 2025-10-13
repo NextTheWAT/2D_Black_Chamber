@@ -13,7 +13,26 @@ public class StoreNpc : MonoBehaviour, Iinteraction
         if (targetCanvas == null)
             return;
 
-    isOpen = !isOpen;
-    targetCanvas.SetActive(isOpen);
+        if (!isOpen)
+            OpenStore();
+        else
+            CloseStore(); 
+    }
+
+    public void OpenStore()
+    {
+        targetCanvas.SetActive(true);
+        Time.timeScale = 0f;
+        isOpen = true;
+    }
+
+    public void CloseStore()
+    {
+        if (targetCanvas == null)
+            return;
+        targetCanvas.SetActive(false);
+        Time.timeScale = 1f;
+        isOpen = false;
     }
 }
+
