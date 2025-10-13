@@ -72,7 +72,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   ignoreTriggers: 1
-  scanSpacingPerUnit: 0
+  scanSpacingPerUnit: 1
   doorLayers:
     serializedVersion: 2
     m_Bits: 32768
