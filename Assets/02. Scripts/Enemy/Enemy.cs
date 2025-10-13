@@ -235,17 +235,21 @@ public class Enemy : MonoBehaviour
         }
 
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
-        Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // 시체 갱신
 
         // 새로운 시체 발견시 기록
-        if (body && !foundBodies.Contains(body))
+        if (!GameManager.Instance.IsCombat)
         {
-            Enemy enemy = body.GetComponent<Enemy>();
-            if(enemy && enemy.IsDead)
+            Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // 시체 갱신
+
+            if (body && !foundBodies.Contains(body))
             {
-                newFoundBody = body;
-                foundBodies.Add(newFoundBody);
-                LastKnownTargetPos = body.position;
+                Enemy enemy = body.GetComponent<Enemy>();
+                if (enemy && enemy.IsDead)
+                {
+                    newFoundBody = body;
+                    foundBodies.Add(newFoundBody);
+                    LastKnownTargetPos = body.position;
+                }
             }
         }
 
