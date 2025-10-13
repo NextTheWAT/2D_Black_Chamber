@@ -18,6 +18,9 @@ public class WeaponManager : Singleton<WeaponManager>
     [SerializeField] private int initializeIndex = 0; // 초기 무기 인덱스
     private int currentIndex = 0;
 
+    private int sharedMagazine = 6;
+    private int sharedReserve = 0;
+
     public Shooter CurrentWeapon
         => (weaponSlots != null && weaponSlots.Length > 0) ? weaponSlots[currentIndex] : null;
 
@@ -26,10 +29,28 @@ public class WeaponManager : Singleton<WeaponManager>
         get => currentIndex;
         set
         {
-            if (weaponSlots == null || weaponSlots.Length == 0) return; // 무기 없음 방지
+            if (weaponSlots == null || weaponSlots.Length == 0) return;
 
+            // 1) 전환 직전: 이전 무기의 탄 수 백업
+            var oldWeapon = CurrentWeapon;
+            if (oldWeapon != null)
+            {
+                sharedMagazine = oldWeapon.CurrentMagazine;
+                sharedReserve = oldWeapon.CurrentAmmo;
+            }
+
+            // 2) 인덱스 변경
             currentIndex = value % weaponSlots.Length;
-            OnWeaponChanged.Invoke(CurrentWeapon);
+
+            // 3) 전환 직후: 새 무기에 공유 탄 수 적용
+            var newWeapon = CurrentWeapon;
+            if (newWeapon != null)
+            {
+                newWeapon.SetAmmo(sharedMagazine, sharedReserve);
+            }
+
+            // 4) 이벤트 알림
+            OnWeaponChanged.Invoke(newWeapon);
             OnAmmoChanged.Invoke();
         }
     }
@@ -81,9 +102,12 @@ public class WeaponManager : Singleton<WeaponManager>
             go.transform.SetParent(GameManager.Instance.Player);
             go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             var shooter = go.AddComponent<Shooter>();
-            shooter.Initialize(intializeDatas[i]);
+            shooter.Initialize(intializeDatas[i]); // Shooter가 6/0으로 초기화
             weaponSlots[i] = shooter;
         }
+
+        sharedMagazine = 6;
+        sharedReserve = 0;
 
         CurrentWeaponIndex = initializeIndex;
         OnWeaponChanged.Invoke(CurrentWeapon);
