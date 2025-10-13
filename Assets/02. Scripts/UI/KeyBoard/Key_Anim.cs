@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Key_Anim : MonoBehaviour
 {
-    [Header("따라갈 대상(플레이어)")]
+    [Header("따라갈 대상")]
     [SerializeField] private Transform target;
 
     [Header("월드 좌표 기준 오프셋")]
