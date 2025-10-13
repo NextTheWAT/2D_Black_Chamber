@@ -200,6 +200,8 @@ public class Enemy : MonoBehaviour
             combatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(CoverState), combatStateType);
         }
 
+
+        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
         CurrentStateMachine.Start();
 
         previousHasTarget = HasTarget;
