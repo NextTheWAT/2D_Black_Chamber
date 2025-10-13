@@ -51,7 +51,6 @@ public static class StateMachineFactory
 
         // 공용
         stateMachine.AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
-        stateMachine.AddGlobalTransition<CoverState>(() => owner.IsHit && stateMachine.CurrentState.GetType() != typeof(AttackState) && stateMachine.CurrentState.GetType() != typeof(RetreatState)); // 맞았을 때 공격상태가 아니면 엄폐
 
         switch (combatStateType)
         {
