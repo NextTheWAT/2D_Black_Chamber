@@ -22,6 +22,7 @@ public class Shooter : MonoBehaviour
 
     public bool HasAnyAmmo => (currentMagazine + currentAmmo) > 0;
     public bool IsClipEmpty => currentMagazine <= 0;
+    private bool _initialized = false;
 
     public float CurrentSpread
     {
@@ -37,7 +38,11 @@ public class Shooter : MonoBehaviour
 
     private void Start()
     {
-        Initialize(gunData);
+        //Initialize(gunData); WeaponManager가 호출해서 임시 제거
+        if (!_initialized)
+        {
+            Initialize(gunData); // 적/기타 프리팹들은 여기서 자동 초기화
+        }
     }
 
     private void Update()
@@ -59,11 +64,17 @@ public class Shooter : MonoBehaviour
     public void Initialize(GunData gunData)
     {
         this.gunData = gunData;
-        currentMagazine = gunData.maxMagazine;
-        currentAmmo = gunData.maxAmmo;
+
+        // 시작: 탄창 6발 / 예비 0발
+        currentMagazine = 6; // 기본 6
+        currentAmmo = 0;
+
         gunPoint.SetLocalPositionAndRotation(gunData.firePointOffset, Quaternion.identity);
         cooldown = 0f;
-        WeaponManager.Instance.OnAmmoChanged?.Invoke();
+        _initialized = true;
+
+        // HUD 갱신
+        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
     }
 
     /// <summary>현재 무기 타입에 맞춰 발사</summary>
@@ -189,17 +200,26 @@ public class Shooter : MonoBehaviour
                            baseDir.x * s + baseDir.y * c).normalized;
     }
 
-    public void AddAmmo(int amount)  //권총 탄창 추가
+    public int AddAmmo(int amount) //탄창 추가
     {
-        currentAmmo += amount;
+        if (amount <= 0) return 0;
 
-        // 최대 탄창 제한
-        if (currentAmmo > gunData.maxAmmo)
-            currentAmmo = gunData.maxAmmo;
+        int before = currentAmmo;
 
-        // UI 이벤트 호출
+        const int MaxReserve = 120; //최대 소지 120발 고정
+        currentAmmo = Mathf.Clamp(currentAmmo + amount, 0, MaxReserve);
+        int gained = currentAmmo - before;
+
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
+        return gained;
     }
 
+    public void SetAmmo(int magazine, int reserve, int maxReserve = 120)
+        // 무기 전환 시에도 동기화
+    {
+        currentMagazine = Mathf.Clamp(magazine, 0, gunData != null ? gunData.maxMagazine : 6);
+        currentAmmo = Mathf.Clamp(reserve, 0, maxReserve);
 
+        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
+    }
 }
