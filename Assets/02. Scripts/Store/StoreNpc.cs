@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class StoreNpc : MonoBehaviour, Iinteraction
 {
-    public GameObject targetCanvas;
+    public GameObject weaponsPanel;
+    public GameObject toolsPanel;
 
     private bool isOpen = false;
 
     public void Interaction()
     {
-        if (targetCanvas == null)
-            return;
-
         if (!isOpen)
             OpenStore();
         else
@@ -21,16 +19,16 @@ public class StoreNpc : MonoBehaviour, Iinteraction
 
     public void OpenStore()
     {
-        targetCanvas.SetActive(true);
+        weaponsPanel.SetActive(true);
+        toolsPanel.SetActive(false);
         Time.timeScale = 0f;
         isOpen = true;
     }
 
     public void CloseStore()
     {
-        if (targetCanvas == null)
-            return;
-        targetCanvas.SetActive(false);
+        weaponsPanel.SetActive(false);
+        toolsPanel.SetActive(false);
         Time.timeScale = 1f;
         isOpen = false;
     }
