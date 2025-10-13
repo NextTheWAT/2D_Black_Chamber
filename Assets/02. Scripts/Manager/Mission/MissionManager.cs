@@ -21,9 +21,12 @@ public class MissionManager : Singleton<MissionManager>
     private Coroutine _combatUiRoutine;
 
     [SerializeField] private UIKey UIKey;
+    [SerializeField] private int totalTargets = 0; //목표물 수
 
     public int RemainingTargets => remainingTargets;
     public int RemainingEnemies => remainingEnemies;
+    public int TotalTargets => totalTargets;
+    public int CompletedTargets => Mathf.Clamp(totalTargets - remainingTargets, 0, totalTargets);
 
     public MissionPhase Phase
     {
@@ -94,6 +97,7 @@ public class MissionManager : Singleton<MissionManager>
     public void TargetActivated()
     {
         remainingTargets++;
+        totalTargets++;
         OnTargetsChanged?.Invoke(remainingTargets);
     }
 
@@ -144,7 +148,8 @@ public class MissionManager : Singleton<MissionManager>
     // 선택: 초기화가 필요할 때
     public void ResetCounts(int targets = 0, int enemies = 0, MissionPhase startPhase = MissionPhase.Assassination)
     {
-        remainingTargets = Mathf.Max(0, targets);
+        totalTargets = Mathf.Max(0, targets); // 총 목표 수
+        remainingTargets = Mathf.Max(0, targets); // 남은 목표 수
         remainingEnemies = Mathf.Max(0, enemies);
         SetPhase(startPhase);
         OnTargetsChanged?.Invoke(remainingTargets);
