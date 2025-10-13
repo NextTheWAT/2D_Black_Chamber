@@ -282,7 +282,7 @@ MonoBehaviour:
     m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 513
+    m_Bits: 33280
   forwardLight: {fileID: 320964536846967675}
   backwardLight: {fileID: 388692315491043338}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -292,6 +292,9 @@ MonoBehaviour:
   startPatrolPointIndex: 0
   shooter: {fileID: 3380604470911330412}
   returnPoint: {fileID: 0}
+  questionIcon: {fileID: 0}
+  exclamationIcon: {fileID: 0}
+  minIconShowTime: 0.12
   stateType: 
   isTarget: 0
   dropItems:
