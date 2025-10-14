@@ -29,8 +29,6 @@ MonoBehaviour:
   semiAutoDelay: 0
   spreadControlPct: 0
   aimDistancePct: 100
-  headshotMultPct: 110
-  ejectionForce: 0
   reloadSpeedMul: 1
   adsSpeedPct: 100
   movePenaltyPct: 0
