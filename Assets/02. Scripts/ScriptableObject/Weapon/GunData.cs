@@ -6,14 +6,12 @@ public class GunData : ScriptableObject
 {
     // ===== Classification =====
     public enum WeaponClass { Pistol, Shotgun, SMG, Rifle, MG, Sniper, Knife }
-    public enum NoiseLevel { Silent, Suppressed, Normal, Loud }
 
     [Header("Classification")]
     public string displayName = "Pistol";
     public WeaponClass weaponClass = WeaponClass.Pistol;
     [Tooltip("세부 분류 (예: AR, DMR, Carbine 등)")]
     public string subType = "AR";
-    public NoiseLevel noise = NoiseLevel.Normal;
 
     // ===== Core Combat Stats (기본값) =====
     [Header("Core (Base)")]
