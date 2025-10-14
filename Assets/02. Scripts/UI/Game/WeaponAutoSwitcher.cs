@@ -3,31 +3,26 @@ using System.Collections;
 
 public class WeaponAutoSwitcher : MonoBehaviour
 {
-    [Header("Weapon Slots Index (WeaponManager.weaponSlots 순서)")]
-    [SerializeField] private int pistolIndex = 0; // 잠입
-    [SerializeField] private int rifleIndex = 1; // 난전
-    [SerializeField] private int knifeIndex = 2; // 총알 없음
+    [Header("Optional Knife Fallback")]
+    [SerializeField] private int knifeIndex = -1; // 탄약 0일 때 전환 (없으면 -1)
 
-    [SerializeField] private float ammoCheckInterval = 0.25f;
+    [SerializeField] private float ammoCheckInterval = 0.1f; // 반응성 향상
 
     private WeaponManager WM => WeaponManager.Instance;
     private GameManager GM => GameManager.Instance;
 
-    public int PistolIndex { get => pistolIndex; set => pistolIndex = value; }
-    public int RifleIndex { get => rifleIndex; set => rifleIndex = value; }
     public int KnifeIndex { get => knifeIndex; set => knifeIndex = value; }
     public float AmmoCheckInterval { get => ammoCheckInterval; set => ammoCheckInterval = value; }
 
     private void OnEnable()
     {
         if (GM != null) GM.OnPhaseChanged += OnPhaseChanged;
-        if (WM != null) WM.OnAmmoChanged.AddListener(UpdateByContext);
+        // AmmoChanged 리스너는 루프 위험이 있어 제거. 폴링 + 페이즈 변경만 사용.
     }
 
     private void OnDisable()
     {
         if (GM != null) GM.OnPhaseChanged -= OnPhaseChanged;
-        if (WM != null) WM.OnAmmoChanged.RemoveListener(UpdateByContext);
     }
 
     private void Start()
@@ -45,34 +40,33 @@ public class WeaponAutoSwitcher : MonoBehaviour
         }
     }
 
-    private void OnPhaseChanged(Constants.GamePhase _) => UpdateByContext();
+    private void OnPhaseChanged(Constants.GamePhase phase) => UpdateByContext();
 
     private void UpdateByContext()
     {
         if (WM == null || WM.weaponSlots == null || WM.weaponSlots.Length == 0) return;
 
-        int totalAmmo = SafeGetMagazine() + SafeGetReserve();
+        var phase = GM.CurrentPhase;
+        // 현재 페이즈의 무기(스텔스=권총, 난전=주무기)를 기준으로 탄약 판단
+        var targetSlot = (phase == Constants.GamePhase.Combat) ? WM.CombatSlotIndex : WM.StealthSlotIndex;
 
-        // 1) 탄약 0 > 칼
-        if (totalAmmo <= 0)
+        int targetAmmoTotal = 0;
+        if (targetSlot >= 0 && targetSlot < WM.weaponSlots.Length && WM.weaponSlots[targetSlot] != null)
         {
-            SetWeaponIfDifferent(KnifeIndex);
+            var s = WM.weaponSlots[targetSlot];
+            targetAmmoTotal = s.CurrentMagazine + s.CurrentAmmo;
+        }
+
+        if (targetAmmoTotal <= 0)
+        {
+            // 해당 페이즈 무기에 탄이 없으면 칼로 전환 (설정된 경우)
+            if (knifeIndex >= 0 && knifeIndex < WM.weaponSlots.Length && WM.CurrentWeaponIndex != knifeIndex)
+                WM.CurrentWeaponIndex = knifeIndex;
             return;
         }
 
-        // 2) 탄약 있음 > 상태에 따라 권총/라이플
-        bool combat = (GM != null && GM.IsCombat);
-        // SetWeaponIfDifferent(combat ? RifleIndex : PistolIndex);
-    }
-
-    private int SafeGetMagazine() { try { return WM.GetMagazine(); } catch { return 0; } }
-    private int SafeGetReserve() { try { return WM.GetReserve(); } catch { return 0; } }
-
-    private void SetWeaponIfDifferent(int slotIndex)
-    {
-        if (slotIndex == knifeIndex) return;
-        slotIndex = Mathf.Clamp(slotIndex, 0, WM.weaponSlots.Length - 1);
-        if (WM.CurrentWeaponIndex == slotIndex) return;
-        WM.CurrentWeaponIndex = slotIndex;
+        // 탄이 생겼으면 (예: 칼 들고 있을 때 픽업) 해당 페이즈 무기로 복귀
+        if (targetSlot >= 0 && WM.CurrentWeaponIndex != targetSlot)
+            WM.CurrentWeaponIndex = targetSlot;
     }
 }

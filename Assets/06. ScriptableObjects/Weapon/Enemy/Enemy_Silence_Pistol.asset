@@ -13,17 +13,35 @@ MonoBehaviour:
   m_Name: Enemy_Silence_Pistol
   m_EditorClassIdentifier: 
   displayName: Pistol
+  weaponClass: 0
+  subType: AR
+  noise: 2
   damage: 10
-  bulletSpeed: 100
+  rpm: 120
   maxMagazine: 12
-  maxAmmo: 36
-  fireRate: 1
-  spread: 0
+  maxReserve: 30
+  accuracyDeg: 6
   projectilesPerShot: 1
-  firePointOffset: {x: 0.04, y: 1.09}
-  noiseRange: 8
+  bulletSpeed: 100
+  bulletLife: 2
+  semiAutoDelay: 0
+  spreadControlPct: 0
+  aimDistancePct: 100
+  headshotMultPct: 110
+  ejectionForce: 0
+  reloadSpeedMul: 1
+  adsSpeedPct: 100
+  movePenaltyPct: 0
+  recoilAmount: 0
+  recoilRecovery: 0
   bulletPrefab: {fileID: 8908556986258763193, guid: 31971c2a0ebeb4046a7e923603d71f7d, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
   upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
   weaponSprite: {fileID: 671012679, guid: d5771c71321d5c5429d875cd0219fc91, type: 3}
-  bulletLife: 2
+  firePointOffset: {x: 0.04, y: 1.09}
+  scopeName: 
+  flashlightName: 
+  laserName: 
+  gripName: 
+  magazineName: 
+  compensatorName: 
