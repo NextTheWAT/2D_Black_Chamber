@@ -20,12 +20,25 @@ public class StateMachine
             ConditionalLogger.LogWarning("StateMachine에 상태가 하나도 없습니다.");
 
         // 초기 상태 설정
-        startState = states[startType];
+        if (states.ContainsKey(startType))
+            startState = states[startType];
+        else
+        {
+            ConditionalLogger.LogWarning($"StateMachine에 {startType} 상태가 존재하지 않습니다.");
+        }
     }
 
 
     public T GetState<T>() where T : class, IState
-        => states[typeof(T)] as T;
+    {
+
+        if (!states.ContainsKey(typeof(T)))
+        {
+            ConditionalLogger.LogWarning($"StateMachine에 {typeof(T)} 상태가 존재하지 않습니다.");
+            return null;
+        }
+        return states[typeof(T)] as T;
+    }
 
     public void Start()
     {
@@ -42,6 +55,7 @@ public class StateMachine
     public void ChangeState(IState state)
     {
         if (currentState != null && currentState == state) return;
+        if(state == null) return;
         currentState?.Exit();
         currentState = state;
         currentState.Enter();
