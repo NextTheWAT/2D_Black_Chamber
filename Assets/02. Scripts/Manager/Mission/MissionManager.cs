@@ -51,6 +51,7 @@ public class MissionManager : Singleton<MissionManager>
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded_UpdateUIKey;
+        SceneManager.sceneLoaded += OnSceneLoaded_Recount;
 
         // 난전 상태 변경 이벤트 구독
         var gm = GameManager.Instance;
@@ -60,12 +61,14 @@ public class MissionManager : Singleton<MissionManager>
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded_UpdateUIKey;
+        SceneManager.sceneLoaded -= OnSceneLoaded_Recount;
 
         var gm = GameManager.Instance;
         if (gm != null) gm.OnPhaseChanged -= HandleGamePhaseChanged;
 
         if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
     }
+
     private void HandleGamePhaseChanged(GamePhase phase)
     {
         // 난전 진입 시 3초간 표시, 스텔스 복귀 시 즉시 숨김
@@ -179,5 +182,36 @@ public class MissionManager : Singleton<MissionManager>
             yield return new WaitForSeconds(2f);
             missionBell_Obj2.SetActive(false);
         }
+    }
+
+    private void OnSceneLoaded_Recount(Scene scene, LoadSceneMode mode)
+    {
+        totalTargets = 0;
+        remainingTargets = 0;
+        remainingEnemies = 0;
+
+        var hooks = FindObjectsOfType<MissionEntityHook>(includeInactive: false);
+
+        foreach (var h in hooks)
+        {
+            if (!h.isActiveAndEnabled) continue; // 비활성은 제외
+            if (h.Kind == MissionEntityKind.AssassinationTarget)
+            {
+                if (!h.IsDeactivated) { totalTargets++; remainingTargets++; }
+            }
+            else // Enemy
+            {
+                if (!h.IsDeactivated) remainingEnemies++;
+            }
+        }
+
+        phase = MissionPhase.Assassination;
+        OnTargetsChanged?.Invoke(remainingTargets);
+        OnEnemiesChanged?.Invoke(remainingEnemies);
+        OnPhaseChanged?.Invoke(phase);
+
+#if UNITY_EDITOR
+        Debug.Log($"[MissionManager] Recount -> targets {remainingTargets}/{totalTargets}, enemies {remainingEnemies}");
+#endif
     }
 }
