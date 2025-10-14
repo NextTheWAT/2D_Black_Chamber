@@ -51,7 +51,6 @@ public static class StateMachineFactory
 
         // 공용
         stateMachine.AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
-        stateMachine.AddGlobalTransition<CoverState>(() => owner.IsHit && stateMachine.CurrentState.GetType() != typeof(AttackState) && stateMachine.CurrentState.GetType() != typeof(RetreatState)); // 맞았을 때 공격상태가 아니면 엄폐
 
         switch (combatStateType)
         {
@@ -81,6 +80,7 @@ public static class StateMachineFactory
                 break;
 
             case CombatStateType.Temerity: // 무모
+                stateMachine.AddTransition<CoverState, AssaultState>(() => true); // 근처에 타겟 있으면 공격
                 stateMachine.AddTransition<AssaultState, AttackState>(() => owner.HasTargetInFOV); // 근처에 타겟 있으면 공격
                 stateMachine.AddTransition<AttackState, AssaultState>(() => !owner.HasTargetInFOV); // 근처에 타겟 없으면 다시 돌격
                 break;

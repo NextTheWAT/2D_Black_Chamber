@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class F_Key_Anim : MonoBehaviour
+public class Key_Anim : MonoBehaviour
 {
-    [Header("따라갈 대상(플레이어)")]
+    [Header("따라갈 대상")]
     [SerializeField] private Transform target;
 
     [Header("월드 좌표 기준 오프셋")]
@@ -25,7 +25,7 @@ public class F_Key_Anim : MonoBehaviour
 
     void Start()
     {
-        gameObject.SetActive(false); // 시작할 때는 숨기기
+        //gameObject.SetActive(false); // 시작할 때는 숨기기
     }
 
     private void LateUpdate()

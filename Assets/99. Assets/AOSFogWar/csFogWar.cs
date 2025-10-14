@@ -1,1063 +1,708 @@
-/*
- * Created :    Winter 2022
- * Author :     SeungGeon Kim (keithrek@hanmail.net)
- * Project :    FogWar
- * Filename :   csHomebrewFogWar.cs (non-static monobehaviour module)
- * 
- * All Content (C) 2022 Unlimited Fischl Works, all rights reserved.
- */
+Ôªøusing System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using UnityEngine;
+using FischlWorks_FogWar;
 
+// NOTE: This file consolidates Fog system + shape system.
+// - Removes 3D remnants (fogPlaneHeight, ray* heights)
+// - Fixes odd-height Y 0.5 offset
+// - Fixes revealer world-pos double offset
+// - Fixes "update only on move" gate (lastSeenAt update)
+// - Unifies material usage & adds GPU-lerp (shader) with CPU fallback
+// - Adds IRevealerShape-based custom shapes (Circle, Sector, TextureMask)
 
-
-using System;                       // Convert
-using System.IO;                    // Directory
-using System.Linq;                  // Enumerable
-using System.Collections.Generic;   // List
-using UnityEngine;                  // Monobehaviour
-using UnityEditor;                  // Handles
-
-
-
-namespace FischlWorks_FogWar
+[DisallowMultipleComponent]
+public class csFogWar : MonoBehaviour
 {
-
-
-
-    /// The non-static high-level monobehaviour interface of the AOS Fog of War module.
-
-    /// This class holds serialized data for various configuration properties,\n
-    /// and is resposible for scanning / saving / loading the LevelData object.\n
-    /// The class handles the update frequency of the fog, plus some shader businesses.\n
-    /// Various public interfaces related to FogRevealer's FOV are also available.
-    public class csFogWar : MonoBehaviour
+    #region === Nested: Data ===
+    [Serializable]
+    public class LevelColumn
     {
-        private float[,] spotWeight;
+        public enum ETileState { Empty, Obstacle }
+        public List<ETileState> levelColumn = new List<ETileState>();
 
-        private void EnsureSpotArrays()
+        public LevelColumn() { }
+        public LevelColumn(IEnumerable<ETileState> init) => levelColumn = new List<ETileState>(init);
+        public ETileState this[int y]
         {
-            if (spotWeight == null ||
-                spotWeight.GetLength(0) != levelDimensionX ||
-                spotWeight.GetLength(1) != levelDimensionY)
-            {
-                spotWeight = new float[levelDimensionX, levelDimensionY];
-            }
+            get => levelColumn[y];
+            set => levelColumn[y] = value;
         }
-        /// A class for storing the base level data.
-        /// 
-        /// This class is later serialized into Json format.\n
-        /// Empty spaces are stored as 0, while the obstacles are stored as 1.\n
-        /// If a level is loaded instead of being scanned, 
-        /// the level dimension properties of csFogWar will be replaced by the level data.
-        [System.Serializable]
-        public class LevelData
+    }
+
+    [Serializable]
+    public class LevelData
+    {
+        public int levelDimensionX;
+        public int levelDimensionY;
+        public float unitScale = 1f;
+        public int scanSpacingPerUnit = 1;
+
+        public List<LevelColumn> levelRow = new List<LevelColumn>();
+
+        public void AddColumn(LevelColumn col) => levelRow.Add(col);
+        public LevelColumn this[int x] => levelRow[x];
+    }
+    #endregion
+
+    #region === Nested: Revealer ===
+    [Serializable]
+    public class FogRevealer
+    {
+        [Header("Transform")]
+        [SerializeField] private Transform revealerTransform = null;
+        public Transform _RevealerTransform => revealerTransform;
+
+        [Tooltip("If true, 'forward' is transform.right; else transform.up.")]
+        public bool forwardIsRight = true;
+
+        [Header("Update Gate")]
+        [SerializeField] private bool updateOnlyOnMove = true;
+        public bool _UpdateOnlyOnMove => updateOnlyOnMove;
+
+        [Header("Legacy (Fan) Shape - kept for backward compat")]
+        public float outerRadius = 7f;   // units
+        public float innerRadius = 3f;   // units
+        public float outerAngleDeg = 90f;
+        public float innerAngleDeg = 60f;
+
+        [Header("New Shape Asset (recommended)")]
+        public RevealerShapeAsset shapeAsset;          // Circle/Sector/TextureMask etc.
+        public Vector2 shapeOffset = Vector2.zero;     // Local offset inside revealer
+        public Vector2 shapeScale = Vector2.one;       // Non-uniform scale
+        public float shapeRotationDeg = 0f;            // Local rotation override (added to Transform rotation)
+
+        // cache for movement gate
+        [SerializeField] private Vector2Int lastSeenAt = new Vector2Int(int.MaxValue, int.MaxValue);
+
+        public Vector2 GetForward2D()
         {
-            public void AddColumn(LevelColumn levelColumn)
-            {
-                levelRow.Add(levelColumn);
-            }
-
-            // Indexer definition
-            public LevelColumn this[int index]
-            {
-                get
-                {
-                    if (index >= 0 && index < levelRow.Count)
-                    {
-                        return levelRow[index];
-                    }
-                    else
-                    {
-                        Debug.LogErrorFormat("index given in x axis is out of range");
-
-                        return null;
-                    }
-                }
-                set
-                {
-                    if (index >= 0 && index < levelRow.Count)
-                    {
-                        levelRow[index] = value;
-                    }
-                    else
-                    {
-                        Debug.LogErrorFormat("index given in x axis is out of range");
-
-                        return;
-                    }
-                }
-            }
-
-            // Adding private getter / setters are not allowed for serialization
-            public int levelDimensionX = 0;
-            public int levelDimensionY = 0;
-
-            public float unitScale = 0;
-
-            public float scanSpacingPerUnit = 0;
-
-            [SerializeField]
-            private List<LevelColumn> levelRow = new List<LevelColumn>();
+            if (revealerTransform == null) return Vector2.right;
+            var v = forwardIsRight ? (Vector2)revealerTransform.right : (Vector2)revealerTransform.up;
+            if (v.sqrMagnitude < 1e-5f) v = Vector2.right;
+            return v.normalized;
         }
 
-        public bool CheckVisibilitySpot(Vector3 world, int additionalRadius = 0, float threshold = 0.01f)
+        public Vector2Int GetCurrentLevelCoordinates(csFogWar fw)
         {
-            // spotWeight∞° æ∆¡˜ æ¯¥Ÿ∏È ±◊¥Î∑Œ ∞°∏≤ √≥∏Æ
-            if (spotWeight == null) return false;
+            if (revealerTransform == null) return lastSeenAt;
+            return new Vector2Int(fw.GetUnitX(revealerTransform.position.x), fw.GetUnitY(revealerTransform.position.y));
+        }
 
-            var lc = WorldToLevel(world);
-            if (!CheckLevelGridRange(lc)) return false;
-
-            if (additionalRadius <= 0)
-                return spotWeight[lc.x, lc.y] > threshold;
-
-            for (int dx = -additionalRadius; dx <= additionalRadius; dx++)
-                for (int dy = -additionalRadius; dy <= additionalRadius; dy++)
-                {
-                    var p = new Vector2Int(lc.x + dx, lc.y + dy);
-                    if (!CheckLevelGridRange(p)) continue;
-                    if (spotWeight[p.x, p.y] > threshold) return true;
-                }
+        /// <summary>
+        /// Returns true if moved since last check AND updates lastSeenAt.
+        /// </summary>
+        public bool MovedSinceLastCheck(csFogWar fw)
+        {
+            var cur = GetCurrentLevelCoordinates(fw);
+            if (cur != lastSeenAt) { lastSeenAt = cur; return true; }
             return false;
         }
+    }
+    #endregion
 
+    #region === Serialized: Basic ===
+    [Header("Basic Properties")]
+    [SerializeField] private List<FogRevealer> fogRevealers = new List<FogRevealer>();
+    public List<FogRevealer> Revealers => fogRevealers;
 
-        [System.Serializable]
-        public class LevelColumn
+    [SerializeField] private Transform levelMidPoint = null; // center of grid in world
+    [SerializeField][Range(1, 30)] private float FogRefreshRate = 15f; // field recompute Hz
+
+    [Header("Fog Plane & Lerp")]
+    [SerializeField] private Material fogPlaneMaterial = null; // Unlit transparent
+    [SerializeField] private Color fogColor = new Color32(5, 15, 25, 255);
+    [SerializeField][Range(0, 1)] private float fogPlaneAlpha = 1f;     // base fog opacity
+    [SerializeField][Range(1, 5)] private float fogLerpSpeed = 2.5f;    // visual smoothing
+    [SerializeField] public bool keepRevealedTiles = false;
+    [SerializeField][Range(0, 1)] public float revealedTileOpacity = 0.5f;
+
+    [Header("Level Data")]
+    [SerializeField] private TextAsset LevelDataToLoad = null; // optional JSON
+    [SerializeField] private bool saveDataOnScan = true;
+    [SerializeField] private string levelNameToSave = "Default";
+
+    [Header("Scan Properties")]
+    [SerializeField] private LayerMask obstacleLayers;
+    [SerializeField] private bool ignoreTriggers = true;
+    [SerializeField] private int scanSpacingPerUnit = 1; // tiles per unit along X/Y
+
+    [Header("Door Occlusion (raycast)")]
+    [SerializeField] private LayerMask doorLayers; // blocks vision but not path grid
+
+    [Header("Grid")]
+    [SerializeField] private int levelDimensionX = 64;
+    [SerializeField] private int levelDimensionY = 64;
+    [SerializeField] private float unitScale = 1f; // world units per tile
+
+    [Header("Debug Options")]
+    [SerializeField] private bool drawGizmos = false;
+    [SerializeField] private bool LogOutOfRange = false;
+    #endregion
+
+    #region === Runtime fields ===
+    public LevelData levelData { get; private set; } = new LevelData();
+    public Shadowcaster shadowcaster { get; private set; } = new Shadowcaster(); // external module already in your project
+
+    private GameObject fogPlane;
+    private Texture2D fogPlaneTextureLerpTarget; // latest computed
+    private Texture2D fogPlaneTextureLerpBuffer; // previous shown (for CPU or initial GPU)
+    private float[,] spotWeight;                 // 0..1 visibility accumulation
+
+    private float refreshTimer;
+    private float gpuLerpT;                      // GPU lerp progress 0..1
+    private bool useGpuLerp;                     // true if material supports _FogTargetTex
+
+    private static readonly int ID_Color = Shader.PropertyToID("_Color");
+    private static readonly int ID_Target = Shader.PropertyToID("_FogTargetTex");
+    private static readonly int ID_Buffer = Shader.PropertyToID("_FogBufferTex");
+    private static readonly int ID_LerpT = Shader.PropertyToID("_LerpT");
+    #endregion
+
+    #region === Unity ===
+    private void Start()
+    {
+        ValidateProperties();
+        InitializeVariables();
+
+        if (LevelDataToLoad == null) ScanLevel(); else LoadLevelData();
+        InitializeFog();
+
+        shadowcaster.Initialize(this);
+        ForceUpdateFog();
+    }
+
+    private void Update()
+    {
+        // keep plane at center
+        if (fogPlane)
         {
-            public LevelColumn(IEnumerable<ETileState> stateTiles)
-            {
-                levelColumn = new List<ETileState>(stateTiles);
-            }
-
-            // If I create a separate Tile class, it will impact the size of the save file (but enums will be saved as int)
-            public enum ETileState
-            {
-                Empty,
-                Obstacle
-            }
-
-            // Indexer definition
-            public ETileState this[int index]
-            {
-                get
-                {
-                    if (index >= 0 && index < levelColumn.Count)
-                    {
-                        return levelColumn[index];
-                    }
-                    else
-                    {
-                        Debug.LogErrorFormat("index given in y axis is out of range");
-
-                        return ETileState.Empty;
-                    }
-                }
-                set
-                {
-                    if (index >= 0 && index < levelColumn.Count)
-                    {
-                        levelColumn[index] = value;
-                    }
-                    else
-                    {
-                        Debug.LogErrorFormat("index given in y axis is out of range");
-
-                        return;
-                    }
-                }
-            }
-
-            [SerializeField]
-            private List<ETileState> levelColumn = new List<ETileState>();
+            fogPlane.transform.position = new Vector3(levelMidPoint.position.x, levelMidPoint.position.y, -5f);
         }
 
+        // per-frame smoothing
+        UpdateFogPlaneTextureBuffer();
 
+        // refresh gate
+        refreshTimer += Time.deltaTime;
+        float interval = 1f / Mathf.Max(1f, FogRefreshRate);
+        if (refreshTimer < interval) return;
+        refreshTimer -= interval; // cancel minor excess
 
-        [System.Serializable]
-        public class FogRevealer
+        // skip expensive field update if every revealer is stationary and set to updateOnlyOnMove
+        bool needUpdate = false;
+        foreach (var r in fogRevealers)
         {
-            public FogRevealer(Transform revealerTransform, bool updateOnlyOnMove)
-            { this.revealerTransform = revealerTransform; this.updateOnlyOnMove = updateOnlyOnMove; }
-
-            public Vector2Int GetCurrentLevelCoordinates(csFogWar fogWar)
-            {
-                currentLevelCoordinates = new Vector2Int(
-                    fogWar.GetUnitX(revealerTransform.position.x),
-                    fogWar.GetUnitY(revealerTransform.position.y));
-                return currentLevelCoordinates;
-            }
-
-            [SerializeField] private Transform revealerTransform = null;
-            public Transform _RevealerTransform => revealerTransform;
-
-            [Header("Spot (Fan) Settings")]
-            [Tooltip("ø˘µÂ ¥‹¿ß ∞≈∏Æ(πŸ±˘ π›∞Ê)")]
-            [SerializeField] public float outerRadius = 7f;
-            [Tooltip("ø˘µÂ ¥‹¿ß ∞≈∏Æ(æ»¬  π›∞Ê, 0¿Ã∏È «œµÂ ƒ∆)")]
-            [SerializeField] public float innerRadius = 3f;
-            [Tooltip("πŸ±˘ ∞¢µµ(µµ)")]
-            [SerializeField] public float outerAngleDeg = 90f;
-            [Tooltip("æ»¬  ∞¢µµ(µµ, 0¿Ã∏È «œµÂ ƒ∆)")]
-            [SerializeField] public float innerAngleDeg = 60f;
-            [Tooltip("¿¸πÊ √‡: true=transform.right, false=transform.up")]
-            [SerializeField] public bool forwardIsRight = true;
-
-            [SerializeField] private bool updateOnlyOnMove = true;
-            public bool _UpdateOnlyOnMove => updateOnlyOnMove;
-
-            public Vector2 GetForward2D()
-            {
-                var v = forwardIsRight ? (Vector2)revealerTransform.right : (Vector2)revealerTransform.up;
-                if (v.sqrMagnitude < 1e-5f) v = Vector2.right;
-                return v.normalized;
-            }
-
-            private Vector2Int currentLevelCoordinates = new Vector2Int();
-            public Vector2Int _CurrentLevelCoordinates { get { lastSeenAt = currentLevelCoordinates; return currentLevelCoordinates; } }
-
-            [Header("Debug")]
-            [SerializeField] private Vector2Int lastSeenAt = new Vector2Int(Int32.MaxValue, Int32.MaxValue);
-            public Vector2Int _LastSeenAt => lastSeenAt;
+            if (!r._UpdateOnlyOnMove) { needUpdate = true; break; }
+            if (r.MovedSinceLastCheck(this)) { needUpdate = true; break; }
         }
+        if (!needUpdate) return; // only smoothing already handled above
 
+        UpdateFogField();
+    }
 
+    private void OnDrawGizmos()
+    {
+        if (!drawGizmos || levelMidPoint == null) return;
+        Gizmos.color = Color.cyan;
+        Vector3 center = levelMidPoint.position;
+        Vector3 size = new Vector3(levelDimensionX * unitScale, levelDimensionY * unitScale, 0.01f);
+        Gizmos.DrawWireCube(center, size);
+    }
+    #endregion
 
-        [BigHeader("Basic Properties")]
-        [SerializeField]
-        private List<FogRevealer> fogRevealers = null;
-        public List<FogRevealer> _FogRevealers => fogRevealers;
-        [SerializeField]
-        private Transform levelMidPoint = null;
-        public Transform _LevelMidPoint => levelMidPoint;
-        [SerializeField]
-        [Range(1, 30)]
-        private float FogRefreshRate = 10;
+    #region === Validate/Init ===
+    private void ValidateProperties()
+    {
+        if (fogRevealers.Any(r => r._RevealerTransform == null))
+            Debug.LogError("FogRevealer has missing Transform.");
+        if (unitScale <= 0) Debug.LogError("Unit Scale must be > 0.");
+        if (scanSpacingPerUnit <= 0) Debug.LogError("Scan Spacing Per Unit must be > 0.");
+        if (levelMidPoint == null) Debug.LogError("Level Mid Point is not assigned.");
+        if (fogPlaneMaterial == null) Debug.LogError("Fog Plane Material is not assigned.");
+    }
 
-        [BigHeader("Fog Properties")]
+    private void InitializeVariables()
+    {
+        levelData.levelDimensionX = levelDimensionX;
+        levelData.levelDimensionY = levelDimensionY;
+        levelData.unitScale = unitScale;
+        levelData.scanSpacingPerUnit = scanSpacingPerUnit;
+    }
 
-        // 2D Top-Down render settings
-        [SerializeField] private float fogPlaneZ = -0.1f;         // ƒ´∏ﬁ∂Û æ’ ±Ì¿Ã
-        [SerializeField] private string sortingLayerName = "Default";
-        [SerializeField] private int sortingOrder = 100;
+    private void InitializeFog()
+    {
+        // plane (Quad)
+        fogPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        fogPlane.name = "[RUNTIME] Fog_Quad_2D";
+        fogPlane.transform.position = new Vector3(levelMidPoint.position.x, levelMidPoint.position.y, -5f);
+        fogPlane.transform.localScale = new Vector3(levelDimensionX * unitScale, levelDimensionY * unitScale, 1f);
+        Destroy(fogPlane.GetComponent<Collider>());
 
-        [SerializeField]
-        [Range(0, 100)]
-        private float fogPlaneHeight = 1;
-        [SerializeField]
-        private Material fogPlaneMaterial = null;
-        [SerializeField]
-        private Color fogColor = new Color32(5, 15, 25, 255);
-        [SerializeField]
-        [Range(0, 1)]
-        private float fogPlaneAlpha = 1;
-        [SerializeField]
-        [Range(1, 5)]
-        private float fogLerpSpeed = 2.5f;
-        public bool keepRevealedTiles = false;
-        [ShowIf("keepRevealedTiles")]
-        [Range(0, 1)]
-        public float revealedTileOpacity = 0.5f;
-        [Header("Debug")]
-        [SerializeField]
-        private Texture2D fogPlaneTextureLerpTarget = null;
-        [SerializeField]
-        private Texture2D fogPlaneTextureLerpBuffer = null;
+        // textures
+        fogPlaneTextureLerpTarget = new Texture2D(levelDimensionX, levelDimensionY, TextureFormat.RGBA32, false);
+        fogPlaneTextureLerpTarget.wrapMode = TextureWrapMode.Clamp;
+        fogPlaneTextureLerpTarget.filterMode = FilterMode.Bilinear;
 
-        [BigHeader("Level Data")]
-        [SerializeField]
-        private TextAsset LevelDataToLoad = null;
-        [SerializeField]
-        private bool saveDataOnScan = true;
-        [ShowIf("saveDataOnScan")]
-        [SerializeField]
-        private string levelNameToSave = "Default";
+        fogPlaneTextureLerpBuffer = new Texture2D(levelDimensionX, levelDimensionY, TextureFormat.RGBA32, false);
+        fogPlaneTextureLerpBuffer.wrapMode = TextureWrapMode.Clamp;
+        fogPlaneTextureLerpBuffer.filterMode = FilterMode.Bilinear;
 
-        [BigHeader("Scan Properties")]
-        [SerializeField]
-        [Range(1, 128)]
-        [Tooltip("If you need more than 128 units, consider using raycasting-based fog modules instead.")]
-        private int levelDimensionX = 11;
-        [SerializeField]
-        [Range(1, 128)]
-        [Tooltip("If you need more than 128 units, consider using raycasting-based fog modules instead.")]
-        private int levelDimensionY = 11;
-        [SerializeField]
-        private float unitScale = 1;
-        public float _UnitScale => unitScale;
-        [SerializeField]
-        private float scanSpacingPerUnit = 0.25f;
-        [SerializeField]
-        private float rayStartHeight = 5;
-        [SerializeField]
-        private float rayMaxDistance = 10;
-        [SerializeField]
-        private LayerMask obstacleLayers = new LayerMask();
-        [SerializeField]
-        private LayerMask doorLayers = new LayerMask();
-        [SerializeField]
-        private bool ignoreTriggers = true;
+        // single material instance
+        var mr = fogPlane.GetComponent<MeshRenderer>();
+        mr.material = new Material(fogPlaneMaterial);
+        mr.material.SetColor(ID_Color, fogColor);
 
-        [BigHeader("Debug Options")]
-        [SerializeField]
-        private bool drawGizmos = false;
-        [SerializeField]
-        private bool LogOutOfRange = false;
-
-        // External shadowcaster module
-        public Shadowcaster shadowcaster { get; private set; } = new Shadowcaster();
-
-        public LevelData levelData { get; private set; } = new LevelData();
-
-        // The primitive plane which will act as a mesh for rendering the fog with
-        private GameObject fogPlane = null;
-
-        private float FogRefreshRateTimer = 0;
-
-        private const string levelScanDataPath = "/LevelData";
-
-
-
-        // --- --- ---
-
-        private void Start()
+        // GPU-lerp support? (shader has _FogTargetTex/_FogBufferTex/_LerpT)
+        useGpuLerp = mr.sharedMaterial.HasProperty(ID_Target) && mr.sharedMaterial.HasProperty(ID_Buffer) && mr.sharedMaterial.HasProperty(ID_LerpT);
+        if (useGpuLerp)
         {
-            CheckProperties();
-
-            InitializeVariables();
-
-            if (LevelDataToLoad == null)
-            {
-                ScanLevel();
-
-                if (saveDataOnScan == true)
-                {
-                    // Preprocessor definitions are used because the save function code will be stripped out on build
-#if UNITY_EDITOR
-                    SaveScanAsLevelData();
-#endif
-                }
-            }
-            else
-            {
-                LoadLevelData();
-            }
-
-            InitializeFog();
-
-            // This part passes the needed references to the shadowcaster
-            shadowcaster.Initialize(this);
-
-            // This is needed because we do not update the fog when there's no unit-scale movement of each fogRevealer
-            ForceUpdateFog();
+            mr.material.SetTexture(ID_Target, fogPlaneTextureLerpTarget);
+            mr.material.SetTexture(ID_Buffer, fogPlaneTextureLerpBuffer);
+            mr.material.SetFloat(ID_LerpT, 1f); // start fully at buffer
         }
-
-
-
-        private void Update()
+        else
         {
-            UpdateFog();
-        }
-
-
-
-        // --- --- ---
-
-
-
-        private void CheckProperties()
-        {
-            foreach (FogRevealer fogRevealer in fogRevealers)
-            {
-                if (fogRevealer._RevealerTransform == null)
-                {
-                    Debug.LogErrorFormat("Please assign a Transform component to each Fog Revealer!");
-                }
-            }
-
-            if (unitScale <= 0)
-            {
-                Debug.LogErrorFormat("Unit Scale must be bigger than 0!");
-            }
-
-            if (scanSpacingPerUnit <= 0)
-            {
-                Debug.LogErrorFormat("Scan Spacing Per Unit must be bigger than 0!");
-            }
-
-            if (levelMidPoint == null)
-            {
-                Debug.LogErrorFormat("Please assign the Level Mid Point property!");
-            }
-
-            if (fogPlaneMaterial == null)
-            {
-                Debug.LogErrorFormat("Please assign the \"FogPlane\" material to the Fog Plane Material property!");
-            }
-        }
-
-
-
-        private void InitializeVariables()
-        {
-            // This is for faster development iteration purposes
-            if (obstacleLayers.value == 0)
-            {
-                obstacleLayers = LayerMask.GetMask("Default");
-            }
-
-            // This is also for faster development iteration purposes
-            if (levelNameToSave == String.Empty)
-            {
-                levelNameToSave = "Default";
-            }
-        }
-
-
-
-        private void InitializeFog()
-        {
-            fogPlane = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            fogPlane.name = "[RUNTIME] Fog_Quad_2D";
-
-            // XY ∆Ú∏È ¡§∑ƒ, ƒ´∏ﬁ∂Û æ’ z ø¿«¡º¬
-            fogPlane.transform.position = new Vector3(
-                levelMidPoint.position.x,
-                levelMidPoint.position.y,
-                fogPlaneZ);
-
-            // Quad¥¬ 1x1 ±‚¡ÿ °Ê ø˘µÂ ≈©±‚ ±◊¥Î∑Œ
-            fogPlane.transform.localScale = new Vector3(
-                levelDimensionX * unitScale,
-                levelDimensionY * unitScale,
-                1f);
-
-            var mr = fogPlane.GetComponent<MeshRenderer>();
-            mr.material = new Material(fogPlaneMaterial);
+            // CPU fallback uses _MainTex to show buffer
             mr.material.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
-
-            //fogPlane.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
-
-            // 2D ¡§∑ƒ(Ω∫«¡∂Û¿Ã∆Æ ¿ß∑Œ)
-            mr.sortingLayerName = sortingLayerName;
-            mr.sortingOrder = sortingOrder;
-
-            // MeshCollider¥¬ ≤®µŒ±‚
-            var mc = fogPlane.GetComponent<MeshCollider>();
-            if (mc) mc.enabled = false;
-
-
-            fogPlaneTextureLerpTarget = new Texture2D(levelDimensionX, levelDimensionY);
-            fogPlaneTextureLerpBuffer = new Texture2D(levelDimensionX, levelDimensionY);
-
-            fogPlaneTextureLerpBuffer.wrapMode = TextureWrapMode.Clamp;
-
-            fogPlaneTextureLerpBuffer.filterMode = FilterMode.Bilinear;
-
-            fogPlane.GetComponent<MeshRenderer>().material = new Material(fogPlaneMaterial);
-
-            fogPlane.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
-
-            fogPlane.GetComponent<MeshCollider>().enabled = false;
         }
+    }
+    #endregion
 
-
-
-        private void ForceUpdateFog()
+    #region === Core Update ===
+    private void ForceUpdateFog()
+    {
+        UpdateFogField();
+        // reset lerp initial state
+        if (useGpuLerp)
         {
-            UpdateFogField();
-
+            gpuLerpT = 1f;
+            var mr = fogPlane.GetComponent<MeshRenderer>();
+            mr.material.SetFloat(ID_LerpT, gpuLerpT);
+        }
+        else
+        {
             Graphics.CopyTexture(fogPlaneTextureLerpTarget, fogPlaneTextureLerpBuffer);
         }
+    }
 
+    private void UpdateFog()
+    {
+        // kept for reference (now split across Update/ForceUpdateFog)
+    }
 
+    private void UpdateFogField()
+    {
+        shadowcaster.ResetTileVisibility();
+        EnsureSpotArrays();
 
-        private void UpdateFog()
+        // clear weights
+        for (int x = 0; x < levelDimensionX; x++)
+            for (int y = 0; y < levelDimensionY; y++)
+                spotWeight[x, y] = 0f;
+
+        foreach (var r in fogRevealers)
         {
-            fogPlane.transform.position = new Vector3(
-                levelMidPoint.position.x,
-                levelMidPoint.position.y,
-                fogPlaneZ);
+            if (r._RevealerTransform == null) continue;
 
-            FogRefreshRateTimer += Time.deltaTime;
+            // get center cell + world position/forward
+            var lc = r.GetCurrentLevelCoordinates(this);
+            var revealerPos = new Vector2(GetWorldX(lc.x), GetWorldY(lc.y)); // *** fixed: no double mid-offset ***
+            var fwd = r.GetForward2D();
 
-            if (FogRefreshRateTimer < 1 / FogRefreshRate)
+            // determine sampling radius (in tiles)
+            int radiusTiles;
+            Bounds localBounds;
+            if (r.shapeAsset != null)
             {
-                UpdateFogPlaneTextureBuffer();
-
-                return;
+                localBounds = r.shapeAsset.GetLocalBounds();
+                // worst-case radius from local AABB extents, including scale
+                var ext = localBounds.extents;
+                var sx = Mathf.Abs(r.shapeScale.x); var sy = Mathf.Abs(r.shapeScale.y);
+                float rad = Mathf.Max(ext.x * sx, ext.y * sy);
+                radiusTiles = Mathf.Max(1, Mathf.RoundToInt(rad / Mathf.Max(0.0001f, unitScale)));
             }
             else
             {
-                // This is to cancel out minor excess values
-                FogRefreshRateTimer -= 1 / FogRefreshRate;
-            }
-
-            foreach (FogRevealer fogRevealer in fogRevealers)
-            {
-                if (fogRevealer._UpdateOnlyOnMove == false)
-                {
-                    break;
-                }
-
-                Vector2Int currentLevelCoordinates = fogRevealer.GetCurrentLevelCoordinates(this);
-
-                if (currentLevelCoordinates != fogRevealer._LastSeenAt)
-                {
-                    break;
-                }
-
-                if (fogRevealer == fogRevealers.Last())
-                {
-                    return;
-                }
-            }
-
-            UpdateFogField();
-
-            UpdateFogPlaneTextureBuffer();
-        }
-        bool IsVisible(Vector2 origin, Vector2 target)
-        {
-            Vector2 dir = (target - origin).normalized;
-            float dist = Vector2.Distance(origin, target);
-
-            // ∞·∞˙∏¶ ¥„¿ª πËø≠
-            RaycastHit2D[] hits = new RaycastHit2D[10];
-
-            // ContactFilter2D º≥¡§
-            ContactFilter2D filter = new ContactFilter2D();
-            filter.SetLayerMask(doorLayers);
-            filter.useTriggers = false; // ∆Æ∏Æ∞≈ π´Ω√
-
-            int count = Physics2D.Raycast(origin, dir, filter, hits, dist);
-
-            // √Êµπ¿Ã æ¯¿∏∏È ∏∑»˜¡ˆ æ ¿∫ ∞Õ
-            return count == 0;
-        }
-
-        private void UpdateFogField()
-        {
-            shadowcaster.ResetTileVisibility();
-            EnsureSpotArrays();
-
-            // ∞°¡ﬂƒ° √ ±‚»≠
-            for (int x = 0; x < levelDimensionX; x++)
-                for (int y = 0; y < levelDimensionY; y++)
-                    spotWeight[x, y] = 0f;
-
-            foreach (var r in fogRevealers)
-            {
-                // ¡ﬂΩ… ≈∏¿œ/ø˘µÂ ¡¬«•/¿¸πÊ
-                var lc = r.GetCurrentLevelCoordinates(this);
-                Vector2 revealerPos = new Vector2(GetWorldX(lc.x + (levelDimensionX / 2)),
-                                                  GetWorldY(lc.y + (levelDimensionY / 2)));
-                Vector2 fwd = r.GetForward2D();
-
-                // π›∞Ê/∞¢µµ
                 float outerR = Mathf.Max(0.001f, r.outerRadius);
-                float innerR = Mathf.Clamp(r.innerRadius, 0f, outerR);
-                float halfOuterA = Mathf.Max(0f, r.outerAngleDeg * 0.5f);
-                float halfInnerA = Mathf.Clamp(r.innerAngleDeg * 0.5f, 0f, halfOuterA);
+                radiusTiles = Mathf.Max(1, Mathf.RoundToInt(outerR / Mathf.Max(0.0001f, unitScale)));
+                localBounds = new Bounds(Vector3.zero, new Vector3(outerR * 2f, outerR * 2f));
+            }
 
-                int radiusTiles = Mathf.Max(1, Mathf.RoundToInt(outerR / unitScale));
+            // build shadowcaster field for this revealer's vicinity
+            shadowcaster.ProcessLevelData(lc, radiusTiles);
 
-                // LOS(∞°∏≤) ∞ËªÍ¿∫ π›∞Ê ≈∏¿œ∑Œ
-                shadowcaster.ProcessLevelData(lc, radiusTiles);
+            int minX = Mathf.Max(0, lc.x - radiusTiles);
+            int maxX = Mathf.Min(levelDimensionX - 1, lc.x + radiusTiles);
+            int minY = Mathf.Max(0, lc.y - radiusTiles);
+            int maxY = Mathf.Min(levelDimensionY - 1, lc.y + radiusTiles);
 
-                // ∫Œ√§≤√ ∞°¡ﬂƒ°(∞≈∏Æ/∞¢µµ º“«¡∆Æ ø°¡ˆ)
-                int minX = Mathf.Max(0, lc.x - radiusTiles);
-                int maxX = Mathf.Min(levelDimensionX - 1, lc.x + radiusTiles);
-                int minY = Mathf.Max(0, lc.y - radiusTiles);
-                int maxY = Mathf.Min(levelDimensionY - 1, lc.y + radiusTiles);
+            // precompute rotation for local transform
+            float ang = r.shapeRotationDeg * Mathf.Deg2Rad;
+            float ca = Mathf.Cos(ang), sa = Mathf.Sin(ang);
 
-                float outerR2 = outerR * outerR;
+            for (int x = minX; x <= maxX; x++)
+                for (int y = minY; y <= maxY; y++)
+                {
+                    // LOS gate: only revealed tiles
+                    if (shadowcaster.fogField[x][y] != Shadowcaster.LevelColumn.ETileVisibility.Revealed)
+                        continue;
 
-                for (int x = minX; x <= maxX; x++)
-                    for (int y = minY; y <= maxY; y++)
+                    Vector2 p = new Vector2(GetWorldX(x), GetWorldY(y));
+                    if (!IsVisible(revealerPos, p)) continue; // door blocking
+
+                    float w = 0f;
+                    if (r.shapeAsset != null)
                     {
-                        // LOS∞° æ» ∂’∏∞ ≈∏¿œ¿Ã∏È æÓ¬˜«« 0¿Ã µ… ∞Õ¿Ã¥œ, ∞°∫≠øÓ « ≈Õ
-                        if (shadowcaster.fogField[x][y] != Shadowcaster.LevelColumn.ETileVisibility.Revealed)
-                            continue;
+                        // world -> revealer-local (shape space)
+                        Vector2 d = p - revealerPos; // translate
+                                                     // rotate by local shape rotation (additive to transform.forward). We keep it simple here.
+                        var dl = new Vector2(ca * d.x - sa * d.y, sa * d.x + ca * d.y);
+                        // apply local offset & scale
+                        if (r.shapeScale.x != 0f && r.shapeScale.y != 0f)
+                            dl = new Vector2((dl.x - r.shapeOffset.x) / r.shapeScale.x, (dl.y - r.shapeOffset.y) / r.shapeScale.y);
+                        w = Mathf.Clamp01(r.shapeAsset.Evaluate(dl, fwd));
+                    }
+                    else
+                    {
+                        // Legacy Fan weight
+                        float outerR = Mathf.Max(0.001f, r.outerRadius);
+                        float innerR = Mathf.Clamp(r.innerRadius, 0f, outerR);
+                        float halfOuterA = Mathf.Max(0f, r.outerAngleDeg * 0.5f);
+                        float halfInnerA = Mathf.Clamp(r.innerAngleDeg * 0.5f, 0f, halfOuterA);
 
-                        Vector2 p = new Vector2(GetWorldX(x), GetWorldY(y));
-
-                        if (!IsVisible(revealerPos, p)) continue;
-                        Vector2 to = p - revealerPos;
-                        float d2 = to.sqrMagnitude;
-                        if (d2 > outerR2) continue;
-
-                        float ang = Vector2.Angle(fwd, to);
-                        if (ang > halfOuterA) continue;
-
+                        Vector2 to = p - revealerPos; float d2 = to.sqrMagnitude;
+                        if (d2 > outerR * outerR) continue;
+                        float aDeg = Vector2.Angle(fwd, to); if (aDeg > halfOuterA) continue;
                         float dist01 = (innerR <= 0f) ? 1f : 1f - Mathf.InverseLerp(innerR, outerR, Mathf.Sqrt(d2));
-                        float ang01 = (halfInnerA <= 0f) ? 1f : 1f - Mathf.InverseLerp(halfInnerA, halfOuterA, ang);
-
-                        float w = Mathf.Clamp01(dist01 * ang01);
-
-                        if (w > spotWeight[x, y]) spotWeight[x, y] = w; // ø©∑Ø ∏Æ∫Ù∑Ø∏È √÷¥Î∞™
+                        float ang01 = (halfInnerA <= 0f) ? 1f : 1f - Mathf.InverseLerp(halfInnerA, halfOuterA, aDeg);
+                        w = Mathf.Clamp01(dist01 * ang01);
                     }
-            }
 
-            UpdateFogPlaneTextureTarget();
+                    if (w > spotWeight[x, y]) spotWeight[x, y] = w;
+                }
         }
 
+        UpdateFogPlaneTextureTarget();
+    }
+    #endregion
 
+    #region === Rendering ===
+    private void EnsureSpotArrays()
+    {
+        if (spotWeight == null || spotWeight.GetLength(0) != levelDimensionX || spotWeight.GetLength(1) != levelDimensionY)
+            spotWeight = new float[levelDimensionX, levelDimensionY];
+    }
 
+    private void UpdateFogPlaneTextureTarget()
+    {
+        var mr = fogPlane.GetComponent<MeshRenderer>();
+        mr.material.SetColor(ID_Color, fogColor);
 
-        // Doing shader business on the script, if we pull this out as a shader pass, same operations must be repeated
-        private void UpdateFogPlaneTextureBuffer()
+        var pixels = new Color[levelDimensionX * levelDimensionY];
+        int i = 0;
+        float revealedA = keepRevealedTiles ? revealedTileOpacity : 0f;
+
+        for (int y = 0; y < levelDimensionY; y++)
+            for (int x = 0; x < levelDimensionX; x++, i++)
+            {
+                float vis = (spotWeight != null) ? spotWeight[x, y] : 0f; // 0..1
+                float a = Mathf.Lerp(fogPlaneAlpha, revealedA, vis);
+                pixels[i] = new Color(0f, 0f, 0f, a);
+            }
+
+        fogPlaneTextureLerpTarget.SetPixels(pixels);
+        fogPlaneTextureLerpTarget.Apply(false, false);
+
+        if (useGpuLerp)
         {
-            Color[] bufferPixels = fogPlaneTextureLerpBuffer.GetPixels();
-            Color[] targetPixels = fogPlaneTextureLerpTarget.GetPixels();
+            // Reset GPU lerp to start from 0 -> 1 visually
+            gpuLerpT = 0f;
+            mr.material.SetTexture(ID_Target, fogPlaneTextureLerpTarget);
+            mr.material.SetTexture(ID_Buffer, fogPlaneTextureLerpBuffer);
+            mr.material.SetFloat(ID_LerpT, gpuLerpT);
+        }
+        else
+        {
+            // CPU path: buffer will lerp towards target in UpdateFogPlaneTextureBuffer()
+        }
+    }
 
-            if (bufferPixels.Length != targetPixels.Length)
+    private void UpdateFogPlaneTextureBuffer()
+    {
+        var mr = fogPlane ? fogPlane.GetComponent<MeshRenderer>() : null;
+        if (useGpuLerp && mr != null)
+        {
+            gpuLerpT = Mathf.MoveTowards(gpuLerpT, 1f, fogLerpSpeed * Time.deltaTime);
+            mr.material.SetFloat(ID_LerpT, gpuLerpT);
+            if (gpuLerpT >= 1f)
             {
-                Debug.LogErrorFormat("Fog plane texture buffer and target have different pixel counts");
-                return;
+                // swap: target becomes new buffer to stop re-blending if no field change
+                Graphics.CopyTexture(fogPlaneTextureLerpTarget, fogPlaneTextureLerpBuffer);
+                mr.material.SetTexture(ID_Buffer, fogPlaneTextureLerpBuffer);
+                mr.material.SetFloat(ID_LerpT, 1f);
             }
-
-            for (int i = 0; i < bufferPixels.Length; i++)
-            {
-                bufferPixels[i] = Color.Lerp(bufferPixels[i], targetPixels[i], fogLerpSpeed * Time.deltaTime);
-            }
-
-            fogPlaneTextureLerpBuffer.SetPixels(bufferPixels);
-
-            fogPlaneTextureLerpBuffer.Apply();
+            return;
         }
 
+        // CPU fallback: lerp in script
+        if (fogPlaneTextureLerpBuffer == null || fogPlaneTextureLerpTarget == null) return;
+        var bufferPixels = fogPlaneTextureLerpBuffer.GetPixels();
+        var targetPixels = fogPlaneTextureLerpTarget.GetPixels();
+        if (bufferPixels.Length != targetPixels.Length) return;
 
+        float t = Mathf.Clamp01(fogLerpSpeed * Time.deltaTime);
+        for (int i = 0; i < bufferPixels.Length; i++)
+            bufferPixels[i] = Color.Lerp(bufferPixels[i], targetPixels[i], t);
 
-        private void UpdateFogPlaneTextureTarget()
+        fogPlaneTextureLerpBuffer.SetPixels(bufferPixels);
+        fogPlaneTextureLerpBuffer.Apply(false, false);
+
+        if (mr != null) mr.material.SetTexture("_MainTex", fogPlaneTextureLerpBuffer);
+    }
+    #endregion
+
+    #region === Occlusion (Door) ===
+    private readonly RaycastHit2D[] hits = new RaycastHit2D[8];
+    private bool IsVisible(Vector2 origin, Vector2 point)
+    {
+        Vector2 dir = (point - origin);
+        float dist = dir.magnitude; if (dist <= 1e-4f) return true;
+        dir /= dist;
+
+        var filter = new ContactFilter2D();
+        filter.SetLayerMask(doorLayers);
+        filter.useTriggers = false;
+        int count = Physics2D.Raycast(origin, dir, filter, hits, dist);
+        return count == 0;
+    }
+    #endregion
+
+    #region === Grid <-> World ===
+    public float GetWorldX(int x)
+    {
+        // even/odd width handled with same formula as original X (center aligns via levelMidPoint)
+        float half = levelDimensionX / 2f;
+        // odd width gets +/-0.5 shift on X in original asset; keep consistent with existing visuals
+        float centerBias = (levelData.levelDimensionX % 2 == 0) ? 0f : 0.5f;
+        return levelMidPoint.position.x + ((x - half) + centerBias) * unitScale;
+    }
+
+    public float GetWorldY(int y)
+    {
+        // *** FIX: odd height uses +0.5f bias like X ***
+        float half = levelDimensionY / 2f;
+        float centerBias = (levelData.levelDimensionY % 2 == 0) ? 0f : 0.5f;
+        return levelMidPoint.position.y + ((y - half) + centerBias) * unitScale;
+    }
+
+    public Vector3 GetWorldVector(Vector2Int grid)
+    {
+        return new Vector3(GetWorldX(grid.x), GetWorldY(grid.y), -5f);
+    }
+
+    public int GetUnitX(float worldX)
+    {
+        float half = levelDimensionX / 2f;
+        float centerBias = (levelData.levelDimensionX % 2 == 0) ? 0f : 0.5f;
+        return Mathf.RoundToInt((worldX - levelMidPoint.position.x) / unitScale + half - centerBias);
+    }
+    public int GetUnitY(float worldY)
+    {
+        float half = levelDimensionY / 2f;
+        float centerBias = (levelData.levelDimensionY % 2 == 0) ? 0f : 0.5f;
+        return Mathf.RoundToInt((worldY - levelMidPoint.position.y) / unitScale + half - centerBias);
+    }
+
+    public Vector2Int WorldToLevel(Vector3 world)
+    {
+        return new Vector2Int(GetUnitX(world.x), GetUnitY(world.y));
+    }
+
+    public bool CheckLevelGridRange(Vector2Int grid)
+    {
+        bool ok = (grid.x >= 0 && grid.x < levelDimensionX && grid.y >= 0 && grid.y < levelDimensionY);
+        if (!ok && LogOutOfRange) Debug.LogWarning($"Grid out of range: {grid}");
+        return ok;
+    }
+    #endregion
+
+    #region === Scan/Save/Load ===
+    private void ScanLevel()
+    {
+        Debug.Log("Scanning level to build obstacle grid...");
+
+        levelData.levelDimensionX = levelDimensionX;
+        levelData.levelDimensionY = levelDimensionY;
+        levelData.unitScale = unitScale;
+        levelData.scanSpacingPerUnit = scanSpacingPerUnit;
+
+        levelData.levelRow.Clear();
+        for (int x = 0; x < levelDimensionX; x++)
         {
-            var mr = fogPlane.GetComponent<MeshRenderer>();
-            mr.material.SetColor("_Color", fogColor);
+            var col = new LevelColumn(Enumerable.Repeat(LevelColumn.ETileState.Empty, levelDimensionY));
+            levelData.AddColumn(col);
+        }
 
-            var pixels = new Color[levelDimensionX * levelDimensionY];
-            int i = 0;
-            float revealedA = keepRevealedTiles ? revealedTileOpacity : 0f;
+        // sampling world with boxes per tile
+        Vector2 size = new Vector2(unitScale / scanSpacingPerUnit, unitScale / scanSpacingPerUnit);
+        Vector2 origin0 = new Vector2(GetWorldX(0), GetWorldY(0));
 
+        var cf = new ContactFilter2D();
+        cf.SetLayerMask(obstacleLayers);
+        cf.useTriggers = !ignoreTriggers;
+        var rr = new Collider2D[8];
+
+        for (int x = 0; x < levelDimensionX; x++)
+        {
             for (int y = 0; y < levelDimensionY; y++)
-                for (int x = 0; x < levelDimensionX; x++, i++)
-                {
-                    // spotWeight¥¬ UpdateFogFieldø°º≠ LOS ≈Î∞˙«— ≈∏¿œ∏∏ √§øÚ
-                    float vis = (spotWeight != null) ? spotWeight[x, y] : 0f;
-                    // vis=1 °Ê revealedA(≈ı∏Ì/»∏ªˆ), vis=0 °Ê fogPlaneAlpha(æÓµŒøÚ)
-                    float a = Mathf.Lerp(fogPlaneAlpha, revealedA, vis);
-                    pixels[i] = new Color(1f, 1f, 1f, a);
-                }
-
-            if (fogPlaneTextureLerpTarget == null ||
-                fogPlaneTextureLerpTarget.width != levelDimensionX ||
-                fogPlaneTextureLerpTarget.height != levelDimensionY)
             {
-                fogPlaneTextureLerpTarget = new Texture2D(levelDimensionX, levelDimensionY, TextureFormat.RGBA32, false);
-                fogPlaneTextureLerpTarget.wrapMode = TextureWrapMode.Clamp;
-                fogPlaneTextureLerpTarget.filterMode = FilterMode.Point;
+                Vector2 center = new Vector2(GetWorldX(x), GetWorldY(y));
+                int hits = Physics2D.OverlapBox(center, size, 0f, cf, rr);
+                levelData[x][y] = (hits > 0) ? LevelColumn.ETileState.Obstacle : LevelColumn.ETileState.Empty;
             }
-
-            fogPlaneTextureLerpTarget.SetPixels(pixels);
-            fogPlaneTextureLerpTarget.Apply();
         }
 
+        FillEnclosedSpaces();
+        if (saveDataOnScan) SaveScanAsLevelData();
+        Debug.Log($"Scan complete: {levelDimensionX} x {levelDimensionY}");
+    }
 
+    private void FillEnclosedSpaces()
+    {
+        int X = levelDimensionX, Y = levelDimensionY; // flood from border empties, mark reachable
+        bool[,] vis = new bool[X, Y];
+        Queue<Vector2Int> q = new Queue<Vector2Int>();
 
-
-        private void ScanLevel()
+        void TryEnq(int x, int y)
         {
-            Debug.LogFormat("There is no level data file assigned, scanning level...");
-
-            // These operations have no real computational meaning, but it will bring consistency to the data
-            levelData.levelDimensionX = levelDimensionX;
-            levelData.levelDimensionY = levelDimensionY;
-            levelData.unitScale = unitScale;
-            levelData.scanSpacingPerUnit = scanSpacingPerUnit;
-
-            for (int xIterator = 0; xIterator < levelDimensionX; xIterator++)
-            {
-                // Adding a new list for column (y axis) for each unit in row (x axis)
-                levelData.AddColumn(new LevelColumn(Enumerable.Repeat(LevelColumn.ETileState.Empty, levelDimensionY)));
-
-                for (int yIterator = 0; yIterator < levelDimensionY; yIterator++)
-                {
-                    Vector2 center = new Vector2(GetWorldX(xIterator), GetWorldY(yIterator));
-                    Vector2 size = new Vector2(unitScale - scanSpacingPerUnit, unitScale - scanSpacingPerUnit);
-                    var hits = Physics2D.OverlapBoxAll(center, size, 0.02f, obstacleLayers);
-
-                    bool isObstacleHit = false;
-                    for (int i = 0; i < hits.Length; i++)
-                    {
-                        if (!hits[i]) continue;
-                        if (ignoreTriggers && hits[i].isTrigger) continue;
-                        isObstacleHit = true; break;
-                    }
-                    if (isObstacleHit)
-                    {
-                        levelData[xIterator][yIterator] = LevelColumn.ETileState.Obstacle;
-                    }
-
-                }
-            }
-            FillEnclosedSpaces();
-
-            Debug.LogFormat("Successfully scanned level with a scale of {0} x {1}", levelDimensionX, levelDimensionY);
+            if (x < 0 || x >= X || y < 0 || y >= Y) return;
+            if (vis[x, y]) return;
+            if (levelData[x][y] == LevelColumn.ETileState.Obstacle) return;
+            vis[x, y] = true; q.Enqueue(new Vector2Int(x, y));
         }
 
-        // Ω∫ƒµ/∆ÿ√¢ »ƒ »£√‚: πÊ√≥∑≥ ∏∑»˘ ≥ª∫Œ Empty∏¶ ¿¸∫Œ Obstacle∑Œ ∏ﬁ≤„¡‹
-        private void FillEnclosedSpaces()
+        for (int x = 0; x < X; x++) { TryEnq(x, 0); TryEnq(x, Y - 1); }
+        for (int y = 0; y < Y; y++) { TryEnq(0, y); TryEnq(X - 1, y); }
+
+        var dirs = new Vector2Int[] { new(1, 0), new(-1, 0), new(0, 1), new(0, -1) };
+        while (q.Count > 0)
         {
-            int X = levelDimensionX, Y = levelDimensionY;
-            bool[,] vis = new bool[X, Y];
-            Queue<Vector2Int> q = new Queue<Vector2Int>();
-
-            void TryEnq(int x, int y)
-            {
-                if (x < 0 || x >= X || y < 0 || y >= Y) return;
-                if (vis[x, y]) return;
-                if (levelData[x][y] == csFogWar.LevelColumn.ETileState.Obstacle) return;
-                vis[x, y] = true; q.Enqueue(new Vector2Int(x, y));
-            }
-
-            // πŸ±˘ ≈◊µŒ∏Æø°º≠∫Œ≈Õ µµ¥ﬁ ∞°¥…«— Empty ∏∂≈∑
-            for (int x = 0; x < X; x++) { TryEnq(x, 0); TryEnq(x, Y - 1); }
-            for (int y = 0; y < Y; y++) { TryEnq(0, y); TryEnq(X - 1, y); }
-
-            int[] dx4 = { 1, -1, 0, 0 };
-            int[] dy4 = { 0, 0, 1, -1 };
-            while (q.Count > 0)
-            {
-                var p = q.Dequeue();
-                for (int i = 0; i < 4; i++) TryEnq(p.x + dx4[i], p.y + dy4[i]);
-            }
-
-            // π€ø°º≠ ∏¯ ¥Í¿∫ Empty = π–∆Û ∞¯∞£ °Ê ¿Âæ÷π∞∑Œ √§øÏ±‚
-            for (int x = 0; x < X; x++)
-                for (int y = 0; y < Y; y++)
-                    if (!vis[x, y] && levelData[x][y] == csFogWar.LevelColumn.ETileState.Empty)
-                        levelData[x][y] = csFogWar.LevelColumn.ETileState.Obstacle;
+            var p = q.Dequeue();
+            foreach (var d in dirs) TryEnq(p.x + d.x, p.y + d.y);
         }
 
-        // We intend to use Application.dataPath only for accessing project files directory (only in unity editor)
-#if UNITY_EDITOR
-        private void SaveScanAsLevelData()
+        // any empty not visited is enclosed; convert to obstacle
+        for (int x = 0; x < X; x++)
+            for (int y = 0; y < Y; y++)
+                if (levelData[x][y] == LevelColumn.ETileState.Empty && !vis[x, y])
+                    levelData[x][y] = LevelColumn.ETileState.Obstacle;
+    }
+
+    private void SaveScanAsLevelData()
+    {
+        try
         {
-            string fullPath = Application.dataPath + levelScanDataPath + "/" + levelNameToSave + ".json";
-
-            if (Directory.Exists(Application.dataPath + levelScanDataPath) == false)
-            {
-                Directory.CreateDirectory(Application.dataPath + levelScanDataPath);
-
-                Debug.LogFormat("level scan data folder at \"{0}\" is missing, creating...", levelScanDataPath);
-            }
-
-            if (File.Exists(fullPath) == true)
-            {
-                Debug.LogFormat("level scan data already exists, overwriting...");
-            }
-
-            string levelJson = JsonUtility.ToJson(levelData);
-
-            File.WriteAllText(fullPath, levelJson);
-
-            Debug.LogFormat("Successfully saved level scan data at \"{0}\"", fullPath);
+            string dir = Path.Combine(Application.persistentDataPath, "FogLevel");
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            var json = JsonUtility.ToJson(levelData, true);
+            File.WriteAllText(Path.Combine(dir, $"{levelNameToSave}.json"), json);
+            Debug.Log($"Level saved to {dir}/{levelNameToSave}.json");
         }
-#endif
+        catch (Exception e) { Debug.LogWarning($"Save failed: {e.Message}"); }
+    }
 
-
-
-        private void LoadLevelData()
+    private void LoadLevelData()
+    {
+        try
         {
-            Debug.LogFormat("Level scan data with a name of \"{0}\" is assigned, loading...", LevelDataToLoad.name);
-
-            // Exception check is indirectly performed through branching on the upper part of the code
-            string levelJson = LevelDataToLoad.ToString();
-
-            levelData = JsonUtility.FromJson<LevelData>(levelJson);
-
+            levelData = JsonUtility.FromJson<LevelData>(LevelDataToLoad.text);
             levelDimensionX = levelData.levelDimensionX;
             levelDimensionY = levelData.levelDimensionY;
             unitScale = levelData.unitScale;
             scanSpacingPerUnit = levelData.scanSpacingPerUnit;
-
-            Debug.LogFormat("Successfully loaded level scan data with the name of \"{0}\"", LevelDataToLoad.name);
+            Debug.Log("Level data loaded");
         }
-
-
-
-        /// Adds a new FogRevealer instance to the list and returns its index
-        public int AddFogRevealer(FogRevealer fogRevealer)
-        {
-            fogRevealers.Add(fogRevealer);
-
-            return fogRevealers.Count - 1;
-        }
-
-
-
-        /// Removes a FogRevealer instance from the list with index
-        public void RemoveFogRevealer(int revealerIndex)
-        {
-            if (fogRevealers.Count > revealerIndex && revealerIndex > -1)
-            {
-                fogRevealers.RemoveAt(revealerIndex);
-            }
-            else
-            {
-                Debug.LogFormat("Given index of {0} exceeds the revealers' container range", revealerIndex);
-            }
-        }
-
-
-
-        /// Replaces the FogRevealer list with the given one
-        public void ReplaceFogRevealerList(List<FogRevealer> fogRevealers)
-        {
-            this.fogRevealers = fogRevealers;
-        }
-
-
-
-        /// Checks if the given level coordinates are within level dimension range.
-        public bool CheckLevelGridRange(Vector2Int levelCoordinates)
-        {
-            bool result =
-                levelCoordinates.x >= 0 &&
-                levelCoordinates.x < levelData.levelDimensionX &&
-                levelCoordinates.y >= 0 &&
-                levelCoordinates.y < levelData.levelDimensionY;
-
-            if (result == false && LogOutOfRange == true)
-            {
-                Debug.LogFormat("Level coordinates \"{0}\" is out of grid range", levelCoordinates);
-            }
-
-            return result;
-        }
-
-
-
-        /// Checks if the given world coordinates are within level dimension range.
-        public bool CheckWorldGridRange(Vector3 worldCoordinates)
-        {
-            Vector2Int levelCoordinates = WorldToLevel(worldCoordinates);
-
-            return CheckLevelGridRange(levelCoordinates);
-        }
-
-
-
-        /// Checks if the given pair of world coordinates and additionalRadius is visible by FogRevealers.
-        public bool CheckVisibility(Vector3 worldCoordinates, int additionalRadius)
-        {
-            Vector2Int levelCoordinates = WorldToLevel(worldCoordinates);
-
-            if (additionalRadius == 0)
-            {
-                return shadowcaster.fogField[levelCoordinates.x][levelCoordinates.y] ==
-                    Shadowcaster.LevelColumn.ETileVisibility.Revealed;
-            }
-
-            int scanResult = 0;
-
-            for (int xIterator = -1; xIterator < additionalRadius + 1; xIterator++)
-            {
-                for (int yIterator = -1; yIterator < additionalRadius + 1; yIterator++)
-                {
-                    if (CheckLevelGridRange(new Vector2Int(
-                        levelCoordinates.x + xIterator,
-                        levelCoordinates.y + yIterator)) == false)
-                    {
-                        scanResult = 0;
-
-                        break;
-                    }
-
-                    scanResult += Convert.ToInt32(
-                        shadowcaster.fogField[levelCoordinates.x + xIterator][levelCoordinates.y + yIterator] ==
-                        Shadowcaster.LevelColumn.ETileVisibility.Revealed);
-                }
-            }
-
-            if (scanResult > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-
-
-        /// Converts unit (divided by unitScale, then rounded) world coordinates to level coordinates.
-        public Vector2Int WorldToLevel(Vector3 worldCoordinates)
-        {
-            Vector2Int unitWorldCoordinates = GetUnitVector(worldCoordinates);
-
-            return new Vector2Int(
-                unitWorldCoordinates.x + (levelDimensionX / 2),
-                unitWorldCoordinates.y + (levelDimensionY / 2));
-        }
-
-
-
-        /// Converts level coordinates into world coordinates.
-        public Vector3 GetWorldVector(Vector2Int worldCoordinates)
-        {
-            return new Vector3(
-                GetWorldX(worldCoordinates.x + (levelDimensionX / 2)),
-                GetWorldY(worldCoordinates.y + (levelDimensionY / 2)),
-                fogPlaneZ);
-
-        }
-
-
-
-        /// Converts "pure" world coordinates into unit world coordinates.
-        public Vector2Int GetUnitVector(Vector3 worldCoordinates)
-        {
-            return new Vector2Int(GetUnitX(worldCoordinates.x), GetUnitY(worldCoordinates.y));
-        }
-
-
-
-        /// Converts level coordinate to corresponding unit world coordinates.
-        public float GetWorldX(int xValue)
-        {
-            if (levelData.levelDimensionX % 2 == 0)
-            {
-                return (levelMidPoint.position.x - ((levelDimensionX / 2.0f) - xValue) * unitScale);
-            }
-
-            return (levelMidPoint.position.x - ((levelDimensionX / 2.0f) - (xValue + 0.5f)) * unitScale);
-        }
-
-
-
-        /// Converts world coordinate to unit world coordinates.
-        public int GetUnitX(float xValue)
-        {
-            return Mathf.RoundToInt((xValue - levelMidPoint.position.x) / unitScale);
-        }
-
-
-
-        /// Converts level coordinate to corresponding unit world coordinates.
-        public float GetWorldY(int yValue)
-        {
-            if (levelData.levelDimensionY % 2 == 0)
-            {
-                return (levelMidPoint.position.y - ((levelDimensionY / 2.0f) - yValue) * unitScale);
-            }
-
-            return (levelMidPoint.position.y - ((levelDimensionY / 2.0f) - yValue) * unitScale);
-        }
-
-
-
-        /// Converts world coordinate to unit world coordinates.
-        public int GetUnitY(float yValue)
-        {
-            return Mathf.RoundToInt((yValue - levelMidPoint.position.y) / unitScale);
-        }
-
-
-
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            if (Application.isPlaying == false)
-            {
-                return;
-            }
-
-            if (drawGizmos == false)
-            {
-                return;
-            }
-
-            Handles.color = Color.yellow;
-
-            for (int xIterator = 0; xIterator < levelDimensionX; xIterator++)
-            {
-                for (int yIterator = 0; yIterator < levelDimensionY; yIterator++)
-                {
-                    if (levelData[xIterator][yIterator] == LevelColumn.ETileState.Obstacle)
-                    {
-                        if (shadowcaster.fogField[xIterator][yIterator] == Shadowcaster.LevelColumn.ETileVisibility.Revealed)
-                        {
-                            Handles.color = Color.green;
-                        }
-                        else
-                        {
-                            Handles.color = Color.red;
-                        }
-
-                        Handles.DrawWireCube(
-new Vector3(GetWorldX(xIterator), GetWorldY(yIterator), fogPlaneZ),
-                            new Vector3(
-                                unitScale - scanSpacingPerUnit,
-                                unitScale,
-                                unitScale - scanSpacingPerUnit));
-                    }
-                    else
-                    {
-                        Gizmos.color = Color.yellow;
-
-                        Gizmos.DrawSphere(
-new Vector3(GetWorldX(xIterator), GetWorldY(yIterator), fogPlaneZ),
-                            unitScale / 5.0f);
-                    }
-
-                    if (shadowcaster.fogField[xIterator][yIterator] == Shadowcaster.LevelColumn.ETileVisibility.Revealed)
-                    {
-                        Gizmos.color = Color.green;
-
-                        Gizmos.DrawSphere(
-new Vector3(GetWorldX(xIterator), GetWorldY(yIterator), fogPlaneZ),
-                            unitScale / 3.0f);
-                    }
-                }
-            }
-        }
-#endif
+        catch (Exception e) { Debug.LogWarning($"Load failed: {e.Message}"); }
     }
+    #endregion
 
 
+    // === Backward-Compat Shims for Examples ===
+    #region BackCompat_ExampleAPIs
 
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-    public class ShowIfAttribute : PropertyAttribute
+    // ÏòàÏ†ú Ïä§ÌÅ¨Î¶ΩÌä∏Í∞Ä Ïì∞Îäî Í≥µÍ∞ú ÌîÑÎ°úÌçºÌã∞Îì§
+    public Transform _LevelMidPoint => levelMidPoint;
+    public List<FogRevealer> _FogRevealers => Revealers;
+    public float _UnitScale => unitScale;
+
+    // ÏòàÏ†ú Ïä§ÌÅ¨Î¶ΩÌä∏Í∞Ä Ïì∞Îäî Ïú†Ìã∏Îì§
+    public bool CheckWorldGridRange(Vector3 worldCoordinates)
     {
-        public string _BaseCondition
-        {
-            get { return mBaseCondition; }
-        }
-
-        private string mBaseCondition = String.Empty;
-
-        public ShowIfAttribute(string baseCondition)
-        {
-            mBaseCondition = baseCondition;
-        }
+        return CheckLevelGridRange(WorldToLevel(worldCoordinates));
     }
 
-
-
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-    public class BigHeaderAttribute : PropertyAttribute
+    // Íµ¨Î≤ÑÏ†Ñ Î∞îÏù¥ÎÑàÎ¶¨ Í∞ÄÏãúÏÑ±(LOS) ÏøºÎ¶¨ ‚Äì ÏòàÏ†úÏóêÏÑú fallbackÏúºÎ°ú ÏÇ¨Ïö©
+    public bool CheckVisibility(Vector3 worldCoordinates, int additionalRadius)
     {
-        public string _Text
-        {
-            get { return mText; }
-        }
+        var lc = WorldToLevel(worldCoordinates);
+        if (!CheckLevelGridRange(lc)) return false;
 
-        private string mText = String.Empty;
+        if (additionalRadius <= 0)
+            return shadowcaster.fogField[lc.x][lc.y] ==
+                   Shadowcaster.LevelColumn.ETileVisibility.Revealed;
 
-        public BigHeaderAttribute(string text)
-        {
-            mText = text;
-        }
+        for (int dx = -additionalRadius; dx <= additionalRadius; dx++)
+            for (int dy = -additionalRadius; dy <= additionalRadius; dy++)
+            {
+                var p = new Vector2Int(lc.x + dx, lc.y + dy);
+                if (!CheckLevelGridRange(p)) continue;
+                if (shadowcaster.fogField[p.x][p.y] ==
+                    Shadowcaster.LevelColumn.ETileVisibility.Revealed)
+                    return true;
+            }
+        return false;
     }
 
+    // Ïä§Ìåü(Ïó∞ÏÜç Í∞ÄÏãúÏÑ±) ÏøºÎ¶¨ ‚Äì ÏòàÏ†úÍ∞Ä reflectionÏúºÎ°ú Ï∞æÎäî ÏãúÍ∑∏ÎãàÏ≤ò Í∑∏ÎåÄÎ°ú
+    public bool CheckVisibilitySpot(Vector3 world, int additionalRadius = 0, float threshold = 0.01f)
+    {
+        if (spotWeight == null) return false;
 
+        var lc = WorldToLevel(world);
+        if (!CheckLevelGridRange(lc)) return false;
+
+        if (additionalRadius <= 0)
+            return spotWeight[lc.x, lc.y] > threshold;
+
+        for (int dx = -additionalRadius; dx <= additionalRadius; dx++)
+            for (int dy = -additionalRadius; dy <= additionalRadius; dy++)
+            {
+                var p = new Vector2Int(lc.x + dx, lc.y + dy);
+                if (!CheckLevelGridRange(p)) continue;
+                if (spotWeight[p.x, p.y] > threshold) return true;
+            }
+        return false;
+    }
+
+    // ÏòàÏ†úÍ∞Ä Ìò∏Ï∂úÌïòÎäî Î¶¨ÎπåÎü¨ Í¥ÄÎ¶¨ API
+    public int AddFogRevealer(FogRevealer r)
+    {
+        fogRevealers.Add(r);
+        return fogRevealers.Count - 1;
+    }
+    public void RemoveFogRevealer(int index)
+    {
+        if (index >= 0 && index < fogRevealers.Count) fogRevealers.RemoveAt(index);
+        else Debug.LogWarning($"RemoveFogRevealer: index {index} out of range");
+    }
+    public void ReplaceFogRevealerList(List<FogRevealer> list)
+    {
+        fogRevealers = list ?? fogRevealers;
+    }
+
+    #endregion // BackCompat_ExampleAPIs
 
 }

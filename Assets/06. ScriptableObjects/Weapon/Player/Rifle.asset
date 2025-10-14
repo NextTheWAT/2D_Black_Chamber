@@ -13,18 +13,37 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   displayName: Rifle
+  weaponClass: 3
+  subType: AR
+  noise: 2
   damage: 10
-  bulletSpeed: 100
+  rpm: 600
+  curMagazine: 30
+  curReserve: 0
   maxMagazine: 30
-  maxAmmo: 90
-  fireRate: 10
+  maxReserve: 120
+  accuracyDeg: 6
   projectilesPerShot: 1
-  firePointOffset: {x: 0.24, y: 1.19}
-  spread: 10
+  bulletSpeed: 100
+  bulletLife: 2
+  semiAutoDelay: 0
+  spreadControlPct: 0
+  aimDistancePct: 100
+  headshotMultPct: 110
+  ejectionForce: 0
+  reloadSpeedMul: 1
+  adsSpeedPct: 100
+  movePenaltyPct: 0
   recoilAmount: 3
   recoilRecovery: 3
   bulletPrefab: {fileID: 8908556986258763193, guid: 9b1e99386de2bae45b00a487fd55718e, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: 421645e252778e543a5b70ed673861f0, type: 3}
   upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
   weaponSprite: {fileID: -555052648, guid: d5771c71321d5c5429d875cd0219fc91, type: 3}
-  bulletLife: 2
+  firePointOffset: {x: 0.24, y: 1.19}
+  scopeName: 
+  flashlightName: 
+  laserName: 
+  gripName: 
+  magazineName: 
+  compensatorName: 

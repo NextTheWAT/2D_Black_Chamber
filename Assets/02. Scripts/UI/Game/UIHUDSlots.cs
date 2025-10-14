@@ -97,7 +97,7 @@ public class UIHUDSlots : MonoBehaviour
             for (int i = 0; i < _hpSlots.Count; i++)
                 _hpSlots[i].SetActive(i < onCount);
         }
-        if (hpLabel) hpLabel.text = $"{cur}/{max}"; //체력 숫자 표시에 사용
+        if (hpLabel) hpLabel.text = $"{cur}%"; //체력 숫자 표시에 사용
     }
 
     private void OnStaminaChanged01(float v01)

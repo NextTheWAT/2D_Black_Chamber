@@ -1,3 +1,4 @@
+using Constants;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -14,10 +15,18 @@ public class MissionManager : Singleton<MissionManager>
     [SerializeField] private GameObject missionBell_Obj;
     [SerializeField] private GameObject missionBell_Obj2;
 
+    [Header("Combat Alert UI")]
+    [SerializeField] private GameObject combatAlertUI;   // 난전 진입 시 3초 표시할 UI
+    [SerializeField] private float combatAlertDuration = 3f;
+    private Coroutine _combatUiRoutine;
+
     [SerializeField] private UIKey UIKey;
+    [SerializeField] private int totalTargets = 0; //목표물 수
 
     public int RemainingTargets => remainingTargets;
     public int RemainingEnemies => remainingEnemies;
+    public int TotalTargets => totalTargets;
+    public int CompletedTargets => Mathf.Clamp(totalTargets - remainingTargets, 0, totalTargets);
 
     public MissionPhase Phase
     {
@@ -34,22 +43,61 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (missionBell_Obj) missionBell_Obj.SetActive(false);
         if (missionBell_Obj2) missionBell_Obj2.SetActive(false);
+
+        // 기본은 꺼둡니다.
+        if (combatAlertUI) combatAlertUI.SetActive(false);
     }
 
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded_UpdateUIKey;
+
+        // 난전 상태 변경 이벤트 구독
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged += HandleGamePhaseChanged;   // Combat/Stealth 전환 수신  :contentReference[oaicite:2]{index=2}
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded_UpdateUIKey;
+
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged -= HandleGamePhaseChanged;
+
+        if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+    }
+    private void HandleGamePhaseChanged(GamePhase phase)
+    {
+        // 난전 진입 시 3초간 표시, 스텔스 복귀 시 즉시 숨김
+        if (phase == GamePhase.Combat)
+        {
+            if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+            _combatUiRoutine = StartCoroutine(ShowCombatAlertUI());
+        }
+        else
+        {
+            if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
+            _combatUiRoutine = null;
+            if (combatAlertUI) combatAlertUI.SetActive(false);
+        }
+    }
+
+    private IEnumerator ShowCombatAlertUI()
+    {
+        if (UIKey == UIKey.Game && combatAlertUI)  // 게임 UI일 때만 노출  :contentReference[oaicite:3]{index=3}
+        {
+            combatAlertUI.SetActive(true);
+            yield return new WaitForSeconds(combatAlertDuration);
+            combatAlertUI.SetActive(false);
+        }
+        _combatUiRoutine = null;
     }
 
     // --- 암살 대상 ---
     public void TargetActivated()
     {
         remainingTargets++;
+        totalTargets++;
         OnTargetsChanged?.Invoke(remainingTargets);
     }
 
@@ -100,7 +148,8 @@ public class MissionManager : Singleton<MissionManager>
     // 선택: 초기화가 필요할 때
     public void ResetCounts(int targets = 0, int enemies = 0, MissionPhase startPhase = MissionPhase.Assassination)
     {
-        remainingTargets = Mathf.Max(0, targets);
+        totalTargets = Mathf.Max(0, targets); // 총 목표 수
+        remainingTargets = Mathf.Max(0, targets); // 남은 목표 수
         remainingEnemies = Mathf.Max(0, enemies);
         SetPhase(startPhase);
         OnTargetsChanged?.Invoke(remainingTargets);

@@ -71,6 +71,7 @@ public class Bullet : MonoBehaviour
         if (TryRaycastHit(damageFilter, out RaycastHit2D damageHit))
         {
             HandleDamageHit(damageHit);
+            damageHit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
             return;
         }
 
@@ -78,6 +79,7 @@ public class Bullet : MonoBehaviour
         if (TryRaycastHit(obstacleFilter, out RaycastHit2D obstacleHit))
         {
             HandleObstacleHit(obstacleHit);
+            obstacleHit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
             return;
         }
     }
@@ -92,8 +94,6 @@ public class Bullet : MonoBehaviour
 
     private void HandleDamageHit(RaycastHit2D hit)
     {
-        hit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
-
         if (damageHitEffect != null)
             SpawnEffect(damageHitEffect, hit);
 

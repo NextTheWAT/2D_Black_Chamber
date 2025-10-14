@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private StateTable stateTable;
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
+    [SerializeField] private bool useCollisionEnter = true;
 
     [Header("Stat")]
     [SerializeField] private Health health;
@@ -36,6 +37,18 @@ public class Enemy : MonoBehaviour
 
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
+
+
+    // === UI: Alert Icons ===
+    private enum AlertIconState { None, Suspicious, Alert }
+
+    [Header("UI - Alert Icons")]
+    [SerializeField] private GameObject questionIcon;     // ? 오브젝트 (애니메이션 포함 가능)
+    [SerializeField] private GameObject exclamationIcon;  // ! 오브젝트 (애니메이션 포함 가능)
+    [SerializeField] private float minIconShowTime = 0.12f; // 너무 깜빡임 방지
+
+    private AlertIconState _iconState = AlertIconState.None;
+    private float _lastIconChangeTime = -999f;
 
 
     public string stateType;
@@ -188,9 +201,14 @@ public class Enemy : MonoBehaviour
             combatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(CoverState), combatStateType);
         }
 
+
+        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
         CurrentStateMachine.Start();
 
         previousHasTarget = HasTarget;
+
+        SetIconState(AlertIconState.None);
+        UpdateAlertIcons();
 
     }
 
@@ -218,17 +236,21 @@ public class Enemy : MonoBehaviour
         }
 
         TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // 시야 내 타겟 갱신
-        Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // 시체 갱신
 
         // 새로운 시체 발견시 기록
-        if (body && !foundBodies.Contains(body))
+        if (!GameManager.Instance.IsCombat)
         {
-            Enemy enemy = body.GetComponent<Enemy>();
-            if(enemy && enemy.IsDead)
+            Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // 시체 갱신
+
+            if (body && !foundBodies.Contains(body))
             {
-                newFoundBody = body;
-                foundBodies.Add(newFoundBody);
-                LastKnownTargetPos = body.position;
+                Enemy enemy = body.GetComponent<Enemy>();
+                if (enemy && enemy.IsDead)
+                {
+                    newFoundBody = body;
+                    foundBodies.Add(newFoundBody);
+                    LastKnownTargetPos = body.position;
+                }
             }
         }
 
@@ -241,10 +263,41 @@ public class Enemy : MonoBehaviour
         if (IsHit) IsHit = false; // 맞았던 상태 초기화
         if (IsNoiseDetected) IsNoiseDetected = false; // 소음 감지 상태 초기화
         if (IsBodyDetected) newFoundBody = null; // 시체 감지 상태 초기화
+
+        UpdateAlertIcons(); // ?,! 아이콘 상태 갱신
     }
 
+    // ?,! 아이콘 상태 변경
+    private void SetIconState(AlertIconState next)
+    {
+        _iconState = next;
+        _lastIconChangeTime = Time.time;
+
+        if (questionIcon) questionIcon.SetActive(next == AlertIconState.Suspicious);
+        if (exclamationIcon) exclamationIcon.SetActive(next == AlertIconState.Alert);
+    }
+
+    private void UpdateAlertIcons()
+    {
+        bool isCombat = GameManager.Instance.IsCombat || HasTarget;   // 난전 or 타깃 확정
+        bool isSuspicious = !isCombat && HasTargetInFOV;              // 시야엔 들어왔지만 난전 아님
+
+        AlertIconState next = AlertIconState.None;
+        if (isCombat) next = AlertIconState.Alert;
+        else if (isSuspicious) next = AlertIconState.Suspicious;
+
+        // 너무 자주 깜빡이는 것 방지
+        if (next != _iconState && Time.time - _lastIconChangeTime >= minIconShowTime)
+            SetIconState(next);
+    }
+    //여기까지 아이콘
+
     void OnPhaseChanged(GamePhase phase)
-        => Target = phase == GamePhase.Combat ? GameManager.Instance.Player : null;
+    {
+        Target = (phase == GamePhase.Combat) ? GameManager.Instance.Player : null;
+        UpdateAlertIcons();   // ← 여기서 즉시 ? / ! 갱신
+    }
+
 
     private void UpdateMoveBlend()
     {
@@ -374,6 +427,8 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!useCollisionEnter) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Target = collision.transform;

@@ -35,24 +35,20 @@ public class Item : MonoBehaviour, Iinteraction
         PickUp();
     }
 
-    public void PickUp()    // 탄창 권총, 라이플 구별해서 드랍
+    public void PickUp() //총알 줍기
     {
         Debug.Log(itemName + "을 주웠습니다");
 
-        Shooter shooter = player.GetComponentInChildren<Shooter>();
+        var wm = WeaponManager.Instance;
+        var shooter = wm != null ? wm.CurrentWeapon : null;
         if (shooter != null)
         {
-            switch (weaponType)
+            int gained = shooter.AddAmmo(ammoAmount); // 실제 증가량을 바로 받음
+            if (gained > 0 && AmmoPickupPopup.Instance != null)
             {
-                case WeaponType.Gun:
-                    shooter.AddAmmo(ammoAmount);
-                    break;
-                case WeaponType.Rifle:
-                    shooter.AddAmmo(ammoAmount);
-                    break;
+                AmmoPickupPopup.Instance.Show(gained);
             }
         }
-
         Destroy(gameObject);
     }
 
