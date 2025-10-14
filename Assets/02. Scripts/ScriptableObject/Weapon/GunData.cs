@@ -37,10 +37,6 @@ public class GunData : ScriptableObject
     public float spreadControlPct = 0f;                // 탄퍼짐 제어 (%)
     [Tooltip("조준 거리(%) — 100% 기본, 110%면 10% 증가")]
     public float aimDistancePct = 100f;                // 조준거리 (%)
-    [Tooltip("헤드샷 배수(%) — 110% 기본, 125%는 +15%")]
-    public float headshotMultPct = 110f;               // 확정 헤드샷 배수 (%)
-    [Tooltip("탄피 배출 힘 등 임의 수치")]
-    public int ejectionForce = 0;                      // 탄피 배출 등
 
     [Header("Handling (Base)")]
     [Tooltip("재장전 속도 배수(1.00 = 기본, 0.88 = 12% 빨라짐)")]
@@ -79,22 +75,22 @@ public class GunData : ScriptableObject
     public float FireRatePerSec => Mathf.Max(0.1f, rpm / 60f);
 
 #if UNITY_EDITOR
-    private void OnValidate()
-    {
-        // 상한은 0 미만 불가
-        rpm = Mathf.Max(0, rpm);
-        maxMagazine = Mathf.Max(1, maxMagazine);
-        maxReserve = Mathf.Max(0, maxReserve);
+private void OnValidate()
+{
+    // 상한은 0 미만 불가
+    rpm         = Mathf.Max(0, rpm);
+    maxMagazine = Mathf.Max(1, maxMagazine);
+    maxReserve  = Mathf.Max(0, maxReserve);
 
-        // Cur 값은 Max 상한으로 클램프 (지금처럼 Max로 덮어쓰지 말고!)
-        curMagazine = Mathf.Clamp(curMagazine, 0, maxMagazine);
-        curReserve = Mathf.Clamp(curReserve, 0, maxReserve);
+    // Cur 값은 Max 상한으로 클램프 (지금처럼 Max로 덮어쓰지 말고!)
+    curMagazine = Mathf.Clamp(curMagazine, 0, maxMagazine);
+    curReserve  = Mathf.Clamp(curReserve,  0, maxReserve);
 
-        bulletSpeed = Mathf.Max(0.1f, bulletSpeed);
-        bulletLife = Mathf.Max(0.05f, bulletLife);
-        accuracyDeg = Mathf.Clamp(accuracyDeg, 0f, 30f);
-        reloadSpeedMul = Mathf.Max(0.1f, reloadSpeedMul);
-        adsSpeedPct = Mathf.Max(1f, adsSpeedPct);
-    }
+    bulletSpeed   = Mathf.Max(0.1f, bulletSpeed);
+    bulletLife    = Mathf.Max(0.05f, bulletLife);
+    accuracyDeg   = Mathf.Clamp(accuracyDeg, 0f, 30f);
+    reloadSpeedMul= Mathf.Max(0.1f, reloadSpeedMul);
+    adsSpeedPct   = Mathf.Max(1f,    adsSpeedPct);
+}
 #endif
 }
