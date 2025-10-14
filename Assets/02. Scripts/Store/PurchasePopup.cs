@@ -22,17 +22,16 @@ public class PurchasePopup : MonoBehaviour
         purchasePanel.SetActive(true);
     }
 
-    public void EnoughMoneyPopup(bool hasEnoughMoney)
+    public void EnoughMoneyPopup(bool hasEnoughMoney)   // 가진금액에따라 다른 팝업뜨게 (추후 수정)
     {
         if (hasEnoughMoney)
-            completePanel.SetActive(true);
+            completePanel.SetActive(true);         // 잔액 충분할때 구매시 구매완료창 뜨게
         else
             shortagePanel.SetActive(true);
     }
 
     public void ShowCompletePopup()
     {
-        // 잔액 충분할때 구매시 구매완료창 뜨게
         completePanel.SetActive(true);
     }
 
