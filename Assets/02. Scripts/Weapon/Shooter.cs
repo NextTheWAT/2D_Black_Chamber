@@ -5,11 +5,14 @@ public class Shooter : MonoBehaviour
 {
     [Header("Refs")]
     public Transform gunPoint; // 현재 무기 총구 (WeaponManager에서 세팅)
-    public GunData gunData; // 현재 무기 데이터
-    private int currentMagazine; // 현재 탄창
-    private int currentAmmo;  // 현재 탄약
-    private float currentSpread; // 현재 반동
+    public GunData gunData;    // 현재 무기 데이터
 
+    // ---- Ammo State (런타임 상태; 시작값은 GunData로부터) ----
+    private int currentMagazine; // 현재 탄창
+    private int currentAmmo;     // 현재 예비 탄
+    private float currentSpread;  // 현재 반동/퍼짐
+
+    // 외부는 조회만 가능하게 (수정은 WeaponManager 경유)
     public int CurrentMagazine => currentMagazine;
     public int CurrentAmmo => currentAmmo;
 
@@ -27,21 +30,27 @@ public class Shooter : MonoBehaviour
     public float CurrentSpread
     {
         get => currentSpread;
-        set => currentSpread = Mathf.Clamp(value, 0f, gunData ? gunData.spread : 0f);
+        // 기존 gunData.spread -> gunData.accuracyDeg (기본 확산 각도)
+        set => currentSpread = Mathf.Clamp(value, 0f, gunData ? gunData.accuracyDeg : 0f);
     }
 
     private void Awake()
     {
-        gunPoint = new GameObject("GunPoint").transform;
-        gunPoint.SetParent(transform);
+        if (gunPoint == null)
+        {
+            gunPoint = new GameObject("GunPoint").transform;
+            gunPoint.SetParent(transform);
+            gunPoint.localPosition = Vector3.zero;
+            gunPoint.localRotation = Quaternion.identity;
+        }
     }
 
     private void Start()
     {
-        //Initialize(gunData); WeaponManager가 호출해서 임시 제거
-        if (!_initialized)
+        // WeaponManager가 Initialize를 호출하지 않는 적 프리팹 등을 위해 안전장치
+        if (!_initialized && gunData != null)
         {
-            Initialize(gunData); // 적/기타 프리팹들은 여기서 자동 초기화
+            Initialize(gunData);
         }
     }
 
@@ -65,17 +74,17 @@ public class Shooter : MonoBehaviour
     {
         this.gunData = gunData;
 
-        // 시작: 탄창 6발 / 예비 0발
-        currentMagazine = 6; // 기본 6
-        currentAmmo = 0;
+        // 시작 탄약은 Cur에서 읽고, 상한은 Max로 클램프
+        currentMagazine = Mathf.Clamp(gunData.curMagazine, 0, gunData.maxMagazine);
+        currentAmmo = Mathf.Clamp(gunData.curReserve, 0, gunData.maxReserve);
 
         gunPoint.SetLocalPositionAndRotation(gunData.firePointOffset, Quaternion.identity);
         cooldown = 0f;
         _initialized = true;
 
-        // HUD 갱신
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
     }
+
 
     /// <summary>현재 무기 타입에 맞춰 발사</summary>
     public bool Shoot()
@@ -93,14 +102,14 @@ public class Shooter : MonoBehaviour
         if (currentMagazine <= 0 || shooterLocked)
         {
             // 빈 탄창: 틱틱 사운드만
-            WeaponSoundManager.Instance.PlayEmptySound();
+            WeaponSoundManager.Instance?.PlayEmptySound();
             if (respectFireRate)
-                cooldown = 1f / Mathf.Max(0.001f, gunData.fireRate); // 틱틱 템포 유지(선택)
+                cooldown = 1f / Mathf.Max(0.001f, gunData.FireRatePerSec); // 틱틱 템포 유지(선택)
             return false;
         }
 
-        currentMagazine--;
-        WeaponManager.Instance.OnAmmoChanged?.Invoke();
+        currentMagazine = Mathf.Max(0, currentMagazine - 1);
+        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
 
         // 발사 처리
         int count = Mathf.Max(1, gunData.projectilesPerShot);
@@ -118,7 +127,7 @@ public class Shooter : MonoBehaviour
 
         // 다음 발사까지 쿨다운
         if (respectFireRate)
-            cooldown = 1f / Mathf.Max(0.001f, gunData.fireRate);
+            cooldown = 1f / Mathf.Max(0.001f, gunData.FireRatePerSec);
 
         // 이펙트
         if (gunData.muzzleFlashPrefab)
@@ -127,11 +136,14 @@ public class Shooter : MonoBehaviour
             Destroy(fx, 0.05f);
         }
 
-        // 사운드
-        if (gunData.displayName.Contains("Pistol"))
-            WeaponSoundManager.Instance.PlayPistolShootSound();
-        else if(gunData.displayName.Contains("Rifle"))
-            WeaponSoundManager.Instance.PlayRifleShootSound();
+        // 사운드 (간단한 예)
+        if (gunData.displayName != null)
+        {
+            if (gunData.displayName.Contains("Pistol"))
+                WeaponSoundManager.Instance?.PlayPistolShootSound();
+            else if (gunData.displayName.Contains("Rifle"))
+                WeaponSoundManager.Instance?.PlayRifleShootSound();
+        }
 
         return true;
     }
@@ -154,9 +166,8 @@ public class Shooter : MonoBehaviour
         int move = Mathf.Min(need, currentAmmo);
 
         // 5) 오른쪽(리저브) → 왼쪽(탄창)으로 이동
-        currentMagazine += move;   // 왼쪽 채워짐
-        currentAmmo -= move;   // 오른쪽 줄어듦
-
+        currentMagazine += move;   // 탄창 채움
+        currentAmmo -= move;       // 리저브 감소
 
         cooldown = 0.5f; // 필요 시 데이터화
 
@@ -166,7 +177,6 @@ public class Shooter : MonoBehaviour
 
         return true;
     }
-
 
     private void SpawnBullet(GunData gun, Transform muzzle, Vector2 dir)
     {
@@ -200,26 +210,25 @@ public class Shooter : MonoBehaviour
                            baseDir.x * s + baseDir.y * c).normalized;
     }
 
-    public int AddAmmo(int amount) //탄창 추가
+    // === Ammo write APIs: 외부에서 직접 수정 못 하게 WeaponManager만 경유하도록 internal ===
+
+    internal int AddAmmo(int amount)
     {
-        if (amount <= 0) return 0;
-
+        if (gunData == null || amount <= 0) return 0;
+        int cap = Mathf.Max(0, gunData.maxReserve);
         int before = currentAmmo;
-
-        const int MaxReserve = 120; //최대 소지 120발 고정
-        currentAmmo = Mathf.Clamp(currentAmmo + amount, 0, MaxReserve);
+        currentAmmo = Mathf.Clamp(currentAmmo + amount, 0, cap);
         int gained = currentAmmo - before;
-
-        WeaponManager.Instance?.OnAmmoChanged?.Invoke();
+        if (gained != 0) WeaponManager.Instance?.OnAmmoChanged?.Invoke();
         return gained;
     }
 
-    public void SetAmmo(int magazine, int reserve, int maxReserve = 120)
-        // 무기 전환 시에도 동기화
+    // 무기 상태 복원/세이브 용도로만 내부 사용
+    internal void ForceSetAmmo(int magazine, int reserve)
     {
-        currentMagazine = Mathf.Clamp(magazine, 0, gunData != null ? gunData.maxMagazine : 6);
-        currentAmmo = Mathf.Clamp(reserve, 0, maxReserve);
-
+        int cap = gunData != null ? Mathf.Max(0, gunData.maxReserve) : 0;
+        currentMagazine = Mathf.Clamp(magazine, 0, gunData != null ? gunData.maxMagazine : 0);
+        currentAmmo = Mathf.Clamp(reserve, 0, cap);
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
     }
 }
