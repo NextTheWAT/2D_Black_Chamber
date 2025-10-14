@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private StateTable stateTable;
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
+    [SerializeField] private bool useCollisionEnter = true;
 
     [Header("Stat")]
     [SerializeField] private Health health;
@@ -426,6 +427,8 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!useCollisionEnter) return;
+
         if (collision.gameObject.CompareTag("Player"))
         {
             Target = collision.transform;
