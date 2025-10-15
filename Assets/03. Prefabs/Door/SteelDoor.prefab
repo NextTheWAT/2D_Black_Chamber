@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 26117549433228921}
   - component: {fileID: 6561513300129131149}
   - component: {fileID: 7333647792130928584}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: SteelDoor.Trigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: -47
   m_Sprite: {fileID: 21300000, guid: 74080a531a686cf4ebc4c7a5ab49b2a0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -156,7 +156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8247351586227046266}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: SteelDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 845935683362552636}
   - component: {fileID: 2734394880767780754}
   - component: {fileID: 8566794377187177699}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: SteelDoor.Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: -47
   m_Sprite: {fileID: 21300000, guid: 74080a531a686cf4ebc4c7a5ab49b2a0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
