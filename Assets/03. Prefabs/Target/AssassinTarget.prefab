@@ -120,11 +120,15 @@ MonoBehaviour:
   stateTable: {fileID: 11400000, guid: 9c3c562fcbfdaf64e8d911c666c77053, type: 2}
   nonCombatStateType: 0
   combatStateType: 0
+  useCollisionEnter: 1
   health: {fileID: 208123243127908645}
   angularSpeed: 120
   targetMask:
     serializedVersion: 2
     m_Bits: 64
+  bodyMask:
+    serializedVersion: 2
+    m_Bits: 0
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1
@@ -137,8 +141,12 @@ MonoBehaviour:
   startPatrolPointIndex: 0
   shooter: {fileID: 0}
   returnPoint: {fileID: 0}
+  questionIcon: {fileID: 0}
+  exclamationIcon: {fileID: 0}
+  minIconShowTime: 0.12
   stateType: 
   isTarget: 1
+  dropItems: []
 --- !u!114 &208123243127908645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,8 +204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 4582954057272408066}
   lowerAnimator: {fileID: 8081028850479260102}
-  upperPistolController: {fileID: 0}
-  upperRifleController: {fileID: 0}
 --- !u!114 &4215764903156184602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -518,7 +524,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -43
   m_Sprite: {fileID: 21300000, guid: 7484c3fe8a1df574fb6a189074834cd7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -624,7 +630,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -42
   m_Sprite: {fileID: -1351816132, guid: 6dc480194c277634189b6628afa0fb3e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
