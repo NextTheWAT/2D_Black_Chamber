@@ -14,6 +14,10 @@ public class Money : MonoBehaviour, Iinteraction
     public void Interaction()
     {
         MoneyManager.Instance.AddMoney(money);
+
+        if (MoneyPickupPopup.instance != null )
+            MoneyPickupPopup.instance.Show(money);
+
         Destroy(gameObject);
     }
 }
