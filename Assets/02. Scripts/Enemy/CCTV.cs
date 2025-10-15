@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using Constants;
 
 public class CCTV : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class CCTV : MonoBehaviour
     [SerializeField] private Color alertColor;
 
     private Transform detectedTarget;
-    private bool isLeftRotation;
+    private bool isLeftRotating;
 
     private float centerZ;
     private float leftLimitZ;
@@ -44,15 +45,24 @@ public class CCTV : MonoBehaviour
         leftLimitZ = NormalizeAngle(centerZ + halfRange);
         rightLimitZ = NormalizeAngle(centerZ - halfRange);
 
-        isLeftRotation = true;
+        isLeftRotating = true;
         SetEulerZ(rightLimitZ);
 
         StartCoroutine(Watch());
     }
 
-    private void Update()
+    private void OnEnable()
+        => GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+
+    private void OnDisable(){
+        if (GameManager.AppIsQuitting) return;
+        GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+    }
+
+    void OnPhaseChanged(GamePhase gamePhase)
     {
-        DetectTarget();
+        if (gamePhase == GamePhase.Combat)
+            light2D.color = alertColor;
     }
 
     void DetectTarget()
@@ -64,6 +74,8 @@ public class CCTV : MonoBehaviour
     // °¨½Ã
     IEnumerator Watch()
     {
+        float elapsedTime = 0f;
+
         light2D.color = GameManager.Instance.IsCombat ? alertColor : originalColor;
 
         while (!detectedTarget)
@@ -71,15 +83,23 @@ public class CCTV : MonoBehaviour
             float deltaZ = angularSpeed * Time.deltaTime;
             float currentZ = EulerZ;
 
-            if (isLeftRotation)
+            if (isLeftRotating)
             {
                 currentZ += deltaZ;
                 if (AnglePassed(currentZ, leftLimitZ, centerZ))
                 {
+                    elapsedTime = 0f;
                     currentZ = leftLimitZ;
-                    isLeftRotation = false;
-                    SetEulerZ(currentZ);
-                    yield return new WaitForSeconds(rotationDelay);
+                    isLeftRotating = false;
+
+                    while (elapsedTime < rotationDelay)
+                    {
+                        DetectTarget();
+                        if (detectedTarget) break;
+
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
                 }
             }
             else
@@ -87,14 +107,23 @@ public class CCTV : MonoBehaviour
                 currentZ -= deltaZ;
                 if (AnglePassed(currentZ, rightLimitZ, centerZ, false))
                 {
+                    elapsedTime = 0f;
                     currentZ = rightLimitZ;
-                    isLeftRotation = true;
-                    SetEulerZ(currentZ);
-                    yield return new WaitForSeconds(rotationDelay);
+                    isLeftRotating = true;
+
+                    while (elapsedTime < rotationDelay)
+                    {
+                        DetectTarget();
+                        if (detectedTarget) break;
+
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
                 }
             }
 
             SetEulerZ(currentZ);
+            DetectTarget();
             yield return null;
         }
 
@@ -119,6 +148,7 @@ public class CCTV : MonoBehaviour
             angle = ClampAngleToLimits(angle, centerZ);
 
             SetEulerZ(angle);
+            DetectTarget();
 
             if (elapsedTime >= suspicionBuildTime)
             {
