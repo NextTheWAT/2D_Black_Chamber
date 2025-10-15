@@ -417,6 +417,9 @@ public class Enemy : MonoBehaviour
         // 미션 카운팅 감소
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
 
+        questionIcon?.SetActive(false);
+        exclamationIcon?.SetActive(false);
+
         if (dropItems.Length > 0)
         {
             int r = Random.Range(0, dropItems.Length);
