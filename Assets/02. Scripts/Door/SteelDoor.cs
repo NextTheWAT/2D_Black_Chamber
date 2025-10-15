@@ -11,7 +11,6 @@ public class SteelDoor : MonoBehaviour, Iinteraction
 
     public float openSpeed = 0.5f;
     private bool isOpen = false;
-    private bool playerInRange = false;
 
     private void Start()
     {
@@ -28,6 +27,8 @@ public class SteelDoor : MonoBehaviour, Iinteraction
 
     public void Interaction()
     {
+        if (!CardKey.hasCardKey)
+            return;
         isOpen = !isOpen;
     }
 
