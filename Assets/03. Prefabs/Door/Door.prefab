@@ -48,7 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isExitDoor: 0
   openSpeed: 3
-  player: {fileID: 0}
 --- !u!61 &6336173493331675919
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -105,7 +104,7 @@ GameObject:
   - component: {fileID: 1396340612875567919}
   m_Layer: 15
   m_Name: Door
-  m_TagString: Door
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -140,7 +139,7 @@ GameObject:
   - component: {fileID: 9042055051147044550}
   m_Layer: 15
   m_Name: Door.Collider
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

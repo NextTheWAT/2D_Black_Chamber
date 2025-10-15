@@ -11,6 +11,7 @@ public class Door : MonoBehaviour, Iinteraction
     private bool isOpen = false;
     //private bool playerInRange = false; // 플레이어가 범위안에 있을때 상호작용하게 하기 위해
 
+    public bool IsOpen => isOpen;
 
     private Quaternion closeRotation;   // 각각의 회전값
     private Quaternion targetRotation;
