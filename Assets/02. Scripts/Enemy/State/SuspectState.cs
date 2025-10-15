@@ -5,6 +5,7 @@ public class SuspectState : BaseState
     private readonly float suspicionBuildTime = 3f;
     private float currentDetectionRange = 0f;
     private float suspicionElapsedTime = 0f;
+    private bool isHit = false;
 
     public SuspectState(Enemy owner, float suspicionBuildTime) : base(owner)
     {
@@ -35,6 +36,9 @@ public class SuspectState : BaseState
 
         currentDetectionRange = Mathf.Lerp(0, owner.ViewDistance, ratio);
         owner.FindTarget(owner.ViewAngle, currentDetectionRange);
+
+        if (owner.IsHit)
+            owner.Target = GameManager.Instance.Player;
 
         if (owner.HasTarget)
         {
