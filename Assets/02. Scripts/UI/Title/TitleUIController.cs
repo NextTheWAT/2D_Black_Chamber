@@ -5,17 +5,29 @@ public class TitleUIController : MonoBehaviour
 {
     [Header("Scene")]
     [SerializeField] private string lobbySceneName = "LobbyScene";
+    [SerializeField] private string tutorialSceneName = "TutorialScene";
+
+    private const string PrefKey_TutorialDone = "TutorialScene";
 
     public void StartGame()
     {
-        if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
+        const string PrefKey_TutorialDone = "TutorialDone";
+        string tutorialSceneName = "TutorialScene";
+        string lobbySceneName = "LobbyScene";
+
+        // PlayerPrefs에 튜토리얼 완료 여부 확인
+        bool tutorialDone = PlayerPrefs.GetInt(PrefKey_TutorialDone, 0) == 1;
+
+        // 완료 안 됐으면 TutorialScene, 완료됐으면 LobbyScene으로 이동
+        string nextScene = tutorialDone ? lobbySceneName : tutorialSceneName;
+
+        if (!Application.CanStreamedLevelBeLoaded(nextScene))
         {
-            Debug.LogError($"[TitleUIController] 씬 '{lobbySceneName}'을 찾을 수 없음");
+            Debug.LogError($"[TitleUIController] 씬 '{nextScene}'을 찾을 수 없음");
             return;
         }
-        
-        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
-        //SceneManager.LoadScene(lobbySceneName);
+
+        LoadingCanvas.LoadScene(nextScene);
     }
 
     public void OpenSetting()
