@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Door : MonoBehaviour, Iinteraction
 {
+    public bool isExitDoor = false;
+
     //public float openAngle = 90f;
     public float openSpeed = 1.0f;
     private bool isOpen = false;
@@ -34,6 +36,9 @@ public class Door : MonoBehaviour, Iinteraction
 
     public void Interaction()
     {
+        if (isExitDoor)
+            return;
+
         if (!isOpen)
         {
             Vector2 doorPosition = new Vector2(transform.position.x, transform.position.y);    // ¹® À§Ä¡
@@ -52,6 +57,18 @@ public class Door : MonoBehaviour, Iinteraction
         }
 
         isOpen = !isOpen;
+    }
+
+    public void AutoOpen()
+    {
+        Debug.Log("Å»Ãâ±¸¹® ¿ÀÇÂ");
+        if (!isExitDoor)
+            return;
+
+        if (isOpen) return;
+
+        gameObject.SetActive(false);
+        isOpen = true;
     }
 
 }
