@@ -62,7 +62,6 @@ public class AttackState : BaseState
         // 탄약이 있으면 원거리 공격, 없으면 근접 공격
         if (owner.Shooter.HasAnyAmmo)
         {
-            owner.AnimationController.SetActivePunch(false);
             // 타겟이 공격 범위 내에 있는지 확인
             if (IsTargetInAttackRange)
             {
@@ -87,12 +86,11 @@ public class AttackState : BaseState
 
                 MeleeAttack();
                 owner.Agent.isStopped = true;
-                owner.AnimationController.SetActivePunch(true);
+                owner.AnimationController.PlayPunch();
             }
             else
             {
                 owner.MoveTo(owner.Target.position);
-                owner.AnimationController.SetActivePunch(false);
             }
         }
     }
