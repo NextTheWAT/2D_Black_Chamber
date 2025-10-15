@@ -5,7 +5,6 @@ public class SuspectState : BaseState
     private readonly float suspicionBuildTime = 3f;
     private float currentDetectionRange = 0f;
     private float suspicionElapsedTime = 0f;
-    private bool isHit = false;
 
     public SuspectState(Enemy owner, float suspicionBuildTime) : base(owner)
     {
