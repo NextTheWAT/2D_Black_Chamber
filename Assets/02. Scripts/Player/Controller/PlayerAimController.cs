@@ -13,9 +13,15 @@ public class PlayerAimController : MonoBehaviour
     private float currentPingPongSpeed;
     public float aimingTransitionSpeed = 5f;
 
+    public float aimMaxWidth = 0.1f; // 최대 조준선 너비
+    public float aimMinWidth = 0.02f; // 최소 조준선 너비
+    private float currentAimWidth;
+
+
     public float aimingDuration = 5f; // 조준 지속 시간
     private float currentAimingTime = 0f;
 
+    public float aimLineOffset = 0.2f;
     public float aimLineDistance = 1.5f;
 
     public float aimRunningSpeedPenalty = 10f; // 달리기 시 조준 정확도 패널티
@@ -75,12 +81,14 @@ public class PlayerAimController : MonoBehaviour
     {
         float targetAngle = isAiming ? aimPingPongMinAngle : aimPingPongMaxAngle;
         float targetSpeed = isAiming ? aimPingPongMinSpeed : aimPingPongMaxSpeed;
+        float targetWidth = isAiming ? aimMinWidth : aimMaxWidth;
 
         targetAngle += penaltyAngle;
         targetSpeed += penaltySpeed;
 
-        currentPingPongAngle = Mathf.MoveTowards(currentPingPongAngle, targetAngle, aimingTransitionSpeed * Time.deltaTime);
-        currentPingPongSpeed = Mathf.MoveTowards(currentPingPongSpeed, targetSpeed, aimingTransitionSpeed * Time.deltaTime);
+        currentPingPongAngle = Mathf.Lerp(currentPingPongAngle, targetAngle, aimingTransitionSpeed * Time.deltaTime);
+        currentPingPongSpeed = Mathf.Lerp(currentPingPongSpeed, targetSpeed, aimingTransitionSpeed * Time.deltaTime);
+        currentAimWidth = Mathf.Lerp(currentAimWidth, targetWidth, Time.deltaTime);
     }
 
     void UpdateAimLine()
@@ -92,13 +100,12 @@ public class PlayerAimController : MonoBehaviour
         aimLineTransform.localRotation = Quaternion.Euler(0f, 0f, aimAngle);
         CurrentShooter.gunPoint.transform.localRotation = aimLineTransform.localRotation;
 
-        Vector3 startPos = CurrentShooter.gunPoint.transform.position;
+        Vector3 startPos = CurrentShooter.gunPoint.transform.position + aimLineTransform.up * aimLineOffset;
         Vector3 endPos = startPos + aimLineTransform.up * aimLineDistance;
-
-
 
         lineRenderer.SetPosition(0, startPos);
         lineRenderer.SetPosition(1, endPos);
+        lineRenderer.startWidth = currentAimWidth;
     }
 
 }
