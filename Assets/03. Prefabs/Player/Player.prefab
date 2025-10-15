@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 100
+  m_SortingOrder: -40
   m_Sprite: {fileID: -809858648, guid: cadeb748bd3343642b645a2b02105dc8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -345,7 +345,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 99
+  m_SortingOrder: -41
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -504,7 +504,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -90930
+  m_InstanceId: -268526
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -699,6 +699,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40202bc6237c8df4da5466cb23925928, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreWorldspaceCanvas: 1
+  blockingUILayers:
+    serializedVersion: 2
+    m_Bits: 0
   fKeyPrompt: {fileID: 2767415711330821616}
   continuousMouseAim: 1
   rKeyPrompt: {fileID: 6390167608740650960}
@@ -848,8 +852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa832d967c04fef408d617fc7947514c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pistolIndex: 0
-  rifleIndex: 1
   knifeIndex: 2
   ammoCheckInterval: 0.25
 --- !u!114 &9002233541217388575
