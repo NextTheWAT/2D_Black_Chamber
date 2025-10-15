@@ -34,10 +34,10 @@ public class Door : MonoBehaviour, Iinteraction
         // RotateTowards : 현재 회전 -> 목표 회전으로 계산
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
-        if (isExitDoor)
-            return;
+        if (isExitDoor) return;
+        if (!interactor) return;
 
         if (!isOpen)
         {

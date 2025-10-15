@@ -25,7 +25,7 @@ public class Papermoney: MonoBehaviour, Iinteraction
         }
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
         PickUp();
     }

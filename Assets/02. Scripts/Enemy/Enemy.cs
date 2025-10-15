@@ -437,6 +437,11 @@ public class Enemy : MonoBehaviour
             Target = collision.transform;
             GameManager.Instance.StartCombatAfterDelay(this);
         }
+        else if (collision.gameObject.CompareTag("Door"))
+        {
+            Iinteraction iinteraction = collision.gameObject.GetComponentInChildren<Iinteraction>();
+
+        }
     }
 
     private void OnDrawGizmos()

@@ -6,7 +6,7 @@ public class CardKey : MonoBehaviour, Iinteraction
 {
     public static bool hasCardKey = false;
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
         Debug.Log("Ä«µåÅ°¸Ô±â");
         hasCardKey = true;

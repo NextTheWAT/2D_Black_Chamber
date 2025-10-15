@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d4294173a57ec448729e8f4cc622af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isExitDoor: 0
   openSpeed: 3
   player: {fileID: 0}
 --- !u!61 &6336173493331675919
@@ -104,7 +105,7 @@ GameObject:
   - component: {fileID: 1396340612875567919}
   m_Layer: 15
   m_Name: Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

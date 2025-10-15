@@ -25,10 +25,9 @@ public class SteelDoor : MonoBehaviour, Iinteraction
         steelDoor.localPosition = Vector2.Lerp(steelDoor.localPosition, door, openSpeed * Time.deltaTime);
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
-        if (!CardKey.hasCardKey)
-            return;
+        if (!CardKey.hasCardKey) return;
         isOpen = !isOpen;
     }
 

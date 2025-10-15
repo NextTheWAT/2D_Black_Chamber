@@ -11,7 +11,7 @@ public partial class PlayerInputController : TopDownController
     public void OnInteract(InputAction.CallbackContext ctx)
     {
         if (!ctx.performed) return;
-        _current?.Interaction();
+        _current?.Interaction(transform);
         // 상호작용 직후에 프롬프트를 유지할지/숨길지는 취향에 따라:
         // if (_current == null) fKeyPrompt?.SetActive(false);
     }
