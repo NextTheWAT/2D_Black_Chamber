@@ -128,10 +128,10 @@ MonoBehaviour:
     m_Bits: 64
   bodyMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 33280
   forwardLight: {fileID: 3757559673783468784}
   backwardLight: {fileID: 4662476106655208001}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
