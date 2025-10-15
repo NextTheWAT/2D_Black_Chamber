@@ -13,7 +13,7 @@ public class TitleUIController : MonoBehaviour
     {
         const string PrefKey_TutorialDone = "TutorialDone";
         string tutorialSceneName = "TutorialScene";
-        string lobbySceneName = "LobbyScene";
+        string lobbySceneName = "02. LobbyScene";
 
         // PlayerPrefs에 튜토리얼 완료 여부 확인
         bool tutorialDone = PlayerPrefs.GetInt(PrefKey_TutorialDone, 0) == 1;
