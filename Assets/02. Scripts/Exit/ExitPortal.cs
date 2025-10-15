@@ -7,6 +7,8 @@ public class ExitPortal : MonoBehaviour
     public GameObject defaultLight;
     public GameObject clearLight;
 
+    public Door exitDoor;
+
     [SerializeField] public string clearSceneName = "ClearScene";  // Å¬¸®¾î¾À
     [SerializeField] private int stageNumber = 1;
 
@@ -36,6 +38,11 @@ public class ExitPortal : MonoBehaviour
             if (defaultLight) defaultLight.SetActive(false);
             if (clearLight) clearLight.SetActive(true);
             Debug.Log("Å»Ãâ °¡´É");
+
+            if (exitDoor != null)
+            {
+                exitDoor.AutoOpen();
+            }
         }
     }
 

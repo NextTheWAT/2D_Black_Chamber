@@ -54,4 +54,12 @@ public class Door : MonoBehaviour, Iinteraction
         isOpen = !isOpen;
     }
 
+    public void AutoOpen(float angle = 90f)
+    {
+        if (isOpen) return;
+
+        targetRotation = closeRotation * Quaternion.Euler(0, 0, angle);
+        isOpen = true;
+    }
+
 }
