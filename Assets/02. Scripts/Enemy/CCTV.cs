@@ -194,6 +194,7 @@ public class CCTV : MonoBehaviour
 
     public void Die()
     {
+        StructSoundManager.Instance.PlayStructBrokenSound();
         gameObject.SetActive(false);
     }
 
