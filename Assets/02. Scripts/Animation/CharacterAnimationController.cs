@@ -27,7 +27,6 @@ public class CharacterAnimationController : MonoBehaviour
         SetMoveBlend(0f);
         SetMoveSpeed(1f);
         SetActiveUse(false);
-        SetActivePunch(false);
     }
 
     public void SetLowerBodyRotation(Vector2 direction)
@@ -54,7 +53,8 @@ public class CharacterAnimationController : MonoBehaviour
     }
 
     public void SetActiveUse(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Use, v); }
-    public void SetActivePunch(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Punch, v); }
+    // public void SetActivePunch(bool v) { if (upperAnimator) upperAnimator.SetBool(AnimationHash.Punch, v); }
+    public void PlayPunch() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Punch); }
 
     public void PlayShoot() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Shoot); }
     public void PlayThrow() { if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Throw); }
@@ -98,7 +98,6 @@ public class CharacterAnimationController : MonoBehaviour
         SetMoveBlend(s.blend);
         SetMoveSpeed(s.speed);
         SetActiveUse(s.use);
-        SetActivePunch(s.punch);
     }
 
     /// <summary>
