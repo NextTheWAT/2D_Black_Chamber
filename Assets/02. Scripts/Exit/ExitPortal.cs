@@ -4,11 +4,18 @@ using UnityEngine.SceneManagement;
 
 public class ExitPortal : MonoBehaviour
 {
+    [Header("Visual")]
     public GameObject defaultLight;
     public GameObject clearLight;
 
+    [Header("Scene")]
     [SerializeField] public string clearSceneName = "ClearScene";  // 클리어씬
     [SerializeField] private int stageNumber = 1;
+
+    [Header("Tutorial Exit")]
+    [SerializeField] private bool isTutorialExit = false;
+    [SerializeField] private string loobySceneName = "LobbyScene"; //튜토리얼 완료 후 이동할 씬
+    private const string PrefKey_TutorialDone = "TutorialDone";
 
     private MissionManager mm;
 
@@ -41,9 +48,18 @@ public class ExitPortal : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player") || mm == null) return;
+        if (!other.CompareTag("Player")) return;
+
+        if (isTutorialExit)
+        {
+            PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene(loobySceneName); // 로비로 이동
+            return;
+        }
 
         // 탈출 가능한 상태에서만 클리어 처리
+        if (mm == null) return;
         if (mm.Phase != MissionPhase.Escape)
         {
             Debug.Log("클리어 조건을 만족하지 않았습니다.");
