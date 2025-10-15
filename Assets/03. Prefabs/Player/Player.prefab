@@ -711,7 +711,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseTr: {fileID: 0}
-  maxMouseDistance: 5
+  maxMouseDistance: 4
   moveSpeed: 3
   acceleration: 30
   runSpeedMultiplier: 2
