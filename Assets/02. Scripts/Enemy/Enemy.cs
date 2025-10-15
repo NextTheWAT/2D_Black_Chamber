@@ -218,7 +218,8 @@ public class Enemy : MonoBehaviour
         GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
     }
 
-    void OnDisable(){
+    void OnDisable()
+    {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
     }
@@ -436,6 +437,15 @@ public class Enemy : MonoBehaviour
         {
             Target = collision.transform;
             GameManager.Instance.StartCombatAfterDelay(this);
+        }
+        else if (collision.gameObject.CompareTag("Door"))
+        {
+            Door door = collision.gameObject.GetComponentInParent<Door>();
+            if (door && !door.isExitDoor && !door.IsOpen)
+            {
+                door.Interaction(transform);
+            }
+
         }
     }
 

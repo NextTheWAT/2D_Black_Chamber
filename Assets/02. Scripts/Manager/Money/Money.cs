@@ -11,7 +11,7 @@ public class Money : MonoBehaviour, Iinteraction
         money = value;
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
         MoneyManager.Instance.AddMoney(money);
 

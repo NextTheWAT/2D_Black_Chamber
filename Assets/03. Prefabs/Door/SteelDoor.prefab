@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 8566794377187177699}
   m_Layer: 15
   m_Name: SteelDoor.Collider
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
