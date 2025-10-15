@@ -16,12 +16,15 @@ public class PlayerAimController : MonoBehaviour
     public float aimingDuration = 5f; // 조준 지속 시간
     private float currentAimingTime = 0f;
 
-
-
     public float aimLineDistance = 1.5f;
+
+    public float aimRunningSpeedPenalty = 10f; // 달리기 시 조준 정확도 패널티
 
     private Transform aimLineTransform;
     private LineRenderer lineRenderer;
+
+    private float penaltyAngle = 0f; // 패널티 각도
+    private float penaltySpeed = 0f; // 패널티 속도
 
     private Shooter CurrentShooter => WeaponManager.Instance.CurrentWeapon;
 
@@ -29,9 +32,12 @@ public class PlayerAimController : MonoBehaviour
     private float pingpongTime = 0f;
     private bool aimingCooldown = false;
 
+    private PlayerInputController inputController;
+
     void Start()
     {
         lineRenderer = GetComponentInChildren<LineRenderer>();
+        inputController = GetComponent<PlayerInputController>();
         aimLineTransform = lineRenderer.transform;
     }
 
@@ -39,8 +45,15 @@ public class PlayerAimController : MonoBehaviour
     {
         isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
         UpdateAimingTime();
+        UpdatePenalty();
         UpdateAimParameters();
         UpdateAimLine();
+    }
+
+    void UpdatePenalty()
+    {
+        penaltySpeed = inputController.RunHeld ? aimRunningSpeedPenalty : 0f;
+
     }
 
     void UpdateAimingTime()
@@ -62,6 +75,9 @@ public class PlayerAimController : MonoBehaviour
     {
         float targetAngle = isAiming ? aimPingPongMinAngle : aimPingPongMaxAngle;
         float targetSpeed = isAiming ? aimPingPongMinSpeed : aimPingPongMaxSpeed;
+
+        targetAngle += penaltyAngle;
+        targetSpeed += penaltySpeed;
 
         currentPingPongAngle = Mathf.MoveTowards(currentPingPongAngle, targetAngle, aimingTransitionSpeed * Time.deltaTime);
         currentPingPongSpeed = Mathf.MoveTowards(currentPingPongSpeed, targetSpeed, aimingTransitionSpeed * Time.deltaTime);

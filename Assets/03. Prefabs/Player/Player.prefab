@@ -1110,8 +1110,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimPingPongMaxAngle: 20
-  aimPingPongSpeed: 5
+  aimPingPongMinAngle: 10
+  aimPingPongMaxSpeed: 5
+  aimPingPongMinSpeed: 2
+  aimingTransitionSpeed: 5
+  aimingDuration: 5
   aimLineDistance: 1.5
+  aimRunningSpeedPenalty: 10
 --- !u!1 &6390167608740650960
 GameObject:
   m_ObjectHideFlags: 0
