@@ -8,6 +8,7 @@ public class CardKey : MonoBehaviour, Iinteraction
 
     public void Interaction()
     {
+        Debug.Log("카드키먹기");
         hasCardKey = true;
         gameObject.SetActive(false);
     }

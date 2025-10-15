@@ -27,6 +27,8 @@ public class SteelDoor : MonoBehaviour, Iinteraction
 
     public void Interaction()
     {
+        if (!CardKey.hasCardKey)
+            return;
         isOpen = !isOpen;
     }
 
