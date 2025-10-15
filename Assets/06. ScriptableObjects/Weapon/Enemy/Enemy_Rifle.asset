@@ -15,11 +15,12 @@ MonoBehaviour:
   displayName: Rifle
   weaponClass: 3
   subType: AR
-  noise: 2
   damage: 10
-  rpm: 400
+  rpm: 300
+  curMagazine: 30
+  curReserve: 30
   maxMagazine: 30
-  maxReserve: 30
+  maxReserve: 90
   accuracyDeg: 6
   projectilesPerShot: 1
   bulletSpeed: 100
@@ -27,8 +28,6 @@ MonoBehaviour:
   semiAutoDelay: 0
   spreadControlPct: 0
   aimDistancePct: 100
-  headshotMultPct: 110
-  ejectionForce: 0
   reloadSpeedMul: 1
   adsSpeedPct: 100
   movePenaltyPct: 0
