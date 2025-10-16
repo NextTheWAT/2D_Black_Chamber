@@ -1,8 +1,10 @@
+using Constants;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using Constants;
-using System.Collections.Generic;
+using static Item;
+using static UnityEditor.Progress;
 
 public class Enemy : MonoBehaviour
 {
@@ -54,7 +56,7 @@ public class Enemy : MonoBehaviour
     public string stateType;
     public bool isTarget = false;
 
-    public GameObject[] dropItems;
+    public GameObject dropItems;
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
@@ -421,12 +423,22 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
-        if (dropItems.Length > 0)
+       
+
+        Vector3 dropPos = transform.position + Vector3.up * 0.2f;
+        GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
+        switch(WeaponManager.Instance.CurrentWeaponIndex)
         {
-            int r = Random.Range(0, dropItems.Length);
-            Vector3 dropPos = transform.position + Vector3.up * 0.2f;
-            Instantiate(dropItems[r], dropPos, Quaternion.identity);
+            case 0:
+                ob.GetComponent<Item>().ammoAmount = 12;
+                break;
+
+            case 1:
+                ob.GetComponent<Item>().ammoAmount = 30;
+                break;
+
         }
+       
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
