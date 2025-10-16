@@ -16,6 +16,8 @@ public class StageRunTracker : MonoBehaviour
     int _killCount;
     bool _ended;
 
+    private System.Action<Constants.GamePhase> _phaseHandler;
+
     void Awake()
     {
         stageId = SceneManager.GetActiveScene().name;   // stage_id 자동
@@ -29,15 +31,21 @@ public class StageRunTracker : MonoBehaviour
         _killCount = 0;
         _ended = false;
 
-        var gm = GameManager.Instance;                   // 모드 변경 구독
+        var gm = GameManager.Instance;
         if (gm != null)
-            gm.OnPhaseChanged += phase => SetGameplayMode(phase == GamePhase.Combat);
+        {
+            _phaseHandler = phase => SetGameplayMode(phase == Constants.GamePhase.Combat);
+            gm.OnPhaseChanged += _phaseHandler;
+        }
     }
     void OnDisable()
     {
         var gm = GameManager.Instance;
-        if (gm != null)
-            gm.OnPhaseChanged -= phase => SetGameplayMode(phase == GamePhase.Combat);
+        if (gm != null && _phaseHandler != null)
+        {
+            gm.OnPhaseChanged -= _phaseHandler;
+            _phaseHandler = null;
+        }
     }
 
     // 적 처치 시 적 스크립트에서 호출: tracker.AddKill();

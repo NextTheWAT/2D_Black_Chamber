@@ -10,11 +10,13 @@ public class PlayerHealthEventHandler : MonoBehaviour
     private PlayerInputController playerInputController;
     private CharacterAnimationController animController;
 
+
     // 마지막 공격자(사망 원인) 저장
     private string _lastKillerId = "unknown";
+
     public void ReportAttacker(string killerId) => _lastKillerId = string.IsNullOrEmpty(killerId) ? "unknown" : killerId;
 
-    private void OnEnable()
+    void OnEnable()
     {
         _health = GetComponent<Health>();
         if (_health != null)
@@ -23,7 +25,7 @@ public class PlayerHealthEventHandler : MonoBehaviour
             _health.OnDie.AddListener(OnPlayerDie);
         }
     }
-    private void OnDisable()
+    void OnDisable()
     {
         if (_health != null)
         {
@@ -52,10 +54,7 @@ public class PlayerHealthEventHandler : MonoBehaviour
     {
         // 애널리틱스 훅 (널가드)
         var hook = GetComponent<PlayerDeathHook>();
-        if (hook != null)
-        {
-            hook.OnDie(_lastKillerId);
-        }
+        if (hook != null) hook.OnDie(_lastKillerId); // 여기서 애널리틱스 전송
 
         // 플레이어가 사망했을 때 실행할 코드
         Debug.Log("Player has died!");

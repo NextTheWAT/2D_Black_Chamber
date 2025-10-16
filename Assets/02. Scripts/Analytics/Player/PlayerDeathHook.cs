@@ -17,6 +17,19 @@ public class PlayerDeathHook : MonoBehaviour
             : stageIdOverride;
     }
 
+    void OnEnable()
+    {
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged += PhaseChanged;
+    }
+    void OnDisable()
+    {
+        var gm = GameManager.Instance;
+        if (gm != null) gm.OnPhaseChanged -= PhaseChanged;
+    }
+    void PhaseChanged(Constants.GamePhase phase) =>
+        SetGameplayMode(phase == Constants.GamePhase.Combat);
+
     public void SetGameplayMode(bool combat) => gameplayMode = combat ? "combat" : "stealth";
 
     // 사망 처리 시점에서 이 메서드만 호출하면 끝!
