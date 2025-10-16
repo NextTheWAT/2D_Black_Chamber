@@ -13,8 +13,13 @@ public class ModeSwitchTracker : MonoBehaviour
 
     void Awake()
     {
-        stageId = SceneManager.GetActiveScene().name;           // stage_id 자동
-        if (player == null) player = FindAnyObjectByType<GameManager>()?.Player; // 자동 할당
+        stageId = SceneManager.GetActiveScene().name;
+        if (!StageRunTracker.IsGameplayScene(stageId))   // 위의 헬퍼를 public static으로 뽑아도 됨
+        {
+            enabled = false;
+            return;
+        }
+        if (player == null) player = FindAnyObjectByType<GameManager>()?.Player;
     }
     void OnEnable()
     {

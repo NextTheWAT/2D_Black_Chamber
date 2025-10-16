@@ -29,6 +29,7 @@ public class MissionEntityHook : MonoBehaviour
         if (MissionManager.Instance == null || deactivated) return;
         DeactivateOnce();
         GameStats.Instance.AddKill();
+        FindAnyObjectByType<StageRunTracker>()?.AddKill();
     }
 
     private void DeactivateOnce()
@@ -37,6 +38,5 @@ public class MissionEntityHook : MonoBehaviour
         if (kind == MissionEntityKind.AssassinationTarget) MissionManager.Instance.TargetDeactivated();
         else MissionManager.Instance.EnemyDeactivated();
 
-        FindAnyObjectByType<StageRunTracker>()?.AddKill();
     }
 }

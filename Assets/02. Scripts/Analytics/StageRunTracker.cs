@@ -7,8 +7,8 @@ using Constants;
 public class StageRunTracker : MonoBehaviour
 {
     [Header("IDs")]
-    [SerializeField] string stageId = "stage_1";
-    [SerializeField] string gameplayMode = "stealth"; // 외부에서 갱신
+    [SerializeField] string stageId = "";
+    [SerializeField] string gameplayMode = ""; // 외부에서 갱신
     public void SetGameplayMode(bool combat) => gameplayMode = combat ? "combat" : "stealth";
 
     float _startTime;
@@ -20,7 +20,19 @@ public class StageRunTracker : MonoBehaviour
 
     void Awake()
     {
-        stageId = SceneManager.GetActiveScene().name;   // stage_id 자동
+        stageId = SceneManager.GetActiveScene().name;
+
+        // 게임 씬이 아니면 아예 꺼버리기 (중복 호출/오염 방지)
+        if (!IsGameplayScene(stageId))
+        {
+            enabled = false;           // 또는 Destroy(this);
+            return;
+        }
+    }
+    public static bool IsGameplayScene(string scene)
+    {
+        // 네 규칙에 맞게 조정: 스테이지가 stage_ 접두사거나 tutorial이면 true
+        return scene.StartsWith("stage_");
     }
 
     void OnEnable()

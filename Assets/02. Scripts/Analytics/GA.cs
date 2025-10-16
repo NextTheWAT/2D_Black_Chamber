@@ -7,7 +7,7 @@ public static class GA
 {
     static void AddCommon(Dictionary<string, object> p)
     {
-        p["build_version"] = Application.version; // 원하면 제거해도 됨
+
     }
 
     static Vector2 Snap(Vector2 v, float step = 0.5f)

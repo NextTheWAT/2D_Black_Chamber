@@ -77,6 +77,13 @@ public class ExitPortal : MonoBehaviour
             return;
         }
 
+        var tracker = FindAnyObjectByType<StageRunTracker>();
+        if (tracker != null)
+        {
+            tracker.ReportComplete();
+        }
+
+
         Debug.Log("클리어하였습니다.");
         mm.SetPhase(MissionPhase.Completed);
 
