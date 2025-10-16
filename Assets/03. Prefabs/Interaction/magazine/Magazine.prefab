@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6990239470718096176}
   - component: {fileID: 7259077012605059704}
   m_Layer: 0
-  m_Name: Rifle  Magazine 2
+  m_Name: Magazine
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

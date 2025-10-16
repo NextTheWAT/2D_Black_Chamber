@@ -423,13 +423,22 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
+       
+
         Vector3 dropPos = transform.position + Vector3.up * 0.2f;
         GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
-        //switch ()
+        switch(WeaponManager.Instance.CurrentWeaponIndex)
         {
+            case 0:
+                ob.GetComponent<Item>().ammoAmount = 12;
+                break;
+
+            case 1:
+                ob.GetComponent<Item>().ammoAmount = 30;
+                break;
 
         }
-       ob.GetComponent<Item>().ammoAmount = 12;
+       
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

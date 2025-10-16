@@ -12,7 +12,7 @@ public class Item : MonoBehaviour, Iinteraction
         Rifle
     }
 
-    public WeaponType weaponType; // 권총/라이플 구분
+    //public WeaponType weaponType; // 권총/라이플 구분
     public int ammoAmount;
 
     private GameObject player;    // 플레이어 Transform
