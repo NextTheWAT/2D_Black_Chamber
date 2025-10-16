@@ -8,6 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -244,54 +245,65 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 870313891
+    uuid:
+      value0: 1560064495
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 1560064495
     name: tablet_yellow_highlighted
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: tablet_yellow_highlighted_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
       spriteId: 189bcf661bad818498c99a4878be35d3
-    - name: tablet_yellow_highlighted_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
       spriteId: c79f12e5bac515846a14f12c09f0397e
-    - name: tablet_yellow_highlighted_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
       spriteId: 4bc82746c464ef54d93c88aa45b38005
-    - name: tablet_yellow_highlighted_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
       spriteId: 7df87cbf7364fe3459cc2354b0465c3f
-    - name: tablet_yellow_highlighted_Frame_4
+    - name: Frame_4
       frameIndex: 4
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
       spriteId: 3edc17507b0a8f34a9586e976d02e3e0
-    - name: tablet_yellow_highlighted_Frame_5
+    - name: Frame_5
       frameIndex: 5
+      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
@@ -305,3 +317,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 89, y: 57}
+  previousTextureSize: {x: 512, y: 512}
