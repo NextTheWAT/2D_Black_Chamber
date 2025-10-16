@@ -12,7 +12,6 @@ public class Item : MonoBehaviour, Iinteraction
         Rifle
     }
 
-    public string itemName;
     public WeaponType weaponType; // 권총/라이플 구분
     public int ammoAmount;
 
@@ -37,7 +36,6 @@ public class Item : MonoBehaviour, Iinteraction
 
     public void PickUp() //총알 줍기
     {
-        Debug.Log(itemName + "을 주웠습니다");
 
         var wm = WeaponManager.Instance;
         var shooter = wm != null ? wm.CurrentWeapon : null;
