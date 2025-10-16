@@ -454,9 +454,7 @@ MonoBehaviour:
   minIconShowTime: 0.12
   stateType: 
   isTarget: 0
-  dropItems:
-  - {fileID: 7095231127424643423, guid: fd4d79d767e4deb4eb056dd6149cabab, type: 3}
-  - {fileID: 8992366841505014071, guid: 1d76c1d805b5c9f418a6e077c3a0cf22, type: 3}
+  dropItems: {fileID: 8992366841505014071, guid: 1d76c1d805b5c9f418a6e077c3a0cf22, type: 3}
 --- !u!114 &3522994100237713953
 MonoBehaviour:
   m_ObjectHideFlags: 0
