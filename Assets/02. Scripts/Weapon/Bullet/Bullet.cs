@@ -18,6 +18,9 @@ public class Bullet : MonoBehaviour
     private ContactFilter2D damageFilter; // 데미지 충돌 필터
     private ContactFilter2D obstacleFilter; // 장애물 충돌 필터
 
+
+    [SerializeField] private string sourceId = "unknown"; // 발사자/가해자 ID
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -36,8 +39,13 @@ public class Bullet : MonoBehaviour
         return filter;
     }
 
-
     public void Init(Vector2 position, Vector2 dir, float speed, int damage, float lifetime, int ignoreLayer)
+    {
+        Init(position, dir, speed, damage, lifetime, ignoreLayer, attackerId: gameObject.name); // 임시 fallback: 총알 프리팹 이름
+    }
+
+    // --- 추가: 발사자 ID를 받는 Init 오버로드 ---
+    public void Init(Vector2 position, Vector2 dir, float speed, int damage, float lifetime, int ignoreLayer, string attackerId)
     {
         transform.position = position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -48,6 +56,7 @@ public class Bullet : MonoBehaviour
         spawnTime = Time.time;
         this.ignoreLayer = ignoreLayer;
 
+        sourceId = string.IsNullOrEmpty(attackerId) ? "unknown" : attackerId; // 저장
         previousPos = transform.position;
         rb.velocity = dir.normalized * speed;
     }
@@ -71,7 +80,16 @@ public class Bullet : MonoBehaviour
         if (TryRaycastHit(damageFilter, out RaycastHit2D damageHit))
         {
             HandleDamageHit(damageHit);
-            damageHit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
+
+            var hp = damageHit.collider.GetComponent<Health>();
+            if (hp != null)
+            {
+                // 플레이어인 경우에만 마지막 가해자 기록
+                var phe = damageHit.collider.GetComponent<PlayerHealthEventHandler>();
+                if (phe != null) phe.ReportAttacker(sourceId);   // 먼저 기록
+
+                hp.TakeDamage(dmg);                               // 그리고 데미지 적용
+            }
             return;
         }
 

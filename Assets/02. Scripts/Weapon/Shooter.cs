@@ -27,6 +27,10 @@ public class Shooter : MonoBehaviour
     public bool IsClipEmpty => currentMagazine <= 0;
     private bool _initialized = false;
 
+
+    [Header("Analytics")]
+    [SerializeField] private string attackerId = "guard_rifle";
+
     public float CurrentSpread
     {
         get => currentSpread;
@@ -43,6 +47,10 @@ public class Shooter : MonoBehaviour
             gunPoint.localPosition = Vector3.zero;
             gunPoint.localRotation = Quaternion.identity;
         }
+
+        // 만약 별도로 설정 안 했다면, 프리팹/오브젝트 이름을 기본값으로 사용하고 싶다면:
+        if (string.IsNullOrEmpty(attackerId))
+            attackerId = gameObject.name; // 옵션
     }
 
     private void Start()
@@ -195,7 +203,8 @@ public class Shooter : MonoBehaviour
             speed: gun.bulletSpeed,
             damage: gun.damage,
             lifetime: gun.bulletLife,
-            ignoreLayer: gameObject.layer
+            ignoreLayer: gameObject.layer,
+            attackerId: attackerId          // 가해자 ID 전달
         );
     }
 

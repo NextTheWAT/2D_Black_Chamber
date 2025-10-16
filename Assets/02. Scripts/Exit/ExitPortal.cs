@@ -55,6 +55,8 @@ public class ExitPortal : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        FindAnyObjectByType<StageRunTracker>()?.ReportComplete();
+
         if (isTutorialExit)
         {
             PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);

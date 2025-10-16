@@ -36,5 +36,7 @@ public class MissionEntityHook : MonoBehaviour
         deactivated = true;
         if (kind == MissionEntityKind.AssassinationTarget) MissionManager.Instance.TargetDeactivated();
         else MissionManager.Instance.EnemyDeactivated();
+
+        FindAnyObjectByType<StageRunTracker>()?.AddKill();
     }
 }

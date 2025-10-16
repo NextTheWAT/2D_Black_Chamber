@@ -14,6 +14,7 @@ public class Health : MonoBehaviour, IDamageable
     public UnityEvent<int, int> OnHealthChanged; // (현재 체력, 최대 체력)
     public UnityEvent OnDie;
 
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -45,6 +46,7 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Die()
     {
+
         OnDie?.Invoke();
     }
 }

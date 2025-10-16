@@ -34,6 +34,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+
     public bool IsCombat
     {
         get => CurrentPhase == GamePhase.Combat;
