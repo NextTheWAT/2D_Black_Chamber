@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 101
-  m_Sprite: {fileID: 21300000, guid: 01f4735b5a9e2354fb6cd19c333a36f4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f535d4761c92e694d90ecb4b7474850d, type: 3}
   m_Color: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 0.50980395}
   m_FlipX: 0
   m_FlipY: 0
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 6011826562308429196}
   - component: {fileID: 7352095193004505737}
   m_Layer: 0
-  m_Name: 0.2 TutorialPopup2D
+  m_Name: 0.6 TutorialPopup2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -194,7 +194,7 @@ Transform:
   m_GameObject: {fileID: 8034432587792026300}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.3, y: -12.45, z: 0}
+  m_LocalPosition: {x: 22.18, y: 11.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -217,6 +217,8 @@ MonoBehaviour:
   imageRenderer: {fileID: 2249540678692797694}
   dimBackground: {fileID: 8909180362772414107}
   pages:
-  - {fileID: 21300000, guid: 01f4735b5a9e2354fb6cd19c333a36f4, type: 3}
-  - {fileID: 21300000, guid: aa6b1f8b4ae27604b88ce58873303882, type: 3}
+  - {fileID: 21300000, guid: f535d4761c92e694d90ecb4b7474850d, type: 3}
+  - {fileID: 21300000, guid: 1172271749595db49beff79df1e371d4, type: 3}
+  - {fileID: 21300000, guid: 325238fca4cc54b47834c185c3b8984b, type: 3}
+  - {fileID: 21300000, guid: 25fbf3e9063c37345b84b39d2d36100f, type: 3}
   loadSceneAfterLastPage: 
