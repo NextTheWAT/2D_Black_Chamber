@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6990239470718096176}
   - component: {fileID: 7259077012605059704}
   m_Layer: 0
-  m_Name: Rifle  Magazine 2
+  m_Name: Magazine
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,9 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c073b94aa1b4d3b4f81d3752bbb595f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: "\uD0C4\uCC3D"
-  weaponType: 1
-  ammoAmount: 30
+  ammoAmount: 0
 --- !u!58 &7259077012605059704
 CircleCollider2D:
   m_ObjectHideFlags: 0
