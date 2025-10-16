@@ -55,19 +55,25 @@ public class ExitPortal : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
-        if (isTutorialExit)
+        if (mm == null) mm = MissionManager.Instance;
+        if (mm == null)
         {
-            PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
-            PlayerPrefs.Save();
-            SceneManager.LoadScene(loobySceneName); // 로비로 이동
+            Debug.LogWarning("[ExitPortal] MissionManager가 없습니다.");
             return;
         }
 
-        // 탈출 가능한 상태에서만 클리어 처리
-        if (mm == null) return;
         if (mm.Phase != MissionPhase.Escape)
         {
-            Debug.Log("클리어 조건을 만족하지 않았습니다.");
+            Debug.Log("클리어 조건을 만족하지 않았습니다. (아직 목표물이 남아있음)");
+            return;
+        }
+
+        if (isTutorialExit)
+        {
+            // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
+            PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene(loobySceneName);
             return;
         }
 
