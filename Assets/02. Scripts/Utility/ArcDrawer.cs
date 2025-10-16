@@ -14,8 +14,40 @@ public class ArcDrawer : MonoBehaviour
         lineRenderer.positionCount = segmentCount;
     }
 
+    public Color GetColor()
+        => lineRenderer.startColor;
+
+
+    public void SetColor(Color color)
+    {
+        color.a = lineRenderer.startColor.a; // 기존 알파 값 유지
+
+        lineRenderer.startColor = color;
+        lineRenderer.endColor = color;
+    }
+
+    public void SetAlpha(float alpha)
+    {
+        Color startColor = lineRenderer.startColor;
+        Color endColor = lineRenderer.endColor;
+
+        startColor.a = alpha;
+        endColor.a = alpha;
+
+        lineRenderer.startColor = startColor;
+        lineRenderer.endColor = endColor;
+    }
+
     public void DrawArc(float totalAngle)
     {
+        if(totalAngle < 0)
+        {
+            lineRenderer.enabled = false;
+            return;
+        }
+
+        lineRenderer.enabled = true;
+
         float angleStep = totalAngle / (segmentCount - 1);
         float halfAngle = totalAngle * 0.5f;
 
