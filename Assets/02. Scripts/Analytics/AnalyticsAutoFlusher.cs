@@ -5,7 +5,7 @@ using UnityEngine;
 public class AnalyticsAutoFlusher : MonoBehaviour
 {
 #if UNITY_WEBGL
-    [SerializeField] float interval = 15f;
+    [SerializeField] float interval = 5f;
     void OnEnable() => StartCoroutine(Loop());
     IEnumerator Loop()
     {
