@@ -73,24 +73,26 @@ public static class FOVUtility
 
         return false;
     }
-
     public static bool IsPointInFOV(this Transform self, Vector2 point, float viewAngle, float viewDistance, LayerMask obstacleMask)
     {
-        Vector2 dirToPoint = (point - (Vector2)self.position).normalized;
-        float distToPoint = Vector2.Distance(self.position, point);
+        Vector2 selfPos = self.position;
+        Vector2 dirToPoint = point - selfPos;
+
+        float distToPoint = dirToPoint.magnitude;
+        if (distToPoint > viewDistance) return false;
+
         float angleToPoint = Vector2.Angle(self.up, dirToPoint);
         float halfViewAngle = viewAngle * 0.5f;
+        if (angleToPoint > halfViewAngle) return false;
 
-        if (angleToPoint <= halfViewAngle && distToPoint <= viewDistance)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(self.position, dirToPoint, distToPoint, obstacleMask);
+        foreach (var hit in hits)
         {
-            RaycastHit2D hit = Physics2D.Raycast(self.position, dirToPoint, distToPoint, obstacleMask);
-            if (hit.collider != null && hit.collider.transform != self)
-                return false;
-            else
-                return true;
+            if (hit.collider.transform == self || hit.collider.transform == self.parent) continue; // 자기 자신과 부모는 무시
+            if (hit.collider) return false; // 다른 오브젝트에 막힘
         }
 
-        return false;
+        return true; // 시야 확보
     }
 
 }

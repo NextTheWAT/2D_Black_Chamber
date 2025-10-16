@@ -14,14 +14,16 @@ public class CCTV : MonoBehaviour
     [SerializeField] private float suspicionBuildTime = 4f;
 
     [Header("Detection")]
+    [SerializeField] private Transform head;
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
 
     [SerializeField] private Light2D light2D;
 
-    [SerializeField] private Color originalColor;
-    [SerializeField] private Color suspiciousColor;
-    [SerializeField] private Color alertColor;
+    [SerializeField] private Color originalColor; // 원래 색상
+    [SerializeField] private Color suspiciousColor; // 의심 상태의 색상
+    [SerializeField] private Color alertColor; // 경계 상태의 색상
+    [SerializeField] private Color destroyedColor; // 파괴된 상태의 색상
 
     private Transform detectedTarget;
     private bool isLeftRotating;
@@ -30,17 +32,23 @@ public class CCTV : MonoBehaviour
     private float leftLimitZ;
     private float rightLimitZ;
 
-    public float EulerZ => transform.eulerAngles.z;
+    [Header("Destroy")]
+    [SerializeField] private GameObject explosionEffect;
+    private Collider2D coll;
+
+    public float EulerZ => head.eulerAngles.z;
 
     private void Start()
     {
+        coll = GetComponent<Collider2D>();
+
         light2D.pointLightOuterRadius = viewDistance;
         light2D.pointLightOuterAngle = viewAngle;
 
         originalColor = light2D.color;
 
         // 시작 방향을 중심으로 회전 각도 계산
-        centerZ = transform.eulerAngles.z;
+        centerZ = head.eulerAngles.z;
         float halfRange = rotateRange * 0.5f;
         leftLimitZ = NormalizeAngle(centerZ + halfRange);
         rightLimitZ = NormalizeAngle(centerZ - halfRange);
@@ -66,10 +74,10 @@ public class CCTV : MonoBehaviour
     }
 
     void DetectTarget()
-        => detectedTarget = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+        => detectedTarget = head.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
 
     void SetEulerZ(float eulerZ)
-        => transform.eulerAngles = new Vector3(0, 0, eulerZ);
+        => head.eulerAngles = new Vector3(0, 0, eulerZ);
 
     // 감시
     IEnumerator Watch()
@@ -140,7 +148,7 @@ public class CCTV : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
 
-            Vector2 dir = (detectedTarget.position - transform.position).normalized;
+            Vector2 dir = (detectedTarget.position - head.position).normalized;
             float targetZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
             float angle = Mathf.MoveTowardsAngle(EulerZ, targetZ, angularSpeed * Time.deltaTime);
 
@@ -194,32 +202,36 @@ public class CCTV : MonoBehaviour
 
     public void Die()
     {
+        StopAllCoroutines();
         StructSoundManager.Instance.PlayStructBrokenSound();
-        gameObject.SetActive(false);
+        ObjectPoolingManager.Instance.Get(explosionEffect, head.position);
+        head.GetComponent<SpriteRenderer>().color = destroyedColor;
+        light2D.enabled = false;
+        coll.enabled = false;
     }
 
     private void OnDrawGizmos()
     {
         // viewDistance 표시
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, viewDistance);
+        Gizmos.DrawWireSphere(head.position, viewDistance);
 
         // viewAngle 표시
-        Vector2 rightDir = Quaternion.Euler(0, 0, viewAngle * 0.5f) * transform.up;
-        Vector2 leftDir = Quaternion.Euler(0, 0, -viewAngle * 0.5f) * transform.up;
+        Vector2 rightDir = Quaternion.Euler(0, 0, viewAngle * 0.5f) * head.up;
+        Vector2 leftDir = Quaternion.Euler(0, 0, -viewAngle * 0.5f) * head.up;
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + rightDir * viewDistance);
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + leftDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + rightDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + leftDir * viewDistance);
 
         // 회전 범위 표시
-        float centerZ = Application.isPlaying ? this.centerZ : transform.eulerAngles.z;
+        float centerZ = Application.isPlaying ? this.centerZ : head.eulerAngles.z;
         float halfRange = rotateRange * 0.5f;
 
         Vector2 leftLimitDir = Quaternion.Euler(0, 0, centerZ + halfRange) * Vector2.up;
         Vector2 rightLimitDir = Quaternion.Euler(0, 0, centerZ - halfRange) * Vector2.up;
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + leftLimitDir * viewDistance);
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + rightLimitDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + leftLimitDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + rightLimitDir * viewDistance);
     }
 }
