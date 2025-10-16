@@ -1,5 +1,6 @@
 // GA.cs
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Services.Analytics;
 using UnityEngine;
 
@@ -21,10 +22,13 @@ public static class GA
     static void Send(string eventName, Dictionary<string, object> p)
     {
         var ev = new CustomEvent(eventName);
-        foreach (var kv in p)
-            ev.Add(kv.Key, kv.Value);   // 값은 string/int/long/float/double/bool만 허용
-
+        foreach (var kv in p) ev.Add(kv.Key, kv.Value);
         AnalyticsService.Instance.RecordEvent(ev);
+
+#if UNITY_EDITOR
+        Debug.Log($"[AN] GA.Send {eventName} -> " +
+                  string.Join(", ", p.Select(kv => $"{kv.Key}:{kv.Value}")));
+#endif
     }
 
     // 1) player_death
