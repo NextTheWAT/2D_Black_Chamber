@@ -4704,7 +4704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e2259a8b989f8a4ab079d96d76a3181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!43 &474275040
+--- !u!43 &514479322
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4869,7 +4869,7 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!43 &514479322
+--- !u!43 &595859310
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10445,7 +10445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396340612875567919, guid: b216396da1ec6064883066b2aab1b76e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.09
+      value: -0.02
       objectReference: {fileID: 0}
     - target: {fileID: 1396340612875567919, guid: b216396da1ec6064883066b2aab1b76e, type: 3}
       propertyPath: m_LocalPosition.y
