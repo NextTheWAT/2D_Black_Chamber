@@ -20,9 +20,10 @@ public class CCTV : MonoBehaviour
 
     [SerializeField] private Light2D light2D;
 
-    [SerializeField] private Color originalColor;
-    [SerializeField] private Color suspiciousColor;
-    [SerializeField] private Color alertColor;
+    [SerializeField] private Color originalColor; // 원래 색상
+    [SerializeField] private Color suspiciousColor; // 의심 상태의 색상
+    [SerializeField] private Color alertColor; // 경계 상태의 색상
+    [SerializeField] private Color destroyedColor; // 파괴된 상태의 색상
 
     private Transform detectedTarget;
     private bool isLeftRotating;
@@ -31,10 +32,16 @@ public class CCTV : MonoBehaviour
     private float leftLimitZ;
     private float rightLimitZ;
 
+    [Header("Destroy")]
+    [SerializeField] private GameObject explosionEffect;
+    private Collider2D coll;
+
     public float EulerZ => head.eulerAngles.z;
 
     private void Start()
     {
+        coll = GetComponent<Collider2D>();
+
         light2D.pointLightOuterRadius = viewDistance;
         light2D.pointLightOuterAngle = viewAngle;
 
@@ -195,8 +202,12 @@ public class CCTV : MonoBehaviour
 
     public void Die()
     {
+        StopAllCoroutines();
         StructSoundManager.Instance.PlayStructBrokenSound();
-        gameObject.SetActive(false);
+        ObjectPoolingManager.Instance.Get(explosionEffect, head.position);
+        head.GetComponent<SpriteRenderer>().color = destroyedColor;
+        light2D.enabled = false;
+        coll.enabled = false;
     }
 
     private void OnDrawGizmos()
