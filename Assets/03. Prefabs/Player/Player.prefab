@@ -1003,6 +1003,7 @@ GameObject:
   - component: {fileID: -2828761219562335248}
   - component: {fileID: 595559283223226370}
   - component: {fileID: 2059217959560316814}
+  - component: {fileID: 5568280514639524747}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1558,6 +1559,20 @@ MonoBehaviour:
   sideLineDistance: 0.5
   aimingDuration: 5
   aimRunningSpeedPenalty: 10
+--- !u!114 &5568280514639524747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cab6ca04c326b414ba8d9fabfd71b983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stageIdOverride: 
+  gameplayMode: 
 --- !u!1 &6390167608740650960
 GameObject:
   m_ObjectHideFlags: 0
