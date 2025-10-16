@@ -5,14 +5,23 @@ using UnityEngine;
 public class PlayerAimController : MonoBehaviour
 {
     [Header("Line")]
-    public LineRenderer lineRenderer;
+    public LineRenderer aimLineRenderer;
+    public LineRenderer leftLineRenderer;
+    public LineRenderer rightLineRenderer;
     public float aimMaxWidth = 0.1f; // 최대 조준선 너비
     public float aimMinWidth = 0.02f; // 최소 조준선 너비
     private float currentAimWidth;
     private Transform aimLineTransform;
 
     [Header("Arc")]
-    public ArcDrawer aimArcDrawer;
+    public ArcDrawer gaugeArcDrawer;
+    public ArcDrawer backgroundArcDrawer;
+
+    public Color gaugeOriginalColor; // 원래 색상
+    public Color gaugeCooldownColor; // 쿨타임 색상
+
+    public float maxAlpha = 0.8f; // 최대 알파 값
+    public float gaugeColorTransitionSpeed = 5f; // 색상 전환 속도
 
     [Header("Angle")]
     public float aimPingPongMaxAngle = 20f; // 최대 핑퐁 범위
@@ -27,6 +36,9 @@ public class PlayerAimController : MonoBehaviour
 
     public float aimLineOffset = 0.2f;
     public float aimLineDistance = 1.5f;
+
+    public float sideLineOffset = 1f;
+    public float sideLineDistance = 1f;
 
     [Header("Aiming")]
     public float aimingDuration = 5f; // 조준 지속 시간
@@ -49,22 +61,36 @@ public class PlayerAimController : MonoBehaviour
     void Start()
     {
         inputController = GetComponent<PlayerInputController>();
-        aimLineTransform = lineRenderer.transform;
+        aimLineTransform = aimLineRenderer.transform;
+
+        leftLineRenderer.positionCount = 2;
+        rightLineRenderer.positionCount = 2;
     }
 
-    void Update()
+    void LateUpdate()
     {
         isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
         UpdateAimingTime();
         UpdatePenalty();
         UpdateAimParameters();
         UpdateAimLine();
+        UpdateSideLine();
         DrawArc();
     }
     void DrawArc()
     {
-        aimArcDrawer.transform.position = CurrentShooter.gunPoint.position;
-        aimArcDrawer.DrawArc(currentPingPongAngle);
+        float ratio = currentAimingTime / aimingDuration;
+        float aimingGauge = 1 - ratio;
+        Color targetColor = aimingCooldown ? gaugeCooldownColor : Color.Lerp(gaugeOriginalColor, gaugeCooldownColor, ratio);
+        Color gaugeColor = Color.Lerp(gaugeArcDrawer.GetColor(), targetColor, Time.deltaTime * gaugeColorTransitionSpeed);
+
+        gaugeArcDrawer.transform.position = CurrentShooter.gunPoint.position;
+        gaugeArcDrawer.DrawArc(currentPingPongAngle * aimingGauge);
+        gaugeArcDrawer.SetAlpha(aimingGauge * maxAlpha);
+        gaugeArcDrawer.SetColor(gaugeColor);
+
+        backgroundArcDrawer.transform.position = CurrentShooter.gunPoint.position;
+        backgroundArcDrawer.DrawArc(currentPingPongAngle);
     }
 
     void UpdatePenalty()
@@ -103,21 +129,43 @@ public class PlayerAimController : MonoBehaviour
 
     void UpdateAimLine()
     {
-        if (lineRenderer == null) return;
+        if (aimLineRenderer == null) return;
 
         pingpongTime += Time.deltaTime * currentPingPongSpeed;
-        float aimAngle = Mathf.Sin(pingpongTime) * currentPingPongAngle * .5f;
+        float aimAngle = Mathf.Sin(pingpongTime) * currentPingPongAngle * 0.5f;
         aimLineTransform.localRotation = Quaternion.Euler(0f, 0f, aimAngle);
         CurrentShooter.gunPoint.transform.localRotation = aimLineTransform.localRotation;
 
         Vector3 startPos = CurrentShooter.gunPoint.transform.position + aimLineTransform.up * aimLineOffset;
         Vector3 endPos = startPos + aimLineTransform.up * aimLineDistance;
 
-        lineRenderer.SetPosition(0, startPos);
-        lineRenderer.SetPosition(1, endPos);
+        aimLineRenderer.SetPosition(0, startPos);
+        aimLineRenderer.SetPosition(1, endPos);
 
-        lineRenderer.startWidth = currentAimWidth;
-        lineRenderer.endWidth = currentAimWidth;
+        aimLineRenderer.startWidth = currentAimWidth;
+        aimLineRenderer.endWidth = currentAimWidth;
+    }
+
+    void UpdateSideLine()
+    {
+        leftLineRenderer.transform.position = CurrentShooter.gunPoint.position;
+        rightLineRenderer.transform.position = CurrentShooter.gunPoint.position;
+
+        float leftRad = (currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
+        float rightRad = (-currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
+
+        Vector2 leftDir = new(Mathf.Cos(leftRad), Mathf.Sin(leftRad));
+        Vector2 rightDir = new(Mathf.Cos(rightRad), Mathf.Sin(rightRad));
+
+        Vector3 leftStartPos = (Vector3)(leftDir * sideLineOffset);
+        Vector3 rightStartPos = (Vector3)(rightDir * sideLineOffset);
+        Vector3 leftEndPos = (Vector3)(leftDir * (sideLineOffset + sideLineDistance));
+        Vector3 rightEndPos = (Vector3)(rightDir * (sideLineOffset + sideLineDistance));
+
+        leftLineRenderer.SetPosition(0, leftStartPos);
+        leftLineRenderer.SetPosition(1, leftEndPos);
+        rightLineRenderer.SetPosition(0, rightStartPos);
+        rightLineRenderer.SetPosition(1, rightEndPos);
     }
 
 }
