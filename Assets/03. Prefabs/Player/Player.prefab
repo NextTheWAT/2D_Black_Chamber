@@ -1101,7 +1101,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -553994
+  m_InstanceId: 146934
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1466,34 +1466,10 @@ MonoBehaviour:
   maxHealth: 100
   OnHealthChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -2828761219562335248}
-        m_TargetAssemblyTypeName: PlayerHealthEventHandler, Assembly-CSharp
-        m_MethodName: OnPlayerDamaged
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   OnDie:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: -2828761219562335248}
-        m_TargetAssemblyTypeName: PlayerHealthEventHandler, Assembly-CSharp
-        m_MethodName: OnPlayerDie
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &-2828761219562335248
 MonoBehaviour:
   m_ObjectHideFlags: 0

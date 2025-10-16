@@ -21,18 +21,16 @@ public class StageRunTracker : MonoBehaviour
     void Awake()
     {
         stageId = SceneManager.GetActiveScene().name;
-
-        // 게임 씬이 아니면 아예 꺼버리기 (중복 호출/오염 방지)
         if (!IsGameplayScene(stageId))
         {
-            enabled = false;           // 또는 Destroy(this);
+            enabled = false;   // 또는 Destroy(this);
             return;
         }
     }
-    public static bool IsGameplayScene(string scene)
+    public static bool IsGameplayScene(string n)
     {
-        // 네 규칙에 맞게 조정: 스테이지가 stage_ 접두사거나 tutorial이면 true
-        return scene.StartsWith("stage_");
+        // 규칙 예시: stage_ 접두사 또는 tutorial만 게임 씬
+        return n.StartsWith("stage_") || n == "tutorial";
     }
 
     void OnEnable()
