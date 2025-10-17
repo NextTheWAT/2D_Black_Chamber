@@ -94,6 +94,14 @@ public class StageSelectDialogueUI : UIBase
         if (dialogueData != null && nameText)
             nameText.text = dialogueData.npcName;
 
+        ApplyButtonStatesWithColor();
+
+        if (TryPlayPendingClearDialogue())
+            return;
+
+        if (nameText) nameText.raycastTarget = false;
+        if (lineText) lineText.raycastTarget = false;
+
         // =========================
         // ▶ 핵심: First Meet는 '최초 1회만'
         //   - 아직 안 봤으면 First Meet 시퀀스를 한 줄씩 보여주고 바로 완료 처리
@@ -243,4 +251,81 @@ public class StageSelectDialogueUI : UIBase
 
         LoadingCanvas.LoadScene(sceneName);
     }
+
+    /// <summary>
+    /// 스테이지 클리어 직후 ‘1회성 대사’를 재생. 재생하면 true.
+    /// </summary>
+    private bool TryPlayPendingClearDialogue()
+    {
+        // 1스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage1_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage1_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage1ClearDialogues != null &&
+                dialogueData.stage1ClearDialogues.Count > 0 &&
+                dialogueData.stage1ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage1ClearDialogues[0].lines);
+                return true;
+            }
+        }
+        // 2스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage2_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage2_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage2ClearDialogues != null &&
+                dialogueData.stage2ClearDialogues.Count > 0 &&
+                dialogueData.stage2ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage2ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
+        // 3스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage3_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage3_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage3ClearDialogues != null &&
+                dialogueData.stage3ClearDialogues.Count > 0 &&
+                dialogueData.stage3ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage3ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 버튼의 활성/비활성 상태에 맞게 인터랙션과 글자색 변경
+    /// </summary>
+    private void UpdateButton(Button button, bool unlocked)
+    {
+        if (button == null) return;
+
+        button.interactable = unlocked;
+
+        TMP_Text txt = button.GetComponentInChildren<TMP_Text>();
+        if (txt != null)
+            txt.color = unlocked ? new Color(1f, 1f, 1f, 1f) : new Color(0.5f, 0.5f, 0.5f, 1f);
+    }
+
+    /// <summary>
+    /// 현재 진행도에 맞춰 버튼 상태+색을 한 번에 반영
+    /// </summary>
+    private void ApplyButtonStatesWithColor()
+    {
+        UpdateButton(stage1Button, IsUnlocked(1)); // 항상 true(표기 일관성)
+        UpdateButton(stage2Button, IsUnlocked(2)); // Stage1_Cleared==1이면 true
+        UpdateButton(stage3Button, IsUnlocked(3)); // Stage2_Cleared==1이면 true
+    }
+
 }
