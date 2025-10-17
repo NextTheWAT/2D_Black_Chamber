@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6223022452065773677}
   - component: {fileID: 7585069151745499349}
   m_Layer: 0
-  m_Name: AnalyticsBoot
+  m_Name: Stage_AnalyticsBoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
