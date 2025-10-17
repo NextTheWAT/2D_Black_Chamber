@@ -16,7 +16,7 @@ MonoBehaviour:
   weaponClass: 3
   subType: AR
   damage: 10
-  rpm: 300
+  rpm: 200
   curMagazine: 30
   curReserve: 30
   maxMagazine: 30
