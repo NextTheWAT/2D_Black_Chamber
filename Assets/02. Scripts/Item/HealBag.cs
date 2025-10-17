@@ -29,7 +29,7 @@ public class HealBag : MonoBehaviour, Iinteraction
 
     public void PickUp()
     {
-        StructSoundManager.Instance.PlayPickUpSound();
+        StructSoundManager.Instance.PlayPickUpSound(transform.position);
 
         health.Heal(healAmount);
 

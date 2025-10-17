@@ -31,13 +31,10 @@ public class SteelDoor : MonoBehaviour, Iinteraction
         isOpen = !isOpen;
 
         // 플레이어가 문을 여닫을 때 소리 재생
-        if (interactor == GameManager.Instance.Player.transform)
-        {
-            if (isOpen)
-                StructSoundManager.Instance.PlaySteelDoorOpenSound();
-            else
-                StructSoundManager.Instance.PlaySteelDoorCloseSound();
-        }
+        if (isOpen)
+            StructSoundManager.Instance.PlaySteelDoorOpenSound(transform.position);
+        else
+            StructSoundManager.Instance.PlaySteelDoorCloseSound(transform.position);
     }
 
 }

@@ -52,14 +52,10 @@ public class Door : MonoBehaviour, Iinteraction
 
         isOpen = !isOpen;
 
-        // 플레이어가 문을 여닫을 때 소리 재생
-        if(interactor == GameManager.Instance.Player.transform)
-        {
-            if (isOpen)
-                StructSoundManager.Instance.PlayDoorOpenSound();
-            else
-                StructSoundManager.Instance.PlayDoorCloseSound();
-        }
+        if (isOpen)
+            StructSoundManager.Instance.PlayDoorOpenSound(transform.position);
+        else
+            StructSoundManager.Instance.PlayDoorCloseSound(transform.position);
     }
 
     public void AutoOpen()
