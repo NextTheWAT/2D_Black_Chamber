@@ -257,7 +257,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -43
+  m_SortingOrder: -46
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0
@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 4122754092511821634}
   - component: {fileID: 5867537631438518234}
   m_Layer: 7
-  m_Name: PistolEnemy
+  m_Name: St3_PistolEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0630b7c2c5a8234dbf479b91b6da898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 45
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -906,7 +906,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -42
+  m_SortingOrder: -45
   m_Sprite: {fileID: -1805317915, guid: 6efd6b3dd08e7e045be11b7e5a425a84, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0

@@ -851,6 +851,11 @@ MonoBehaviour:
   poolSize: 20
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   cctvBrokenSound: {fileID: 11400000, guid: 166f1009402957041818937bb2dc7907, type: 2}
+  pickUpSound: {fileID: 11400000, guid: 4320113c99616d343b66e67826bf1d04, type: 2}
+  doorOpenSound: {fileID: 11400000, guid: bb7f0d213e5cccd42a0122152d8ae6c0, type: 2}
+  doorCloseSound: {fileID: 11400000, guid: fe6cfef3c0117a444acffd521e969072, type: 2}
+  steelDoorOpenSound: {fileID: 11400000, guid: 351ee53569e4f5745b98af1b6dc1845c, type: 2}
+  steelDoorCloseSound: {fileID: 11400000, guid: cd8df1147ab8fd34ba67693a6530aa0f, type: 2}
   structVol: 0.8
 --- !u!1 &8129387095671507109
 GameObject:

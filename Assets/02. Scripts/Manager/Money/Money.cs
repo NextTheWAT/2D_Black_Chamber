@@ -18,6 +18,8 @@ public class Money : MonoBehaviour, Iinteraction
         if (MoneyPickupPopup.instance != null )
             MoneyPickupPopup.instance.Show(money);
 
+        StructSoundManager.Instance.PlayPickUpSound();
+
         Destroy(gameObject);
     }
 }
