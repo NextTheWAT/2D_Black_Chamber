@@ -218,8 +218,7 @@ MonoBehaviour:
   dimBackground: {fileID: 8909180362772414107}
   pages:
   - {fileID: 21300000, guid: 2158b55db118479428b225a9f23295ef, type: 3}
-  - {fileID: 21300000, guid: 67e2ea839565bf24a99333cb976b80ee, type: 3}
   - {fileID: 21300000, guid: 745c38e81138332419e5160321129c10, type: 3}
   - {fileID: 21300000, guid: bb6ea227dd9148f4fac9ba4b1a445d79, type: 3}
-  - {fileID: 21300000, guid: 1343d1236a51de54d80a00aa81340ec5, type: 3}
+  - {fileID: 21300000, guid: 67e2ea839565bf24a99333cb976b80ee, type: 3}
   loadSceneAfterLastPage: 

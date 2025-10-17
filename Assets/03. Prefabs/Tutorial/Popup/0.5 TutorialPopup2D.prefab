@@ -219,5 +219,4 @@ MonoBehaviour:
   pages:
   - {fileID: 21300000, guid: ff5c79462cbf6794cacc62592613276a, type: 3}
   - {fileID: 21300000, guid: 7e9a993945a0c4548b88bd818d9f91dd, type: 3}
-  - {fileID: 21300000, guid: 544e87dd1a397664d9716cdc930f4100, type: 3}
   loadSceneAfterLastPage: 

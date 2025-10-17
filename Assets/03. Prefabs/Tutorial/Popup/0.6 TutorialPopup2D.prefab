@@ -220,5 +220,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f535d4761c92e694d90ecb4b7474850d, type: 3}
   - {fileID: 21300000, guid: 1172271749595db49beff79df1e371d4, type: 3}
   - {fileID: 21300000, guid: 325238fca4cc54b47834c185c3b8984b, type: 3}
-  - {fileID: 21300000, guid: 25fbf3e9063c37345b84b39d2d36100f, type: 3}
   loadSceneAfterLastPage: 
