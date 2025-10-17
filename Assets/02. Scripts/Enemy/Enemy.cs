@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 using static Item;
-using static UnityEditor.Progress;
 
 public class Enemy : MonoBehaviour
 {
