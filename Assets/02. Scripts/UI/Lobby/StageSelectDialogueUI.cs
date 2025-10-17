@@ -311,12 +311,24 @@ public class StageSelectDialogueUI : UIBase
     {
         if (button == null) return;
 
-        button.interactable = unlocked;
+        // ✅ 잠겨 있어도 클릭은 되도록 유지 (onClick에서 TryStartStage가 처리함)
+        button.interactable = true;
 
-        TMP_Text txt = button.GetComponentInChildren<TMP_Text>();
-        if (txt != null)
-            txt.color = unlocked ? new Color(1f, 1f, 1f, 1f) : new Color(0.5f, 0.5f, 0.5f, 1f);
+        // 비주얼만 잠김처럼 보이게
+        var txt = button.GetComponentInChildren<TMP_Text>();
+        if (txt) txt.color = unlocked ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
+
+        // (선택) 잠긴 상태일 때 버튼 전환 효과를 죽여 '비활성 느낌' 주기
+        if (!unlocked)
+        {
+            button.transition = Selectable.Transition.None;
+        }
+        else
+        {
+            button.transition = Selectable.Transition.ColorTint; // 프로젝트 기본에 맞게
+        }
     }
+
 
     /// <summary>
     /// 현재 진행도에 맞춰 버튼 상태+색을 한 번에 반영
