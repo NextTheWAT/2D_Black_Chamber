@@ -851,6 +851,7 @@ MonoBehaviour:
   poolSize: 20
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   cctvBrokenSound: {fileID: 11400000, guid: 166f1009402957041818937bb2dc7907, type: 2}
+  pickUpSound: {fileID: 11400000, guid: 4320113c99616d343b66e67826bf1d04, type: 2}
   structVol: 0.8
 --- !u!1 &8129387095671507109
 GameObject:

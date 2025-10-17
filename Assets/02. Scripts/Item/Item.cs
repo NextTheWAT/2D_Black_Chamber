@@ -36,7 +36,6 @@ public class Item : MonoBehaviour, Iinteraction
 
     public void PickUp() //ÃÑ¾Ë ÁÝ±â
     {
-
         var wm = WeaponManager.Instance;
         var shooter = wm != null ? wm.CurrentWeapon : null;
         if (shooter != null)
@@ -47,6 +46,8 @@ public class Item : MonoBehaviour, Iinteraction
                 AmmoPickupPopup.Instance.Show(gained);
             }
         }
+
+        StructSoundManager.Instance.PlayPickUpSound();
         Destroy(gameObject);
     }
 

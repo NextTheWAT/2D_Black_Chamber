@@ -26,6 +26,7 @@ public class CardKey : MonoBehaviour, Iinteraction
     {
         Debug.Log("카드키먹기");
         hasCardKey = true;
+        StructSoundManager.Instance.PlayPickUpSound();
         gameObject.SetActive(false);
     }
 }
