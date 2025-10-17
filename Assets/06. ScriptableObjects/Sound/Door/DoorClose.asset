@@ -10,8 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
-  m_Name: ItemPickUp
+  m_Name: DoorClose
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 140c3bfab83b6034aa10b3269ccd9530, type: 3}
+  - {fileID: 8300000, guid: 67708b77846437f4aa8e55a2246d1844, type: 3}
+  - {fileID: 8300000, guid: 7975f480e88c7b64a83256f8a1f102d5, type: 3}
+  - {fileID: 8300000, guid: eb94dd75a92cbe743875459ad7725fd4, type: 3}
   volume: 0.8
