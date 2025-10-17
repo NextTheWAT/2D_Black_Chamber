@@ -424,6 +424,9 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   poolSize: 4
+  spatialBlend: 0
+  minDistance: 5
+  maxDistance: 5
   outputGroup: {fileID: -5603891810564795059, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   titleBGM: {fileID: 11400000, guid: 61cb9ab3536623b4497b076ac87c281d, type: 2}
   lobbyBGM: {fileID: 11400000, guid: 00f291de359cf4646af46b284b14de08, type: 2}
@@ -574,6 +577,9 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   poolSize: 32
+  spatialBlend: 1
+  minDistance: 3
+  maxDistance: 5
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   pistolShootSound: {fileID: 11400000, guid: edd8152834ca18f40a7a6e0d40550541, type: 2}
   rifleShootSound: {fileID: 11400000, guid: ad608595013ddba4dbb15f1d39e26993, type: 2}
@@ -627,12 +633,15 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   poolSize: 32
+  spatialBlend: 1
+  minDistance: 3
+  maxDistance: 5
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   runstepSound: {fileID: 11400000, guid: d5c5580a6e34bd14ba4a56fa2edd7cfe, type: 2}
   walkstepSound: {fileID: 11400000, guid: 56eef4f388223c046abef783cb46ef48, type: 2}
   dieSound: {fileID: 11400000, guid: 9fd662bbd06975c4fa465064f81910de, type: 2}
   hitSound: {fileID: 11400000, guid: d51e4c1d6ec65684a8442b078629d638, type: 2}
-  characterVol: 0.2
+  characterVol: 0.6
 --- !u!1 &7379851031130033215
 GameObject:
   m_ObjectHideFlags: 0
@@ -849,8 +858,16 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   poolSize: 20
+  spatialBlend: 1
+  minDistance: 3
+  maxDistance: 5
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
   cctvBrokenSound: {fileID: 11400000, guid: 166f1009402957041818937bb2dc7907, type: 2}
+  pickUpSound: {fileID: 11400000, guid: 4320113c99616d343b66e67826bf1d04, type: 2}
+  doorOpenSound: {fileID: 11400000, guid: bb7f0d213e5cccd42a0122152d8ae6c0, type: 2}
+  doorCloseSound: {fileID: 11400000, guid: fe6cfef3c0117a444acffd521e969072, type: 2}
+  steelDoorOpenSound: {fileID: 11400000, guid: 351ee53569e4f5745b98af1b6dc1845c, type: 2}
+  steelDoorCloseSound: {fileID: 11400000, guid: cd8df1147ab8fd34ba67693a6530aa0f, type: 2}
   structVol: 0.8
 --- !u!1 &8129387095671507109
 GameObject:

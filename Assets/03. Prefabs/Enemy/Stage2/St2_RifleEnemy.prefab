@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 1609657934329035293}
   - component: {fileID: 221141805148449369}
   m_Layer: 7
-  m_Name: RifleEnemy
+  m_Name: St2_RifleEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -184,9 +184,7 @@ MonoBehaviour:
   minIconShowTime: 0.12
   stateType: 
   isTarget: 0
-  dropItems:
-  - {fileID: 7095231127424643423, guid: fd4d79d767e4deb4eb056dd6149cabab, type: 3}
-  - {fileID: 8992366841505014071, guid: 1d76c1d805b5c9f418a6e077c3a0cf22, type: 3}
+  dropItems: {fileID: 8992366841505014071, guid: 1d76c1d805b5c9f418a6e077c3a0cf22, type: 3}
 --- !u!114 &7573861134726823120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -199,7 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0630b7c2c5a8234dbf479b91b6da898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 70
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -556,7 +554,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -42
+  m_SortingOrder: -45
   m_Sprite: {fileID: -2091055899, guid: e734e5284ec19ef44be9ad2ac8ada555, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0
@@ -663,7 +661,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -43
+  m_SortingOrder: -46
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0
