@@ -64,7 +64,7 @@ public class CharacterAnimationController : MonoBehaviour
     public void PlayReload()
     {
         if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Reload);
-        WeaponSoundManager.Instance?.PlayReloadSound();
+        WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
     }
 
     public void PlaySwitch()

@@ -7,26 +7,34 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
     [Header("Sound Pool")]
     [SerializeField, Range(1, 32)] private int poolSize = 20;
     private AudioSource[] _pool;
-    private int _next;
+
+    [Header("Audio Source Settings")]
+    [SerializeField] private float spatialBlend = 0f;
+    [SerializeField] private float minDistance = 3f;
+    [SerializeField] private float maxDistance = 5f;
 
     [Header("Output (1개만)")]
     [SerializeField] protected AudioMixerGroup outputGroup; // ← 각 매니저에서 SFX 또는 BGM 할당
 
     // ───────────────────────────────
-    public void PlayOne(AudioClip clip, float volume = 1f)
-    {
-        if (!clip) return;
-        var src = AcquireSource();
-        if (!src) return;
-        src.PlayOneShot(clip, Mathf.Clamp01(volume));
-    }
 
-    public void PlayRandom(SoundData data, float volume = 1f)
+    public void PlayBGM(SoundData data, float volume = 1f)
     {
         if (data == null || data.clips == null || data.clips.Length == 0) return;
         var clip = data.clips[Random.Range(0, data.clips.Length)];
         var src = AcquireSource();
         if (!src) return;
+        src.PlayOneShot(clip, Mathf.Clamp01(volume * Mathf.Clamp01(data.volume)));
+    }
+
+
+    public void PlaySFX(SoundData data, Vector2 pos, float volume = 1f)
+    {
+        if (data == null || data.clips == null || data.clips.Length == 0) return;
+        var clip = data.clips[Random.Range(0, data.clips.Length)];
+        var src = AcquireSource();
+        if (!src) return;
+        src.transform.position = pos;
         src.PlayOneShot(clip, Mathf.Clamp01(volume * Mathf.Clamp01(data.volume)));
     }
 
@@ -39,18 +47,13 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
         // 재생중 아닌 소스 우선
         for (int i = 0; i < _pool.Length; i++)
         {
-            int idx = (_next + i) % _pool.Length;
-            var s = _pool[idx];
+            var s = _pool[i];
             if (!s.isPlaying)
-            {
-                _next = (idx + 1) % _pool.Length;
                 return s;
-            }
         }
-        // 모두 재생중이면 라운드로빈
-        var ret = _pool[_next];
-        _next = (_next + 1) % _pool.Length;
-        return ret;
+
+        // 모두 재생중이면 null 반환
+        return null;
     }
 
     private void EnsurePool()
@@ -66,7 +69,6 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
 
         int size = Mathf.Max(1, poolSize);
         _pool = new AudioSource[size];
-        _next = 0;
 
         for (int i = 0; i < size; i++)
         {
@@ -76,8 +78,10 @@ public abstract class SoundManagerBase<T> : Singleton<T> where T : MonoBehaviour
             var src = go.AddComponent<AudioSource>();
             src.playOnAwake = false;
             src.loop = false;
-            src.spatialBlend = 0f;                      // 2D
+            src.spatialBlend = spatialBlend;
             src.outputAudioMixerGroup = outputGroup;    // ★ 한 줄로 라우팅 끝
+            src.minDistance = minDistance;
+            src.maxDistance = maxDistance;
             _pool[i] = src;
         }
     }
