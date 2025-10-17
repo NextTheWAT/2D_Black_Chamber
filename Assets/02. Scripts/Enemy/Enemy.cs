@@ -397,7 +397,7 @@ public class Enemy : MonoBehaviour
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.Player.position;
             IsHit = true;
-            CharacterSoundManager.Instance.PlayHitSound();
+            CharacterSoundManager.Instance.PlayHitSound(transform.position);
         }
         else
             health.TakeDamage(maxHealth);
@@ -405,7 +405,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        CharacterSoundManager.Instance.PlayDieSound();
+        CharacterSoundManager.Instance.PlayDieSound(transform.position);
 
         agent.enabled = false;
         animationController.PlayDie();

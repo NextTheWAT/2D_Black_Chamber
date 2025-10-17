@@ -110,7 +110,7 @@ public class Shooter : MonoBehaviour
         if (currentMagazine <= 0 || shooterLocked)
         {
             // 빈 탄창: 틱틱 사운드만
-            WeaponSoundManager.Instance?.PlayEmptySound();
+            WeaponSoundManager.Instance?.PlayEmptySound(transform.position);
             if (respectFireRate)
                 cooldown = 1f / Mathf.Max(0.001f, gunData.FireRatePerSec); // 틱틱 템포 유지(선택)
             return false;
@@ -148,9 +148,9 @@ public class Shooter : MonoBehaviour
         if (gunData.displayName != null)
         {
             if (gunData.displayName.Contains("Pistol"))
-                WeaponSoundManager.Instance?.PlayPistolShootSound();
+                WeaponSoundManager.Instance?.PlayPistolShootSound(transform.position);
             else if (gunData.displayName.Contains("Rifle"))
-                WeaponSoundManager.Instance?.PlayRifleShootSound();
+                WeaponSoundManager.Instance?.PlayRifleShootSound(transform.position);
         }
 
         return true;
@@ -181,7 +181,7 @@ public class Shooter : MonoBehaviour
 
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
         WeaponManager.Instance?.OnReloaded?.Invoke();
-        WeaponSoundManager.Instance?.PlayReloadSound();
+        WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
 
         return true;
     }

@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateTable: {fileID: 11400000, guid: 9c3c562fcbfdaf64e8d911c666c77053, type: 2}
+  stateTable: {fileID: 11400000, guid: 1f1e7961dea3c4042b8807b4a89ce50b, type: 2}
   nonCombatStateType: 0
   combatStateType: 0
   useCollisionEnter: 1
@@ -128,10 +128,10 @@ MonoBehaviour:
     m_Bits: 64
   bodyMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 33280
+    m_Bits: 1
   forwardLight: {fileID: 3757559673783468784}
   backwardLight: {fileID: 4662476106655208001}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -146,7 +146,7 @@ MonoBehaviour:
   minIconShowTime: 0.12
   stateType: 
   isTarget: 1
-  dropItems: []
+  dropItems: {fileID: 0}
 --- !u!114 &208123243127908645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0630b7c2c5a8234dbf479b91b6da898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 10
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -583,13 +583,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9001848314237431151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -0, z: 0.7071068, w: -0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5137202987106480045}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
 --- !u!212 &8010748519383549066
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -15,12 +15,12 @@ public class StructSoundManager : SoundManagerBase<StructSoundManager>
 
     [Range(0, 1)] public float structVol = 0.8f;
 
-    public void PlayStructBrokenSound() => PlayRandom(cctvBrokenSound, structVol);
-    public void PlayPickUpSound() => PlayRandom(pickUpSound, structVol);
-    public void PlayDoorOpenSound() => PlayRandom(doorOpenSound, structVol);
-    public void PlayDoorCloseSound() => PlayRandom(doorCloseSound, structVol);
-    public void PlaySteelDoorOpenSound() => PlayRandom(steelDoorOpenSound, structVol);
-    public void PlaySteelDoorCloseSound() => PlayRandom(steelDoorCloseSound, structVol);
+    public void PlayStructBrokenSound(Vector2 pos) => PlaySFX(cctvBrokenSound, pos, structVol);
+    public void PlayPickUpSound(Vector2 pos) => PlaySFX(pickUpSound, pos, structVol);
+    public void PlayDoorOpenSound(Vector2 pos) => PlaySFX(doorOpenSound, pos, structVol);
+    public void PlayDoorCloseSound(Vector2 pos) => PlaySFX(doorCloseSound, pos, structVol);
+    public void PlaySteelDoorOpenSound(Vector2 pos) => PlaySFX(steelDoorOpenSound, pos, structVol);
+    public void PlaySteelDoorCloseSound(Vector2 pos) => PlaySFX(steelDoorCloseSound, pos, structVol);
 
 
 }

@@ -203,7 +203,7 @@ public class CCTV : MonoBehaviour
     public void Die()
     {
         StopAllCoroutines();
-        StructSoundManager.Instance.PlayStructBrokenSound();
+        StructSoundManager.Instance.PlayStructBrokenSound(transform.position);
         ObjectPoolingManager.Instance.Get(explosionEffect, head.position);
         head.GetComponent<SpriteRenderer>().color = destroyedColor;
         light2D.enabled = false;
