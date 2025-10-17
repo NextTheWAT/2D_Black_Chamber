@@ -59,6 +59,7 @@ public class StageSelectDialogueUI : UIBase
     protected override void OnOpen()
     {
         Time.timeScale = 0f; // 일시정지
+        Cursor.visible = true;
 
         if (!Initialized)
         {
