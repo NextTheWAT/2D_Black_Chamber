@@ -4,6 +4,7 @@ using Constants;
 
 public class InvestigateState : BaseState
 {
+    private readonly float startDelay = 3f; // 조사 시작 전 대기 시간
     private readonly float investigateDuration = 5f; // 조사 상태 지속 시간
     private readonly float investigateRange = 2f; // 조사 중 무작위로 이동하는 범위
     private readonly float pauseDuration = 1f; // 조사 중 멈추는 시간
@@ -12,8 +13,9 @@ public class InvestigateState : BaseState
 
     private Coroutine investigateCoroutine;
 
-    public InvestigateState(Enemy owner, float investigateDuration, float investigateRange, float pauseDuration) : base(owner)
+    public InvestigateState(Enemy owner, float startDelay, float investigateDuration, float investigateRange, float pauseDuration) : base(owner)
     {
+        this.startDelay = startDelay;
         this.investigateDuration = investigateDuration;
         this.investigateRange = investigateRange;
         this.pauseDuration = pauseDuration;
@@ -53,6 +55,11 @@ public class InvestigateState : BaseState
 
     private IEnumerator InvestigateLoop()
     {
+        // 조사 시작 전 대기
+        owner.Agent.isStopped = true;
+        yield return new WaitForSeconds(startDelay);
+        owner.Agent.isStopped = false;
+
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
         investigateTimer = 0f;
