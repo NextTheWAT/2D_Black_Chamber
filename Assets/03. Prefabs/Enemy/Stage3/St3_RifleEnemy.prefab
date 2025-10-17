@@ -171,11 +171,7 @@ MonoBehaviour:
   originalColor: {r: 1, g: 1, b: 1, a: 1}
   suspiciousColor: {r: 1, g: 0.66824883, b: 0.20784312, a: 1}
   alertColor: {r: 1, g: 0, b: 0, a: 1}
-  patrolPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  patrolPoints: []
   startPatrolPointIndex: 0
   shooter: {fileID: 7165611205558197295}
   returnPoint: {fileID: 0}
