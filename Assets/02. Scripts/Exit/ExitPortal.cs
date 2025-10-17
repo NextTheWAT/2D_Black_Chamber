@@ -73,7 +73,8 @@ public class ExitPortal : MonoBehaviour
             // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
             PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
             PlayerPrefs.Save();
-            SceneManager.LoadScene(loobySceneName);
+            LoadingCanvas.LoadScene(loobySceneName);
+            //SceneManager.LoadScene(loobySceneName);
             return;
         }
 
@@ -111,6 +112,10 @@ public class ExitPortal : MonoBehaviour
         // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)
             TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
+
+        ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);                 // 예: Stage1_Cleared = 1
+        PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);               // 예: Stage1_ClearDialoguePending = 1
+        PlayerPrefs.Save();
 
         // 5) 클리어 씬 로드
         SceneManager.LoadScene(clearSceneName);
