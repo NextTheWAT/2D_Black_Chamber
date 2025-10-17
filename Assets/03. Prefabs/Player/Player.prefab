@@ -1005,6 +1005,7 @@ GameObject:
   - component: {fileID: 2059217959560316814}
   - component: {fileID: 3943578476050053338}
   - component: {fileID: 6413928527050117678}
+  - component: {fileID: 528693851093673894}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1103,7 +1104,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 80008
+  m_InstanceId: 239856
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1558,6 +1559,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageIdOverride: 
   gameplayMode: 
+--- !u!114 &528693851093673894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5e822570bdd954da85ecf3e694216c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3507418152336651286}
 --- !u!1 &6390167608740650960
 GameObject:
   m_ObjectHideFlags: 0

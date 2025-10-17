@@ -19,7 +19,7 @@ public class ModeSwitchTracker : MonoBehaviour
             enabled = false;
             return;
         }
-        if (player == null) player = FindAnyObjectByType<GameManager>()?.Player;
+        if (player == null) player = GetComponent<Transform>();
     }
     void OnEnable()
     {
