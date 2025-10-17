@@ -29,6 +29,11 @@ public class SteelDoor : MonoBehaviour, Iinteraction
     {
         if (!CardKey.hasCardKey) return;
         isOpen = !isOpen;
+
+        if (isOpen)
+            StructSoundManager.Instance.PlaySteelDoorOpenSound();
+        else
+            StructSoundManager.Instance.PlaySteelDoorCloseSound();
     }
 
 }

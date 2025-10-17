@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
-  m_Name: ItemPickUp
+  m_Name: DoorOpen
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 140c3bfab83b6034aa10b3269ccd9530, type: 3}
+  - {fileID: 8300000, guid: 3efcaf9f56452c946a2f7cb74d0aada6, type: 3}
+  - {fileID: 8300000, guid: 3b70e2971dc64f342a953aa12d4e350d, type: 3}
   volume: 0.8

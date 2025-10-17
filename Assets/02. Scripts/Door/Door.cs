@@ -51,6 +51,11 @@ public class Door : MonoBehaviour, Iinteraction
         }
 
         isOpen = !isOpen;
+
+        if(isOpen)
+            StructSoundManager.Instance.PlayDoorOpenSound();
+        else
+            StructSoundManager.Instance.PlayDoorCloseSound();
     }
 
     public void AutoOpen()
