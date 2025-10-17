@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TitleUIController : MonoBehaviour
@@ -15,20 +15,22 @@ public class TitleUIController : MonoBehaviour
         string tutorialSceneName = "TutorialScene";
         string lobbySceneName = "02. LobbyScene";
 
-        // PlayerPrefs¿¡ Æ©Åä¸®¾ó ¿Ï·á ¿©ºÎ È®ÀÎ
         bool tutorialDone = PlayerPrefs.GetInt(PrefKey_TutorialDone, 0) == 1;
-
-        // ¿Ï·á ¾È µÆÀ¸¸é TutorialScene, ¿Ï·áµÆÀ¸¸é LobbySceneÀ¸·Î ÀÌµ¿
         string nextScene = tutorialDone ? lobbySceneName : tutorialSceneName;
 
         if (!Application.CanStreamedLevelBeLoaded(nextScene))
         {
-            Debug.LogError($"[TitleUIController] ¾À '{nextScene}'À» Ã£À» ¼ö ¾øÀ½");
+            Debug.LogError($"[TitleUIController] ì”¬ '{nextScene}'ì„ ì°¾ì„ ìˆ˜ ì—†ìŒ");
             return;
         }
 
+        // íŠœí† ë¦¬ì–¼ë¡œ ë“¤ì–´ê°ˆ ë•Œë§Œ ì‹œì‘ ì´ë²¤íŠ¸ 1íšŒ ê¸°ë¡
+        if (!tutorialDone)
+            GA.Tutorial_Start();
+
         LoadingCanvas.LoadScene(nextScene);
     }
+
 
     public void OpenSetting()
     {
@@ -37,10 +39,10 @@ public class TitleUIController : MonoBehaviour
 
     public void QuitGame()
     {
-        Debug.Log("°ÔÀÓ Á¾·á");
+        Debug.Log("ê²Œì„ ì¢…ë£Œ");
 
 #if UNITY_EDITOR
-        // ¿¡µğÅÍ¿¡¼­´Â ÇÃ·¹ÀÌ ¸ğµå Á¾·á
+        // ì—ë””í„°ì—ì„œëŠ” í”Œë ˆì´ ëª¨ë“œ ì¢…ë£Œ
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();

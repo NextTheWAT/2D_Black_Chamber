@@ -10,7 +10,7 @@ public class UGSInitializer : MonoBehaviour
     async void Awake()
     {
         DontDestroyOnLoad(gameObject);
-        var env = useProduction ? "production" : "development";
+        var env = useProduction ? "production" : "production2";
         var opts = new InitializationOptions().SetEnvironmentName(env);
         await UnityServices.InitializeAsync(opts);
         AnalyticsService.Instance.StartDataCollection();

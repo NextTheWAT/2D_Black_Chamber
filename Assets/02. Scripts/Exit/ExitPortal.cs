@@ -72,6 +72,7 @@ public class ExitPortal : MonoBehaviour
         {
             // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
             PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
+            GA.Tutorial_Complete();
             PlayerPrefs.Save();
             SceneManager.LoadScene(loobySceneName);
             return;

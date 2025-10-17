@@ -91,4 +91,20 @@ public static class GA
         AddCommon(p);
         Send("mode_switch", p);
     }
+
+    //5) Tutorial_Start
+    public static void Tutorial_Start()
+    {
+        var p = new Dictionary<string, object>();
+        AddCommon(p);
+        Send("tutorial_start", p);
+    }
+
+    //6) Tutorial_Complete
+    public static void Tutorial_Complete()
+    {
+        var p = new Dictionary<string, object>();
+        AddCommon(p);
+        Send("tutorial_complete", p);
+    }
 }
