@@ -257,7 +257,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -46
+  m_SortingOrder: -43
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0
@@ -454,7 +454,7 @@ MonoBehaviour:
   minIconShowTime: 0.12
   stateType: 
   isTarget: 0
-  dropItems: {fileID: 0}
+  dropItems: {fileID: 8992366841505014071, guid: 1d76c1d805b5c9f418a6e077c3a0cf22, type: 3}
 --- !u!114 &3522994100237713953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -906,7 +906,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -45
+  m_SortingOrder: -42
   m_Sprite: {fileID: -1805317915, guid: 6efd6b3dd08e7e045be11b7e5a425a84, type: 3}
   m_Color: {r: 1, g: 0, b: 0.2011404, a: 1}
   m_FlipX: 0
