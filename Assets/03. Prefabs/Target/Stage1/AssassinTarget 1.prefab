@@ -146,7 +146,7 @@ MonoBehaviour:
   minIconShowTime: 0.12
   stateType: 
   isTarget: 1
-  dropItems: []
+  dropItems: {fileID: 0}
 --- !u!114 &208123243127908645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0630b7c2c5a8234dbf479b91b6da898, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 10
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
