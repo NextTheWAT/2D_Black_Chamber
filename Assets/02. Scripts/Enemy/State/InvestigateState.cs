@@ -56,6 +56,8 @@ public class InvestigateState : BaseState
     private IEnumerator InvestigateLoop()
     {
         // 조사 시작 전 대기
+        Vector2 dirToLastKnown = (owner.LastKnownTargetPos - (Vector2)owner.transform.position).normalized;
+        owner.LookPoint = (Vector2)owner.transform.position + dirToLastKnown;
         owner.Agent.isStopped = true;
         yield return new WaitForSeconds(startDelay);
         owner.Agent.isStopped = false;
