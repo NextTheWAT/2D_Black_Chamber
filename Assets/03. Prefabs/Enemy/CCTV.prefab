@@ -267,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30b1749bf7db56a41a0ac1950ae184de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  angularSpeed: 120
+  angularSpeed: 50
   rotationDelay: 3
   viewDistance: 5
   viewAngle: 45
