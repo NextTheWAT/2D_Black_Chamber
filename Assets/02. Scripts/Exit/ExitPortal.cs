@@ -112,6 +112,10 @@ public class ExitPortal : MonoBehaviour
         if (GameStats.Instance != null)
             TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
 
+        ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);                 // 예: Stage1_Cleared = 1
+        PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);               // 예: Stage1_ClearDialoguePending = 1
+        PlayerPrefs.Save();
+
         // 5) 클리어 씬 로드
         SceneManager.LoadScene(clearSceneName);
     }
