@@ -45,6 +45,11 @@ public class TopDownMovement : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = false;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+        AudioListener audioListener = FindAnyObjectByType<AudioListener>();
+
+        if(audioListener.transform != this)
+            Destroy(audioListener);
     }
 
     private void OnEnable()

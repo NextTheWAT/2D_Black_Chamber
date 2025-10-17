@@ -47,7 +47,7 @@ public class Item : MonoBehaviour, Iinteraction
             }
         }
 
-        StructSoundManager.Instance.PlayPickUpSound();
+        StructSoundManager.Instance.PlayPickUpSound(transform.position);
         Destroy(gameObject);
     }
 
