@@ -56,7 +56,9 @@ public class InvestigateState : BaseState
     private IEnumerator InvestigateLoop()
     {
         // 조사 시작 전 대기
+        owner.Agent.isStopped = true;
         yield return new WaitForSeconds(startDelay);
+        owner.Agent.isStopped = false;
 
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
