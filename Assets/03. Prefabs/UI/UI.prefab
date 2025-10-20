@@ -6041,7 +6041,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB6F8\uB54C\uB294 \uC2A4\uD14C\uB2C8\uB9C8\uAC00 \uB2F3\uC2B5\uB2C8\uB2E4
+  m_text: "\uB6F8 \uB54C\uB294 \uC2A4\uD14C\uB2C8\uB9C8\uAC00 \uB2F3\uC2B5\uB2C8\uB2E4
     \uC870\uC2EC!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 179e4f55f0354bc4e8d202f220781e89, type: 2}
