@@ -8,6 +8,9 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public HoverPopup hoverPopup;
     public WeaponHoverData weaponHoverData;
 
+    private bool RightSideSlot;
+    public Vector2 offset = new Vector2(400f, 0f);
+
     private bool isHovering = false;    // 무한 생성 방지
 
     private void Start()
@@ -21,8 +24,19 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (!isHovering && hoverPopup != null)
         {
             isHovering = true;
-            hoverPopup.Show(weaponHoverData);
+            StartCoroutine(ShowPopupDelay());
         }
+    }
+
+    private IEnumerator ShowPopupDelay()    // 클릭씹히는거 막기
+    {
+        yield return null;
+        Vector3 newPos = transform.position;
+        newPos.x += RightSideSlot ? -offset.x : offset.x;
+        newPos.y += offset.y;
+
+        hoverPopup.transform.position = newPos;
+        hoverPopup.Show(weaponHoverData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -33,4 +47,5 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             hoverPopup.Hide();
         }
     }
+
 }
