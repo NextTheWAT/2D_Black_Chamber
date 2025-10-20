@@ -8,6 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -284,70 +285,83 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 153544456
+    uuid:
+      value0: 1752993064
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 1752993064
     name: Loaders_project
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Loaders_project_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: 2124ca7e9c7887a4daed484e4c7ce7aa
-    - name: Loaders_project_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: d575b374d2a582548b889c68ce5db2bf
-    - name: Loaders_project_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: e5ec7e438007873468d677eda299eabc
-    - name: Loaders_project_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: 0b5ed3cbcc507e14a9b8411c2cf2eaaf
-    - name: Loaders_project_Frame_4
+    - name: Frame_4
       frameIndex: 4
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: 115e9179b14e0c745b78526c488327dd
-    - name: Loaders_project_Frame_5
+    - name: Frame_5
       frameIndex: 5
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: 8572e778a0b86d84caa750113421554e
-    - name: Loaders_project_Frame_6
+    - name: Frame_6
       frameIndex: 6
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
         width: 660
         height: 630
       spriteId: 1d0ca53361eccbd4c8cec1c7605b72ce
-    - name: Loaders_project_Frame_7
+    - name: Frame_7
       frameIndex: 7
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -10
@@ -361,3 +375,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 660, y: 620}
+  previousTextureSize: {x: 2048, y: 2048}

@@ -8,6 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -224,46 +225,56 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: -1506853848
+    uuid:
+      value0: 2841485000
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: -1453482296
     name: Inventory example
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Inventory example_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: -130
         y: -91
         width: 529
         height: 248
       spriteId: ce5b83a2d02b73b4ab89f58733b6f0fb
-    - name: Inventory example_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: -130
         y: -91
         width: 529
         height: 248
       spriteId: 34387125bed7e04468c874746ebd3948
-    - name: Inventory example_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: -130
         y: -91
         width: 529
         height: 248
       spriteId: 7b9e33221a7dca74e98b1a3eb615c40f
-    - name: Inventory example_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: -130
         y: -91
         width: 529
         height: 248
       spriteId: 590818c5d52442646935bd1707c44e24
-    - name: Inventory example_Frame_4
+    - name: Frame_4
       frameIndex: 4
+      additiveSortOrder: 0
       cellRect:
         x: -130
         y: -91
@@ -277,3 +288,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 395, y: 149}
+  previousTextureSize: {x: 1024, y: 2048}
