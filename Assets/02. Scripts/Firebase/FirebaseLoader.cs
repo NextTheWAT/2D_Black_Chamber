@@ -22,31 +22,24 @@ public class FirebaseLoader : MonoBehaviour
     {
         ConditionalLogger.Log("Firebase 데이터 로드 시작...");
 
-        using (UnityWebRequest request = UnityWebRequest.Get(firebaseUrl))
+        UnityWebRequest request = UnityWebRequest.Get(firebaseUrl);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
         {
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                ConditionalLogger.LogError($"Firebase 데이터 로드 실패: {request.error}");
-            }
-            else
-            {
-                string json = request.downloadHandler.text;
-                ConditionalLogger.Log("Raw JSON: " + json);
-
-                enemyDataDict = LoadEnemiesAsDictionary(json);
-
-                Debug.Log("Enemy count: " + enemyDataDict.Count);
-                foreach (var kvp in enemyDataDict)
-                {
-                    ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.enemyName}");
-                }
-
-                ConditionalLogger.Log("Firebase 데이터 로드 완료!");
-            }
+            ConditionalLogger.LogError($"Firebase 데이터 로드 실패: {request.error}");
+            yield break;
         }
+
+        string json = request.downloadHandler.text;
+        ConditionalLogger.Log("Raw JSON: " + json);
+
+        enemyDataDict = LoadEnemiesAsDictionary(json);
+
+        foreach (var kvp in enemyDataDict)
+            ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.enemyName}");
     }
+
 
     Dictionary<int, EnemyData> LoadEnemiesAsDictionary(string json)
     {

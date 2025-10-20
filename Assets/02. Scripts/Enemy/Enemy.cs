@@ -187,16 +187,22 @@ public class Enemy : MonoBehaviour
 
     private bool previousHasTarget = false;
 
-    private void Start()
+    private void Awake()
     {
         if (id == 0) id = 1001001;
-
         data = FirebaseLoader.GetEnemyData(id);
 
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
+
         foundBodies = new();
+    }
+
+    private void Start()
+    {
+        Health.Init(data.hp);
+        Agent.speed = data.speed;
 
         forwardLight.pointLightOuterRadius = data.viewDistance;
         forwardLight.pointLightOuterAngle = data.viewAngle;
@@ -213,7 +219,6 @@ public class Enemy : MonoBehaviour
             combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
         }
 
-
         OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
         CurrentStateMachine.Start();
 
@@ -221,7 +226,6 @@ public class Enemy : MonoBehaviour
 
         SetIconState(AlertIconState.None);
         UpdateAlertIcons();
-
     }
 
     private void OnEnable()
