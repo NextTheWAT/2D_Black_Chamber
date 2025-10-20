@@ -11,11 +11,11 @@ public class StateMachine
 
     protected Enemy owner;
 
-    public StateMachine(Enemy owner, StateTable stateTable, Type startType)
+    public StateMachine(Enemy owner, Type startType)
     {
         // 상태 초기화
         this.owner = owner;
-        states = StateFactory.CreateStates(owner, stateTable);
+        states = StateFactory.CreateStates(owner);
         if (states.Count == 0)
             ConditionalLogger.LogWarning("StateMachine에 상태가 하나도 없습니다.");
 

@@ -1,10 +1,11 @@
-#if UNITY_EDITOR
+
 using System.IO;
 using UnityEditor;
 using UnityEngine;
 
 public static class ScriptableObjectUtility
 {
+#if UNITY_EDITOR
     public static void SaveScriptableObject<T>(T data, string path) where T : ScriptableObject
     {
         if (data == null)
@@ -40,5 +41,6 @@ public static class ScriptableObjectUtility
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
     }
-}
+
 #endif
+}

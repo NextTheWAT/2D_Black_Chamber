@@ -1,19 +1,12 @@
 using UnityEngine;
-using Constants;
 
 public class FleeState : BaseState
 {
-    private readonly float fleeDistance = 10f;
-    private readonly float fleeDuration = 5f;
     public float fleeTimer;
 
-    public bool IsFleeing => fleeTimer < fleeDuration || GameManager.Instance.IsCombat;
+    public bool IsFleeing => fleeTimer < owner.Data.fleeDuration || GameManager.Instance.IsCombat;
 
-    public FleeState(Enemy owner, float fleeDistance, float fleeDuration) : base(owner)
-    {
-        this.fleeDistance = fleeDistance;
-        this.fleeDuration = fleeDuration;
-    }
+    public FleeState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {
@@ -45,6 +38,6 @@ public class FleeState : BaseState
     Vector2 GetFleePoint()
     {
         Vector2 dirToPlayer = ((Vector2)owner.transform.position - owner.LastKnownTargetPos).normalized;
-        return (Vector2)owner.transform.position + dirToPlayer * fleeDistance;
+        return (Vector2)owner.transform.position + dirToPlayer * owner.Data.fleeDistance;
     }
 }
