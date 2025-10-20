@@ -1,8 +1,10 @@
+using Constants;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using Constants;
-using System.Collections.Generic;
+using static Item;
+using static UnityEditor.Progress;
 
 public class Enemy : MonoBehaviour
 {
@@ -54,7 +56,7 @@ public class Enemy : MonoBehaviour
     public string stateType;
     public bool isTarget = false;
 
-    public GameObject[] dropItems;
+    public GameObject dropItems;
     private Collider2D coll;
     private NavMeshAgent agent;
     private Transform target;
@@ -218,7 +220,8 @@ public class Enemy : MonoBehaviour
         GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
     }
 
-    void OnDisable(){
+    void OnDisable()
+    {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
     }
@@ -395,7 +398,7 @@ public class Enemy : MonoBehaviour
             animationController.PlayHit();
             LastKnownTargetPos = GameManager.Instance.Player.position;
             IsHit = true;
-            CharacterSoundManager.Instance.PlayHitSound();
+            CharacterSoundManager.Instance.PlayHitSound(transform.position);
         }
         else
             health.TakeDamage(maxHealth);
@@ -403,7 +406,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
-        CharacterSoundManager.Instance.PlayDieSound();
+        CharacterSoundManager.Instance.PlayDieSound(transform.position);
 
         agent.enabled = false;
         animationController.PlayDie();
@@ -417,12 +420,25 @@ public class Enemy : MonoBehaviour
         // 미션 카운팅 감소
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
 
-        if (dropItems.Length > 0)
+        questionIcon?.SetActive(false);
+        exclamationIcon?.SetActive(false);
+
+       
+
+        Vector3 dropPos = transform.position + Vector3.up * 0.2f;
+        GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
+        switch(WeaponManager.Instance.CurrentWeaponIndex)
         {
-            int r = Random.Range(0, dropItems.Length);
-            Vector3 dropPos = transform.position + Vector3.up * 0.2f;
-            Instantiate(dropItems[r], dropPos, Quaternion.identity);
+            case 0:
+                ob.GetComponent<Item>().ammoAmount = 12;
+                break;
+
+            case 1:
+                ob.GetComponent<Item>().ammoAmount = 30;
+                break;
+
         }
+       
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -433,6 +449,15 @@ public class Enemy : MonoBehaviour
         {
             Target = collision.transform;
             GameManager.Instance.StartCombatAfterDelay(this);
+        }
+        else if (collision.gameObject.CompareTag("Door"))
+        {
+            Door door = collision.gameObject.GetComponentInParent<Door>();
+            if (door && !door.isExitDoor && !door.IsOpen)
+            {
+                door.Interaction(transform);
+            }
+
         }
     }
 

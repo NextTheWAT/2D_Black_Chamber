@@ -4,11 +4,20 @@ using UnityEngine.SceneManagement;
 
 public class ExitPortal : MonoBehaviour
 {
+    [Header("Visual")]
     public GameObject defaultLight;
     public GameObject clearLight;
 
+    public Door exitDoor;
+
+    [Header("Scene")]
     [SerializeField] public string clearSceneName = "ClearScene";  // 클리어씬
     [SerializeField] private int stageNumber = 1;
+
+    [Header("Tutorial Exit")]
+    [SerializeField] private bool isTutorialExit = false;
+    [SerializeField] private string loobySceneName = "LobbyScene"; //튜토리얼 완료 후 이동할 씬
+    private const string PrefKey_TutorialDone = "TutorialDone";
 
     private MissionManager mm;
 
@@ -36,17 +45,36 @@ public class ExitPortal : MonoBehaviour
             if (defaultLight) defaultLight.SetActive(false);
             if (clearLight) clearLight.SetActive(true);
             Debug.Log("탈출 가능");
+
+            if (exitDoor != null)
+                exitDoor.AutoOpen();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player") || mm == null) return;
+        if (!other.CompareTag("Player")) return;
 
-        // 탈출 가능한 상태에서만 클리어 처리
+        if (mm == null) mm = MissionManager.Instance;
+        if (mm == null)
+        {
+            Debug.LogWarning("[ExitPortal] MissionManager가 없습니다.");
+            return;
+        }
+
         if (mm.Phase != MissionPhase.Escape)
         {
-            Debug.Log("클리어 조건을 만족하지 않았습니다.");
+            Debug.Log("클리어 조건을 만족하지 않았습니다. (아직 목표물이 남아있음)");
+            return;
+        }
+
+        if (isTutorialExit)
+        {
+            // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
+            PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
+            PlayerPrefs.Save();
+            LoadingCanvas.LoadScene(loobySceneName);
+            //SceneManager.LoadScene(loobySceneName);
             return;
         }
 
@@ -84,6 +112,10 @@ public class ExitPortal : MonoBehaviour
         // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)
             TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
+
+        ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);                 // 예: Stage1_Cleared = 1
+        PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);               // 예: Stage1_ClearDialoguePending = 1
+        PlayerPrefs.Save();
 
         // 5) 클리어 씬 로드
         SceneManager.LoadScene(clearSceneName);

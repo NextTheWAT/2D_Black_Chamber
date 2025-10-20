@@ -9,7 +9,7 @@ public class StoreNpc : MonoBehaviour, Iinteraction
 
     private bool isOpen = false;
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
         if (!isOpen)
             OpenStore();

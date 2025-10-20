@@ -45,7 +45,8 @@ public partial class PlayerInputController : TopDownController
             // 총알이 하나도 없으면: 펀치 1회
             if (!shooter.HasAnyAmmo)
             {
-                TriggerPunchOnce(0.2f); // 필요하면 시간 조절
+                animationController.PlayPunch();
+                // TriggerPunchOnce(0.12f); // 필요하면 시간 조절
                 return;
             }
 
@@ -60,7 +61,8 @@ public partial class PlayerInputController : TopDownController
         {
             if (!shooter.HasAnyAmmo)
             {
-                TriggerPunchOnce(0.12f);
+                animationController.PlayPunch();
+                // TriggerPunchOnce(0.12f);
                 return;
             }
 
@@ -139,7 +141,7 @@ public partial class PlayerInputController : TopDownController
             // 쿨다운/기타 사유로 미발사 시
         }
     }
-
+    /*
     // ---- Punch 1회 펄스 ----
     private void TriggerPunchOnce(float holdTime)
     {
@@ -155,4 +157,5 @@ public partial class PlayerInputController : TopDownController
         animationController.SetActivePunch(false);  // OFF
         punchCo = null;
     }
+    */
 }

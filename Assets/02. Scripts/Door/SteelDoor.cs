@@ -11,7 +11,6 @@ public class SteelDoor : MonoBehaviour, Iinteraction
 
     public float openSpeed = 0.5f;
     private bool isOpen = false;
-    private bool playerInRange = false;
 
     private void Start()
     {
@@ -26,9 +25,16 @@ public class SteelDoor : MonoBehaviour, Iinteraction
         steelDoor.localPosition = Vector2.Lerp(steelDoor.localPosition, door, openSpeed * Time.deltaTime);
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
+        if (!CardKey.hasCardKey) return;
         isOpen = !isOpen;
+
+        // 플레이어가 문을 여닫을 때 소리 재생
+        if (isOpen)
+            StructSoundManager.Instance.PlaySteelDoorOpenSound(transform.position);
+        else
+            StructSoundManager.Instance.PlaySteelDoorCloseSound(transform.position);
     }
 
 }

@@ -11,9 +11,15 @@ public class Money : MonoBehaviour, Iinteraction
         money = value;
     }
 
-    public void Interaction()
+    public void Interaction(Transform interactor)
     {
         MoneyManager.Instance.AddMoney(money);
+
+        if (MoneyPickupPopup.instance != null )
+            MoneyPickupPopup.instance.Show(money);
+
+        StructSoundManager.Instance.PlayPickUpSound(transform.position);
+
         Destroy(gameObject);
     }
 }

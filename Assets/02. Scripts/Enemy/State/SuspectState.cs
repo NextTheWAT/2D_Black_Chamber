@@ -36,6 +36,9 @@ public class SuspectState : BaseState
         currentDetectionRange = Mathf.Lerp(0, owner.ViewDistance, ratio);
         owner.FindTarget(owner.ViewAngle, currentDetectionRange);
 
+        if (owner.IsHit)
+            owner.Target = GameManager.Instance.Player;
+
         if (owner.HasTarget)
         {
             ConditionalLogger.Log("SuspectState: Target Acquired");

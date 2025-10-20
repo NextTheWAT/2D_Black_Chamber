@@ -15,11 +15,10 @@ MonoBehaviour:
   displayName: Rifle
   weaponClass: 3
   subType: AR
-  noise: 2
-  damage: 10
+  damage: 30
   rpm: 600
   curMagazine: 30
-  curReserve: 0
+  curReserve: 120
   maxMagazine: 30
   maxReserve: 120
   accuracyDeg: 6

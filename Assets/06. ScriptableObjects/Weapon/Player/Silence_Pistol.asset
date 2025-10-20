@@ -15,11 +15,10 @@ MonoBehaviour:
   displayName: Pistol
   weaponClass: 0
   subType: Pistol
-  noise: 2
-  damage: 10
+  damage: 25
   rpm: 120
-  curMagazine: 6
-  curReserve: 0
+  curMagazine: 12
+  curReserve: 24
   maxMagazine: 12
   maxReserve: 60
   accuracyDeg: 6

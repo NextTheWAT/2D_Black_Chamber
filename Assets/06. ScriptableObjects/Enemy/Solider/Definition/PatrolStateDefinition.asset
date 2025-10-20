@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa7b304cc8ff6a54781daf294b837aed, type: 3}
   m_Name: PatrolStateDefinition
   m_EditorClassIdentifier: 
-  patrolType: 1
   patrolPauseTime: 3
-  fixedPatrolAngle: 120
+  fixedPatrolAngle: 50

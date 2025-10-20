@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using Constants;
 
 public class CCTV : MonoBehaviour
 {
@@ -13,57 +14,76 @@ public class CCTV : MonoBehaviour
     [SerializeField] private float suspicionBuildTime = 4f;
 
     [Header("Detection")]
+    [SerializeField] private Transform head;
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private LayerMask obstacleMask;
 
     [SerializeField] private Light2D light2D;
 
-    [SerializeField] private Color originalColor;
-    [SerializeField] private Color suspiciousColor;
-    [SerializeField] private Color alertColor;
+    [SerializeField] private Color originalColor; // 원래 색상
+    [SerializeField] private Color suspiciousColor; // 의심 상태의 색상
+    [SerializeField] private Color alertColor; // 경계 상태의 색상
+    [SerializeField] private Color destroyedColor; // 파괴된 상태의 색상
 
     private Transform detectedTarget;
-    private bool isLeftRotation;
+    private bool isLeftRotating;
 
     private float centerZ;
     private float leftLimitZ;
     private float rightLimitZ;
 
-    public float EulerZ => transform.eulerAngles.z;
+    [Header("Destroy")]
+    [SerializeField] private GameObject explosionEffect;
+    private Collider2D coll;
+
+    public float EulerZ => head.eulerAngles.z;
 
     private void Start()
     {
+        coll = GetComponent<Collider2D>();
+
         light2D.pointLightOuterRadius = viewDistance;
         light2D.pointLightOuterAngle = viewAngle;
 
         originalColor = light2D.color;
 
         // 시작 방향을 중심으로 회전 각도 계산
-        centerZ = transform.eulerAngles.z;
+        centerZ = head.eulerAngles.z;
         float halfRange = rotateRange * 0.5f;
         leftLimitZ = NormalizeAngle(centerZ + halfRange);
         rightLimitZ = NormalizeAngle(centerZ - halfRange);
 
-        isLeftRotation = true;
+        isLeftRotating = true;
         SetEulerZ(rightLimitZ);
 
         StartCoroutine(Watch());
     }
 
-    private void Update()
+    private void OnEnable()
+        => GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+
+    private void OnDisable(){
+        if (GameManager.AppIsQuitting) return;
+        GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+    }
+
+    void OnPhaseChanged(GamePhase gamePhase)
     {
-        DetectTarget();
+        if (gamePhase == GamePhase.Combat)
+            light2D.color = alertColor;
     }
 
     void DetectTarget()
-        => detectedTarget = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
+        => detectedTarget = head.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
 
     void SetEulerZ(float eulerZ)
-        => transform.eulerAngles = new Vector3(0, 0, eulerZ);
+        => head.eulerAngles = new Vector3(0, 0, eulerZ);
 
     // 감시
     IEnumerator Watch()
     {
+        float elapsedTime = 0f;
+
         light2D.color = GameManager.Instance.IsCombat ? alertColor : originalColor;
 
         while (!detectedTarget)
@@ -71,15 +91,23 @@ public class CCTV : MonoBehaviour
             float deltaZ = angularSpeed * Time.deltaTime;
             float currentZ = EulerZ;
 
-            if (isLeftRotation)
+            if (isLeftRotating)
             {
                 currentZ += deltaZ;
                 if (AnglePassed(currentZ, leftLimitZ, centerZ))
                 {
+                    elapsedTime = 0f;
                     currentZ = leftLimitZ;
-                    isLeftRotation = false;
-                    SetEulerZ(currentZ);
-                    yield return new WaitForSeconds(rotationDelay);
+                    isLeftRotating = false;
+
+                    while (elapsedTime < rotationDelay)
+                    {
+                        DetectTarget();
+                        if (detectedTarget) break;
+
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
                 }
             }
             else
@@ -87,14 +115,23 @@ public class CCTV : MonoBehaviour
                 currentZ -= deltaZ;
                 if (AnglePassed(currentZ, rightLimitZ, centerZ, false))
                 {
+                    elapsedTime = 0f;
                     currentZ = rightLimitZ;
-                    isLeftRotation = true;
-                    SetEulerZ(currentZ);
-                    yield return new WaitForSeconds(rotationDelay);
+                    isLeftRotating = true;
+
+                    while (elapsedTime < rotationDelay)
+                    {
+                        DetectTarget();
+                        if (detectedTarget) break;
+
+                        elapsedTime += Time.deltaTime;
+                        yield return null;
+                    }
                 }
             }
 
             SetEulerZ(currentZ);
+            DetectTarget();
             yield return null;
         }
 
@@ -111,7 +148,7 @@ public class CCTV : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
 
-            Vector2 dir = (detectedTarget.position - transform.position).normalized;
+            Vector2 dir = (detectedTarget.position - head.position).normalized;
             float targetZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
             float angle = Mathf.MoveTowardsAngle(EulerZ, targetZ, angularSpeed * Time.deltaTime);
 
@@ -119,6 +156,7 @@ public class CCTV : MonoBehaviour
             angle = ClampAngleToLimits(angle, centerZ);
 
             SetEulerZ(angle);
+            DetectTarget();
 
             if (elapsedTime >= suspicionBuildTime)
             {
@@ -164,31 +202,36 @@ public class CCTV : MonoBehaviour
 
     public void Die()
     {
-        gameObject.SetActive(false);
+        StopAllCoroutines();
+        StructSoundManager.Instance.PlayStructBrokenSound(transform.position);
+        ObjectPoolingManager.Instance.Get(explosionEffect, head.position);
+        head.GetComponent<SpriteRenderer>().color = destroyedColor;
+        light2D.enabled = false;
+        coll.enabled = false;
     }
 
     private void OnDrawGizmos()
     {
         // viewDistance 표시
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, viewDistance);
+        Gizmos.DrawWireSphere(head.position, viewDistance);
 
         // viewAngle 표시
-        Vector2 rightDir = Quaternion.Euler(0, 0, viewAngle * 0.5f) * transform.up;
-        Vector2 leftDir = Quaternion.Euler(0, 0, -viewAngle * 0.5f) * transform.up;
+        Vector2 rightDir = Quaternion.Euler(0, 0, viewAngle * 0.5f) * head.up;
+        Vector2 leftDir = Quaternion.Euler(0, 0, -viewAngle * 0.5f) * head.up;
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + rightDir * viewDistance);
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + leftDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + rightDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + leftDir * viewDistance);
 
         // 회전 범위 표시
-        float centerZ = Application.isPlaying ? this.centerZ : transform.eulerAngles.z;
+        float centerZ = Application.isPlaying ? this.centerZ : head.eulerAngles.z;
         float halfRange = rotateRange * 0.5f;
 
         Vector2 leftLimitDir = Quaternion.Euler(0, 0, centerZ + halfRange) * Vector2.up;
         Vector2 rightLimitDir = Quaternion.Euler(0, 0, centerZ - halfRange) * Vector2.up;
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + leftLimitDir * viewDistance);
-        Gizmos.DrawLine(transform.position, (Vector2)transform.position + rightLimitDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + leftLimitDir * viewDistance);
+        Gizmos.DrawLine(head.position, (Vector2)head.position + rightLimitDir * viewDistance);
     }
 }

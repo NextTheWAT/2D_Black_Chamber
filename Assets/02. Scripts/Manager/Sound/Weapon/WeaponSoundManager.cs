@@ -10,9 +10,9 @@ public class WeaponSoundManager : SoundManagerBase<WeaponSoundManager>
 
     [Range(0, 1)] public float weaponVol = 1.0f;
 
-    public void PlayReloadSound() => PlayRandom(reloadSound, weaponVol);
-    public void PlayPistolShootSound() => PlayRandom(pistolShootSound, weaponVol);
-    public void PlayRifleShootSound() => PlayRandom(rifleShootSound, weaponVol);
-    public void PlayEmptySound() => PlayRandom(emptySound, weaponVol);
+    public void PlayReloadSound(Vector2 pos) => PlaySFX(reloadSound, pos, weaponVol);
+    public void PlayPistolShootSound(Vector2 pos) => PlaySFX(pistolShootSound, pos, weaponVol);
+    public void PlayRifleShootSound(Vector2 pos) => PlaySFX(rifleShootSound, pos, weaponVol);
+    public void PlayEmptySound(Vector2 pos) => PlaySFX(emptySound, pos, weaponVol);
 
 }
