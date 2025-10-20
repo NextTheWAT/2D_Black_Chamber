@@ -4,22 +4,12 @@ using Constants;
 
 public class InvestigateState : BaseState
 {
-    private readonly float startDelay = 3f; // 조사 시작 전 대기 시간
-    private readonly float investigateDuration = 5f; // 조사 상태 지속 시간
-    private readonly float investigateRange = 2f; // 조사 중 무작위로 이동하는 범위
-    private readonly float pauseDuration = 1f; // 조사 중 멈추는 시간
     private float investigateTimer = 0f;
-    public bool IsInvestigating => investigateTimer < investigateDuration || GameManager.Instance.IsCombat;
+    public bool IsInvestigating => investigateTimer < owner.Data.investigateDuration || GameManager.Instance.IsCombat;
 
     private Coroutine investigateCoroutine;
 
-    public InvestigateState(Enemy owner, float startDelay, float investigateDuration, float investigateRange, float pauseDuration) : base(owner)
-    {
-        this.startDelay = startDelay;
-        this.investigateDuration = investigateDuration;
-        this.investigateRange = investigateRange;
-        this.pauseDuration = pauseDuration;
-    }
+    public InvestigateState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {
@@ -59,14 +49,14 @@ public class InvestigateState : BaseState
         Vector2 dirToLastKnown = (owner.LastKnownTargetPos - (Vector2)owner.transform.position).normalized;
         owner.LookPoint = (Vector2)owner.transform.position + dirToLastKnown;
         owner.Agent.isStopped = true;
-        yield return new WaitForSeconds(startDelay);
+        yield return new WaitForSeconds(owner.Data.investigateStartDelay);
         owner.Agent.isStopped = false;
 
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
         investigateTimer = 0f;
 
-        while (investigateTimer < investigateDuration)
+        while (investigateTimer < owner.Data.investigateDuration)
         {
             if (owner.IsArrived) break;
             investigateTimer += Time.deltaTime;
@@ -91,14 +81,14 @@ public class InvestigateState : BaseState
                 yield return null;
             }
 
-            yield return new WaitForSeconds(pauseDuration);
+            yield return new WaitForSeconds(owner.Data.investigatePauseDuration);
         }
     }
 
     // 조사할 랜덤 지점 생성
     private Vector2 GetRandomInvestigatePoint()
     {
-        Vector2 randomDirection = Random.insideUnitCircle.normalized * investigateRange;
+        Vector2 randomDirection = Random.insideUnitCircle.normalized * owner.Data.investigateRange;
         Vector2 investigatePoint = (Vector2)owner.transform.position + randomDirection;
         return investigatePoint;
     }

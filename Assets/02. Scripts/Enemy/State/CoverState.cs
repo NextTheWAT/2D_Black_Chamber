@@ -7,17 +7,9 @@ public class CoverState : BaseState
     // 3. 만약 충돌한다면 있다면 그 충돌 지점을 기반으로 삼고, 장애물의 벽에서 플레이어와 반대되는 일정 지점을 엄폐 지점으로 삼는다.
     // 4. 혹시 엄폐 지점에 다른 적이 있다면 이번 지점은 포기하고, 점을 계속 이동시켜 적절한 위치를 찾는다.
     // 5. 엄폐 할 곳이 없거나, 경로를 못찾으면 현재 위치에 머문다.
-    private readonly LayerMask obstacleLayer;
-    private readonly LayerMask enemyLayer;
-    private readonly float coverOffset = 2f;
     private Vector2 lookPoint;
 
-    public CoverState(Enemy owner, LayerMask obstacleLayer, LayerMask enemyLayer, float coverOffset) : base(owner)
-    {
-        this.obstacleLayer = obstacleLayer;
-        this.enemyLayer = enemyLayer;
-        this.coverOffset = coverOffset;
-    }
+    public CoverState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {
@@ -66,7 +58,7 @@ public class CoverState : BaseState
             for (float t = 0.1f; t <= 1f; t += 0.1f)
             {
                 Vector2 point = Vector2.Lerp(start, end, t);
-                RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, obstacleLayer);
+                RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, GameManager.Instance.obstacleLayerMask);
                 if (!hit.collider) continue;
 
                 // 벽 안쪽 깊이
@@ -83,7 +75,7 @@ public class CoverState : BaseState
                 Vector2 inward = hit.point + hit.normal * coverDepth;
 
                 // 벽을 따라 플레이어 반대 방향으로 이동
-                Vector2 tangentMove = coverOffset * Vector2.Dot(oppositeDir, tangent) * tangent;
+                Vector2 tangentMove = owner.Data.coverOffset * Vector2.Dot(oppositeDir, tangent) * tangent;
                 Vector2 finalCoverPoint = inward + tangentMove;
 
                 // NavMesh 위로 보정
@@ -91,7 +83,7 @@ public class CoverState : BaseState
                     finalCoverPoint = navHit.position;
 
                 // 주변 적과 겹치지 않도록 밀어내기
-                if (Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, enemyLayer) != null)
+                if (Physics2D.OverlapCircle(finalCoverPoint, owner.Agent.radius, GameManager.Instance.enemyLayerMask) != null)
                     continue;
 
                 lookPoint = start;

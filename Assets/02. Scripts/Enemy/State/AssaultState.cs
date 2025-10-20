@@ -3,12 +3,7 @@ using UnityEngine;
 
 public class AssaultState : BaseState
 {
-    private LayerMask targetLayer;
-
-    public AssaultState(Enemy owner, LayerMask targetLayer) : base(owner)
-    {
-        this.targetLayer = targetLayer;
-    }
+    public AssaultState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {

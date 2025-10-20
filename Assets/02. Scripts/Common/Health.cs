@@ -20,6 +20,13 @@ public class Health : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
+    public void Init(int hp)
+    {
+        maxHealth = hp;
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
     public void TakeDamage(int damage)
     {
         if (IsDead) return;

@@ -2,21 +2,15 @@ using UnityEngine;
 
 public class RetreatState : BaseState
 {
-    private readonly float retreatHealthRatio = .2f; // ÈÄÅğÇÏ´Â Ã¼·Â ºñÀ² ex) .2f = 20%
-    private readonly float retreatDistance = 5f; // ÈÄÅğ °Å¸®
-    private readonly float returnTime = 5f; // ÈÄÅğ ÈÄ º¹±Í ½Ã°£
     private float retreatHealthThreshold; // ÈÄÅğ Ã¼·Â ÀÓ°è°ª
     private float retreatTimer = 0f;
 
     public bool ShouldRetreat => owner.Health.CurrentHealth <= retreatHealthThreshold;
-    public bool IsRetreating => retreatTimer < returnTime;
+    public bool IsRetreating => retreatTimer < owner.Data.returnTime;
 
-    public RetreatState(Enemy owner, float retreatHealthRatio, float retreatDistance, float returnTime) : base(owner)
+    public RetreatState(Enemy owner) : base(owner)
     {
-        this.retreatHealthRatio = retreatHealthRatio;
-        this.retreatDistance = retreatDistance;
-        this.returnTime = returnTime;
-        retreatHealthThreshold = owner.Health.MaxHealth * retreatHealthRatio;
+        retreatHealthThreshold = owner.Health.MaxHealth * owner.Data.retreatHealthRatio;
     }
 
     public override void Enter()
@@ -52,12 +46,12 @@ public class RetreatState : BaseState
     public override void Exit()
     {
         ConditionalLogger.Log("RetreatState Exit");
-        retreatHealthThreshold = owner.Health.CurrentHealth * retreatHealthRatio;
+        retreatHealthThreshold = owner.Health.CurrentHealth * owner.Data.retreatHealthRatio;
     }
 
     private Vector2 CalculateRetreatPoint()
     {
         Vector2 directionAwayFromPlayer = (owner.transform.position - owner.Target.position).normalized;
-        return (Vector2)owner.transform.position + directionAwayFromPlayer * retreatDistance;
+        return (Vector2)owner.transform.position + directionAwayFromPlayer * owner.Data.retreatDistance;
     }
 }
