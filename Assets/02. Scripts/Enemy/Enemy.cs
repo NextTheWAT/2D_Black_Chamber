@@ -417,29 +417,30 @@ public class Enemy : MonoBehaviour
 
         GameManager.Instance.CancelCombatDelay(this);
 
-        // 미션 카운팅 감소
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
 
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
-       
-
-        Vector3 dropPos = transform.position + Vector3.up * 0.2f;
-        GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
-        switch(WeaponManager.Instance.CurrentWeaponIndex)
+        // === 30% 확률로만 드랍 ===
+        if (dropItems != null && Random.value <= 0.3f) // 0.3 = 30%
         {
-            case 0:
-                ob.GetComponent<Item>().ammoAmount = 12;
-                break;
+            Vector3 dropPos = transform.position + Vector3.up * 0.2f;
+            GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
 
-            case 1:
-                ob.GetComponent<Item>().ammoAmount = 30;
-                break;
-
+            var item = ob.GetComponent<Item>();
+            if (item != null)
+            {
+                switch (WeaponManager.Instance.CurrentWeaponIndex)
+                {
+                    case 0:
+                        item.ammoAmount = 12;
+                        break;
+                }
+            }
         }
-       
     }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
