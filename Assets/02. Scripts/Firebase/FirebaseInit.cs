@@ -1,6 +1,10 @@
+
+#if UNITY_EDITOR
 using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 public class FirebaseInit : MonoBehaviour
@@ -14,6 +18,7 @@ public class FirebaseInit : MonoBehaviour
     void Start()
     {
         // Firebase 초기화
+        FirebaseDatabase.DefaultInstance.SetPersistenceEnabled(false);
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             var dependencyStatus = task.Result;
@@ -22,7 +27,7 @@ public class FirebaseInit : MonoBehaviour
                 dbReference = FirebaseDatabase.DefaultInstance.RootReference;
 
                 // 데이터 저장 예시
-                SaveData(userName, userScore);
+                // SaveData(userName, userScore);
 
                 // 데이터 불러오기
                 LoadData();
@@ -37,8 +42,7 @@ public class FirebaseInit : MonoBehaviour
     void LoadData()
     {
         Debug.Log("데이터 불러오기 시작");
-        Debug.Log("dbReference: " + dbReference.Child("users"));
-        dbReference.Root.GetValueAsync().ContinueWithOnMainThread(task =>
+        dbReference.Child("EnemyData").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
@@ -48,28 +52,18 @@ public class FirebaseInit : MonoBehaviour
             {
                 DataSnapshot snapshot = task.Result;
                 Debug.Log("전체 데이터: " + snapshot.GetRawJsonValue());
+                Debug.Log($"Key: {snapshot.Key} Value: {snapshot.Value} Children: {snapshot.Children} ChildrenCount {snapshot.ChildrenCount}");
+                
+                foreach (var item in snapshot.Children)
+                {
+                    EnemySheetData data = ScriptableObject.CreateInstance<EnemySheetData>();
+                    data.name = item.Key;
+                    JsonUtility.FromJsonOverwrite(item.GetRawJsonValue(), data);
+                    ScriptableObjectUtility.SaveScriptableObject(data, $"Assets/Data/Enemy/{item.Key}.asset");
+                }
             }
         });
-
-        // 예시: /users/user1/name 값을 불러오기
-        dbReference.Child("users").Child("user1").Child("name").GetValueAsync().ContinueWithOnMainThread(task =>
-        {
-            if (task.IsFaulted)
-            {
-                Debug.LogError("데이터 불러오기 실패");
-            }
-            else if (task.IsCompleted)
-            {
-                DataSnapshot snapshot = task.Result;
-                Debug.Log("불러온 데이터: " + snapshot.Value);
-            }
-        });
-    }
-
-    void SaveData(string userName, int userScore)
-    {
-        dbReference.Child("users").Child("user1").Child("name").SetValueAsync(userName);
-        dbReference.Child("users").Child("user1").Child("score").SetValueAsync(userScore);
     }
 
 }
+#endif
