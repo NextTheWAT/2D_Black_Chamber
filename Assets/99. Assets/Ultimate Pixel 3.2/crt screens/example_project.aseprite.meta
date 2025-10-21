@@ -8,6 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
+  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -284,70 +285,83 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 110063050
+    uuid:
+      value0: 1623060850
+      value1: 0
+      value2: 0
+      value3: 0
+    guid: 1623060850
     name: example_project
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: example_project_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -52
         width: 176
         height: 135
       spriteId: 143837065ff24d4439b1eaa26815d8c1
-    - name: example_project_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -52
         width: 176
         height: 135
       spriteId: f8ab25684a205c442bf282893a2d9fd1
-    - name: example_project_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -52
         width: 176
         height: 135
       spriteId: bcb327503c735cf4cbb29b320b1b1c01
-    - name: example_project_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -52
         width: 176
         height: 135
       spriteId: 503ed442f2a3c224d9fa736886e41c01
-    - name: example_project_Frame_4
+    - name: Frame_4
       frameIndex: 4
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -14
         width: 176
         height: 97
       spriteId: 14b80377a80be6d48b8e451add44b4f3
-    - name: example_project_Frame_5
+    - name: Frame_5
       frameIndex: 5
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -14
         width: 176
         height: 97
       spriteId: ae468c2c740d8694ba57b89cb5f7ac25
-    - name: example_project_Frame_6
+    - name: Frame_6
       frameIndex: 6
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -14
         width: 176
         height: 97
       spriteId: 96ab108440c2e1d47af8c92c0388f521
-    - name: example_project_Frame_7
+    - name: Frame_7
       frameIndex: 7
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: -14
@@ -361,3 +375,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 176, y: 75}
+  previousTextureSize: {x: 512, y: 512}
