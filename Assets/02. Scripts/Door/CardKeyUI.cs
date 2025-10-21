@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CardKeyUI : MonoBehaviour
 {
     public static CardKeyUI Instance;
-    public TextMeshProUGUI cardKeyText;
-    private int cardKeyCount = 0;
+
+    public GameObject cardKeyImage;
+    public GameObject nocardKeyImage;
+    public TextMeshProUGUI noKeyText;
+
+    public TextMeshProUGUI needCardKeyText;
+
+    private bool hasCardKey = false;
 
     private void Awake()
     {
@@ -15,24 +22,37 @@ public class CardKeyUI : MonoBehaviour
     }
     private void Start()
     {
-        UpdateCardKeyText();
+        UpdateCardKeyUI(false);
     }
     public void AddCardKey()
     {
-        cardKeyCount++;
-        UpdateCardKeyText();
+        UpdateCardKeyUI(true);
     }
 
-    public void UseCardKey()
+    //public void UseCardKey()
+    //{
+    //    UpdateCardKeyUI(false);
+    //}
+
+    private void UpdateCardKeyUI(bool hasCardKey)
     {
-        if (cardKeyCount > 0)
-        {
-            cardKeyCount--;
-            UpdateCardKeyText();
-        }
+        cardKeyImage.SetActive(hasCardKey);
+        nocardKeyImage.SetActive(!hasCardKey);
+
+        noKeyText.gameObject.SetActive(!hasCardKey);
     }
-    private void UpdateCardKeyText()
+
+    public void NeedCardKeyTxt()
     {
-        cardKeyText.text = $" × {cardKeyCount}";
+        needCardKeyText.text = "카드키 필요!";
+        needCardKeyText.gameObject.SetActive(true);
+
+        CancelInvoke(nameof(HideNeedCardKeyTxt));
+        Invoke(nameof(HideNeedCardKeyTxt), 1f);
+    }
+
+    private void HideNeedCardKeyTxt()
+    {
+        needCardKeyText.gameObject.SetActive(false);
     }
 }

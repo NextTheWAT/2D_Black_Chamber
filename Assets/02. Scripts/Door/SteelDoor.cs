@@ -27,7 +27,12 @@ public class SteelDoor : MonoBehaviour, Iinteraction
 
     public void Interaction(Transform interactor)
     {
-        if (!CardKey.hasCardKey) return;
+        if (!CardKey.hasCardKey)
+        {
+            CardKeyUI.Instance.NeedCardKeyTxt();
+            return;
+        }
+
         isOpen = !isOpen;
 
         // 플레이어가 문을 여닫을 때 소리 재생

@@ -1,37 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PurchaseCondition : MonoBehaviour
 {
-    public GameObject shortagePanel;
-    public GameObject completePanel;
+    public GameObject shortagePanel;   // 잔액 부족
+    public GameObject completePanel;   // 구매 완료
 
-    public void EnoughMoneyPopup(bool hasEnoughMoney)   // 가진금액에따라 다른 팝업뜨게 (추후 수정)
+    /// <summary>
+    /// 구매 성공/실패에 따라 팝업 분기.
+    /// (true = 구매 성공 → 완료창, false = 실패 → 부족창)
+    /// </summary>
+    public void EnoughMoneyPopup(bool purchased)
     {
-        if (hasEnoughMoney)
-            ShowCompletePopup();        // 잔액 충분할때 구매시 구매완료창 뜨게
-        else
-            ShowShortagePopup();
+        HideAll();
+        if (purchased) ShowCompletePopup();
+        else ShowShortagePopup();
     }
 
     public void ShowCompletePopup()
     {
-        completePanel.SetActive(true);
+        HideAll();
+        if (completePanel) completePanel.SetActive(true);
     }
 
     public void ShowShortagePopup()
     {
-        shortagePanel.SetActive(true);
+        HideAll();
+        if (shortagePanel) shortagePanel.SetActive(true);
     }
 
     public void CloseShortagePopup()
     {
-        shortagePanel.SetActive(false);
+        if (shortagePanel) shortagePanel.SetActive(false);
     }
 
     public void CloseCompletePopup()
     {
-        completePanel.SetActive(false);
+        if (completePanel) completePanel.SetActive(false);
+    }
+
+    private void HideAll()
+    {
+        if (shortagePanel) shortagePanel.SetActive(false);
+        if (completePanel) completePanel.SetActive(false);
     }
 }
