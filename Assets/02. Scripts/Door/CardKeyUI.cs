@@ -9,6 +9,8 @@ public class CardKeyUI : MonoBehaviour
     public TextMeshProUGUI cardKeyText;
     private int cardKeyCount = 0;
 
+    public TextMeshProUGUI needCardKeyText;
+
     private void Awake()
     {
         Instance = this;
@@ -31,6 +33,21 @@ public class CardKeyUI : MonoBehaviour
             UpdateCardKeyText();
         }
     }
+
+    public void NeedCardKeyTxt()
+    {
+        needCardKeyText.text = "카드키 필요!";
+        needCardKeyText.gameObject.SetActive(true);
+
+        CancelInvoke(nameof(HideNeedCardKeyTxt));
+        Invoke(nameof(HideNeedCardKeyTxt), 2f);
+    }
+
+    private void HideNeedCardKeyTxt()
+    {
+        needCardKeyText.gameObject.SetActive(false);
+    }
+
     private void UpdateCardKeyText()
     {
         cardKeyText.text = $" × {cardKeyCount}";
