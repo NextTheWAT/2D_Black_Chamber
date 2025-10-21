@@ -5,13 +5,21 @@ using System;
 public class GunData : ScriptableObject
 {
     // ===== Classification =====
-    public enum WeaponClass { Pistol, Shotgun, SMG, Rifle, MG, Sniper, Knife }
+    public enum PhaseTag { Any, Stealth, Combat }
+
+    [Header("Shop / Ownership")]
+    public bool autoOwnedOnStart;   // 시작 시 자동 소유(기본 권총/기본 라이플 등)
+    public bool hideFromShop;       // 상점 목록에서 숨김(=판매하지 않음)
 
     [Header("Classification")]
     public string displayName = "Pistol";
-    public WeaponClass weaponClass = WeaponClass.Pistol;
     [Tooltip("세부 분류 (예: AR, DMR, Carbine 등)")]
     public string subType = "AR";
+
+    [Header("Loadout Tag")]
+    public PhaseTag phaseTag = PhaseTag.Any;
+    [Header("Shop")]
+    [Min(0)] public int price = 0;
 
     // ===== Core Combat Stats (기본값) =====
     [Header("Core (Base)")]

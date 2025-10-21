@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
-  m_Name: Silence_Pistol
+  m_Name: Silence_Pistol 3
   m_EditorClassIdentifier: 
-  autoOwnedOnStart: 1
-  hideFromShop: 1
-  displayName: Pistol
+  autoOwnedOnStart: 0
+  hideFromShop: 0
+  displayName: Pistol4
   subType: Pistol
   phaseTag: 1
-  price: 0
-  damage: 25
+  price: 500
+  damage: 3
   rpm: 120
-  curMagazine: 12
-  curReserve: 24
-  maxMagazine: 12
-  maxReserve: 60
+  curMagazine: 1
+  curReserve: 1
+  maxMagazine: 1
+  maxReserve: 1
   accuracyDeg: 6
   projectilesPerShot: 1
   bulletSpeed: 100
