@@ -12,11 +12,7 @@ public class StoreTabBtn : MonoBehaviour
 
     private void Start()
     {
-        weaponsPanel.SetActive(true);
-        toolsPanel.SetActive(false);
 
-        weaponsButtonBar.SetActive(true);
-        toolsButtonBar.SetActive(false);
     }
 
     public void ShowWeapons()

@@ -27,6 +27,7 @@ public class CardKey : MonoBehaviour, Iinteraction
         Debug.Log("Ä«µåÅ°¸Ô±â");
         hasCardKey = true;
         StructSoundManager.Instance.PlayPickUpSound(transform.position);
+        CardKeyUI.Instance.AddCardKey();
         gameObject.SetActive(false);
     }
 }
