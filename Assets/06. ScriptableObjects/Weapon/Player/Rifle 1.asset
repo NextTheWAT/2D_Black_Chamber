@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
-  m_Name: Silence_Pistol
+  m_Name: Rifle 1
   m_EditorClassIdentifier: 
-  autoOwnedOnStart: 1
-  hideFromShop: 1
-  displayName: Pistol
-  subType: Pistol
-  phaseTag: 1
-  price: 0
-  damage: 25
-  rpm: 120
-  curMagazine: 12
-  curReserve: 24
-  maxMagazine: 12
-  maxReserve: 60
+  autoOwnedOnStart: 0
+  hideFromShop: 0
+  displayName: Rifle2
+  subType: AR
+  phaseTag: 2
+  price: 1000
+  damage: 1
+  rpm: 600
+  curMagazine: 1
+  curReserve: 1
+  maxMagazine: 1
+  maxReserve: 1
   accuracyDeg: 6
   projectilesPerShot: 1
   bulletSpeed: 100
@@ -34,13 +34,13 @@ MonoBehaviour:
   reloadSpeedMul: 1
   adsSpeedPct: 100
   movePenaltyPct: 0
-  recoilAmount: 1
-  recoilRecovery: 2
-  bulletPrefab: {fileID: 8908556986258763193, guid: e6199e5bc8a5ecc40b6bee74a672bcef, type: 3}
-  muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
-  upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
-  weaponSprite: {fileID: 21300000, guid: df756e4529c79604d96c907f468b79ba, type: 3}
-  firePointOffset: {x: 0.04, y: 1.09}
+  recoilAmount: 3
+  recoilRecovery: 3
+  bulletPrefab: {fileID: 8908556986258763193, guid: 9b1e99386de2bae45b00a487fd55718e, type: 3}
+  muzzleFlashPrefab: {fileID: 7841737132505529772, guid: 421645e252778e543a5b70ed673861f0, type: 3}
+  upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
+  weaponSprite: {fileID: 21300000, guid: 7b6b574a82bdf6040aae080a7009a870, type: 3}
+  firePointOffset: {x: 0.24, y: 1.19}
   scopeName: 
   flashlightName: 
   laserName: 

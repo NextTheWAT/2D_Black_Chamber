@@ -553,6 +553,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5115538189022398859}
+  - component: {fileID: 2262052893148472934}
+  - component: {fileID: 55901030691392313}
   m_Layer: 0
   m_Name: Manger
   m_TagString: Untagged
@@ -581,6 +583,47 @@ Transform:
   - {fileID: 5538055660092706388}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2262052893148472934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4444015179403229149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96e46aedfd704634ab650338e29b9ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  root_DontDestroyOnLoad: 0
+  startingBalance: 5000
+  balance: 5000
+  OnChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &55901030691392313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4444015179403229149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e5145c22ea2db499f9009fa044fa9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  root_DontDestroyOnLoad: 0
+  catalog: {fileID: 11400000, guid: e58a055b1194d8a438ad053a012cbeca, type: 2}
+  owned: []
+  OnInventoryChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnItemBought:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6114417661953968393
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,8 +21,8 @@ public class WeaponManager : Singleton<WeaponManager>
 
     // ---- Phase Loadouts ----
     [Header("Phase Loadout (Stealth/Combat)")]
-    [SerializeField] private int stealthSlotIndex = -1; // 무조건 권총류
-    [SerializeField] private int combatSlotIndex = -1;  // 라이플/샷건/SMG/MG/스나 중 택1
+    [SerializeField] private int stealthSlotIndex = -1; // PhaseTag.Stealth(또는 Any) 우선
+    [SerializeField] private int combatSlotIndex = -1;  // PhaseTag.Combat(또는 Any) 우선
 
     public int StealthSlotIndex => stealthSlotIndex;
     public int CombatSlotIndex => combatSlotIndex;
@@ -36,12 +36,10 @@ public class WeaponManager : Singleton<WeaponManager>
         set
         {
             if (weaponSlots == null || weaponSlots.Length == 0) return;
-            if (value == currentIndex) return; // 동일 인덱스면 아무 것도 하지 않음 (루프 방지)
+            if (value == currentIndex) return;
 
-            // 인덱스 변경 (탄약은 각 무기가 독립적으로 보유)
             currentIndex = Mathf.Clamp(value, 0, weaponSlots.Length - 1);
 
-            // 이벤트 알림
             OnWeaponChanged.Invoke(CurrentWeapon);
             OnAmmoChanged.Invoke();
         }
@@ -70,7 +68,7 @@ public class WeaponManager : Singleton<WeaponManager>
     {
         if (weaponSlots == null || weaponSlots.Length == 0) return;
 
-        if (phase == Constants.GamePhase.Combat)
+        if (phase == GamePhase.Combat)
         {
             if (IsValidSlot(combatSlotIndex) && CurrentWeaponIndex != combatSlotIndex)
                 CurrentWeaponIndex = combatSlotIndex;
@@ -84,102 +82,150 @@ public class WeaponManager : Singleton<WeaponManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 씬 전환 시 무기 초기화
         InitializeWeapon();
     }
 
     public void InitializeWeapon()
     {
+        // 기존 무기 정리
         if (weaponSlots != null)
         {
             foreach (var weapon in weaponSlots)
-            {
-                if (weapon != null)
-                    Destroy(weapon.gameObject);
-            }
+                if (weapon != null) Destroy(weapon.gameObject);
         }
 
-        weaponSlots = new Shooter[intializeDatas.Length];
+        // 방어
+        int len = (intializeDatas != null) ? intializeDatas.Length : 0;
+        if (len <= 0)
+        {
+            weaponSlots = Array.Empty<Shooter>();
+            return;
+        }
 
-        for (int i = 0; i < intializeDatas.Length; i++)
+        // 슬롯 생성
+        weaponSlots = new Shooter[len];
+
+        for (int i = 0; i < len; i++)
         {
             var data = intializeDatas[i];
+            if (data == null) continue;
+
             var go = new GameObject(data.displayName);
             go.transform.SetParent(GameManager.Instance.Player);
             go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
             var shooter = go.AddComponent<Shooter>();
-            shooter.Initialize(data); // Shooter가 GunData의 탄약으로 초기화
+            shooter.Initialize(data); // Shooter가 GunData의 탄약/파라미터로 초기화
             weaponSlots[i] = shooter;
         }
 
-        // 기본 로드아웃 자동 선택
+        // 기본 로드아웃 자동 선택(PhaseTag 기반)
         PickDefaultLoadoutIndices();
+
+        // 초깃값 보정
+        if (!IsValidSlot(initializeIndex))
+            initializeIndex = IsValidSlot(stealthSlotIndex) ? stealthSlotIndex : 0;
 
         CurrentWeaponIndex = initializeIndex;
         OnWeaponChanged.Invoke(CurrentWeapon);
         OnAmmoChanged.Invoke();
 
-        // 현재 페이즈 무기 적용
         ApplyPhaseWeapon(GameManager.Instance.CurrentPhase);
     }
 
+    // ---- Default pick by PhaseTag ----
     private void PickDefaultLoadoutIndices()
     {
-        // 1) 스텔스(권총) — 첫 Pistol
         stealthSlotIndex = -1;
-        for (int i = 0; i < intializeDatas.Length; i++)
-        {
-            if (intializeDatas[i] != null && intializeDatas[i].weaponClass == GunData.WeaponClass.Pistol)
-            {
-                stealthSlotIndex = i;
-                break;
-            }
-        }
-
-        // 2) 난전(비권총) — Rifle > SMG > Shotgun > MG > Sniper 우선
         combatSlotIndex = -1;
-        int PickFirst(GunData.WeaponClass c)
+
+        // 태그 우선 선택 헬퍼
+        int TryPickByTag(GunData.PhaseTag tag)
         {
+            if (intializeDatas == null) return -1;
             for (int i = 0; i < intializeDatas.Length; i++)
             {
-                if (intializeDatas[i] != null && intializeDatas[i].weaponClass == c) return i;
+                var d = intializeDatas[i];
+                if (d == null) continue;
+                if (d.phaseTag == tag) return i;
             }
             return -1;
         }
 
-        int idx = PickFirst(GunData.WeaponClass.Rifle);
-        if (idx < 0) idx = PickFirst(GunData.WeaponClass.SMG);
-        if (idx < 0) idx = PickFirst(GunData.WeaponClass.Shotgun);
-        if (idx < 0) idx = PickFirst(GunData.WeaponClass.MG);
-        if (idx < 0) idx = PickFirst(GunData.WeaponClass.Sniper);
-        combatSlotIndex = idx;
+        // 1) 스텔스: Stealth 태그 우선 → 없으면 Any → 없으면 첫 유효 무기
+        stealthSlotIndex = TryPickByTag(GunData.PhaseTag.Stealth);
+        if (stealthSlotIndex < 0)
+        {
+            // Any
+            for (int i = 0; i < intializeDatas.Length; i++)
+            {
+                var d = intializeDatas[i];
+                if (d != null && d.phaseTag == GunData.PhaseTag.Any)
+                {
+                    stealthSlotIndex = i;
+                    break;
+                }
+            }
+        }
+        if (stealthSlotIndex < 0)
+        {
+            // 첫 유효 무기
+            for (int i = 0; i < intializeDatas.Length; i++)
+                if (intializeDatas[i] != null) { stealthSlotIndex = i; break; }
+        }
 
-        // initializeIndex가 유효하지 않다면 스텔스 우선
-        if (!IsValidSlot(initializeIndex))
-            initializeIndex = (IsValidSlot(stealthSlotIndex) ? stealthSlotIndex : 0);
+        // 2) 난전: Combat 태그 우선 → 없으면 Any(스텔스와 다른 Any 시도) → 없으면 첫 유효 무기
+        combatSlotIndex = TryPickByTag(GunData.PhaseTag.Combat);
+        if (combatSlotIndex < 0)
+        {
+            for (int i = 0; i < intializeDatas.Length; i++)
+            {
+                var d = intializeDatas[i];
+                if (d != null && d.phaseTag == GunData.PhaseTag.Any)
+                {
+                    // 스텔스와 같은 인덱스를 피하려 시도(가능하면)
+                    if (i != stealthSlotIndex) { combatSlotIndex = i; break; }
+                }
+            }
+        }
+        if (combatSlotIndex < 0)
+        {
+            for (int i = 0; i < intializeDatas.Length; i++)
+                if (intializeDatas[i] != null && i != stealthSlotIndex) { combatSlotIndex = i; break; }
+        }
     }
 
-    private bool IsValidSlot(int i) => (i >= 0 && weaponSlots != null && i < weaponSlots.Length);
+    private bool IsValidSlot(int i)
+        => (i >= 0 && weaponSlots != null && i < weaponSlots.Length && weaponSlots[i] != null);
 
     // ---- Loadout Selection APIs (무기방 UI에서 호출) ----
-    /// <summary>권총류만 허용. 성공 시 true</summary>
+    // PhaseTag 기반 검증: Stealth/Combat 혹은 Any 허용
+    private static bool IsStealthCompatible(GunData d)
+        => d != null && (d.phaseTag == GunData.PhaseTag.Stealth || d.phaseTag == GunData.PhaseTag.Any);
+
+    private static bool IsCombatCompatible(GunData d)
+        => d != null && (d.phaseTag == GunData.PhaseTag.Combat || d.phaseTag == GunData.PhaseTag.Any);
+
+    /// <summary>Stealth 슬롯 교체 (PhaseTag.Stealth/Any만 허용). 성공 시 true</summary>
     public bool SetStealthSlot(int slotIndex)
     {
         if (!IsValidSlot(slotIndex)) return false;
         var data = intializeDatas[slotIndex];
-        if (data.weaponClass != GunData.WeaponClass.Pistol) return false;
+        if (!IsStealthCompatible(data)) return false;
+
         stealthSlotIndex = slotIndex;
         if (GameManager.Instance.CurrentPhase == GamePhase.Stealth)
             CurrentWeaponIndex = stealthSlotIndex;
         return true;
     }
 
-    /// <summary>비권총(라이플/샷건/SMG/MG/스나)만 허용. 성공 시 true</summary>
+    /// <summary>Combat 슬롯 교체 (PhaseTag.Combat/Any만 허용). 성공 시 true</summary>
     public bool SetCombatSlot(int slotIndex)
     {
         if (!IsValidSlot(slotIndex)) return false;
-        var cls = intializeDatas[slotIndex].weaponClass;
-        if (cls == GunData.WeaponClass.Pistol) return false;
+        var data = intializeDatas[slotIndex];
+        if (!IsCombatCompatible(data)) return false;
+
         combatSlotIndex = slotIndex;
         if (GameManager.Instance.CurrentPhase == GamePhase.Combat)
             CurrentWeaponIndex = combatSlotIndex;
@@ -188,11 +234,9 @@ public class WeaponManager : Singleton<WeaponManager>
 
     public void SetShooterLocked(bool locked)
     {
+        if (weaponSlots == null) return;
         foreach (var weaponSlot in weaponSlots)
-        {
-            if (weaponSlot != null)
-                weaponSlot.shooterLocked = locked;
-        }
+            if (weaponSlot != null) weaponSlot.shooterLocked = locked;
     }
 
     public int GetMagazine() => CurrentWeapon ? CurrentWeapon.CurrentMagazine : 0;
@@ -200,27 +244,22 @@ public class WeaponManager : Singleton<WeaponManager>
     public bool RequestReload() => CurrentWeapon && CurrentWeapon.Reload();
 
     // ---- Ammo API (픽업/상점은 여기만 호출) ----
-
     public Shooter GetShooterAt(int slotIndex)
         => IsValidSlot(slotIndex) ? weaponSlots[slotIndex] : null;
 
     public Shooter GetStealthShooter() => GetShooterAt(stealthSlotIndex);
     public Shooter GetCombatShooter() => GetShooterAt(combatSlotIndex);
 
-    /// <summary>현재 페이즈(잠입/난전)용 무기에 예비탄 추가. Knife 들고 있어도 해당 페이즈 무기에 들어감.</summary>
+    /// <summary>현재 페이즈(잠입/난전)용 무기에 예비탄 추가.</summary>
     public int AddAmmoToCurrentPhase(int amount)
-    {
-        var phase = GameManager.Instance.CurrentPhase;
-        return AddAmmoToPhase(phase, amount);
-    }
+        => AddAmmoToPhase(GameManager.Instance.CurrentPhase, amount);
 
     /// <summary>지정 페이즈용 무기에 예비탄 추가.</summary>
     public int AddAmmoToPhase(GamePhase phase, int amount)
     {
         Shooter s = (phase == GamePhase.Combat) ? GetCombatShooter() : GetStealthShooter();
         if (s == null) return 0;
-        int gained = s.AddAmmo(amount);
-        return gained;
+        return s.AddAmmo(amount);
     }
 
     /// <summary>슬롯 인덱스 기준으로 예비탄 추가.</summary>
@@ -237,5 +276,65 @@ public class WeaponManager : Singleton<WeaponManager>
         Shooter s = (phase == GamePhase.Combat) ? GetCombatShooter() : GetStealthShooter();
         if (s == null) return false;
         return (s.CurrentMagazine + s.CurrentAmmo) > 0;
+    }
+
+
+    private Shooter CreateShooter(GunData data)
+    {
+        var go = new GameObject(data.displayName);
+        go.transform.SetParent(GameManager.Instance.Player);
+        go.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+        var shooter = go.AddComponent<Shooter>();
+        shooter.Initialize(data);
+        return shooter;
+    }
+
+    /// <summary>
+    /// 인게임 도중 새 무기를 추가한다(상점 구매 등).
+    /// - intializeDatas / weaponSlots 둘 다 확장
+    /// - 현재 페이즈와 태그가 맞으면 자동 장착(옵션)
+    /// </summary>
+    public Shooter AddWeapon(GunData data, bool autoEquip = true)
+    {
+        if (data == null) return null;
+
+        // 1) weaponSlots 확장 + Shooter 생성
+        int oldLen = (weaponSlots != null) ? weaponSlots.Length : 0;
+        var newSlots = new Shooter[oldLen + 1];
+        if (oldLen > 0) weaponSlots.CopyTo(newSlots, 0);
+        var shooter = CreateShooter(data);
+        newSlots[oldLen] = shooter;
+        weaponSlots = newSlots;
+
+        // 2) intializeDatas 확장 (씬 로드시 재생성용)
+        int oldDataLen = (intializeDatas != null) ? intializeDatas.Length : 0;
+        var newDatas = new GunData[oldDataLen + 1];
+        if (oldDataLen > 0) intializeDatas.CopyTo(newDatas, 0);
+        newDatas[oldDataLen] = data;
+        intializeDatas = newDatas;
+
+        int newIndex = oldLen;
+
+        // 3) 슬롯 힌트(처음 추가될 경우만 기본 슬롯 세팅)
+        if (data.phaseTag == GunData.PhaseTag.Stealth && stealthSlotIndex < 0) stealthSlotIndex = newIndex;
+        if (data.phaseTag == GunData.PhaseTag.Combat && combatSlotIndex < 0) combatSlotIndex = newIndex;
+
+        // 4) 자동 장착 (현재 페이즈와 태그가 맞으면)
+        if (autoEquip)
+        {
+            var phase = GameManager.Instance.CurrentPhase;
+            bool stealthOK = data.phaseTag == GunData.PhaseTag.Stealth || data.phaseTag == GunData.PhaseTag.Any;
+            bool combatOK = data.phaseTag == GunData.PhaseTag.Combat || data.phaseTag == GunData.PhaseTag.Any;
+
+            if (phase == GamePhase.Combat && combatOK)
+                CurrentWeaponIndex = newIndex;
+            else if (phase != GamePhase.Combat && stealthOK)
+                CurrentWeaponIndex = newIndex;
+        }
+
+        OnWeaponChanged.Invoke(CurrentWeapon);
+        OnAmmoChanged.Invoke();
+        return shooter;
     }
 }
