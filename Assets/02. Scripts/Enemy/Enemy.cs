@@ -189,9 +189,6 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        if (id == 0) id = 1001001;
-        data = FirebaseLoader.GetEnemyData(id);
-
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
@@ -199,45 +196,23 @@ public class Enemy : MonoBehaviour
         foundBodies = new();
     }
 
-    private void Start()
-    {
-        Health.Init(data.hp);
-        Agent.speed = data.speed;
-
-        forwardLight.pointLightOuterRadius = data.viewDistance;
-        forwardLight.pointLightOuterAngle = data.viewAngle;
-        backwardLight.pointLightOuterAngle = data.viewAngle;
-
-        if (isTarget)
-        {
-            noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
-            combatStateMachine = new TargetFSM(this, typeof(FleeState));
-        }
-        else
-        {
-            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(PatrolState), nonCombatStateType);
-            combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
-        }
-
-        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
-        CurrentStateMachine.Start();
-
-        previousHasTarget = HasTarget;
-
-        SetIconState(AlertIconState.None);
-        UpdateAlertIcons();
-    }
-
     private void OnEnable()
     {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+
+        if (FirebaseManager.Instance.IsInitialized)
+            Initialize();
+        else
+            FirebaseManager.Instance.EnemyDataLoaded += Initialize;
+
     }
 
     void OnDisable()
     {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+        FirebaseManager.Instance.EnemyDataLoaded -= Initialize;
     }
 
 
@@ -282,6 +257,39 @@ public class Enemy : MonoBehaviour
         if (IsBodyDetected) newFoundBody = null; // 시체 감지 상태 초기화
 
         UpdateAlertIcons(); // ?,! 아이콘 상태 갱신
+    }
+
+
+    private void Initialize()
+    {
+        if (id == 0) id = 1001001;
+
+        data = FirebaseManager.Instance.GetEnemyData(id);
+        Health.Init(data.hp);
+        Agent.speed = data.speed;
+
+        forwardLight.pointLightOuterRadius = data.viewDistance;
+        forwardLight.pointLightOuterAngle = data.viewAngle;
+        backwardLight.pointLightOuterAngle = data.viewAngle;
+
+        if (isTarget)
+        {
+            noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
+            combatStateMachine = new TargetFSM(this, typeof(FleeState));
+        }
+        else
+        {
+            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(PatrolState), nonCombatStateType);
+            combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
+        }
+
+        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
+        CurrentStateMachine.Start();
+
+        previousHasTarget = HasTarget;
+
+        SetIconState(AlertIconState.None);
+        UpdateAlertIcons();
     }
 
     // ?,! 아이콘 상태 변경
