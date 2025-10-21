@@ -132,7 +132,7 @@ ScriptedImporter:
       y: 4
       width: 128
       height: 128
-    spriteID: 74b4d39fed60dd3478aadd64a1aeffbd
+    spriteID: f2fc9e58f5c747e40a067d8933b4f289
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -152,7 +152,7 @@ ScriptedImporter:
       y: 140
       width: 128
       height: 128
-    spriteID: 2618e4531008f424e8f11dea7ca99135
+    spriteID: caa7ad418147e35479aa53dd0c77b754
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -172,7 +172,7 @@ ScriptedImporter:
       y: 276
       width: 128
       height: 128
-    spriteID: b8aff2258035a2448aa67386220fa884
+    spriteID: 4987566016d964f4196389c26e873641
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -192,7 +192,7 @@ ScriptedImporter:
       y: 4
       width: 128
       height: 128
-    spriteID: cafd612250bc3214a9230e2b705fa368
+    spriteID: 55d85283202307b4e9f40b9d0ae6a421
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -212,7 +212,7 @@ ScriptedImporter:
       y: 140
       width: 128
       height: 128
-    spriteID: 806c94ed81ce60648acf164f94974f00
+    spriteID: 3be6f015ea7a6274ebec49e209f715ba
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -232,7 +232,7 @@ ScriptedImporter:
       y: 276
       width: 128
       height: 128
-    spriteID: 7e96d00e452b52b42ab8b911ddb9d054
+    spriteID: 2160c607acfecb24aadb673da20aabf5
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -257,7 +257,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: 74b4d39fed60dd3478aadd64a1aeffbd
+      spriteId: f2fc9e58f5c747e40a067d8933b4f289
     - name: tablet_yellow_highlighted_Frame_1
       frameIndex: 1
       cellRect:
@@ -265,7 +265,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: 2618e4531008f424e8f11dea7ca99135
+      spriteId: caa7ad418147e35479aa53dd0c77b754
     - name: tablet_yellow_highlighted_Frame_2
       frameIndex: 2
       cellRect:
@@ -273,7 +273,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: b8aff2258035a2448aa67386220fa884
+      spriteId: 4987566016d964f4196389c26e873641
     - name: tablet_yellow_highlighted_Frame_3
       frameIndex: 3
       cellRect:
@@ -281,7 +281,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: cafd612250bc3214a9230e2b705fa368
+      spriteId: 55d85283202307b4e9f40b9d0ae6a421
     - name: tablet_yellow_highlighted_Frame_4
       frameIndex: 4
       cellRect:
@@ -289,7 +289,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: 806c94ed81ce60648acf164f94974f00
+      spriteId: 3be6f015ea7a6274ebec49e209f715ba
     - name: tablet_yellow_highlighted_Frame_5
       frameIndex: 5
       cellRect:
@@ -297,7 +297,7 @@ ScriptedImporter:
         y: -63
         width: 128
         height: 128
-      spriteId: 7e96d00e452b52b42ab8b911ddb9d054
+      spriteId: 2160c607acfecb24aadb673da20aabf5
     linkedCells: []
     parentIndex: -1
   platformSettings: []
