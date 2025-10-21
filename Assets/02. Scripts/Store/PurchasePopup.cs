@@ -10,9 +10,6 @@ public class PurchasePopup : MonoBehaviour
 
     private void Start()
     {
-        CloseShortagePopup();
-        CloseCompletePopup();
-        ClosePurchasePopup();
 
     }
 
