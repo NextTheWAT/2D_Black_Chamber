@@ -40,7 +40,7 @@ public class CardKeyUI : MonoBehaviour
         needCardKeyText.gameObject.SetActive(true);
 
         CancelInvoke(nameof(HideNeedCardKeyTxt));
-        Invoke(nameof(HideNeedCardKeyTxt), 2f);
+        Invoke(nameof(HideNeedCardKeyTxt), 1f);
     }
 
     private void HideNeedCardKeyTxt()
