@@ -2,14 +2,10 @@ using UnityEngine;
 
 public class SuspectState : BaseState
 {
-    private readonly float suspicionBuildTime = 3f;
     private float currentDetectionRange = 0f;
     private float suspicionElapsedTime = 0f;
 
-    public SuspectState(Enemy owner, float suspicionBuildTime) : base(owner)
-    {
-        this.suspicionBuildTime = suspicionBuildTime;
-    }
+    public SuspectState(Enemy owner) : base(owner) { }
 
     // 1. 타겟이 최종 시야거리내에 있으면 상태 시작
     // 2. 나의 현재 시야거리가 최종 시야거리까지 천천히 증가함.
@@ -30,7 +26,7 @@ public class SuspectState : BaseState
             owner.LookPoint = owner.TargetInFOV.position;
 
         suspicionElapsedTime += Time.deltaTime;
-        float ratio = suspicionElapsedTime / suspicionBuildTime;
+        float ratio = suspicionElapsedTime / owner.Data.suspectBuildTime;
         owner.SetBackwardLightRadius(ratio);
 
         currentDetectionRange = Mathf.Lerp(0, owner.ViewDistance, ratio);

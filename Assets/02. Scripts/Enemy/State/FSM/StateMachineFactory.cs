@@ -3,9 +3,9 @@ using System;
 
 public static class StateMachineFactory
 {
-    public static StateMachine CreateStateMachine(Enemy owner, StateTable stateTable, Type startType, NonCombatStateType nonCombatStateType)
+    public static StateMachine CreateStateMachine(Enemy owner, Type startType, NonCombatStateType nonCombatStateType)
     {
-        StateMachine stateMachine = new(owner, stateTable, startType);
+        StateMachine stateMachine = new(owner, startType);
 
         InvestigateState investigateState = stateMachine.GetState<InvestigateState>();
 
@@ -41,9 +41,9 @@ public static class StateMachineFactory
         return stateMachine;
     }
 
-    public static StateMachine CreateStateMachine(Enemy owner, StateTable stateTable, Type startType, CombatStateType combatStateType)
+    public static StateMachine CreateStateMachine(Enemy owner, Type startType, CombatStateType combatStateType)
     {
-        StateMachine stateMachine = new(owner, stateTable, startType);
+        StateMachine stateMachine = new(owner, startType);
 
         AssaultState assaultState = stateMachine.GetState<AssaultState>();
         AttackState attackState = stateMachine.GetState<AttackState>();

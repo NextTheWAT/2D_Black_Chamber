@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using static Item;
-using static UnityEditor.Progress;
 
 public class Enemy : MonoBehaviour
 {
     [Header("FSM")]
-    [SerializeField] private StateTable stateTable;
+    [SerializeField] private int id = 1001001;
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
     [SerializeField] private bool useCollisionEnter = true;
+
+    private EnemyData data;
 
     [Header("Stat")]
     [SerializeField] private Health health;
@@ -67,6 +67,7 @@ public class Enemy : MonoBehaviour
     public bool IsDead => health.IsDead;
     public StateMachine CurrentStateMachine => HasTarget ? combatStateMachine : noncombatStateMachine;
     public StateMachine PreviousStateMachine => previousHasTarget ? combatStateMachine : noncombatStateMachine;
+    public EnemyData Data => data;
 
     public float ViewDistance => forwardLight.pointLightOuterRadius;
     public float ViewAngle => forwardLight.pointLightOuterAngle;
@@ -79,6 +80,7 @@ public class Enemy : MonoBehaviour
     public Shooter Shooter => shooter;
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
+
 
     public Transform Target
     {
@@ -185,24 +187,37 @@ public class Enemy : MonoBehaviour
 
     private bool previousHasTarget = false;
 
-    private void Start()
+    private void Awake()
     {
+        if (id == 0) id = 1001001;
+        data = FirebaseLoader.GetEnemyData(id);
+
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
+
         foundBodies = new();
+    }
+
+    private void Start()
+    {
+        Health.Init(data.hp);
+        Agent.speed = data.speed;
+
+        forwardLight.pointLightOuterRadius = data.viewDistance;
+        forwardLight.pointLightOuterAngle = data.viewAngle;
+        backwardLight.pointLightOuterAngle = data.viewAngle;
 
         if (isTarget)
         {
-            noncombatStateMachine = new TargetFSM(this, stateTable, typeof(PatrolState));
-            combatStateMachine = new TargetFSM(this, stateTable, typeof(FleeState));
+            noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
+            combatStateMachine = new TargetFSM(this, typeof(FleeState));
         }
         else
         {
-            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(PatrolState), nonCombatStateType);
-            combatStateMachine = StateMachineFactory.CreateStateMachine(this, stateTable, typeof(CoverState), combatStateType);
+            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(PatrolState), nonCombatStateType);
+            combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
         }
-
 
         OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
         CurrentStateMachine.Start();
@@ -211,7 +226,6 @@ public class Enemy : MonoBehaviour
 
         SetIconState(AlertIconState.None);
         UpdateAlertIcons();
-
     }
 
     private void OnEnable()

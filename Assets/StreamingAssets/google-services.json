@@ -1,0 +1,30 @@
+{
+    "project_info": {
+        "project_number": "726462114848",
+        "project_id": "fir-example-205eb",
+        "storage_bucket": "fir-example-205eb.firebasestorage.app",
+        "firebase_url": "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:726462114848:android:684390c9795466775ce045",
+                "android_client_info": {
+                    "package_name": "com.Kim.FirebaseExample"
+                }
+            },
+            "oauth_client": [],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyAVtTjhq0lVOHsrXvjECDfp2F7x5AWj9rw"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": []
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

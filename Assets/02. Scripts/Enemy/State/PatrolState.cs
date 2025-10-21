@@ -4,8 +4,6 @@ using Constants;
 
 public class PatrolState : BaseState
 {
-    private readonly float patrolPauseTime = 2f; // 순찰 지점에서 대기 시간
-    private readonly float fixedPatrolAngle = 180f; // 고정 순찰 시 회전 각도
     private readonly float originalEulerAngle = 0f;
     private readonly float halfFixedPatrolAngle;
 
@@ -25,12 +23,10 @@ public class PatrolState : BaseState
         }
     }
 
-    public PatrolState(Enemy owner, float patrolPauseTime, float fixedPatrolAngle) : base(owner)
+    public PatrolState(Enemy owner) : base(owner)
     {
-        this.patrolPauseTime = patrolPauseTime;
-        this.fixedPatrolAngle = fixedPatrolAngle;
         originalEulerAngle = owner.transform.eulerAngles.z;
-        halfFixedPatrolAngle = fixedPatrolAngle / 2f;
+        halfFixedPatrolAngle = owner.Data.patrolFixedAngle / 2f;
     }
 
     public override void Enter()
@@ -79,7 +75,7 @@ public class PatrolState : BaseState
                 while (!owner.IsArrived)
                     yield return null;
 
-                yield return new WaitForSeconds(patrolPauseTime);
+                yield return new WaitForSeconds(owner.Data.patrolPauseTime);
                 owner.LookPoint = owner.PatrolPoints[NextPointIndex].position;
 
                 // 회전될 때까지 대기
@@ -106,7 +102,7 @@ public class PatrolState : BaseState
                 while (owner.CurrentLookAngleDelta > 1f)
                     yield return null;
 
-                yield return new WaitForSeconds(patrolPauseTime);
+                yield return new WaitForSeconds(owner.Data.patrolPauseTime);
             }
         }
     }

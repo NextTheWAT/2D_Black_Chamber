@@ -19,6 +19,8 @@ public class GameManager : Singleton<GameManager>
     private Coroutine enterCombatCoroutine;
     private HashSet<Enemy> targetFoundEnemies = new();
 
+    public LayerMask obstacleLayerMask;
+    public LayerMask enemyLayerMask;
 
     public Transform Player
     {

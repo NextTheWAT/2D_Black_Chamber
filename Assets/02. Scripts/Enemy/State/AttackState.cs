@@ -2,18 +2,10 @@ using UnityEngine;
 
 public class AttackState : BaseState
 {
-    private readonly float maxAttackRange = 6f; // 공격 범위
-    private readonly float desiredAttackDistance = 3f; // 적과의 원하는 공격 거리
-    private readonly int meleeAttackDamage = 10; // 근접 공격 데미지
-    private readonly float meleeAttackRange = 1.5f; // 근접 공격 범위
+    public AttackState(Enemy owner) : base(owner) { }
 
-
-    public AttackState(Enemy owner, float maxAttackRange, float desiredAttackDistance, float meleeAttackRange) : base(owner)
-    {
-        this.maxAttackRange = maxAttackRange;
-        this.desiredAttackDistance = desiredAttackDistance;
-        this.meleeAttackRange = meleeAttackRange;
-    }
+    private float meleeAttackCooldown = 1.0f;
+    private float nextMeleeAttackTime = 0f;
 
     public bool IsTargetInAttackRange
     {
@@ -21,7 +13,7 @@ public class AttackState : BaseState
         {
             if (!owner.HasTarget) return false;
             float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
-            return distToTarget <= maxAttackRange;
+            return distToTarget <= owner.Data.rangedAttackRange;
         }
     }
 
@@ -32,7 +24,7 @@ public class AttackState : BaseState
         {
             if (!owner.HasTarget) return false;
             float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
-            return distToTarget <= desiredAttackDistance;
+            return distToTarget <= owner.Data.desiredAttackDistance;
         }
     }
 
@@ -42,12 +34,9 @@ public class AttackState : BaseState
         {
             if (!owner.HasTarget) return false;
             float distToTarget = Vector2.Distance(owner.transform.position, owner.Target.position);
-            return distToTarget <= meleeAttackRange;
+            return distToTarget <= owner.Data.meleeAttackRange;
         }
     }
-
-    private float meleeAttackCooldown = 1.0f;
-    private float nextMeleeAttackTime = 0f;
 
     public override void Enter()
         => ConditionalLogger.Log("AttackState Enter");
@@ -99,7 +88,7 @@ public class AttackState : BaseState
     {
         Health playerHealth = GameManager.Instance.Player.GetComponent<Health>();
         if (playerHealth)
-            playerHealth.TakeDamage(meleeAttackDamage);
+            playerHealth.TakeDamage(owner.Data.meleeAttackDamage);
 
         ConditionalLogger.Log($"{owner.name} melee attack!");
     }
