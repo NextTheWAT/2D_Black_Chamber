@@ -16,6 +16,9 @@ public class PlayerConditionManager : Singleton<PlayerConditionManager>
     private float regenUnlockTime;
     public event Action<float> OnStamina01Changed; // UI 바인딩용(0~1)
 
+    public float MaxStamina => maxStamina;
+    public float CurrentStamina => stamina;
+
     public float Stamina01 => Mathf.InverseLerp(0f, maxStamina, stamina);
     public bool CanRun
     {
