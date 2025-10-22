@@ -24,9 +24,9 @@ public class GameStats : Singleton<GameStats>
 #endif
     }
 
-    public ClearResultData BuildClearResult(string clearStateText, int rewardDollar)
+    public ClearResultData BuildClearResult(int stageNumber, string clearStateText, int rewardDollar)
     {
         float elapsed = Mathf.Max(0f, Time.time - startTime);
-        return new ClearResultData(killCount, clearStateText, elapsed, rewardDollar);
+        return new ClearResultData(stageNumber, killCount, clearStateText, elapsed, rewardDollar);
     }
 }
