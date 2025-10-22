@@ -12,28 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
   m_Name: Rifle
   m_EditorClassIdentifier: 
+  phaseTag: 2
   autoOwnedOnStart: 1
   hideFromShop: 1
-  displayName: Rifle
-  subType: AR
-  phaseTag: 2
+  id: 0
+  weaponName: Rifle
+  Grade: 4
+  subType: 2
+  attachment: 
   price: 0
   damage: 30
   rpm: 600
-  curMagazine: 30
-  curReserve: 120
-  maxMagazine: 30
-  maxReserve: 120
-  accuracyDeg: 6
-  projectilesPerShot: 1
   bulletSpeed: 100
-  bulletLife: 2
-  semiAutoDelay: 0
-  spreadControlPct: 0
-  aimDistancePct: 100
-  reloadSpeedMul: 1
-  adsSpeedPct: 100
-  movePenaltyPct: 0
+  bulletPerShot: 1
+  bulletDuration: 2
+  curAmmo: 30
+  curReserveAmmo: 120
+  maxAmmo: 30
+  maxReserveAmmo: 120
+  volume: 50
+  accuracy: 5.5
+  precision: 20
+  stability: 5
+  aimAccuracy: 5
+  aimPrecision: 15
+  aimStability: 4.5
+  aimDistance: 100
+  hasLaser: 0
+  baseReloadTime: 2
+  reloadSpeed: 1
+  moveSpeedModifier: 1
+  aimMoveSpeedModifier: 100
   recoilAmount: 3
   recoilRecovery: 3
   bulletPrefab: {fileID: 8908556986258763193, guid: 9b1e99386de2bae45b00a487fd55718e, type: 3}
@@ -41,9 +50,3 @@ MonoBehaviour:
   upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
   weaponSprite: {fileID: 21300000, guid: 7b6b574a82bdf6040aae080a7009a870, type: 3}
   firePointOffset: {x: 0.24, y: 1.19}
-  scopeName: 
-  flashlightName: 
-  laserName: 
-  gripName: 
-  magazineName: 
-  compensatorName: 

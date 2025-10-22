@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Reflection;
 
 [CreateAssetMenu(menuName = "Game/Weapon Catalog", fileName = "WeaponCatalog")]
 public class WeaponCatalog : ScriptableObject
@@ -20,5 +21,15 @@ public class WeaponCatalog : ScriptableObject
         => All.FirstOrDefault(d => d && d.name == assetName);
 
     public GunData FindByDisplayName(string display)
-        => All.FirstOrDefault(d => d && d.displayName == display);
+        => All.FirstOrDefault(d => d && GetDisplayName(d) == display);
+
+    public static string GetDisplayName(GunData d)
+    {
+        if (!d) return "";
+        var t = d.GetType();
+        var f1 = t.GetField("weaponName", BindingFlags.Instance | BindingFlags.Public);
+        var f2 = t.GetField("displayName", BindingFlags.Instance | BindingFlags.Public); // ±¸½ºÆå
+        string val = f1?.GetValue(d) as string ?? f2?.GetValue(d) as string;
+        return string.IsNullOrEmpty(val) ? d.name : val;
+    }
 }

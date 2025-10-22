@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 5847062149088214940}
   - component: {fileID: 1565455357107576381}
   - component: {fileID: 9144420370503481960}
+  - component: {fileID: 5776649161462663358}
   m_Layer: 0
   m_Name: Weapon
   m_TagString: Untagged
@@ -421,15 +422,20 @@ MonoBehaviour:
   OnWeaponChanged:
     m_PersistentCalls:
       m_Calls: []
-  intializeDatas:
-  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
-  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  OnAmmoChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnReloaded:
+    m_PersistentCalls:
+      m_Calls: []
+  initializeDatas: []
+  initializeIndex: 0
   weaponSlots:
   - {fileID: 0}
   - {fileID: 0}
-  initializeIndex: 0
   stealthSlotIndex: -1
   combatSlotIndex: -1
+  _globalShooterLocked: 0
 --- !u!114 &9144420370503481960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,11 +451,33 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   catalog: {fileID: 11400000, guid: e58a055b1194d8a438ad053a012cbeca, type: 2}
+  starterOwned:
+  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
+  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
   owned: []
   OnInventoryChanged:
     m_PersistentCalls:
       m_Calls: []
   OnItemBought:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5776649161462663358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3470070528227405064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7af09084c8a21ab4f9b40b7f3137c820, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  root_DontDestroyOnLoad: 0
+  stealthGunId: 1
+  combatGunId: 0
+  OnLoadoutChanged:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &3567171574248799592
@@ -615,7 +643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
-  startingBalance: 0
+  startingBalance: 10000
   balance: 0
   OnChanged:
     m_PersistentCalls:

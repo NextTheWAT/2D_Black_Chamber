@@ -21,6 +21,10 @@ public class Gunimage : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
 
+
+    // 현재 보이는 패널 인덱스가 필요할 때 (읽기 전용)
+    public int CurrentPanelIndex => currentIndex;
+
     public void clickshowpanel(bool plus)  //클릭 시 계속 넘어감
     {
         int targetindex = currentIndex;
@@ -67,6 +71,23 @@ public class Gunimage : MonoBehaviour
                 currentIndex = index;
                 isSliding = false;
             });
+    }
+
+    // 다음/이전 슬라이드 시 도착할 패널 인덱스 미리 보기
+    public int PeekNextPanelIndex(bool plus)
+    {
+        int idx = currentIndex + (plus ? 1 : -1);
+        if (idx >= panels.Length) idx = 0;
+        else if (idx < 0) idx = panels.Length - 1;
+        return idx;
+    }
+
+    // 특정 패널의 Image 스프라이트를 교체
+    public void SetPanelSprite(int panelIndex, Sprite sprite)
+    {
+        if (panelIndex < 0 || panelIndex >= panels.Length) return;
+        var img = panels[panelIndex].GetComponent<Image>();
+        if (img) img.sprite = sprite;
     }
 
 }

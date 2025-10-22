@@ -12,28 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
   m_Name: Silence_Pistol 1
   m_EditorClassIdentifier: 
+  phaseTag: 1
   autoOwnedOnStart: 0
   hideFromShop: 0
-  displayName: Pistol2
-  subType: Pistol
-  phaseTag: 1
+  id: 6
+  weaponName: Pistol2
+  Grade: 4
+  subType: 0
+  attachment: 
   price: 500
   damage: 1
   rpm: 120
-  curMagazine: 1
-  curReserve: 1
-  maxMagazine: 1
-  maxReserve: 1
-  accuracyDeg: 6
-  projectilesPerShot: 1
   bulletSpeed: 100
-  bulletLife: 2
-  semiAutoDelay: 0
-  spreadControlPct: 0
-  aimDistancePct: 100
-  reloadSpeedMul: 1
-  adsSpeedPct: 100
-  movePenaltyPct: 0
+  bulletPerShot: 1
+  bulletDuration: 2
+  curAmmo: 1
+  curReserveAmmo: 1
+  maxAmmo: 1
+  maxReserveAmmo: 1
+  volume: 50
+  accuracy: 5.5
+  precision: 20
+  stability: 5
+  aimAccuracy: 5
+  aimPrecision: 15
+  aimStability: 4.5
+  aimDistance: 100
+  hasLaser: 0
+  baseReloadTime: 2
+  reloadSpeed: 1
+  moveSpeedModifier: 1
+  aimMoveSpeedModifier: 100
   recoilAmount: 1
   recoilRecovery: 2
   bulletPrefab: {fileID: 8908556986258763193, guid: e6199e5bc8a5ecc40b6bee74a672bcef, type: 3}
@@ -41,9 +50,3 @@ MonoBehaviour:
   upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
   weaponSprite: {fileID: 21300000, guid: df756e4529c79604d96c907f468b79ba, type: 3}
   firePointOffset: {x: 0.04, y: 1.09}
-  scopeName: 
-  flashlightName: 
-  laserName: 
-  gripName: 
-  magazineName: 
-  compensatorName: 

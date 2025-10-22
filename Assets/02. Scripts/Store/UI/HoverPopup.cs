@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class HoverPopup : MonoBehaviour
@@ -30,9 +30,10 @@ public class HoverPopup : MonoBehaviour
     {
         if (!gun) { gameObject.SetActive(false); return; }
 
-        weaponNameText.text = gun.displayName;
+        // 표시 이름: weaponName → displayName(구스펙) → ScriptableObject name
+        weaponNameText.text = GetDisplayName(gun);
 
-        // ������ �̸�(������ "-")
+        // 부착물 이름(없으면 "-") — 프로젝트에 실제 필드가 없다면 자동으로 "-"
         scopeNameText.text = ReadStr(gun, "scopeName") ?? "-";
         flashlightNameText.text = ReadStr(gun, "flashlightName") ?? "-";
         laserNameText.text = ReadStr(gun, "laserName") ?? "-";
@@ -40,28 +41,54 @@ public class HoverPopup : MonoBehaviour
         magazineNameText.text = ReadStr(gun, "magazineName") ?? "-";
         compensatorNameText.text = ReadStr(gun, "compensatorName") ?? "-";
 
-        // �з�: phaseTag �켱, ������ "Unknown"
+        // 분류: phaseTag / subType
         var cat = ReadStr(gun, "phaseTag") ?? "Unknown";
         var sub = ReadStr(gun, "subType");
-        categoryText.text = string.IsNullOrEmpty(sub) ? $"�з� : {cat}" : $"�з� : {cat} / {sub}";
+        categoryText.text = string.IsNullOrEmpty(sub) ? $"분류 : {cat}" : $"분류 : {cat} / {sub}";
 
-        damageText.text = $"������ : {ReadStr(gun, "damage") ?? "-"}";
-        fireRateText.text = $"�߻�ӵ� : {ReadStr(gun, "rpm") ?? ReadStr(gun, "fireRate") ?? "-"}";
-        ammoCapacityText.text = $"��ź�� : {ReadStr(gun, "maxMagazine") ?? ReadStr(gun, "magazine") ?? "-"}";
-        accuracyText.text = $"��Ȯ�� : {ReadStr(gun, "accuracyDeg") ?? ReadStr(gun, "accuracy") ?? "-"}";
-        noiseText.text = $"���� : {ReadStr(gun, "noise") ?? "-"}";
-        spreadText.text = $"ź���� : {ReadStr(gun, "spread") ?? "-"}";
-        recoilControlText.text = $"�ݵ����� : {ReadStr(gun, "recoilControl") ?? ReadStr(gun, "recoilRecovery") ?? "-"}";
-        aimRangeText.text = $"���ذŸ� : {ReadStr(gun, "aimRange") ?? ReadStr(gun, "aimDistancePct") ?? "-"}";
-        accuracyRecoveryText.text = $"��Ȯ��ȸ�� : {ReadStr(gun, "accuracyRecovery") ?? "-"}";
-        bulletSpeedText.text = $"�Ѿ˼ӵ� : {ReadStr(gun, "bulletSpeed") ?? "-"}";
-        reloadSpeedText.text = $"�������ӵ� : {ReadStr(gun, "reloadSpeedMul") ?? ReadStr(gun, "reloadSpeed") ?? "-"}";
-        mobilityReductionText.text = $"�̵����� : {ReadStr(gun, "movePenaltyPct") ?? ReadStr(gun, "mobilityReduction") ?? "-"}";
+        damageText.text = $"데미지 : {ReadStr(gun, "damage") ?? "-"}";
+        fireRateText.text = $"발사속도 : {ReadStr(gun, "rpm") ?? ReadStr(gun, "fireRate") ?? "-"}";
+
+        // 장탄수: maxAmmo(신) → maxMagazine(구) → magazine(아주 구)
+        ammoCapacityText.text = $"장탄수 : {ReadStr(gun, "maxAmmo") ?? ReadStr(gun, "maxMagazine") ?? ReadStr(gun, "magazine") ?? "-"}";
+
+        // 정확도: accuracy(신) → aimAccuracy → accuracyDeg(구)
+        accuracyText.text = $"정확도 : {ReadStr(gun, "accuracy") ?? ReadStr(gun, "aimAccuracy") ?? ReadStr(gun, "accuracyDeg") ?? "-"}";
+
+        // 소음: volume(신) → noise(구)
+        noiseText.text = $"소음 : {ReadStr(gun, "volume") ?? ReadStr(gun, "noise") ?? "-"}";
+
+        // 탄퍼짐: precision(신, 0~100) → spread(구) → accuracyDeg(구)
+        spreadText.text = $"탄퍼짐 : {ReadStr(gun, "precision") ?? ReadStr(gun, "spread") ?? ReadStr(gun, "accuracyDeg") ?? "-"}";
+
+        // 반동제어/회복: recoilRecovery(신) → recoilControl(구)
+        recoilControlText.text = $"반동제어 : {ReadStr(gun, "recoilRecovery") ?? ReadStr(gun, "recoilControl") ?? "-"}";
+
+        // 조준거리: aimDistance(신, %) → aimRange(구) → aimDistancePct(구)
+        aimRangeText.text = $"조준거리 : {ReadStr(gun, "aimDistance") ?? ReadStr(gun, "aimRange") ?? ReadStr(gun, "aimDistancePct") ?? "-"}";
+
+        // 정확도 회복(프로젝트에 없으면 '-')
+        accuracyRecoveryText.text = $"정확도회복 : {ReadStr(gun, "accuracyRecovery") ?? "-"}";
+
+        bulletSpeedText.text = $"총알속도 : {ReadStr(gun, "bulletSpeed") ?? "-"}";
+
+        // 재장전속도: reloadSpeed(신, %) → reloadSpeedMul(구)
+        reloadSpeedText.text = $"재장전속도 : {ReadStr(gun, "reloadSpeed") ?? ReadStr(gun, "reloadSpeedMul") ?? "-"}";
+
+        // 이동속도 배율/감소: moveSpeedModifier(신, %) → movePenaltyPct(구) → mobilityReduction(구)
+        mobilityReductionText.text = $"이동감소 : {ReadStr(gun, "moveSpeedModifier") ?? ReadStr(gun, "movePenaltyPct") ?? ReadStr(gun, "mobilityReduction") ?? "-"}";
 
         gameObject.SetActive(true);
     }
 
     public void Hide() => gameObject.SetActive(false);
+
+    // --- helpers ---
+    private static string GetDisplayName(GunData d)
+    {
+        var n = ReadStr(d, "weaponName") ?? ReadStr(d, "displayName");
+        return string.IsNullOrEmpty(n) ? d.name : n;
+    }
 
     private static string ReadStr(object obj, string field)
     {
