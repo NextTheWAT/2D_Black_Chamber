@@ -444,8 +444,8 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
-        // === 30% 확률로만 드랍 ===
-        if (dropItems != null && Random.value <= 0.3f) // 0.3 = 30%
+        // === 30% 확률 드랍 ===
+        if (dropItems != null && Random.value <= 0.3f)
         {
             Vector3 dropPos = transform.position + Vector3.up * 0.2f;
             GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
@@ -453,12 +453,15 @@ public class Enemy : MonoBehaviour
             var item = ob.GetComponent<MagazineItem>();
             if (item != null)
             {
-                switch (WeaponManager.Instance.CurrentWeaponIndex)
+                // 예전: CurrentWeaponIndex 스위치 → 삭제
+                // 현재 무기가 '스텔스 슬롯 무기'라면 권총 탄(예: 12) 드랍
+                var wm = WeaponManager.Instance;
+                var cur = wm ? wm.CurrentWeapon : null;
+                if (wm && cur && cur == wm.GetStealthShooter())
                 {
-                    case 0:
-                        item.ammoAmount = 12;
-                        break;
+                    item.ammoAmount = 12; // 필요 시 데이터 기반으로 바꿔도 됨
                 }
+                // else: 기본값 유지(프리팹 설정치)
             }
         }
     }

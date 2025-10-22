@@ -12,4 +12,10 @@ public class ShooterLockedTrigger : MonoBehaviour
             WeaponManager.Instance.SetShooterLocked(shooterLocked);
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            WeaponManager.Instance.SetShooterLocked(false);
+    }
 }

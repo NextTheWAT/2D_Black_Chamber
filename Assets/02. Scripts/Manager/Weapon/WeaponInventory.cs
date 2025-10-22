@@ -3,81 +3,81 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class WeaponInventory : Singleton<WeaponInventory>
+/// <summary>
+/// 소유/구매만 담당. 시작 보유 + 카탈로그(autoOwnedOnStart)로 초기화.
+/// 상점은 여기만 건드린다. (장착/탄약/페이즈는 절대 개입 X)
+/// </summary>
+public sealed class WeaponInventory : Singleton<WeaponInventory>
 {
+    [Header("Catalog (Optional)")]
     public WeaponCatalog catalog;
 
+    [Header("Starter Owned")]
+    [SerializeField] private List<GunData> starterOwned = new();
+
+    [Header("Runtime Owned (ReadOnly)")]
     [SerializeField] private List<GunData> owned = new();
     public IReadOnlyList<GunData> Owned => owned;
 
+    [Header("Events")]
     public UnityEvent OnInventoryChanged = new();
-    public UnityEvent<GunData> OnItemBought = new();
+    public UnityEvent<GunData> OnItemBought = new(); // Manager가 구독해서 Shooter 1개만 생성/장착
 
-    public bool IsOwned(GunData d) => d && owned.Contains(d);
+    private void Start() => RebuildOwnedFromStarters();
 
-    // ---- 내부용: 소유만 추가(스폰X) ----
-    private bool AddOwnedSilently(GunData d)
+    public void RebuildOwnedFromStarters()
     {
-        if (!d || owned.Contains(d)) return false;
-        owned.Add(d);
-        return true;
-    }
+        owned.Clear();
 
-    // ---- 시작 시 1회: 기본 무기/기본 소유 동기화 ----
-    private void SyncOwnedOnStart()
-    {
-        // 1) WeaponManager 초기 로드아웃에 있는 무기는 소유로 간주
-        var wm = WeaponManager.Instance;
-        if (wm && wm.intializeDatas != null)
-        {
-            foreach (var d in wm.intializeDatas)
-                AddOwnedSilently(d);
-        }
-
-        // 2) 카탈로그에서 autoOwnedOnStart 체크된 무기 추가
+        foreach (var d in starterOwned) if (d) AddOwnedSilently(d);
         if (catalog)
         {
-            foreach (var d in catalog.All.Where(x => x && x.autoOwnedOnStart))
-                AddOwnedSilently(d);
+            foreach (var d in catalog.All)
+                if (d && d.autoOwnedOnStart) AddOwnedSilently(d);
         }
-
         OnInventoryChanged.Invoke();
     }
 
-    private void Start()
+    // === Shop 전용 API ===
+    public bool Buy(GunData data)
     {
-        // 씬 시작 시 한 번만 동기화
-        SyncOwnedOnStart();
-    }
+        if (!data || owned.Contains(data)) return false;
 
-    // ---- 상점: 구매 → 소유 추가 → WeaponManager에 스폰/장착 ----
-    public bool Buy(GunData data, bool autoEquip = true)
-    {
-        if (!data || IsOwned(data)) return false;
-        if (!MoneyManager.Instance.TrySpend(data.price)) return false;
+        // TODO: 프로젝트에 돈 시스템 있으면 여기서 결제 처리
+        // if (!MoneyManager.Instance.TrySpend(data.price)) return false;
 
-        // 소유 추가
         owned.Add(data);
         OnInventoryChanged.Invoke();
-
-        // 인게임 무기 생성/등록(+옵션: 자동장착)
-        WeaponManager.Instance.AddWeapon(data, autoEquip);
-
         OnItemBought.Invoke(data);
         return true;
     }
 
-    // ---- 상점 리스트 헬퍼 ----
-    public IEnumerable<GunData> GetShopList(bool showOwned = false, bool hideHidden = true)
+    public bool IsOwned(GunData data) => data && owned.Contains(data);
+
+    // === 조회/헬퍼 ===
+    public IEnumerable<GunData> GetShopList(bool includeOwned = false, bool hideHidden = true)
     {
         var all = catalog ? catalog.All : Enumerable.Empty<GunData>();
         if (hideHidden) all = all.Where(d => !d.hideFromShop);
-        return showOwned ? all : all.Where(d => !IsOwned(d));
+        return includeOwned ? all : all.Where(d => !IsOwned(d));
     }
 
-    public ILookup<string, GunData> GetShopGroups(bool showOwned = false, bool hideHidden = true)
+    public GunData FindById(string key)
     {
-        return GetShopList(showOwned, hideHidden)
-            .ToLookup(d => d != null ? d.phaseTag.ToString() : "General"); // "Any", "Stealth", "Combat"
+        if (string.IsNullOrEmpty(key)) return null;
+
+        // 우선 카탈로그 → 없으면 Owned에서 찾기
+        IEnumerable<GunData> src = catalog ? catalog.All : owned;
+
+        foreach (var d in src)
+            if (d && (d.name == key || d.displayName == key))   // ← id 제거, name/표시명으로 매칭
+                return d;
+
+        return null;
+    }
+
+    private void AddOwnedSilently(GunData d)
+    {
+        if (d && !owned.Contains(d)) owned.Add(d);
     }
 }

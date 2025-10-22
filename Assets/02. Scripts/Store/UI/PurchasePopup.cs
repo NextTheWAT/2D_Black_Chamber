@@ -51,15 +51,12 @@ public class PurchasePopup : MonoBehaviour
     {
         if (!pending) return;
 
-        // 인벤토리 구매 시도 (머니 차감 → 소유 추가 → WeaponManager.AddWeapon → 자동장착 옵션)
-        bool ok = WeaponInventory.Instance.Buy(pending, autoEquip: true);
+        // 인벤토리 구매만 수행(장착 변경 없음)
+        bool ok = WeaponInventory.Instance.Buy(pending);   // ← autoEquip 파라미터 제거
 
         ClosePurchasePopup();
 
-        // 결과 팝업
         if (condition != null)
-        {
-            condition.EnoughMoneyPopup(ok); // ok면 Complete, 아니면 Shortage
-        }
+            condition.EnoughMoneyPopup(ok);
     }
 }
