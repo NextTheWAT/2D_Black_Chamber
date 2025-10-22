@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ArmoryNpc : MonoBehaviour, Iinteraction
 {
-    public GameObject weaponsPanel;
+    public GameObject arMoryPanel;
 
     private bool isOpen = false;
 
@@ -18,14 +18,14 @@ public class ArmoryNpc : MonoBehaviour, Iinteraction
 
     public void Open()
     {
-        weaponsPanel.SetActive(true);
+        arMoryPanel.SetActive(true);
         Time.timeScale = 0f;
         isOpen = true;
     }
 
     public void Close()
     {
-        weaponsPanel.SetActive(false);
+        arMoryPanel.SetActive(false);
         Time.timeScale = 1f;
         isOpen = false;
     }
