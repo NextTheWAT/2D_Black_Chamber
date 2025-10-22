@@ -107,7 +107,7 @@ public class ExitPortal : MonoBehaviour
 
         // 3) 플레이어 소지금에 반영
         if (MoneyManager.Instance != null && reward > 0)
-            MoneyManager.Instance.AddMoney(reward);
+            MoneyManager.Instance.Add(reward);
 
         // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)

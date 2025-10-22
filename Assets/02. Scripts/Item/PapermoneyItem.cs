@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Papermoney: MonoBehaviour, Iinteraction
+public class PapermoneyItem : MonoBehaviour, Iinteraction
 {
     public enum MoneyType  // µ∑ ≈∏¿‘
     {

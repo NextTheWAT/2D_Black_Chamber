@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealBag : MonoBehaviour, Iinteraction
+public class HealBagItem : MonoBehaviour, Iinteraction
 {
     private GameObject player;    // 플레이어 Transform
     private Health health;

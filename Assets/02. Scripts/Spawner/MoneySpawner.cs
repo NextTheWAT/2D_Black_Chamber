@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Papermoney;
 
 public class MoneySpawner : MonoBehaviour
 {
@@ -69,7 +68,7 @@ public class MoneySpawner : MonoBehaviour
 
             GameObject moneyPrefabs = Instantiate(prefab, choosePoint[i].position, Quaternion.identity);
 
-            Money moneyComponent = moneyPrefabs.GetComponent<Money>();          // 생성한 머니프리펩의 컴포넌트를 머니로 가져가기 (금액 정보)
+            MoneyItem moneyComponent = moneyPrefabs.GetComponent<MoneyItem>();          // 생성한 머니프리펩의 컴포넌트를 머니로 가져가기 (금액 정보)
             if ( moneyComponent != null)
                 moneyComponent.SetAmount(amount);
         }

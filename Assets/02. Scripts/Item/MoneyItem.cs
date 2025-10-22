@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Money : MonoBehaviour, Iinteraction
+public class MoneyItem : MonoBehaviour, Iinteraction
 {
     public int money;
 
@@ -13,7 +13,7 @@ public class Money : MonoBehaviour, Iinteraction
 
     public void Interaction(Transform interactor)
     {
-        MoneyManager.Instance.AddMoney(money);
+        MoneyManager.Instance.Add(money);
 
         if (MoneyPickupPopup.instance != null )
             MoneyPickupPopup.instance.Show(money);

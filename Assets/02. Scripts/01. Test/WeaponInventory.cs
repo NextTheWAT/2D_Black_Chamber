@@ -54,7 +54,7 @@ public class WeaponInventory : Singleton<WeaponInventory>
     public bool Buy(GunData data, bool autoEquip = true)
     {
         if (!data || IsOwned(data)) return false;
-        if (!MoneyTest.Instance.TrySpend(data.price)) return false;
+        if (!MoneyManager.Instance.TrySpend(data.price)) return false;
 
         // 소유 추가
         owned.Add(data);

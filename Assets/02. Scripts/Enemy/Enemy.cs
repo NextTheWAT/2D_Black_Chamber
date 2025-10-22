@@ -450,7 +450,7 @@ public class Enemy : MonoBehaviour
             Vector3 dropPos = transform.position + Vector3.up * 0.2f;
             GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
 
-            var item = ob.GetComponent<Item>();
+            var item = ob.GetComponent<MagazineItem>();
             if (item != null)
             {
                 switch (WeaponManager.Instance.CurrentWeaponIndex)

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour, Iinteraction
+public class MagazineItem : MonoBehaviour, Iinteraction
 {
     public enum WeaponType  // 무기 타입
     {

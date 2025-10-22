@@ -24,8 +24,7 @@ public class StoreCanvasController : MonoBehaviour
 
     private void OnEnable()
     {
-        // 너희 프로젝트에 현재 MoneyTest를 쓰고 있길래 그대로 둠
-        MoneyTest.Instance.OnChanged.AddListener(RefreshMoney);
+        MoneyManager.Instance.OnChanged.AddListener(RefreshMoney);
         WeaponInventory.Instance.OnInventoryChanged.AddListener(RefreshGrid);
         RefreshMoney();
         RefreshGrid();
@@ -33,13 +32,13 @@ public class StoreCanvasController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (MoneyTest.Instance) MoneyTest.Instance.OnChanged.RemoveListener(RefreshMoney);
+        if (MoneyManager.Instance) MoneyManager.Instance.OnChanged.RemoveListener(RefreshMoney);
         if (WeaponInventory.Instance) WeaponInventory.Instance.OnInventoryChanged.RemoveListener(RefreshGrid);
     }
 
     private void RefreshMoney()
     {
-        if (moneyText) moneyText.text = $"$ {MoneyTest.Instance.Balance:N0}";
+        if (moneyText) moneyText.text = $"$ {MoneyManager.Instance.Balance:N0}";
     }
 
     public void RefreshGrid()
@@ -59,7 +58,7 @@ public class StoreCanvasController : MonoBehaviour
                 var gun = list[i];
                 bool isRightColumn = i >= 4; // 4x2 레이아웃 기준
 
-                // ★ 새 인터페이스 한 줄로 바인딩
+                // 새 인터페이스 한 줄로 바인딩
                 slot.Bind(gun, hoverPopup, purchasePopup, isRightColumn);
                 slot.gameObject.SetActive(true);
             }
