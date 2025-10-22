@@ -6,14 +6,14 @@ public class UserData
 {
     public string userName;
     public int money;
-    public float playTime;
+    public float totalPlayTime;
     public Dictionary<int, ClearResultData> clearDatas;
 
-    public UserData(string userName, int money, float playTime)
+    public UserData(string userName, int money, float totalPlayTime)
     {
         this.userName = userName;
         this.money = money;
-        this.playTime = playTime;
+        this.totalPlayTime = totalPlayTime;
         clearDatas = new();
     }
 }

@@ -3,12 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
-
-public class LeaderBoard
-{
-
-
-}
+using UnityEngine.SceneManagement;
 
 public class FirebaseManager : Singleton<FirebaseManager>
 {
@@ -23,10 +18,10 @@ public class FirebaseManager : Singleton<FirebaseManager>
 
     private const string enemyDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/EnemyData.json";
     private const string gunDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/GunData.json";
-    private const string userDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/users";
+    private const string userDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/UserData";
     private const string leaderBoardURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/LeaderBoard";
     public string UserID => SystemInfo.deviceUniqueIdentifier;
-    private UserData userData;
+    private UserData myUserData;
 
     private bool isEnemyDataLoaded = false;
     private bool isGunDataLoaded = false;
@@ -35,7 +30,6 @@ public class FirebaseManager : Singleton<FirebaseManager>
     public bool IsEnemyDataLoaded => isEnemyDataLoaded;
     public bool IsGunDataLoaded => isGunDataLoaded;
     public bool IsUserDataLoaded => isUserDataLoaded;
-
     public bool IsInitialized => isEnemyDataLoaded && isUserDataLoaded;
 
     protected override void Initialize()
@@ -44,9 +38,23 @@ public class FirebaseManager : Singleton<FirebaseManager>
         UpdateGunDatas();
         UpdateEnemyDatas();
         UpdateUserDatas();
+    }
 
-        userData = new("Player", 0, 0f);
-        PutUser(userData, UserID);
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene _, LoadSceneMode __)
+    {
+        if (!IsInitialized) return;
+        Debug.Log("Scene Loaded - Save My User Data");
+        SaveMyUserData();
     }
 
     public EnemyData GetEnemyData(int id) => enemyDataDict[id];
@@ -63,6 +71,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.enemyName}");
         });
     }
+
     public void UpdateGunDatas()
     {
         RestClient.Get(gunDataURL).Then(response =>
@@ -86,22 +95,46 @@ public class FirebaseManager : Singleton<FirebaseManager>
             UserDataLoaded?.Invoke();
 
             foreach (var kvp in userDataDict)
-                ConditionalLogger.Log($"UserID: {kvp.Key}, UserName: {kvp.Value.userName}, Score: {kvp.Value.money}, PlayTime: {kvp.Value.playTime}");
+                ConditionalLogger.Log($"UserID: {kvp.Key}, UserName: {kvp.Value.userName}, Score: {kvp.Value.money}, PlayTime: {kvp.Value.totalPlayTime}");
+        }).Finally(() =>
+        {
+            if (userDataDict.ContainsKey(UserID))
+            {
+                myUserData = userDataDict[UserID];
+            }
+            else
+            {
+                myUserData = new UserData("Player", 0, 0f);
+            }
         });
+    }
+
+    public void SaveMyUserData()
+    {
+        myUserData.money = MoneyManager.Instance.Balance;
+        string json = JsonConvert.SerializeObject(myUserData, Formatting.Indented);
+        RestClient.Put($"{userDataURL}/{UserID}.json", json);
+    }
+
+    public void UploadLeaderBoard(ClearResultData data)
+    {
+        string json = JsonConvert.SerializeObject(myUserData, Formatting.Indented);
+        RestClient.Put($"{leaderBoardURL}/{data.stageNumber}.json", json);
     }
 
     public void UploadClearData(ClearResultData data)
     {
-        userData.clearDatas[data.stageNumber] = data;
-        PutUser(userData, UserID);
+        // 클리어 시간 기록이 기존 기록보다 느리면 업로드하지 않음
+        if (myUserData.clearDatas.ContainsKey(data.stageNumber))
+        {
+            var existingData = myUserData.clearDatas[data.stageNumber];
+            if (data.elapsedSeconds > existingData.elapsedSeconds) return;
+        }
+
+        myUserData.clearDatas[data.stageNumber] = data;
+        SaveMyUserData();
     }
 
-    public void GetUser(string userId, Action<UserData> callback)
-        => RestClient.Get<UserData>($"{userDataURL}/{userId}.json").Then(response => callback?.Invoke(response));
 
-    public void PostUser(UserData user, string userId, Action callback = null)
-        => RestClient.Post<UserData>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
 
-    public void PutUser(UserData user, string userId, Action callback = null)
-        => RestClient.Put<UserData>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
 }
