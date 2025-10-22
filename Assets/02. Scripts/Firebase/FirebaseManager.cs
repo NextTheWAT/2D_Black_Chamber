@@ -10,24 +10,30 @@ public class LeaderBoard
 
 }
 
-
 public class FirebaseManager : Singleton<FirebaseManager>
 {
     public Action EnemyDataLoaded;
+    public Action GunDataLoaded;
     public Action UserDataLoaded;
 
     public Dictionary<int, EnemyData> enemyDataDict = new();
+    public Dictionary<int, GunData> gunDataDict = new();
+    public Dictionary<int, EnemyData> attachmentDataDict = new();
     public Dictionary<string, UserData> userDataDict = new();
-    private const string userDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/users";
+
     private const string enemyDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/EnemyData.json";
+    private const string gunDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/GunData.json";
+    private const string userDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/users";
     private const string leaderBoardURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/LeaderBoard";
     public string UserID => SystemInfo.deviceUniqueIdentifier;
     private UserData userData;
 
     private bool isEnemyDataLoaded = false;
+    private bool isGunDataLoaded = false;
     private bool isUserDataLoaded = false;
 
     public bool IsEnemyDataLoaded => isEnemyDataLoaded;
+    public bool IsGunDataLoaded => isGunDataLoaded;
     public bool IsUserDataLoaded => isUserDataLoaded;
 
     public bool IsInitialized => isEnemyDataLoaded && isUserDataLoaded;
@@ -35,8 +41,10 @@ public class FirebaseManager : Singleton<FirebaseManager>
     protected override void Initialize()
     {
         base.Initialize();
+        UpdateGunDatas();
         UpdateEnemyDatas();
         UpdateUserDatas();
+
         userData = new("Player", 0, 0f);
         PutUser(userData, UserID);
     }
@@ -55,6 +63,19 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.enemyName}");
         });
     }
+    public void UpdateGunDatas()
+    {
+        RestClient.Get(gunDataURL).Then(response =>
+        {
+            gunDataDict = JsonConvert.DeserializeObject<Dictionary<int, GunData>>(response.Text);
+            isGunDataLoaded = true;
+            GunDataLoaded?.Invoke();
+
+            foreach (var kvp in gunDataDict)
+                ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.weaponName}");
+        });
+    }
+
 
     public void UpdateUserDatas()
     {
