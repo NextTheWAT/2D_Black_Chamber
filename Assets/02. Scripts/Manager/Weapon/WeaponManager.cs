@@ -38,12 +38,21 @@ public class WeaponManager : Singleton<WeaponManager>
             if (weaponSlots == null || weaponSlots.Length == 0) return;
             if (value == currentIndex) return;
 
+            // 이전 무기 끄기
+            if (IsValidSlot(currentIndex))
+                weaponSlots[currentIndex].gameObject.SetActive(false);
+
             currentIndex = Mathf.Clamp(value, 0, weaponSlots.Length - 1);
+
+            // 새 무기 켜기
+            if (IsValidSlot(currentIndex))
+                weaponSlots[currentIndex].gameObject.SetActive(true);
 
             OnWeaponChanged.Invoke(CurrentWeapon);
             OnAmmoChanged.Invoke();
         }
     }
+
 
     private void OnEnable()
     {

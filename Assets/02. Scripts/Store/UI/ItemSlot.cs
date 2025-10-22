@@ -15,7 +15,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image iconImage;               // 썸네일
 
     [Header("Popup Positioning")]
-    public bool rightSideSlot;              // 오른쪽 열이면 true → 팝업을 왼쪽으로
     public Vector2 offset = new Vector2(400f, 0f);
 
     private GunData gun;
@@ -33,7 +32,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         gun = gunData;
         hoverPopup = popupHover;
         purchasePopup = popupPurchase;
-        rightSideSlot = isRightColumn;
 
         if (iconImage) iconImage.sprite = GetSprite(gun, "weaponSprite") ?? GetSprite(gun, "shopIcon");
 
@@ -60,11 +58,11 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         yield return null; // 한 프레임 지연(이벤트 충돌 방지)
 
         Vector3 pos = transform.position;
-        pos.x += rightSideSlot ? -offset.x : offset.x;
+        pos.x += offset.x;
         pos.y += offset.y;
 
         hoverPopup.transform.position = pos;
-        hoverPopup.Show(gun);  // ★ GunData 직접 전달
+        hoverPopup.Show(gun);  // GunData 직접 전달
     }
 
     public void OnPointerExit(PointerEventData eventData)
