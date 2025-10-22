@@ -15,7 +15,7 @@ MonoBehaviour:
   npcName: "\uCD5C\uC815\uB0A8"
   randomDialogues:
   - "\uC5B4\uB5A4 \uC784\uBB34\uB97C \uCC98\uB9AC\uD560\uAC74\uAC00?"
-  - "\uBCF4\uC548 \uB54C\uBB38\uC5D0 \uC601\uC0C1\uC73C\uB85C \uC804\uB2EC\uD55C\uB2E4."
+  - "\uBB34\uC2A8\uC77C\uC774\uC9C0?"
   firstMeetDialogues:
   - lines:
     - "\uC544"

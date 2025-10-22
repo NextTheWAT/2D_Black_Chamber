@@ -61,35 +61,44 @@ public class PlayerAimController : MonoBehaviour
     void Start()
     {
         inputController = GetComponent<PlayerInputController>();
-        aimLineTransform = aimLineRenderer.transform;
+        EnsureCachedTransforms();
 
-        leftLineRenderer.positionCount = 2;
-        rightLineRenderer.positionCount = 2;
+        if (leftLineRenderer) leftLineRenderer.positionCount = 2;
+        if (rightLineRenderer) rightLineRenderer.positionCount = 2;
     }
 
     void LateUpdate()
     {
+        EnsureCachedTransforms();
+
         isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
         UpdateAimingTime();
         UpdatePenalty();
         UpdateAimParameters();
+
+        // 총기가 아직 없으면 라인/게이지 갱신 스킵
+        if (!TryGetGunPoint(out _)) return;
+
         UpdateAimLine();
         UpdateSideLine();
         DrawArc();
     }
     void DrawArc()
     {
+        if (gaugeArcDrawer == null || backgroundArcDrawer == null) return;
+        if (!TryGetGunPoint(out var gunPoint)) return;
+
         float ratio = currentAimingTime / aimingDuration;
         float aimingGauge = 1 - ratio;
         Color targetColor = aimingCooldown ? gaugeCooldownColor : Color.Lerp(gaugeOriginalColor, gaugeCooldownColor, ratio);
         Color gaugeColor = Color.Lerp(gaugeArcDrawer.GetColor(), targetColor, Time.deltaTime * gaugeColorTransitionSpeed);
 
-        gaugeArcDrawer.transform.position = CurrentShooter.gunPoint.position;
+        gaugeArcDrawer.transform.position = gunPoint.position;
         gaugeArcDrawer.DrawArc(currentPingPongAngle * aimingGauge);
         gaugeArcDrawer.SetAlpha(aimingGauge * maxAlpha);
         gaugeArcDrawer.SetColor(gaugeColor);
 
-        backgroundArcDrawer.transform.position = CurrentShooter.gunPoint.position;
+        backgroundArcDrawer.transform.position = gunPoint.position;
         backgroundArcDrawer.DrawArc(currentPingPongAngle);
     }
 
@@ -129,14 +138,17 @@ public class PlayerAimController : MonoBehaviour
 
     void UpdateAimLine()
     {
-        if (aimLineRenderer == null) return;
+        if (aimLineRenderer == null || aimLineTransform == null) return;
+        if (!TryGetGunPoint(out var gunPoint)) return;
 
         pingpongTime += Time.deltaTime * currentPingPongSpeed;
         float aimAngle = Mathf.Sin(pingpongTime) * currentPingPongAngle * 0.5f;
-        aimLineTransform.localRotation = Quaternion.Euler(0f, 0f, aimAngle);
-        CurrentShooter.gunPoint.transform.localRotation = aimLineTransform.localRotation;
 
-        Vector3 startPos = CurrentShooter.gunPoint.transform.position + aimLineTransform.up * aimLineOffset;
+        // 라인 기준 회전 ↔ 총기 기준 회전 동기화
+        aimLineTransform.localRotation = Quaternion.Euler(0f, 0f, aimAngle);
+        gunPoint.localRotation = aimLineTransform.localRotation;
+
+        Vector3 startPos = gunPoint.position + aimLineTransform.up * aimLineOffset;
         Vector3 endPos = startPos + aimLineTransform.up * aimLineDistance;
 
         aimLineRenderer.SetPosition(0, startPos);
@@ -148,8 +160,12 @@ public class PlayerAimController : MonoBehaviour
 
     void UpdateSideLine()
     {
-        leftLineRenderer.transform.position = CurrentShooter.gunPoint.position;
-        rightLineRenderer.transform.position = CurrentShooter.gunPoint.position;
+        if (!TryGetGunPoint(out var gunPoint)) return;
+        if (!leftLineRenderer || !rightLineRenderer) return;
+
+        // 라인 기준점(Transform)을 총구 위치로 맞춘 뒤…
+        leftLineRenderer.transform.position = gunPoint.position;
+        rightLineRenderer.transform.position = gunPoint.position;
 
         float leftRad = (currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
         float rightRad = (-currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
@@ -166,6 +182,23 @@ public class PlayerAimController : MonoBehaviour
         leftLineRenderer.SetPosition(1, leftEndPos);
         rightLineRenderer.SetPosition(0, rightStartPos);
         rightLineRenderer.SetPosition(1, rightEndPos);
+    }
+
+
+    private bool TryGetGunPoint(out Transform gunPoint)
+    {
+        gunPoint = null;
+        var wm = WeaponManager.Instance;
+        var shooter = (wm != null) ? wm.CurrentWeapon : null;
+        if (shooter == null || shooter.gunPoint == null) return false;
+        gunPoint = shooter.gunPoint;
+        return true;
+    }
+
+    private void EnsureCachedTransforms()
+    {
+        if (aimLineRenderer != null && aimLineTransform == null)
+            aimLineTransform = aimLineRenderer.transform;
     }
 
 }
