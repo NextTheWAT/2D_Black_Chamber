@@ -19,6 +19,10 @@ public class UIHUDSlots : MonoBehaviour
     [SerializeField] private GameObject knifeObject; //총알없음
     [SerializeField] private TMP_Text ammoText; //총알 수
 
+    [Header("Weapon Scale (선택/비선택)")]
+    [SerializeField] private Vector3 selectedScale = new Vector3(1.15f, 1.15f, 1f);
+    [SerializeField] private Vector3 deselectedScale = new Vector3(0.9f, 0.9f, 1f);
+
     private readonly List<GameObject> _hpSlots = new();
     private Health _playerHealth;
     private PlayerConditionManager _staminaMgr;
@@ -89,7 +93,7 @@ public class UIHUDSlots : MonoBehaviour
         if (hpBar) hpBar.fillAmount = Mathf.Clamp01(ratio);
 
         // 숫자 텍스트도 유지
-        if (hpLabel) hpLabel.text = $"{cur}";
+        if (hpLabel) hpLabel.text = $"{cur}/100";
     }
 
     private void OnStaminaChanged01(float v01)
@@ -99,7 +103,7 @@ public class UIHUDSlots : MonoBehaviour
         if (staminaLabel && _staminaMgr != null)
         {
             int cur = Mathf.RoundToInt(_staminaMgr.CurrentStamina);
-            staminaLabel.text = $"{cur}";
+            staminaLabel.text = $"{cur}/100";
         }
     }
 
@@ -176,6 +180,18 @@ public class UIHUDSlots : MonoBehaviour
         }
     }
 
+    private void SetWeaponScale(GameObject weaponObj, bool isActive)
+    {
+        if (!weaponObj) return;
+
+        // UI 요소이면 RectTransform, 아니면 일반 Transform에 적용
+        var rt = weaponObj.GetComponent<RectTransform>();
+        if (rt != null)
+            rt.localScale = isActive ? selectedScale : deselectedScale;
+        else
+            weaponObj.transform.localScale = isActive ? selectedScale : deselectedScale;
+    }
+
     private void UpdateWeaponVisuals(GameObject activeWeapon)
     {
         // 모든 무기 오브젝트 활성화
@@ -187,6 +203,11 @@ public class UIHUDSlots : MonoBehaviour
         SetWeaponColor(pistolObject, pistolObject == activeWeapon);
         SetWeaponColor(rifleObject, rifleObject == activeWeapon);
         SetWeaponColor(knifeObject, knifeObject == activeWeapon);
+
+        // 각 무기 스케일 설정 (선택된 것은 크게, 나머지는 작게)
+        SetWeaponScale(pistolObject, pistolObject == activeWeapon);
+        SetWeaponScale(rifleObject, rifleObject == activeWeapon);
+        SetWeaponScale(knifeObject, knifeObject == activeWeapon);
     }
 
 
