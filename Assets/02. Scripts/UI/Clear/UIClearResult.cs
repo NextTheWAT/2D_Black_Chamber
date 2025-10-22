@@ -39,6 +39,7 @@ public class UIClearResult : UIBase
         if (_data == null && TempResultHolder.Data != null)
         {
             SetResult(TempResultHolder.Data);
+            FirebaseManager.Instance.UploadClearData(TempResultHolder.Data);
             TempResultHolder.Data = null;
             return;
         }

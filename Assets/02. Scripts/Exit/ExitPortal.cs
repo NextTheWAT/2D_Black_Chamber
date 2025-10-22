@@ -111,7 +111,7 @@ public class ExitPortal : MonoBehaviour
 
         // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)
-            TempResultHolder.Data = GameStats.Instance.BuildClearResult(clearStateText, reward);
+            TempResultHolder.Data = GameStats.Instance.BuildClearResult(stageNumber, clearStateText, reward);
 
         ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);                 // 예: Stage1_Cleared = 1
         PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);               // 예: Stage1_ClearDialoguePending = 1

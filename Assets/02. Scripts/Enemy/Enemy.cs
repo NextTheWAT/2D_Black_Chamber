@@ -201,7 +201,7 @@ public class Enemy : MonoBehaviour
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
 
-        if (FirebaseManager.Instance.IsInitialized)
+        if (FirebaseManager.Instance.IsEnemyDataLoaded)
             Initialize();
         else
             FirebaseManager.Instance.EnemyDataLoaded += Initialize;

@@ -4,39 +4,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 
-public class User
+public class LeaderBoard
 {
-    public string userName;
-    public int score;
-    public float playTime;
 
-    public User(string userName, int score, float playTime)
-    {
-        this.userName = userName;
-        this.score = score;
-        this.playTime = playTime;
-    }
+
 }
+
 
 public class FirebaseManager : Singleton<FirebaseManager>
 {
     public Action EnemyDataLoaded;
+    public Action UserDataLoaded;
 
     public Dictionary<int, EnemyData> enemyDataDict = new();
+    public Dictionary<string, UserData> userDataDict = new();
     private const string userDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/users";
     private const string enemyDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/EnemyData.json";
+    private const string leaderBoardURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/LeaderBoard";
     public string UserID => SystemInfo.deviceUniqueIdentifier;
+    private UserData userData;
 
-    private bool enemyDataLoaded = false;
-    private bool userDataLoaded = false;
-    public bool IsInitialized => enemyDataLoaded;
+    private bool isEnemyDataLoaded = false;
+    private bool isUserDataLoaded = false;
+
+    public bool IsEnemyDataLoaded => isEnemyDataLoaded;
+    public bool IsUserDataLoaded => isUserDataLoaded;
+
+    public bool IsInitialized => isEnemyDataLoaded && isUserDataLoaded;
 
     protected override void Initialize()
     {
         base.Initialize();
         UpdateEnemyDatas();
-        User user = new("Player", 0, 0f);
-        PutUser(user, UserID);
+        UpdateUserDatas();
+        userData = new("Player", 0, 0f);
+        PutUser(userData, UserID);
     }
 
     public EnemyData GetEnemyData(int id) => enemyDataDict[id];
@@ -45,9 +47,8 @@ public class FirebaseManager : Singleton<FirebaseManager>
     {
         RestClient.Get(enemyDataURL).Then(response =>
         {
-            var responseJson = response.Text;
-            enemyDataDict = JsonConvert.DeserializeObject<Dictionary<int, EnemyData>>(responseJson);
-            enemyDataLoaded = true;
+            enemyDataDict = JsonConvert.DeserializeObject<Dictionary<int, EnemyData>>(response.Text);
+            isEnemyDataLoaded = true;
             EnemyDataLoaded?.Invoke();
 
             foreach (var kvp in enemyDataDict)
@@ -55,13 +56,31 @@ public class FirebaseManager : Singleton<FirebaseManager>
         });
     }
 
-    public void GetUser(string userId, Action<User> callback)
-        => RestClient.Get<User>($"{userDataURL}/{userId}.json").Then(response => callback?.Invoke(response));
+    public void UpdateUserDatas()
+    {
+        RestClient.Get(userDataURL + ".json").Then(response =>
+        {
+            userDataDict = JsonConvert.DeserializeObject<Dictionary<string, UserData>>(response.Text);
+            isUserDataLoaded = true;
+            UserDataLoaded?.Invoke();
 
-    public void PostUser(User user, string userId, Action callback = null)
-        => RestClient.Post<User>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
+            foreach (var kvp in userDataDict)
+                ConditionalLogger.Log($"UserID: {kvp.Key}, UserName: {kvp.Value.userName}, Score: {kvp.Value.money}, PlayTime: {kvp.Value.playTime}");
+        });
+    }
 
+    public void UploadClearData(ClearResultData data)
+    {
+        userData.clearDatas[data.stageNumber] = data;
+        PutUser(userData, UserID);
+    }
 
-    public void PutUser(User user, string userId, Action callback = null)
-        => RestClient.Put<User>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
+    public void GetUser(string userId, Action<UserData> callback)
+        => RestClient.Get<UserData>($"{userDataURL}/{userId}.json").Then(response => callback?.Invoke(response));
+
+    public void PostUser(UserData user, string userId, Action callback = null)
+        => RestClient.Post<UserData>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
+
+    public void PutUser(UserData user, string userId, Action callback = null)
+        => RestClient.Put<UserData>($"{userDataURL}/{userId}.json", user).Then(response => callback?.Invoke());
 }
