@@ -26,10 +26,10 @@ MonoBehaviour:
   bulletSpeed: 100
   bulletPerShot: 1
   bulletDuration: 2
-  curAmmo: 1
-  curReserveAmmo: 1
-  maxAmmo: 1
-  maxReserveAmmo: 1
+  curAmmo: 10
+  curReserveAmmo: 10
+  maxAmmo: 10
+  maxReserveAmmo: 10
   volume: 50
   accuracy: 5.5
   precision: 20
