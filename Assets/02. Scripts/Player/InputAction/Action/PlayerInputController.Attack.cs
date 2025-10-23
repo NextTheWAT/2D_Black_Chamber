@@ -39,6 +39,9 @@ public partial class PlayerInputController : TopDownController
         // === UI 위인지 검사 (월드 공간 아이콘/비인터랙티브 텍스트는 통과) ===
         if (IsPointerOverBlockingUI()) return;
 
+        Debug.Log("OnAttack: " + ctx.phase);
+
+
         // 1) 클릭 시작 시점
         if (ctx.phase == InputActionPhase.Started)
         {
