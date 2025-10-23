@@ -64,8 +64,6 @@ public sealed class WeaponManager : Singleton<WeaponManager>
             if (weaponSlots[i]) Destroy(weaponSlots[i].gameObject);
         weaponSlots.Clear();
 
-        currentIndex = -1; // 새 빌드 전에 반드시 리셋
-
         // 1) Owned 우선
         var inv = WeaponInventory.Instance;
         var owned = inv ? inv.Owned : null;
@@ -87,7 +85,6 @@ public sealed class WeaponManager : Singleton<WeaponManager>
         var gm = GameManager.Instance;
         var phase = gm ? gm.CurrentPhase : GamePhase.Stealth;
         ApplyPhaseWeapon(phase);
-
     }
 
     private Shooter CreateShooter(GunData data)
@@ -166,7 +163,6 @@ public sealed class WeaponManager : Singleton<WeaponManager>
         if (currentIndex != target || !weaponSlots[target].gameObject.activeSelf)
             EquipByIndex(target);
     }
-
 
     public bool EquipByIndex(int slot)
     {

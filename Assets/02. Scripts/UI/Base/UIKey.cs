@@ -8,5 +8,5 @@ public enum UIKey //필요한 UI 추가
     Game,
     Clear,
     GameOver,
-    AlwaysOff,
-}
+    AlwaysOff
+ }
