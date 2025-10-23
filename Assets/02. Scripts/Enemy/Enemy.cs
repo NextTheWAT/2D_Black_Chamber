@@ -414,6 +414,7 @@ public class Enemy : MonoBehaviour
         IsNoiseDetected = true;
         heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
+        Debug.Log($"{gameObject} heard noise: {noise} at {noisePosition}");
     }
 
     public void Hit(int currentHealth, int maxHealth)

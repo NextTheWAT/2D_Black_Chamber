@@ -25,6 +25,7 @@ public class InvestigateState : BaseState
 
     private void BeginInvestigate()
     {
+        investigateTimer = 0f;
         if (investigateCoroutine != null)
             owner.StopCoroutine(investigateCoroutine);
         investigateCoroutine = owner.StartCoroutine(InvestigateLoop());
@@ -40,6 +41,7 @@ public class InvestigateState : BaseState
             investigateCoroutine = null;
         }
 
+        investigateTimer = 0f;
         owner.AutoRotate = false;
     }
 
@@ -56,14 +58,14 @@ public class InvestigateState : BaseState
         owner.MoveTo(owner.LastKnownTargetPos);
         investigateTimer = 0f;
 
-        while (investigateTimer < owner.Data.investigateDuration)
+        while (IsInvestigating)
         {
             if (owner.IsArrived) break;
             investigateTimer += Time.deltaTime;
             yield return null;
         }
 
-        while (true)
+        while (IsInvestigating)
         {
             // 랜덤한 조사 지점으로 이동
             do
