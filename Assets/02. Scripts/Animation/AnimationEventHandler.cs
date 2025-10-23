@@ -11,10 +11,12 @@ public class AnimationEventHandler : MonoBehaviour
     public void OnWalkstep()
     {
         CharacterSoundManager.Instance.PlayWalkstepSound(transform.position);
+        NoiseManager.Instance.EmitNoise(transform, transform.position, NoiseManager.Instance.WalkNoise);
     }
     public void OnRunStep()
     {
         CharacterSoundManager.Instance.PlayRunstepSound(transform.position);
+        NoiseManager.Instance.EmitNoise(transform, transform.position, NoiseManager.Instance.RunNoise);
     }
 
     public void OnPunch()

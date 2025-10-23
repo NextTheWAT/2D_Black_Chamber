@@ -12,7 +12,9 @@ public static class StateMachineFactory
         // 공용
         stateMachine.AddGlobalTransition<DeathState>(() => owner.IsDead); // 사망
         stateMachine.AddGlobalTransition<CoverState>(() => owner.IsHit && stateMachine.CurrentState.GetType() == typeof(SuspectState), () => GameManager.Instance.StartCombatAfterDelay(owner)); // 맞았을 때 의심상태면 추격 및 난전 시작
-        stateMachine.AddGlobalTransition<InvestigateState>(() => owner.IsBodyDetected);
+        stateMachine.AddGlobalTransition<InvestigateState>(() => owner.IsBodyDetected); // 시체 발견 시 조사 상태로 전환
+        stateMachine.AddGlobalTransition<InvestigateState>(() => owner.IsNoiseDetected && owner.NoiseAmount > NoiseManager.Instance.InvestigateThreshold); // 소음 감지 시 조사 상태로 전환
+        stateMachine.AddGlobalTransition<CoverState>(() => owner.IsNoiseDetected && owner.NoiseAmount > NoiseManager.Instance.CombatThreshold, () => GameManager.Instance.StartCombatAfterDelay(owner)); // 큰 소음 감지 시 난전 시작
 
 
         switch (nonCombatStateType)

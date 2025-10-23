@@ -154,6 +154,10 @@ public class Shooter : MonoBehaviour
                 WeaponSoundManager.Instance?.PlayRifleShootSound(transform.position);
         }
 
+        // 소음 추가
+        NoiseManager.Instance.EmitNoise(transform, transform.position, NoiseManager.Instance.ShootNoise);
+        
+
         return true;
     }
 

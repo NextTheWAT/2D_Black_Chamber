@@ -180,6 +180,10 @@ public class Enemy : MonoBehaviour
     public bool AutoRotate { get; set; }
 
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
+    public float NoiseAmount
+        => heardNoiseAmount;
+    
+    private float heardNoiseAmount = 0f;
 
     public bool IsBodyDetected
         => newFoundBody;
@@ -403,10 +407,11 @@ public class Enemy : MonoBehaviour
     public void FindTarget(float viewAngle, float viewDistance)
         => Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
 
-    public void HeardNoise(Vector2 noisePosition)
+    public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
         IsNoiseDetected = true;
+        heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
     }
 
