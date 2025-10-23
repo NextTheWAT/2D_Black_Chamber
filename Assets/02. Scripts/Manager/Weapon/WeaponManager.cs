@@ -88,11 +88,6 @@ public sealed class WeaponManager : Singleton<WeaponManager>
         var phase = gm ? gm.CurrentPhase : GamePhase.Stealth;
         ApplyPhaseWeapon(phase);
 
-        Debug.Log("[WeaponManager] Rebuild complete. Total shooters: " + weaponSlots.Count);
-
-        Debug.Log($"idx={currentIndex}, stealth={stealthSlotIndex}, " +
-          $"active={(IsValidSlot(stealthSlotIndex) ? weaponSlots[stealthSlotIndex].gameObject.activeSelf : (bool?)null)}");
-
     }
 
     private Shooter CreateShooter(GunData data)
