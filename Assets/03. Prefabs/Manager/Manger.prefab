@@ -634,11 +634,9 @@ MonoBehaviour:
       m_Calls: []
   initializeDatas: []
   initializeIndex: 0
-  weaponSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  stealthSlotIndex: -1
-  combatSlotIndex: -1
+  weaponSlots: []
+  stealthSlotIndex: 0
+  combatSlotIndex: 1
   _globalShooterLocked: 0
 --- !u!114 &5183715245413765599
 MonoBehaviour:
