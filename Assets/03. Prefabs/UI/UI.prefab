@@ -29396,6 +29396,7 @@ GameObject:
   - component: {fileID: 4414274952796778133}
   - component: {fileID: 4397592353725878025}
   - component: {fileID: 1628509389221071721}
+  - component: {fileID: 9157147285570682349}
   m_Layer: 5
   m_Name: FullHPBar
   m_TagString: Untagged
@@ -29460,6 +29461,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9157147285570682349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7456698295961348203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97508d738389ec14f8e90fd66b78369d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fullHpBarImage: {fileID: 1628509389221071721}
+  shakeDuration: 0.15
+  shakeMagnitude: 5
+  hitSprayParticle: {fileID: 4258155895162195705, guid: d8278aa2261cdad4bac75aac070709f2, type: 3}
 --- !u!1 &7467165762728480004
 GameObject:
   m_ObjectHideFlags: 0

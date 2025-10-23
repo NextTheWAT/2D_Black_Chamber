@@ -170,6 +170,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Manger
       objectReference: {fileID: 0}
+    - target: {fileID: 4444015179403229149, guid: 527c978593557c949a62db3296c465cf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5115538189022398859, guid: 527c978593557c949a62db3296c465cf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.9357967
@@ -519,6 +523,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1786836677}
   - {fileID: 389419298051134394}
-  - {fileID: 867227551}
   - {fileID: 1453504667}
   - {fileID: 3098423028870811802}
+  - {fileID: 867227551}
