@@ -59,7 +59,7 @@ public class MissionManager : Singleton<MissionManager>
         if (combatTextBackground) combatTextBackground.SetActive(false);
 
         if (stealthUI != null)
-            stealthUI.SetActive(true);
+            stealthUI.SetActive(false);
         if (combatUI != null)
             combatUI.SetActive(false);
     }
@@ -237,6 +237,8 @@ public class MissionManager : Singleton<MissionManager>
                 if (!h.IsDeactivated) remainingEnemies++;
             }
         }
+
+        if(UIKey == UIKey.Game) stealthUI?.SetActive(true);
 
         phase = MissionPhase.Assassination;
         OnTargetsChanged?.Invoke(remainingTargets);
