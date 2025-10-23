@@ -1,11 +1,15 @@
 using UnityEngine;
 using Constants;
+using System.Collections;
 
 public class CharacterAnimationController : MonoBehaviour
 {
     [Header("Animators (자동 검색 지원)")]
     public Animator upperAnimator;   // 없으면 Awake에서 "UpperBody" 자식에서 자동 할당
     public Animator lowerAnimator;   // 없으면 Awake에서 "LowerBody" 자식에서 자동 할당
+
+    public GameObject reload;
+    [SerializeField] private float reloadDuration;
 
     private void Awake()
     {
@@ -65,6 +69,18 @@ public class CharacterAnimationController : MonoBehaviour
     {
         if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Reload);
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
+
+        StartCoroutine(ReloadBlinkRoutine());
+
+    }
+    private IEnumerator ReloadBlinkRoutine() //재장전 on/off
+    {
+
+        reload.SetActive(false);
+        reload.SetActive(true);
+        yield return new WaitForSeconds(reloadDuration);
+        reload.SetActive(false);
+
     }
 
     public void PlaySwitch()
