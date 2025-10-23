@@ -156,16 +156,12 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     {
         if (weaponSlots.Count == 0) return;
 
-        if (phase == GamePhase.Combat)
-        {
-            if (IsValidSlot(combatSlotIndex) && currentIndex != combatSlotIndex)
-                EquipByIndex(combatSlotIndex);
-        }
-        else
-        {
-            if (IsValidSlot(stealthSlotIndex) && currentIndex != stealthSlotIndex)
-                EquipByIndex(stealthSlotIndex);
-        }
+        int target = (phase == GamePhase.Combat) ? combatSlotIndex : stealthSlotIndex;
+        if (!IsValidSlot(target)) return;
+
+        // 인덱스가 같아도 오브젝트가 꺼져 있으면 장착(활성) 강제
+        if (currentIndex != target || !weaponSlots[target].gameObject.activeSelf)
+            EquipByIndex(target);
     }
 
     public bool EquipByIndex(int slot)
