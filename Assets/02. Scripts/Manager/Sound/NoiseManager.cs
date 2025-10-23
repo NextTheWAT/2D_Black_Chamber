@@ -21,39 +21,36 @@ public class NoiseManager : Singleton<NoiseManager>
     public float ShootNoise => shootNoise;
 
     [Header("Noise Threshold")]
-    [SerializeField] private float combatThreshold = 30f; // 전투 모드 진입 임계값
-    [SerializeField] private float investigateThreshold = 20f; // 조사 모드 진입 임계값
-
+    [SerializeField] private float combatThreshold = 30f;
+    [SerializeField] private float investigateThreshold = 20f;
     public float CombatThreshold => combatThreshold;
     public float InvestigateThreshold => investigateThreshold;
 
+    [SerializeField] private float gizmoDuration = 1f; // 기즈모 유지 시간
 
-    private struct NoisePath
+    private struct NoiseSegment
     {
-        public Vector3[] navPath;
         public Vector3 start;
         public Vector3 end;
         public float strength;
-        public bool isNavPath;
     }
 
     private struct NoiseData
     {
         public Vector2 position;
         public float time;
-        public List<NoisePath> paths;
+        public List<NoiseSegment> segments;
     }
 
     private readonly List<NoiseData> noiseHistory = new();
-    [SerializeField] private float gizmoDuration = 1f; // 기즈모 유지 시간
 
     public void EmitNoise(Transform sender, Vector2 position, float baseNoise)
     {
         if (GameManager.Instance.IsCombat) return;
         if (noiseRange <= 0) return;
-        if(sender && (sender.gameObject.layer | GameManager.Instance.enemyLayerMask) == GameManager.Instance.enemyLayerMask) return;
+        if (sender && (sender.gameObject.layer | GameManager.Instance.enemyLayerMask) == GameManager.Instance.enemyLayerMask) return;
 
-        var paths = new List<NoisePath>();
+        var segments = new List<NoiseSegment>();
         float radius = noiseRange * 0.5f;
         Collider2D[] colliders = Physics2D.OverlapCircleAll(position, radius, GameManager.Instance.enemyLayerMask);
 
@@ -62,31 +59,19 @@ public class NoiseManager : Singleton<NoiseManager>
             Enemy enemy = coll.GetComponent<Enemy>();
             if (enemy == null) continue;
 
-            // 직선 경로 소음
-            float rayNoise = GetRayPathNoise(baseNoise, enemy, position, out RaycastHit2D[] rayHits);
-            paths.Add(new NoisePath
-            {
-                start = enemy.transform.position,
-                end = position,
-                strength = rayNoise,
-                isNavPath = false
-            });
+            // 직선 경로 구간 소음 계산
+            var lineSegments = CalculateRaySegments(baseNoise, position, enemy.transform.position);
+            segments.AddRange(lineSegments);
 
-            // NavMesh 경로 소음
-            float navNoise = GetAgentPathNoise(baseNoise, enemy, position, out var navCorners);
-            if (navCorners != null)
-            {
-                paths.Add(new NoisePath
-                {
-                    navPath = navCorners,
-                    strength = navNoise,
-                    isNavPath = true
-                });
+            // NavMesh 경로 구간 소음 계산
+            var navSegments = CalculateNavSegments(baseNoise, position, enemy.transform.position);
+            segments.AddRange(navSegments);
 
-                Debug.Log(navCorners.Length);
-            }
+            // 적에게 최대 소음 알려주기
+            float directNoise = lineSegments.Count > 0 ? lineSegments[^1].strength : 0f;
+            float navNoise = navSegments.Count > 0 ? navSegments[^1].strength : 0f;
+            float finalNoise = Mathf.Max(directNoise, navNoise);
 
-            float finalNoise = Mathf.Max(rayNoise, navNoise);
             enemy.HeardNoise(finalNoise, position);
         }
 
@@ -94,45 +79,86 @@ public class NoiseManager : Singleton<NoiseManager>
         {
             position = position,
             time = Time.time,
-            paths = paths
+            segments = segments
         });
     }
 
-    private float GetRayPathNoise(float baseNoise, Enemy enemy, Vector2 noisePosition, out RaycastHit2D[] raycastHits)
+    // 직선 경로 구간별 소음 계산
+    private List<NoiseSegment> CalculateRaySegments(float baseNoise, Vector2 start, Vector2 end)
     {
-        float distance = Vector2.Distance(enemy.transform.position, noisePosition);
-        raycastHits = Physics2D.LinecastAll(enemy.transform.position, noisePosition, GameManager.Instance.obstacleLayerMask);
+        var segments = new List<NoiseSegment>();
+        RaycastHit2D[] hits = Physics2D.LinecastAll(start, end, GameManager.Instance.obstacleLayerMask);
 
-        int hitCount = raycastHits.Length;
-        float noise = baseNoise - distance * distanceFalloff;
-        noise *= Mathf.Pow(1f - obstacleNoiseReductionRate, hitCount);
-        return Mathf.Max(0f, noise);
-    }
+        Vector2 segmentStart = start;
+        float remainingNoise = baseNoise;
 
-    private float GetAgentPathNoise(float baseNoise, Enemy enemy, Vector2 noisePosition, out Vector3[] corners)
-    {
-        corners = GetPathCorners(enemy.transform.position, noisePosition);
-        if (corners == null || corners.Length < 2) return 0f;
-
-        float totalDist = 0f;
-        int hitCount = 0;
-
-        for (int i = 0; i < corners.Length - 1; i++)
+        foreach (var hit in hits)
         {
-            totalDist += Vector2.Distance(corners[i], corners[i + 1]);
-            RaycastHit2D[] hits = Physics2D.LinecastAll(corners[i], corners[i + 1], GameManager.Instance.obstacleLayerMask);
-            hitCount += hits.Length;
+            Vector2 segmentEnd = hit.point;
+            float distance = Vector2.Distance(segmentStart, segmentEnd);
+            float segmentNoise = Mathf.Max(0f, remainingNoise - distance * distanceFalloff);
+
+            segments.Add(new NoiseSegment
+            {
+                start = segmentStart,
+                end = segmentEnd,
+                strength = segmentNoise,
+            });
+
+            remainingNoise = segmentNoise * (1f - obstacleNoiseReductionRate);
+            segmentStart = hit.point;
         }
 
-        float noise = baseNoise - totalDist * distanceFalloff;
-        noise *= Mathf.Pow(1f - obstacleNoiseReductionRate, hitCount);
-        return Mathf.Max(0f, noise);
+        if (Vector2.Distance(segmentStart, end) > 0.01f)
+        {
+            float distance = Vector2.Distance(segmentStart, end);
+            float segmentNoise = Mathf.Max(0f, remainingNoise - distance * distanceFalloff);
+
+            segments.Add(new NoiseSegment
+            {
+                start = segmentStart,
+                end = end,
+                strength = segmentNoise,
+            });
+        }
+
+        return segments;
     }
 
-    private Vector3[] GetPathCorners(Vector2 start, Vector2 end)
+    // NavMesh 경로 구간별 소음 계산
+    private List<NoiseSegment> CalculateNavSegments(float baseNoise, Vector2 start, Vector2 end)
+    {
+        var segments = new List<NoiseSegment>();
+        Vector3[] corners = GetNavPathCorners(start, end);
+        if (corners == null || corners.Length < 2) return segments;
+
+        float remainingNoise = baseNoise;
+        for (int i = 0; i < corners.Length - 1; i++)
+        {
+            Vector2 segmentStart = corners[i];
+            Vector2 segmentEnd = corners[i + 1];
+            float distance = Vector2.Distance(segmentStart, segmentEnd);
+            RaycastHit2D[] hits = Physics2D.LinecastAll(segmentStart, segmentEnd, GameManager.Instance.obstacleLayerMask);
+            int hitCount = hits.Length;
+
+            float segmentNoise = Mathf.Max(0f, remainingNoise - distance * distanceFalloff);
+            segments.Add(new NoiseSegment
+            {
+                start = segmentStart,
+                end = segmentEnd,
+                strength = segmentNoise
+            });
+
+            remainingNoise = segmentNoise * Mathf.Pow(1f - obstacleNoiseReductionRate, hitCount);
+        }
+
+        return segments;
+    }
+
+    private Vector3[] GetNavPathCorners(Vector2 start, Vector2 end2D)
     {
         NavMeshPath path = new();
-        if (NavMesh.CalculatePath(start, end, NavMesh.AllAreas, path))
+        if (NavMesh.CalculatePath(start, end2D, NavMesh.AllAreas, path))
             return path.corners;
         return null;
     }
@@ -152,38 +178,21 @@ public class NoiseManager : Singleton<NoiseManager>
                 continue;
             }
 
-            // 중심 원
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(data.position, noiseRange * 0.5f);
 
-            // 각 경로별 표시
-            foreach (var path in data.paths)
+            foreach (var seg in data.segments)
             {
+                Color color = seg.strength >= combatThreshold ? Color.red :
+                              seg.strength >= investigateThreshold ? Color.yellow :
+                              Color.white;
+                Gizmos.color = color;
+                Gizmos.DrawLine(seg.start, seg.end);
 
-                if (path.isNavPath && path.navPath != null)
-                {
-                    for (int j = 0; j < path.navPath.Length - 1; j++)
-                    {
-                        Color color = path.strength >= combatThreshold ? Color.red : path.strength >= investigateThreshold ? Color.yellow : Color.white;
-                        Gizmos.color = color;
-                        Gizmos.DrawLine(path.navPath[j], path.navPath[j + 1]);
-                        #if UNITY_EDITOR
-                        Handles.Label((path.navPath[j] + path.navPath[j + 1]) * 0.5f, path.strength.ToString("F1"));
-                        #endif
-                    }
-                }
-                else
-                {
-                    Color color = path.strength >= combatThreshold ? Color.red : path.strength >= investigateThreshold ? Color.yellow : Color.white;
-                    Gizmos.color = color;
-                    Gizmos.DrawLine(path.start, path.end);
-                    #if UNITY_EDITOR
-                    Handles.Label((path.start + path.end) * 0.5f, path.strength.ToString("F1"));
-                    #endif
-                }
+#if UNITY_EDITOR
+                Handles.Label((seg.start + seg.end) * 0.5f, seg.strength.ToString("F1"));
+#endif
             }
-
-
         }
     }
 }
