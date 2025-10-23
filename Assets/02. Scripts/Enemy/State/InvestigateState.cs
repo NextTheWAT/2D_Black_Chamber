@@ -42,17 +42,27 @@ public class InvestigateState : BaseState
         }
 
         investigateTimer = 0f;
+        owner.investigateUseStartDelay = false;
+        owner.Agent.isStopped = false;
         owner.AutoRotate = false;
     }
 
     private IEnumerator InvestigateLoop()
     {
-        // 조사 시작 전 대기
         Vector2 dirToLastKnown = (owner.LastKnownTargetPos - (Vector2)owner.transform.position).normalized;
         owner.LookPoint = (Vector2)owner.transform.position + dirToLastKnown;
-        owner.Agent.isStopped = true;
-        yield return new WaitForSeconds(owner.Data.investigateStartDelay);
-        owner.Agent.isStopped = false;
+
+        while(owner.CurrentLookAngleDelta > 1f)
+            yield return null;
+
+        // 조사 시작 전 대기 (바로 조사 모드가 아니면)
+        if (!owner.investigateUseStartDelay)
+        {
+            owner.investigateUseStartDelay = false;
+            owner.Agent.isStopped = true;
+            yield return new WaitForSeconds(owner.Data.investigateStartDelay);
+            owner.Agent.isStopped = false;
+        }
 
         // 처음 플레이어 위치로 이동
         owner.MoveTo(owner.LastKnownTargetPos);
