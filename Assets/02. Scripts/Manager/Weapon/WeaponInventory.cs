@@ -101,7 +101,7 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     private static int? GetIntField(object obj, string field)
     {
         var f = obj.GetType().GetField(field, BindingFlags.Instance | BindingFlags.Public);
-        if (f == null) return null;
+        if (f == null) return null; s
         object v = f.GetValue(obj);
         return v is int iv ? iv : (int?)null;
     }
