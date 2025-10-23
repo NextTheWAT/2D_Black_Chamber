@@ -8,7 +8,6 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
-  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -133,7 +132,7 @@ ScriptedImporter:
       y: 4
       width: 128
       height: 128
-    spriteID: f2fc9e58f5c747e40a067d8933b4f289
+    spriteID: 970513ab6b502674d8e8d7a5fcb02a05
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,7 +152,7 @@ ScriptedImporter:
       y: 140
       width: 128
       height: 128
-    spriteID: caa7ad418147e35479aa53dd0c77b754
+    spriteID: 5b9d8f092cd1b28409f666d602bda39b
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -173,7 +172,7 @@ ScriptedImporter:
       y: 276
       width: 128
       height: 128
-    spriteID: 4987566016d964f4196389c26e873641
+    spriteID: 55a70863449403348879e9b542ff3c94
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -193,7 +192,7 @@ ScriptedImporter:
       y: 4
       width: 128
       height: 128
-    spriteID: 55d85283202307b4e9f40b9d0ae6a421
+    spriteID: 0ff68fb21acaf4649ba3d58bd763b5ae
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -213,7 +212,7 @@ ScriptedImporter:
       y: 140
       width: 128
       height: 128
-    spriteID: 3be6f015ea7a6274ebec49e209f715ba
+    spriteID: 779daae06bd77ff4486354badaaf47cd
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -233,7 +232,7 @@ ScriptedImporter:
       y: 276
       width: 128
       height: 128
-    spriteID: 2160c607acfecb24aadb673da20aabf5
+    spriteID: 88605f433328fdf47b5737dd605d6719
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -245,71 +244,60 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    uuid:
-      value0: 1560064495
-      value1: 0
-      value2: 0
-      value3: 0
-    guid: 1560064495
+    guid: 870313891
     name: tablet_yellow_highlighted
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Frame_0
+    - name: tablet_yellow_highlighted_Frame_0
       frameIndex: 0
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: f2fc9e58f5c747e40a067d8933b4f289
-    - name: Frame_1
+      spriteId: 970513ab6b502674d8e8d7a5fcb02a05
+    - name: tablet_yellow_highlighted_Frame_1
       frameIndex: 1
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: caa7ad418147e35479aa53dd0c77b754
-    - name: Frame_2
+      spriteId: 5b9d8f092cd1b28409f666d602bda39b
+    - name: tablet_yellow_highlighted_Frame_2
       frameIndex: 2
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: 4987566016d964f4196389c26e873641
-    - name: Frame_3
+      spriteId: 55a70863449403348879e9b542ff3c94
+    - name: tablet_yellow_highlighted_Frame_3
       frameIndex: 3
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: 55d85283202307b4e9f40b9d0ae6a421
-    - name: Frame_4
+      spriteId: 0ff68fb21acaf4649ba3d58bd763b5ae
+    - name: tablet_yellow_highlighted_Frame_4
       frameIndex: 4
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: 3be6f015ea7a6274ebec49e209f715ba
-    - name: Frame_5
+      spriteId: 779daae06bd77ff4486354badaaf47cd
+    - name: tablet_yellow_highlighted_Frame_5
       frameIndex: 5
-      additiveSortOrder: 0
       cellRect:
         x: -15
         y: -63
         width: 128
         height: 128
-      spriteId: 2160c607acfecb24aadb673da20aabf5
+      spriteId: 88605f433328fdf47b5737dd605d6719
     linkedCells: []
     parentIndex: -1
   platformSettings: []
@@ -317,4 +305,3 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 89, y: 57}
-  previousTextureSize: {x: 512, y: 512}
