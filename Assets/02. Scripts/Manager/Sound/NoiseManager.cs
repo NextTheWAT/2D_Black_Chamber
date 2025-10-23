@@ -13,12 +13,13 @@ public class NoiseManager : Singleton<NoiseManager>
     [SerializeField] private float noiseRange = 5f;
 
     [Header("Noise Data")]
-    [SerializeField] private float walkNoise = 22f;
-    [SerializeField] private float runNoise = 25f;
-    [SerializeField] private float shootNoise = 60f;
+    [SerializeField] private float walkNoise = 22f; // 걷기 소음
+    [SerializeField] private float runNoise = 25f; // 달리기 소음
+    [SerializeField] private float bulletHitNoise = 25f; // 총알 충돌 소음
+
     public float WalkNoise => walkNoise;
     public float RunNoise => runNoise;
-    public float ShootNoise => shootNoise;
+    public float BulletHitNoise => bulletHitNoise;
 
     [Header("Noise Threshold")]
     [SerializeField] private float combatThreshold = 30f;
