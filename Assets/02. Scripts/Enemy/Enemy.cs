@@ -410,6 +410,7 @@ public class Enemy : MonoBehaviour
     public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
+        if (noise <= 0) return;
         IsNoiseDetected = true;
         heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
