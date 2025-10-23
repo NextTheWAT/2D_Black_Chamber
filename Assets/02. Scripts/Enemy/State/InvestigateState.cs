@@ -29,8 +29,6 @@ public class InvestigateState : BaseState
         if (investigateCoroutine != null)
             owner.StopCoroutine(investigateCoroutine);
         investigateCoroutine = owner.StartCoroutine(InvestigateLoop());
-
-        owner.AutoRotate = true;
     }
 
     private void StopInvestigate()
@@ -51,20 +49,22 @@ public class InvestigateState : BaseState
     {
         Vector2 dirToLastKnown = (owner.LastKnownTargetPos - (Vector2)owner.transform.position).normalized;
         owner.LookPoint = (Vector2)owner.transform.position + dirToLastKnown;
+        owner.Agent.isStopped = true;
 
-        while(owner.CurrentLookAngleDelta > 1f)
+        // LastKnownTargetPos 방향으로 회전 대기
+        while (Mathf.Abs(owner.CurrentLookAngleDelta) > 1f)
             yield return null;
 
         // 조사 시작 전 대기 (바로 조사 모드가 아니면)
         if (!owner.investigateUseStartDelay)
         {
             owner.investigateUseStartDelay = false;
-            owner.Agent.isStopped = true;
             yield return new WaitForSeconds(owner.Data.investigateStartDelay);
-            owner.Agent.isStopped = false;
         }
 
         // 처음 플레이어 위치로 이동
+        owner.AutoRotate = true;
+        owner.Agent.isStopped = false;
         owner.MoveTo(owner.LastKnownTargetPos);
         investigateTimer = 0f;
 
