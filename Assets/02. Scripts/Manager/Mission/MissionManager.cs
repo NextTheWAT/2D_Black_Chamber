@@ -20,14 +20,6 @@ public class MissionManager : Singleton<MissionManager>
     [SerializeField] private float combatAlertDuration = 3f;
     private Coroutine _combatUiRoutine;
 
-    [Header("Mission UI Text Background")]                      // 텍스트 배경
-    [SerializeField] private GameObject missionTextBackground;
-    [SerializeField] private GameObject combatTextBackground;
-
-    [Header("Mode UI Image")]
-    [SerializeField] private GameObject stealthUI;
-    [SerializeField] private GameObject combatUI;
-
     [SerializeField] private UIKey UIKey;
     [SerializeField] private int totalTargets = 0; //목표물 수
 
@@ -54,14 +46,6 @@ public class MissionManager : Singleton<MissionManager>
 
         // 기본은 꺼둡니다.
         if (combatAlertUI) combatAlertUI.SetActive(false);
-
-        if (missionTextBackground) missionTextBackground.SetActive(false);
-        if (combatTextBackground) combatTextBackground.SetActive(false);
-
-        if (stealthUI != null)
-            stealthUI.SetActive(true);
-        if (combatUI != null)
-            combatUI.SetActive(false);
     }
 
     private void OnEnable()
@@ -90,11 +74,6 @@ public class MissionManager : Singleton<MissionManager>
         // 난전 진입 시 3초간 표시, 스텔스 복귀 시 즉시 숨김
         if (phase == GamePhase.Combat)
         {
-            if (stealthUI != null)
-                stealthUI.SetActive(false);
-            if (combatUI != null)
-                combatUI.SetActive(true);
-
             if (_combatUiRoutine != null) StopCoroutine(_combatUiRoutine);
             _combatUiRoutine = StartCoroutine(ShowCombatAlertUI());
         }
@@ -110,15 +89,9 @@ public class MissionManager : Singleton<MissionManager>
     {
         if (UIKey == UIKey.Game && combatAlertUI)  // 게임 UI일 때만 노출  :contentReference[oaicite:3]{index=3}
         {
-            if (combatTextBackground)
-                combatTextBackground.SetActive(true);
-
             combatAlertUI.SetActive(true);
             yield return new WaitForSeconds(combatAlertDuration);
             combatAlertUI.SetActive(false);
-
-            if (combatTextBackground)
-                combatTextBackground.SetActive(false);
         }
         _combatUiRoutine = null;
     }
@@ -202,18 +175,12 @@ public class MissionManager : Singleton<MissionManager>
 
         if(UIKey == UIKey.Game)
         {
-            if (missionTextBackground)
-                missionTextBackground.SetActive(true);
-
             missionBell_Obj.SetActive(true);
             yield return new WaitForSeconds(2f);
             missionBell_Obj.SetActive(false);
             missionBell_Obj2.SetActive(true);
             yield return new WaitForSeconds(2f);
             missionBell_Obj2.SetActive(false);
-
-            if (missionTextBackground)
-                missionTextBackground.SetActive(false);
         }
     }
 
