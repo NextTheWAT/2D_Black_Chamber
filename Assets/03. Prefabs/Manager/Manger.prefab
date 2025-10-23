@@ -573,15 +573,20 @@ MonoBehaviour:
   OnWeaponChanged:
     m_PersistentCalls:
       m_Calls: []
-  intializeDatas:
-  - {fileID: 11400000, guid: 384ce4297e19e89468cbc1896c573523, type: 2}
-  - {fileID: 11400000, guid: 72f5191f28da53543b7607fba4468842, type: 2}
+  OnAmmoChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnReloaded:
+    m_PersistentCalls:
+      m_Calls: []
+  initializeDatas: []
+  initializeIndex: 0
   weaponSlots:
   - {fileID: 0}
   - {fileID: 0}
-  initializeIndex: 0
   stealthSlotIndex: -1
   combatSlotIndex: -1
+  _globalShooterLocked: 0
 --- !u!1 &3567171574248799592
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,8 +713,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5115538189022398859}
-  - component: {fileID: 2262052893148472934}
-  - component: {fileID: 55901030691392313}
   m_Layer: 0
   m_Name: Manger
   m_TagString: Untagged
@@ -736,49 +739,9 @@ Transform:
   - {fileID: 5847062149088214940}
   - {fileID: 8323773182667469941}
   - {fileID: 5538055660092706388}
+  - {fileID: 2219288288920694611}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2262052893148472934
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4444015179403229149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96e46aedfd704634ab650338e29b9ded, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  root_DontDestroyOnLoad: 0
-  startingBalance: 5000
-  balance: 5000
-  OnChanged:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &55901030691392313
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4444015179403229149}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77e5145c22ea2db499f9009fa044fa9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
-  root_DontDestroyOnLoad: 0
-  catalog: {fileID: 11400000, guid: e58a055b1194d8a438ad053a012cbeca, type: 2}
-  owned: []
-  OnInventoryChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnItemBought:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &6114417661953968393
 GameObject:
   m_ObjectHideFlags: 0
@@ -891,6 +854,61 @@ MonoBehaviour:
   dieSound: {fileID: 11400000, guid: 9fd662bbd06975c4fa465064f81910de, type: 2}
   hitSound: {fileID: 11400000, guid: d51e4c1d6ec65684a8442b078629d638, type: 2}
   characterVol: 0.6
+--- !u!1 &6759022751449655562
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2219288288920694611}
+  - component: {fileID: 8665373789041510775}
+  m_Layer: 0
+  m_Name: NoiseManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2219288288920694611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6759022751449655562}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5115538189022398859}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8665373789041510775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6759022751449655562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88fc0d1a2bd892a438e6bdcaf6cc73bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  root_DontDestroyOnLoad: 0
+  obstacleNoiseReductionRate: 0.3
+  distanceFalloff: 1
+  noiseRange: 15
+  walkNoise: 22
+  runNoise: 25
+  shootNoise: 60
+  combatThreshold: 30
+  investigateThreshold: 20
+  gizmoDuration: 0.4
 --- !u!1 &7379851031130033215
 GameObject:
   m_ObjectHideFlags: 0

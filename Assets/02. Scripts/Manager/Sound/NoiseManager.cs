@@ -46,9 +46,9 @@ public class NoiseManager : Singleton<NoiseManager>
 
     public void EmitNoise(Transform sender, Vector2 position, float baseNoise)
     {
-        if (GameManager.Instance.IsCombat) return;
-        if (noiseRange <= 0) return;
-        if (sender && (sender.gameObject.layer | GameManager.Instance.enemyLayerMask) == GameManager.Instance.enemyLayerMask) return;
+        if (GameManager.Instance.IsCombat) return; // 전투 중에는 소음 무시
+        if (noiseRange <= 0) return; // 소음 범위가 0이면 무시
+        if (sender && !sender.CompareTag("Player")) return; // 플레이어만 소음 발생 가능
 
         var segments = new List<NoiseSegment>();
         float radius = noiseRange * 0.5f;
