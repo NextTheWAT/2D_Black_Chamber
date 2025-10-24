@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
     [SerializeField] private bool useCollisionEnter = true;
+    public bool investigateUseStartDelay = false; // 조사 시작 전 대기 사용 여부
 
     private EnemyData data;
 
@@ -410,10 +411,10 @@ public class Enemy : MonoBehaviour
     public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
+        if(noise < NoiseManager.Instance.InvestigateThreshold) return;
         IsNoiseDetected = true;
         heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
-        Debug.Log($"{gameObject} heard noise: {noise} at {noisePosition}");
     }
 
     public void Hit(int currentHealth, int maxHealth)
