@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 25da44e4641c5e04886ec07496e3ce5d
+guid: 69dc4f149032f4149ac072e6acd95671
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -112,10 +112,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 301874
-  packageName: Freeloader
-  packageVersion: 1.0.1
-  assetPath: Assets/StylishEsper/Freeloader/Sprites/heart.png
-  uploadId: 759973

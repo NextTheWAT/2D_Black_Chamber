@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cfc686da8ee2ca644b7d8c8b048804f5
+guid: 3635211fbba9ece4b9b2097f55459a51
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,10 +112,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 301874
-  packageName: Freeloader
-  packageVersion: 1.0.1
-  assetPath: Assets/StylishEsper/Freeloader/Sprites/horror_loading_bar.png
-  uploadId: 759973

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 69dc4f149032f4149ac072e6acd95671
+guid: 416b48e90c3069846bc6e1569dc3b7d7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -112,10 +112,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 301874
-  packageName: Freeloader
-  packageVersion: 1.0.1
-  assetPath: Assets/StylishEsper/Freeloader/Editor/Sprites/settings.png
-  uploadId: 759973
