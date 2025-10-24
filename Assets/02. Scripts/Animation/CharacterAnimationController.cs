@@ -69,18 +69,18 @@ public class CharacterAnimationController : MonoBehaviour
     {
         if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Reload);
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
+        reload.SetActive(false);
 
         StartCoroutine(ReloadBlinkRoutine());
-
+        
     }
     private IEnumerator ReloadBlinkRoutine() //¿Á¿Â¿¸ on/off
     {
-
         reload.SetActive(false);
+        yield return new WaitForSeconds(0.1f);
         reload.SetActive(true);
         yield return new WaitForSeconds(reloadDuration);
         reload.SetActive(false);
-
     }
 
     public void PlaySwitch()

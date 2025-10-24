@@ -65,11 +65,4 @@ public class CrosshairCursor : MonoBehaviour
         rightBar.rectTransform.anchoredPosition = new Vector2(delta, 0);
     }
 
-
-    public void SetVisible(bool visible) //¹ºÁö ±î¸ÔÀ½
-    {
-        gameObject.SetActive(visible);
-    }
-
-
 }
