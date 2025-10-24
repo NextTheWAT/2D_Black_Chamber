@@ -16,6 +16,7 @@ namespace FOW
     {
         private RaycastHit2D[] InitialRayResults;
         private PhysicsScene2D physicsScene2D;
+
         
         protected override void _InitRevealer(int StepCount)
         {
