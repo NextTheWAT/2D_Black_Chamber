@@ -28,6 +28,12 @@ public class MissionManager : Singleton<MissionManager>
     [SerializeField] private GameObject stealthUI;
     [SerializeField] private GameObject combatUI;
 
+    //[Header("Dimmer Animation")]
+    //[SerializeField] private Animator combatTextAnimation;
+    //[SerializeField] private int repeatCount = 3;
+
+    private bool isLoading = false;
+
     [SerializeField] private UIKey UIKey;
     [SerializeField] private int totalTargets = 0; //목표물 수
 
@@ -186,11 +192,23 @@ public class MissionManager : Singleton<MissionManager>
         OnEnemiesChanged?.Invoke(remainingEnemies);
     }
 
+
     private void OnSceneLoaded_UpdateUIKey(Scene scene, LoadSceneMode mode)
     {
         var init = FindFirstObjectByType<SceneInitializer>(FindObjectsInactive.Include);
         if (init != null)
             UIKey = init.ActiveUI;   // 씬의 SceneInitializer가 정한 UIKey로 갱신
+
+        isLoading = (UIKey != UIKey.Game);
+        stealthUI?.SetActive(false);
+        combatUI?.SetActive(false);
+
+        if (missionTextBackground) missionTextBackground.SetActive(false);
+        if (combatTextBackground) combatTextBackground.SetActive(false);
+
+        var minimapCanvas = GameObject.Find("MinimapCanvas");
+        if (minimapCanvas != null)
+            minimapCanvas.SetActive(false);
     }
 
 
@@ -238,7 +256,16 @@ public class MissionManager : Singleton<MissionManager>
             }
         }
 
-        if(UIKey == UIKey.Game) stealthUI?.SetActive(true);
+        if (UIKey == UIKey.Game)
+        {
+            isLoading = false;
+            stealthUI?.SetActive(true);
+            combatUI?.SetActive(false);
+
+            var minimapCanvas = GameObject.Find("MinimapCanvas");
+            if (minimapCanvas != null)
+                minimapCanvas.SetActive(true);
+        }
 
         phase = MissionPhase.Assassination;
         OnTargetsChanged?.Invoke(remainingTargets);
