@@ -428,6 +428,7 @@ MonoBehaviour:
   nonCombatStateType: 0
   combatStateType: 0
   useCollisionEnter: 1
+  investigateUseStartDelay: 0
   health: {fileID: 3522994100237713953}
   angularSpeed: 120
   targetMask:
