@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6204847341231654657
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2302487791607678966}
+  - component: {fileID: 3496797424540273765}
+  m_Layer: 0
+  m_Name: FOW
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2302487791607678966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6204847341231654657}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3496797424540273765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6204847341231654657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b1afdc8801548c4cab37872782c6e11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateMethod: 1
+  UsingSoftening: 0
+  FogType: 1
+  FogFade: 0
+  BlendType: 0
+  EdgeSoftenDistance: 0.1
+  UnobscuredSoftenDistance: 0.25
+  UseInnerSoften: 1
+  InnerSoftenAngle: 5
+  AllowBleeding: 0
+  SightExtraAmount: 0.01
+  MaxFogDistance: 10000
+  PixelateFog: 0
+  WorldSpacePixelate: 0
+  PixelDensity: 2
+  RoundRevealerPosition: 0
+  PixelGridOffset: {x: 0, y: 0}
+  UseDithering: 0
+  DitherSize: 20
+  InvertFowEffect: 0
+  FogFadePower: 1
+  FogAppearance: 0
+  UnknownColor: {r: 0, g: 0, b: 0, a: 1}
+  SaturationStrength: 0
+  BlurStrength: 1
+  BlurDistanceScreenPercentMin: 0.1
+  BlurDistanceScreenPercentMax: 1
+  BlurSamples: 6
+  FogTexture: {fileID: 2800000, guid: e47f79b3449108f4fbb12890e55f5d70, type: 3}
+  UseTriplanar: 1
+  FogTextureTiling: {x: 0.1, y: 0.1}
+  FogScrollSpeed: {x: 1, y: 1}
+  OutlineThickness: 0.1
+  FOWSamplingMode: 1
+  UseRegrow: 1
+  RevealerFadeIn: 0
+  FogRegrowSpeed: 10
+  InitialFogExplorationValue: 0
+  MaxFogRegrowAmount: 0.05
+  FowTextureMaterial: {fileID: 0}
+  FowResX: 256
+  FowResY: 256
+  UseConstantBlur: 1
+  ConstantTextureBlurQuality: 2
+  ConstantTextureBlurAmount: 0.75
+  UseWorldBounds: 0
+  WorldBoundsSoftenDistance: 1
+  WorldBoundsInfluence: 1
+  WorldBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 60, y: 60, z: 0.5}
+  UseMiniMap: 0
+  MiniMapColor: {r: 0.4, g: 0.4, b: 0.4, a: 0.95}
+  UIImage: {fileID: 0}
+  RevealerUpdateMode: 0
+  MaxNumRevealersPerFrame: 3
+  MaxPossibleRevealers: 256
+  MaxPossibleSegmentsPerRevealer: 128
+  is2D: 1
+  gamePlane: 1
+  FogOfWarMaterial: {fileID: 0}
