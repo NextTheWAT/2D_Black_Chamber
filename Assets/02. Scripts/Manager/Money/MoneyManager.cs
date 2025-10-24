@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 public class MoneyManager : Singleton<MoneyManager>
 {
-    [Header("초기 머니(디버그/테스트용)")]
+    [Header("초기 머니")]
     [SerializeField] private int startingBalance = 0;
 
     [SerializeField] private int balance = 0;
