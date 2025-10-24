@@ -2239,7 +2239,7 @@ MonoBehaviour:
   InnerSoftenAngle: 5
   AllowBleeding: 0
   SightExtraAmount: 1
-  MaxFogDistance: 5000
+  MaxFogDistance: 1000
   PixelateFog: 0
   WorldSpacePixelate: 0
   PixelDensity: 2
