@@ -1,43 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class MoneyManager : MonoBehaviour
+public class MoneyManager : Singleton<MoneyManager>
 {
-    public static MoneyManager Instance;
+    [Header("초기 머니(디버그/테스트용)")]
+    [SerializeField] private int startingBalance = 0;
 
-    private int money;
+    [SerializeField] private int balance = 0;
+    public int Balance => balance;
+
+    public UnityEvent OnChanged = new UnityEvent();
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        // 첫 씬에서만 적용하도록 단순 처리 (원한다면 저장/로드로 대체)
+        if (balance == 0 && startingBalance > 0)
+            Set(startingBalance);
     }
 
-    public void AddMoney(int amount)
+    public void Set(int amount)
     {
-        money += amount;
+        balance = Mathf.Max(0, amount);
+        OnChanged.Invoke();
     }
 
-    public void SpendMoney(int amount)
+    public void Add(int amount)
     {
-        // 돈 사용
-        if (money >= amount)
-        {
-            money -= amount;
-            return;
-        }
-        else
-            return;
+        if (amount == 0) return;
+        balance = Mathf.Max(0, balance + amount);
+        OnChanged.Invoke();
     }
 
-    public int GetMoney()
+    public bool TrySpend(int cost)
     {
-        return money;
+        if (cost <= 0) return true;
+        if (balance < cost) return false;
+        balance -= cost;
+        OnChanged.Invoke();
+        return true;
     }
 }

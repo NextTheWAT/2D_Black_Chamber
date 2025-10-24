@@ -493,7 +493,7 @@ GameObject:
   - component: {fileID: 391799217}
   - component: {fileID: 391799216}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Armory_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -598,7 +598,7 @@ GameObject:
   - component: {fileID: 422024882}
   - component: {fileID: 422024881}
   m_Layer: 5
-  m_Name: "\uBA54\uC778 \uBC30\uACBD"
+  m_Name: background2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -5,18 +5,23 @@ using TMPro;
 
 public class UIHUDSlots : MonoBehaviour
 {
-    [Header("HP (칸 비활성화 방식)")]
-    [SerializeField] private Transform hpGroup; // HPGroup (자식 7칸)
+    [Header("HP (줄어드는 방식)")]
+    [SerializeField] private Image hpBar;
     [SerializeField] private TMP_Text hpLabel;
 
     [Header("Stamina")]
     [SerializeField] private Image staminaBar;
+    [SerializeField] private TMP_Text staminaLabel;
 
-    [Header("Weapon Display (하나만 보이게)")]
+    [Header("Weapon Display")]
     [SerializeField] private GameObject pistolObject; //잠입
     [SerializeField] private GameObject rifleObject; //난전
     [SerializeField] private GameObject knifeObject; //총알없음
     [SerializeField] private TMP_Text ammoText; //총알 수
+
+    [Header("Weapon Scale (선택/비선택)")]
+    [SerializeField] private Vector3 selectedScale = new Vector3(1.15f, 1.15f, 1f);
+    [SerializeField] private Vector3 deselectedScale = new Vector3(0.9f, 0.9f, 1f);
 
     private readonly List<GameObject> _hpSlots = new();
     private Health _playerHealth;
@@ -24,14 +29,6 @@ public class UIHUDSlots : MonoBehaviour
 
     private void Awake()
     {
-        // HP 칸들 수집
-        if (hpGroup)
-        {
-            _hpSlots.Clear();
-            for (int i = 0; i < hpGroup.childCount; i++)
-                _hpSlots.Add(hpGroup.GetChild(i).gameObject);
-        }
-
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player) _playerHealth = player.GetComponent<Health>();
 
@@ -90,19 +87,24 @@ public class UIHUDSlots : MonoBehaviour
 
     private void OnHealthChanged(int cur, int max)
     {
-        if (_hpSlots.Count > 0)
-        {
-            float ratio = max > 0 ? (float)cur / max : 0f;
-            int onCount = Mathf.CeilToInt(ratio * _hpSlots.Count);    // 예: 80% > 6칸
-            for (int i = 0; i < _hpSlots.Count; i++)
-                _hpSlots[i].SetActive(i < onCount);
-        }
-        if (hpLabel) hpLabel.text = $"{cur}%"; //체력 숫자 표시에 사용
+        float ratio = max > 0 ? (float)cur / max : 0f;
+
+        // HP 이미지 바에 반영
+        if (hpBar) hpBar.fillAmount = Mathf.Clamp01(ratio);
+
+        // 숫자 텍스트도 유지
+        if (hpLabel) hpLabel.text = $"{cur}/100";
     }
 
     private void OnStaminaChanged01(float v01)
     {
         if (staminaBar) staminaBar.fillAmount = Mathf.Clamp01(v01);
+
+        if (staminaLabel && _staminaMgr != null)
+        {
+            int cur = Mathf.RoundToInt(_staminaMgr.CurrentStamina);
+            staminaLabel.text = $"{cur}/100";
+        }
     }
 
     private void OnWeaponChanged(Shooter _) //무기 변경
@@ -126,24 +128,27 @@ public class UIHUDSlots : MonoBehaviour
         if (WeaponManager.Instance == null || WeaponManager.Instance.CurrentWeapon == null)
             return;
 
-        // 총알이 하나도 없으면 Knife 표시
         int total = WeaponManager.Instance.GetMagazine() + WeaponManager.Instance.GetReserve();
         bool hasAnyAmmo = total > 0;
 
+        GameObject activeObj;
+
         if (!hasAnyAmmo)
         {
-            ShowOnly(knifeObject);
+            activeObj = knifeObject;
             if (ammoText) ammoText.text = "--";
-            return;
+        }
+        else
+        {
+            bool isCombat = GameManager.Instance &&
+                            GameManager.Instance.CurrentPhase == Constants.GamePhase.Combat;
+            activeObj = isCombat ? rifleObject : pistolObject;
         }
 
-        // 전투 상태면 Rifle, 잠입 상태면 Pistol
-        bool isCombat = GameManager.Instance &&
-                        GameManager.Instance.CurrentPhase == Constants.GamePhase.Combat;
-        ShowOnly(isCombat ? rifleObject : pistolObject);
-
+        UpdateWeaponVisuals(activeObj);
         RefreshAmmo();
     }
+
 
     private void RefreshAmmo()
     {
@@ -161,4 +166,49 @@ public class UIHUDSlots : MonoBehaviour
         if (rifleObject) rifleObject.SetActive(go == rifleObject);
         if (knifeObject) knifeObject.SetActive(go == knifeObject);
     }
+
+    private void SetWeaponColor(GameObject weaponObj, bool isActive)
+    {
+        if (!weaponObj) return;
+
+        // 자식 중 이름이 Background 또는 Icon인 Image 컴포넌트들 가져오기
+        var images = weaponObj.GetComponentsInChildren<Image>(true);
+
+        foreach (var img in images)
+        {
+            img.color = isActive ? Color.white : new Color(0.3f, 0.3f, 0.3f); // 회색 처리
+        }
+    }
+
+    private void SetWeaponScale(GameObject weaponObj, bool isActive)
+    {
+        if (!weaponObj) return;
+
+        // UI 요소이면 RectTransform, 아니면 일반 Transform에 적용
+        var rt = weaponObj.GetComponent<RectTransform>();
+        if (rt != null)
+            rt.localScale = isActive ? selectedScale : deselectedScale;
+        else
+            weaponObj.transform.localScale = isActive ? selectedScale : deselectedScale;
+    }
+
+    private void UpdateWeaponVisuals(GameObject activeWeapon)
+    {
+        // 모든 무기 오브젝트 활성화
+        if (pistolObject) pistolObject.SetActive(true);
+        if (rifleObject) rifleObject.SetActive(true);
+        if (knifeObject) knifeObject.SetActive(true);
+
+        // 각 무기 색상 설정
+        SetWeaponColor(pistolObject, pistolObject == activeWeapon);
+        SetWeaponColor(rifleObject, rifleObject == activeWeapon);
+        SetWeaponColor(knifeObject, knifeObject == activeWeapon);
+
+        // 각 무기 스케일 설정 (선택된 것은 크게, 나머지는 작게)
+        SetWeaponScale(pistolObject, pistolObject == activeWeapon);
+        SetWeaponScale(rifleObject, rifleObject == activeWeapon);
+        SetWeaponScale(knifeObject, knifeObject == activeWeapon);
+    }
+
+
 }

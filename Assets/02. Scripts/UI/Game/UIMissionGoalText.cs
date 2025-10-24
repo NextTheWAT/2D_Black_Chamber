@@ -32,7 +32,7 @@ public class UIMissionGoalText : MonoBehaviour
         int done = mm != null ? mm.CompletedTargets : 0;
 
         if (!label) return;
-        label.text = $"제거 대상 수 {done} / {total}";
+        label.text = $"제거 목표 {done} / {total}";
         label.color = (total > 0 && done >= total) ? completedColor : normalColor;
     }
 }

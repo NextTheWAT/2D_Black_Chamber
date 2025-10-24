@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
     [SerializeField] private bool useCollisionEnter = true;
+    public bool investigateUseStartDelay = false; // 조사 시작 전 대기 사용 여부
 
     private EnemyData data;
 
@@ -180,6 +181,10 @@ public class Enemy : MonoBehaviour
     public bool AutoRotate { get; set; }
 
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
+    public float NoiseAmount
+        => heardNoiseAmount;
+    
+    private float heardNoiseAmount = 0f;
 
     public bool IsBodyDetected
         => newFoundBody;
@@ -189,9 +194,6 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        if (id == 0) id = 1001001;
-        data = FirebaseLoader.GetEnemyData(id);
-
         coll = GetComponent<Collider2D>();
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<CharacterAnimationController>();
@@ -199,45 +201,23 @@ public class Enemy : MonoBehaviour
         foundBodies = new();
     }
 
-    private void Start()
-    {
-        Health.Init(data.hp);
-        Agent.speed = data.speed;
-
-        forwardLight.pointLightOuterRadius = data.viewDistance;
-        forwardLight.pointLightOuterAngle = data.viewAngle;
-        backwardLight.pointLightOuterAngle = data.viewAngle;
-
-        if (isTarget)
-        {
-            noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
-            combatStateMachine = new TargetFSM(this, typeof(FleeState));
-        }
-        else
-        {
-            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(PatrolState), nonCombatStateType);
-            combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
-        }
-
-        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
-        CurrentStateMachine.Start();
-
-        previousHasTarget = HasTarget;
-
-        SetIconState(AlertIconState.None);
-        UpdateAlertIcons();
-    }
-
     private void OnEnable()
     {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged += OnPhaseChanged;
+
+        if (FirebaseManager.Instance.IsEnemyDataLoaded)
+            Initialize();
+        else
+            FirebaseManager.Instance.EnemyDataLoaded += Initialize;
+
     }
 
     void OnDisable()
     {
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+        FirebaseManager.Instance.EnemyDataLoaded -= Initialize;
     }
 
 
@@ -282,6 +262,39 @@ public class Enemy : MonoBehaviour
         if (IsBodyDetected) newFoundBody = null; // 시체 감지 상태 초기화
 
         UpdateAlertIcons(); // ?,! 아이콘 상태 갱신
+    }
+
+
+    private void Initialize()
+    {
+        if (id == 0) id = 1001001;
+
+        data = FirebaseManager.Instance.GetEnemyData(id);
+        Health.Init(data.hp);
+        Agent.speed = data.speed;
+
+        forwardLight.pointLightOuterRadius = data.viewDistance;
+        forwardLight.pointLightOuterAngle = data.viewAngle;
+        backwardLight.pointLightOuterAngle = data.viewAngle;
+
+        if (isTarget)
+        {
+            noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
+            combatStateMachine = new TargetFSM(this, typeof(FleeState));
+        }
+        else
+        {
+            noncombatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(PatrolState), nonCombatStateType);
+            combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
+        }
+
+        OnPhaseChanged(GameManager.Instance.CurrentPhase); // 현재 페이즈에 맞춰 타겟 설정
+        CurrentStateMachine.Start();
+
+        previousHasTarget = HasTarget;
+
+        SetIconState(AlertIconState.None);
+        UpdateAlertIcons();
     }
 
     // ?,! 아이콘 상태 변경
@@ -395,10 +408,12 @@ public class Enemy : MonoBehaviour
     public void FindTarget(float viewAngle, float viewDistance)
         => Target = transform.FindTargetInFOV(viewAngle, viewDistance, targetMask, obstacleMask);
 
-    public void HeardNoise(Vector2 noisePosition)
+    public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
+        if(noise < NoiseManager.Instance.InvestigateThreshold) return;
         IsNoiseDetected = true;
+        heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
     }
 
@@ -436,21 +451,24 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
-        // === 30% 확률로만 드랍 ===
-        if (dropItems != null && Random.value <= 0.3f) // 0.3 = 30%
+        // === 30% 확률 드랍 ===
+        if (dropItems != null && Random.value <= 0.3f)
         {
             Vector3 dropPos = transform.position + Vector3.up * 0.2f;
             GameObject ob = Instantiate(dropItems, dropPos, Quaternion.identity);
 
-            var item = ob.GetComponent<Item>();
+            var item = ob.GetComponent<MagazineItem>();
             if (item != null)
             {
-                switch (WeaponManager.Instance.CurrentWeaponIndex)
+                // 예전: CurrentWeaponIndex 스위치 → 삭제
+                // 현재 무기가 '스텔스 슬롯 무기'라면 권총 탄(예: 12) 드랍
+                var wm = WeaponManager.Instance;
+                var cur = wm ? wm.CurrentWeapon : null;
+                if (wm && cur && cur == wm.GetStealthShooter())
                 {
-                    case 0:
-                        item.ammoAmount = 12;
-                        break;
+                    item.ammoAmount = 12; // 필요 시 데이터 기반으로 바꿔도 됨
                 }
+                // else: 기본값 유지(프리팹 설정치)
             }
         }
     }
