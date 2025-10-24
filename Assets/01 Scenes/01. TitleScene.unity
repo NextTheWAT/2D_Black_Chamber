@@ -166,10 +166,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3257490517592859936, guid: 527c978593557c949a62db3296c465cf, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4444015179403229149, guid: 527c978593557c949a62db3296c465cf, type: 3}
       propertyPath: m_Name
       value: Manger
