@@ -4,7 +4,7 @@ using System.Collections;
 
 public class HPEffectsHandler : MonoBehaviour
 {
-    // ⬅️ 이 스크립트가 붙은 Image 컴포넌트입니다. (HP가 채워지는 Fill Image)
+    //  이 스크립트가 붙은 Image 컴포넌트입니다. (HP가 채워지는 Fill Image)
     [Header("HP Bar References")]
     [SerializeField] private Image fullHpBarImage; // HP 게이지 Image 컴포넌트
 
@@ -15,22 +15,19 @@ public class HPEffectsHandler : MonoBehaviour
 
     // HP Bar 이미지의 RectTransform (진동 대상)
     private RectTransform _hpBarRectTransform;
-
     private Health _playerHealth;
     private int _lastHealth;
     private Coroutine _shakeCoroutine;
-
     private void Awake()
     {
         if (fullHpBarImage == null)
         {
-            // 이 스크립트가 HP Bar Image 자체에 붙어있다고 가정합니다.
             fullHpBarImage = GetComponent<Image>();
         }
 
         if (fullHpBarImage)
         {
-            // HP 바 이미지의 RectTransform을 가져와 진동에 사용합니다.
+            // HP 바 이미지의 RectTransform을 가져와 진동에 사용
             _hpBarRectTransform = fullHpBarImage.GetComponent<RectTransform>();
         }
 
@@ -68,7 +65,6 @@ public class HPEffectsHandler : MonoBehaviour
     private void OnHealthChanged(int cur, int max)
     {
         float ratio = max > 0 ? (float)cur / max : 0f;
-
         // 1. HP 바 시각적 갱신 (Image의 fillAmount만 사용)
         if (fullHpBarImage) fullHpBarImage.fillAmount = Mathf.Clamp01(ratio);
 
@@ -100,7 +96,6 @@ public class HPEffectsHandler : MonoBehaviour
             yield break;
         }
 
-        // RectTransform의 로컬 위치를 가져옵니다.
         Vector3 originalPos = targetTransform.anchoredPosition3D;
         float elapsed = 0f;
 
@@ -111,7 +106,6 @@ public class HPEffectsHandler : MonoBehaviour
 
             // UI의 위치를 흔듬
             targetTransform.anchoredPosition3D = originalPos + new Vector3(x, y, 0);
-
             elapsed += Time.unscaledDeltaTime; // 게임이 멈춰도 작동하도록 Unscaled Time 사용
             yield return null;
         }
@@ -119,5 +113,7 @@ public class HPEffectsHandler : MonoBehaviour
         // 원래 위치로 복귀
         targetTransform.anchoredPosition3D = originalPos;
         _shakeCoroutine = null;
+
     }
+
 }
