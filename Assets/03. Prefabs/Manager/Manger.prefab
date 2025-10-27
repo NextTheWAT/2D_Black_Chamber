@@ -1357,6 +1357,7 @@ MonoBehaviour:
   OnChanged:
     m_PersistentCalls:
       m_Calls: []
+  balanceText: {fileID: 0}
 --- !u!1 &5199674125554347574
 GameObject:
   m_ObjectHideFlags: 0
