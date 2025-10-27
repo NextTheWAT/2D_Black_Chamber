@@ -18,7 +18,7 @@ public class CrosshairCursor : MonoBehaviour
     private RectTransform canvasRect;
 
     public GameObject reload;
-    [SerializeField] private float reloadDuration;
+   
 
     private void Start()
     {
@@ -82,6 +82,7 @@ public class CrosshairCursor : MonoBehaviour
         yield return new WaitForSeconds(1);
         reload.SetActive(false);
         SetCrosshairVisible(true);
+
     }
 
     private void SetCrosshairVisible(bool visible)

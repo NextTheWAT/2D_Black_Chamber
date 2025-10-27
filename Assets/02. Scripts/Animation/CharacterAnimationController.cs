@@ -8,7 +8,6 @@ public class CharacterAnimationController : MonoBehaviour
     public Animator upperAnimator;   // 없으면 Awake에서 "UpperBody" 자식에서 자동 할당
     public Animator lowerAnimator;   // 없으면 Awake에서 "LowerBody" 자식에서 자동 할당
 
-    public GameObject reload;
     [SerializeField] private float reloadDuration;
 
     private void Awake()
