@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 843378307678313003}
   - component: {fileID: 9131204886094185372}
-  - component: {fileID: 6893306512061728476}
   - component: {fileID: 2387594992770674469}
+  - component: {fileID: -5582277683718929162}
   m_Layer: 0
   m_Name: Papermoney
   m_TagString: Interaction
@@ -86,20 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6893306512061728476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9081247867040112379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9adc30e8d3c934d4b8d3cdb00f1c8f35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: "\uC9C0\uD3D0"
-  moneyType: 1
 --- !u!58 &2387594992770674469
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -135,3 +121,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-5582277683718929162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9081247867040112379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9beae23bacd68d4f95f382ded26d7df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  money: 0
