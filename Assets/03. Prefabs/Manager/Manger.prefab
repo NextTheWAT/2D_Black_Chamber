@@ -1357,6 +1357,7 @@ MonoBehaviour:
   OnChanged:
     m_PersistentCalls:
       m_Calls: []
+  balanceText: {fileID: 0}
 --- !u!1 &5199674125554347574
 GameObject:
   m_ObjectHideFlags: 0
@@ -1632,10 +1633,18 @@ MonoBehaviour:
   root_DontDestroyOnLoad: 0
   obstacleNoiseReductionRate: 0.3
   distanceFalloff: 1
-  noiseRange: 15
-  walkNoise: 22
-  runNoise: 25
-  bulletHitNoise: 25
+  walkNoiseData:
+    strength: 25
+    range: 6
+  runNoiseData:
+    strength: 25
+    range: 8
+  bulletHitNoiseData:
+    strength: 25
+    range: 6
+  doorNoiseData:
+    strength: 25
+    range: 6
   combatThreshold: 30
   investigateThreshold: 20
   gizmoDuration: 0.4

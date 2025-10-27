@@ -26,15 +26,18 @@ MonoBehaviour:
   bulletSpeed: 100
   bulletPerShot: 1
   bulletDuration: 2
+  gunNoiseData:
+    strength: 0
+    range: 0
   curAmmo: 12
   curReserveAmmo: 24
   maxAmmo: 12
   maxReserveAmmo: 60
   volume: 50
-  accuracy: 5.5
+  accuracy: 3
   precision: 20
   stability: 5
-  aimAccuracy: 5
+  aimAccuracy: 3
   aimPrecision: 15
   aimStability: 4.5
   aimDistance: 100
