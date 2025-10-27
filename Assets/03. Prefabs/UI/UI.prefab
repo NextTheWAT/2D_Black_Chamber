@@ -31521,6 +31521,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7585043165230509241}
     m_Modifications:
+    - target: {fileID: 203347445472994471, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: fixedTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 203347445472994471, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 203347445472994471, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 425ba72c615b709438f33c329c97ff19, type: 2}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: simulationSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -31571,19 +31603,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 199.7
+      value: 108.4
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -31608,7 +31640,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5516343384259951494, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4349093556697342361}
   m_SourcePrefab: {fileID: 100100000, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
 --- !u!224 &363775756235878144 stripped
 RectTransform:
@@ -31620,3 +31655,31 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
   m_PrefabInstance: {fileID: 854533363909689423}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5140318589935254473 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5516343384259951494, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+  m_PrefabInstance: {fileID: 854533363909689423}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &4349093556697342361
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5140318589935254473}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 1
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: -1
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 300
+  m_TargetDisplay: 0

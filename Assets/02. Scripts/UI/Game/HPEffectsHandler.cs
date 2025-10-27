@@ -4,7 +4,7 @@ using System.Collections;
 
 public class HPEffectsHandler : MonoBehaviour
 {
-    //  이 스크립트가 붙은 Image 컴포넌트입니다. (HP가 채워지는 Fill Image)
+    // 이 스크립트가 붙은 Image 컴포넌트입니다. (HP가 채워지는 Fill Image)
     [Header("HP Bar References")]
     [SerializeField] private Image fullHpBarImage; // HP 게이지 Image 컴포넌트
 
@@ -18,6 +18,7 @@ public class HPEffectsHandler : MonoBehaviour
     private Health _playerHealth;
     private int _lastHealth;
     private Coroutine _shakeCoroutine;
+
     private void Awake()
     {
         if (fullHpBarImage == null)
@@ -45,6 +46,7 @@ public class HPEffectsHandler : MonoBehaviour
         {
             _playerHealth.OnHealthChanged.AddListener(OnHealthChanged);
             _lastHealth = _playerHealth.CurrentHealth;
+            // 최초 활성화 시 HP 바를 현재 값으로 업데이트
             OnHealthChanged(_playerHealth.CurrentHealth, _playerHealth.MaxHealth);
         }
     }
@@ -82,10 +84,40 @@ public class HPEffectsHandler : MonoBehaviour
             // 스프레이 파티클 재생
             if (hitSprayParticle)
             {
+                // 💡 1. 파티클 오브젝트가 비활성화 상태였다면 활성화 (OnEnable 재호출 유도)
+                if (!hitSprayParticle.gameObject.activeSelf)
+                {
+                    hitSprayParticle.gameObject.SetActive(true);
+                }
+
+                // [디버그] Play() 호출 전 상태 확인
+                Debug.Log($"[ParticleCheck] Play() 호출 전. isPlaying: {hitSprayParticle.isPlaying}, isEmitting: {hitSprayParticle.isEmitting}");
+
                 hitSprayParticle.Play();
+
+                // [디버그] Play() 호출 직후 상태 확인
+                Debug.Log($"[ParticleCheck] Play() 호출 직후. isPlaying: {hitSprayParticle.isPlaying}, isEmitting: {hitSprayParticle.isEmitting}");
+
+                // 💡 2. 파티클 재생이 끝난 후 오브젝트를 비활성화하는 코루틴 시작
+                StartCoroutine(DeactivateParticleWhenFinished(hitSprayParticle));
             }
         }
         _lastHealth = cur; // 현재 HP를 다음 프레임의 이전 HP로 저장
+    }
+
+    private IEnumerator DeactivateParticleWhenFinished(ParticleSystem ps)
+    {
+        // Bursts로만 재생되는 경우, 가장 긴 Start Lifetime을 기다립니다.
+        float maxLifetime = ps.main.startLifetime.constantMax;
+
+        // 파티클이 완전히 사라지는 것을 보장하기 위해 약간의 여유를 줍니다.
+        yield return new WaitForSecondsRealtime(maxLifetime + 0.1f);
+
+        // 재생이 완전히 멈췄는지 확인 후 오브젝트를 비활성화합니다.
+        if (!ps.isPlaying && ps.gameObject.activeSelf)
+        {
+            ps.gameObject.SetActive(false);
+        }
     }
 
     // 지정된 RectTransform(UI 요소)을 흔드는 코루틴
@@ -115,5 +147,4 @@ public class HPEffectsHandler : MonoBehaviour
         _shakeCoroutine = null;
 
     }
-
 }
