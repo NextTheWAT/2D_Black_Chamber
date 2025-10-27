@@ -1,3 +1,4 @@
+using Esper.Freeloader;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -166,7 +167,8 @@ public class PausePopup : UIBase
 
     private IEnumerator ReturnToLobby()
     {
-        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        //LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        LoadingScreen.Instance.Load(lobbySceneName);
         RequestClose();
         while (gameObject.activeInHierarchy) yield return null; // 닫힐 때까지 대기
         if (Time.timeScale == 0f) Time.timeScale = 1f;
@@ -175,7 +177,8 @@ public class PausePopup : UIBase
             Debug.LogError($"씬 '{lobbySceneName}' 없음");
             yield break;
         }
-        LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+        LoadingScreen.Instance.Load(lobbySceneName);
+        //LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
         //SceneManager.LoadScene(lobbySceneName);
     }
 

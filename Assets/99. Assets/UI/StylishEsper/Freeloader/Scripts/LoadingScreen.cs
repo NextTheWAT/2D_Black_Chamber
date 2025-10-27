@@ -497,7 +497,7 @@ namespace Esper.Freeloader
 
                 var sceneTracker = new LoadingProgressTracker(
                     settings.defaultLoadingText,
-                    () => Mathf.Clamp01(sceneOperation.progress / 0.9f) * 100f // Normalize to 0–100
+                    () => Mathf.Clamp01(sceneOperation.progress / 0.9f) * 100f // Normalize to 0?00
                 );
 
                 allProcesses.Add(sceneTracker);

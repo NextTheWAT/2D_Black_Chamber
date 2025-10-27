@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Esper.Freeloader;
 
 public class UIGameOVer : UIBase
 {
@@ -42,7 +43,8 @@ public class UIGameOVer : UIBase
             return;
         }
         Time.timeScale = 1f;
-        LoadingCanvas.LoadScene(lobbySceneName);
+        //LoadingCanvas.LoadScene(lobbySceneName);
+        LoadingScreen.Instance.Load(lobbySceneName);
     }
 
     private void OnClickRetry()
@@ -61,6 +63,7 @@ public class UIGameOVer : UIBase
             return;
         }
         Time.timeScale = 1f;
-        LoadingCanvas.LoadScene(lastStage);
+        //LoadingCanvas.LoadScene(lastStage);
+        LoadingScreen.Instance.Load(lastStage);
     }
 }
