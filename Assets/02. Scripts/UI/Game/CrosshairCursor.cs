@@ -35,11 +35,9 @@ public class CrosshairCursor : MonoBehaviour
         Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
 
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPos, cam, out var local))
-        {
             rect.anchoredPosition = local;
-        }
 
-        UpdateCrosshairSpread();
+        // UpdateCrosshairSpread();
     }
 
     public void UpdateCrosshairSpread()
