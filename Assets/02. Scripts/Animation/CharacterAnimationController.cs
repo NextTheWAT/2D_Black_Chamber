@@ -69,8 +69,14 @@ public class CharacterAnimationController : MonoBehaviour
         if (upperAnimator) upperAnimator.SetTrigger(AnimationHash.Reload);
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
 
-
-        StartCoroutine(nowcrosshairCursor.ReloadBlinkRoutine());
+        // 크로스헤어 재장전 UI 실행
+        if (nowcrosshairCursor != null)
+        {
+            float dur = (reloadDuration > 0f)
+                        ? reloadDuration
+                        : nowcrosshairCursor.reloadFillDuration; // 미설정 시 기본값 사용
+            nowcrosshairCursor.PlayReloadUI(dur);
+        }
     }
     public CrosshairCursor nowcrosshairCursor;
 
