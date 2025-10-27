@@ -32,6 +32,7 @@ public class PlayerAimController : MonoBehaviour
     [Header("Accuracy")]
     public float accuracy = 1.5f; // 조준선 길이 - 높을수록 조준선이 길어짐
     public float aimAccuracy = 3f; // 조준 시 조준선 길이
+    public float sideLineDistance = 2f; // 조준 시 사이드 조준선 길이
     private float currentAccuracy;
 
     [Header("Precision")]
@@ -194,10 +195,8 @@ public class PlayerAimController : MonoBehaviour
         Vector3 leftStartPos = (Vector3)(leftDir * sideLineOffset);
         Vector3 rightStartPos = (Vector3)(rightDir * sideLineOffset);
 
-        float sideAccuracy = currentAccuracy - (sideLineOffset - aimLineOffset);
-
-        Vector3 leftEndPos = (Vector3)(leftDir * (sideLineOffset + sideAccuracy));
-        Vector3 rightEndPos = (Vector3)(rightDir * (sideLineOffset + sideAccuracy));
+        Vector3 leftEndPos = (Vector3)(leftDir * (sideLineOffset + sideLineDistance));
+        Vector3 rightEndPos = (Vector3)(rightDir * (sideLineOffset + sideLineDistance));
 
         leftLineRenderer.SetPosition(0, leftStartPos);
         leftLineRenderer.SetPosition(1, leftEndPos);
