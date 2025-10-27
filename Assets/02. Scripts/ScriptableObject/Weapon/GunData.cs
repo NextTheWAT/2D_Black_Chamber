@@ -46,7 +46,7 @@ public class GunData : ScriptableObject
     [Min(1)] public int bulletPerShot = 1;     // 발당 발사 총알 수(샷건 등)
     [FormerlySerializedAs("bulletLife")]
     [Range(0.01f, 30f)] public float bulletDuration = 2f; // 탄이 소멸되기까지의 시간(초)
-    [Min(0)] public float shootNoise = 30f; // 발사 소음 세기
+    public NoiseData gunNoiseData; // 발사 소음 데이터
 
     [Header("Ammo (Magazine / Reserve)")]
     [FormerlySerializedAs("curMagazine")]

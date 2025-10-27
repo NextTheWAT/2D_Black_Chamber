@@ -5,23 +5,35 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
+[System.Serializable]
+public struct NoiseData
+{
+    public float strength;
+    public float range;
+
+    public NoiseData(float strength, float range)
+    {
+        this.strength = strength;
+        this.range = range;
+    }
+}
+
 public class NoiseManager : Singleton<NoiseManager>
 {
     [Header("Noise Settings")]
     [SerializeField, Range(0f, 1f)] private float obstacleNoiseReductionRate = 0.3f;
     [SerializeField] private float distanceFalloff = 1f;
-    [SerializeField] private float noiseRange = 5f;
 
     [Header("Noise Data")]
-    [SerializeField] private float walkNoise = 22f; // 걷기 소음
-    [SerializeField] private float runNoise = 25f; // 달리기 소음
-    [SerializeField] private float bulletHitNoise = 25f; // 총알 충돌 소음
-    [SerializeField] private float doorNoise = 23f; // 문 소음
+    [SerializeField] private NoiseData walkNoiseData; // 걷기 소음 데이터
+    [SerializeField] private NoiseData runNoiseData; // 달리기 소음 데이터
+    [SerializeField] private NoiseData bulletHitNoiseData; // 총알 충돌 소음 데이터
+    [SerializeField] private NoiseData doorNoiseData; // 문 소음 데이터
 
-    public float WalkNoise => walkNoise;
-    public float RunNoise => runNoise;
-    public float BulletHitNoise => bulletHitNoise;
-    public float DoorNoise => doorNoise;
+    public NoiseData WalkNoiseData => walkNoiseData;
+    public NoiseData RunNoiseData => runNoiseData;
+    public NoiseData BulletHitNoiseData => bulletHitNoiseData;
+    public NoiseData DoorNoiseData => doorNoiseData;
 
     [Header("Noise Threshold")]
     [SerializeField] private float combatThreshold = 30f;
@@ -38,16 +50,22 @@ public class NoiseManager : Singleton<NoiseManager>
         public float strength;
     }
 
-    private struct NoiseData
+    private struct NoiseDebugData
     {
         public Vector2 position;
         public float time;
         public List<NoiseSegment> segments;
+        public float range;
     }
 
-    private readonly List<NoiseData> noiseHistory = new();
+    private readonly List<NoiseDebugData> noiseHistory = new();
 
-    public void EmitNoise(Transform sender, Vector2 position, float baseNoise)
+    public void EmitNoise(Transform sender, Vector2 position, NoiseData noiseData)
+    {
+        EmitNoise(sender, position, noiseData.strength, noiseData.range);
+    }
+
+    public void EmitNoise(Transform sender, Vector2 position, float baseNoise, float noiseRange)
     {
         if (GameManager.Instance.IsCombat) return; // 전투 중에는 소음 무시
         if (noiseRange <= 0) return; // 소음 범위가 0이면 무시
@@ -78,11 +96,12 @@ public class NoiseManager : Singleton<NoiseManager>
             enemy.HeardNoise(finalNoise, position);
         }
 
-        noiseHistory.Add(new NoiseData
+        noiseHistory.Add(new NoiseDebugData
         {
             position = position,
             time = Time.time,
-            segments = segments
+            segments = segments,
+            range = noiseRange
         });
     }
 
@@ -182,7 +201,7 @@ public class NoiseManager : Singleton<NoiseManager>
             }
 
             Gizmos.color = Color.white;
-            Gizmos.DrawWireSphere(data.position, noiseRange * 0.5f);
+            Gizmos.DrawWireSphere(data.position, data.range * 0.5f);
 
             foreach (var seg in data.segments)
             {

@@ -155,7 +155,7 @@ public class Shooter : MonoBehaviour
         }
 
         // 소음 추가
-        NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.shootNoise);
+        NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.gunNoiseData);
         
 
         return true;

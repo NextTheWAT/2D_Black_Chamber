@@ -58,7 +58,7 @@ public class Door : MonoBehaviour, Iinteraction
             StructSoundManager.Instance.PlayDoorCloseSound(transform.position);
 
         // 소음 발생
-        NoiseManager.Instance.EmitNoise(interactor, transform.position, NoiseManager.Instance.DoorNoise);
+        NoiseManager.Instance.EmitNoise(interactor, transform.position, NoiseManager.Instance.DoorNoiseData);
     }
 
     public void AutoOpen()
