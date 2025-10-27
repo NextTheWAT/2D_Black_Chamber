@@ -34,11 +34,11 @@ MonoBehaviour:
   maxAmmo: 12
   maxReserveAmmo: 60
   volume: 50
-  accuracy: 3
+  accuracy: 2
   precision: 20
   stability: 5
   aimAccuracy: 3
-  aimPrecision: 15
+  aimPrecision: 10
   aimStability: 4.5
   aimDistance: 100
   hasLaser: 0
