@@ -30,6 +30,9 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     [SerializeField] private int combatSlotIndex = -1;
     [SerializeField] private bool _globalShooterLocked = false;
 
+    [Header("리로드 bool값")]
+    public bool isReloading = false;
+
     private int currentIndex = -1;
     public Shooter CurrentWeapon => IsValidSlot(currentIndex) ? weaponSlots[currentIndex] : null;
 

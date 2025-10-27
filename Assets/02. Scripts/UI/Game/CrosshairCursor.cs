@@ -81,6 +81,7 @@ public class CrosshairCursor : MonoBehaviour
     private IEnumerator Co_ReloadFill(float duration)
     {
         // ¡ÿ∫Ò
+        WeaponManager.Instance.isReloading = true;
         if (reloadFillAmount) reloadFillAmount.fillAmount = 0f;
         if (reload) reload.SetActive(true);
         SetCrosshairVisible(false);
@@ -99,6 +100,7 @@ public class CrosshairCursor : MonoBehaviour
         if (reload) reload.SetActive(false);
         SetCrosshairVisible(true);
         reloadCR = null;
+        WeaponManager.Instance.isReloading = false;
     }
 
     public void UpdateCrosshairSpread()

@@ -35,6 +35,7 @@ public partial class PlayerInputController : TopDownController
     {
         if (health.IsDead) return; // 사망 시 무시
         if (shooter == null) return;
+        if (WeaponManager.Instance.isReloading) return;
 
         // === UI 위인지 검사 (월드 공간 아이콘/비인터랙티브 텍스트는 통과) ===
         if (IsPointerOverBlockingUI()) return;
