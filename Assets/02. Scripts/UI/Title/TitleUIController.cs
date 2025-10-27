@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Esper.Freeloader;
 
 public class TitleUIController : MonoBehaviour
 {
@@ -27,7 +28,8 @@ public class TitleUIController : MonoBehaviour
             return;
         }
 
-        LoadingCanvas.LoadScene(nextScene);
+        LoadingScreen.Instance.Load(nextScene);
+        //LoadingCanvas.LoadScene(nextScene);
     }
 
     public void OpenSetting()

@@ -8,8 +8,13 @@ public class PlayerAimController : MonoBehaviour
     public LineRenderer aimLineRenderer;
     public LineRenderer leftLineRenderer;
     public LineRenderer rightLineRenderer;
+
     public float aimMaxWidth = 0.1f; // 최대 조준선 너비
     public float aimMinWidth = 0.02f; // 최소 조준선 너비
+
+    public float aimLineOffset = 0.2f;
+    public float sideLineOffset = 1f;
+
     private float currentAimWidth;
     private Transform aimLineTransform;
 
@@ -23,22 +28,22 @@ public class PlayerAimController : MonoBehaviour
     public float maxAlpha = 0.8f; // 최대 알파 값
     public float gaugeColorTransitionSpeed = 5f; // 색상 전환 속도
 
-    [Header("Angle")]
-    public float aimPingPongMaxAngle = 20f; // 최대 핑퐁 범위
-    public float aimPingPongMinAngle = 10f; // 최소 핑퐁 범위
-    private float currentPingPongAngle;
+
+    [Header("Accuracy")]
+    public float accuracy = 1.5f; // 조준선 길이 - 높을수록 조준선이 길어짐
+    public float aimAccuracy = 3f; // 조준 시 조준선 길이
+    private float currentAccuracy;
+
+    [Header("Precision")]
+    public float precision = 20f; // 왕복하는 범위
+    public float aimPrecision = 10f; // 조준 시 왕복하는 범위
+    private float currentPrecision;
 
     [Header("Speed")]
-    public float aimPingPongMaxSpeed = 5f; // 최대 핑퐁 속도
-    public float aimPingPongMinSpeed = 2f; // 최소 핑퐁 속도
-    private float currentPingPongSpeed;
+    public float stability = 5f; // 조준선이 왕복 운동하는 속도 - 높을수록 속도가 줄어듬
+    public float aimStability = 2f; // 최소 핑퐁 속도
+    private float currentStability;
     public float aimingTransitionSpeed = 5f;
-
-    public float aimLineOffset = 0.2f;
-    public float aimLineDistance = 1.5f;
-
-    public float sideLineOffset = 1f;
-    public float sideLineDistance = 1f;
 
     [Header("Aiming")]
     public float aimingDuration = 5f; // 조준 지속 시간
@@ -51,6 +56,14 @@ public class PlayerAimController : MonoBehaviour
     private float penaltySpeed = 0f; // 패널티 속도
 
     private Shooter CurrentShooter => WeaponManager.Instance.CurrentWeapon;
+    private GunData GunData
+    {
+        get
+        {
+            if(CurrentShooter == null) return null;
+            return CurrentShooter.gunData;
+        }
+    }
 
     private bool isAiming = false;
     private float pingpongTime = 0f;
@@ -94,12 +107,12 @@ public class PlayerAimController : MonoBehaviour
         Color gaugeColor = Color.Lerp(gaugeArcDrawer.GetColor(), targetColor, Time.deltaTime * gaugeColorTransitionSpeed);
 
         gaugeArcDrawer.transform.position = gunPoint.position;
-        gaugeArcDrawer.DrawArc(currentPingPongAngle * aimingGauge);
+        gaugeArcDrawer.DrawArc(currentPrecision * aimingGauge);
         gaugeArcDrawer.SetAlpha(aimingGauge * maxAlpha);
         gaugeArcDrawer.SetColor(gaugeColor);
 
         backgroundArcDrawer.transform.position = gunPoint.position;
-        backgroundArcDrawer.DrawArc(currentPingPongAngle);
+        backgroundArcDrawer.DrawArc(currentPrecision);
     }
 
     void UpdatePenalty()
@@ -124,32 +137,37 @@ public class PlayerAimController : MonoBehaviour
 
     void UpdateAimParameters()
     {
-        float targetAngle = isAiming ? aimPingPongMinAngle : aimPingPongMaxAngle;
-        float targetSpeed = isAiming ? aimPingPongMinSpeed : aimPingPongMaxSpeed;
+        if (GunData == null) return;
+        float targetAngle = isAiming ? GunData.aimPrecision : GunData.precision;
+        float targetStability = isAiming ? GunData.aimStability : GunData.stability;
         float targetWidth = isAiming ? aimMinWidth : aimMaxWidth;
+        float targetAccuracy = isAiming ? GunData.aimAccuracy : GunData.accuracy;
 
         targetAngle += penaltyAngle;
-        targetSpeed += penaltySpeed;
+        targetStability += penaltySpeed;
 
-        currentPingPongAngle = Mathf.Lerp(currentPingPongAngle, targetAngle, aimingTransitionSpeed * Time.deltaTime);
-        currentPingPongSpeed = Mathf.Lerp(currentPingPongSpeed, targetSpeed, aimingTransitionSpeed * Time.deltaTime);
+        currentPrecision = Mathf.Lerp(currentPrecision, targetAngle, aimingTransitionSpeed * Time.deltaTime);
+        currentStability = Mathf.Lerp(currentStability, targetStability, aimingTransitionSpeed * Time.deltaTime);
         currentAimWidth = Mathf.Lerp(currentAimWidth, targetWidth, Time.deltaTime);
+        currentAccuracy = Mathf.Lerp(currentAccuracy, targetAccuracy, Time.deltaTime * 10f);
     }
 
     void UpdateAimLine()
     {
+        if (GunData == null) return;
         if (aimLineRenderer == null || aimLineTransform == null) return;
         if (!TryGetGunPoint(out var gunPoint)) return;
 
-        pingpongTime += Time.deltaTime * currentPingPongSpeed;
-        float aimAngle = Mathf.Sin(pingpongTime) * currentPingPongAngle * 0.5f;
+        float shakeSpeed = 10f / Mathf.Max(currentStability, 0.01f);
+        pingpongTime += Time.deltaTime * shakeSpeed;
+        float aimAngle = Mathf.Sin(pingpongTime) * currentPrecision * 0.5f;
 
         // 라인 기준 회전 ↔ 총기 기준 회전 동기화
         aimLineTransform.localRotation = Quaternion.Euler(0f, 0f, aimAngle);
         gunPoint.localRotation = aimLineTransform.localRotation;
 
         Vector3 startPos = gunPoint.position + aimLineTransform.up * aimLineOffset;
-        Vector3 endPos = startPos + aimLineTransform.up * aimLineDistance;
+        Vector3 endPos = startPos + aimLineTransform.up * currentAccuracy;
 
         aimLineRenderer.SetPosition(0, startPos);
         aimLineRenderer.SetPosition(1, endPos);
@@ -167,16 +185,19 @@ public class PlayerAimController : MonoBehaviour
         leftLineRenderer.transform.position = gunPoint.position;
         rightLineRenderer.transform.position = gunPoint.position;
 
-        float leftRad = (currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
-        float rightRad = (-currentPingPongAngle * 0.5f + 90f) * Mathf.Deg2Rad;
+        float leftRad = (currentPrecision * 0.5f + 90f) * Mathf.Deg2Rad;
+        float rightRad = (-currentPrecision * 0.5f + 90f) * Mathf.Deg2Rad;
 
         Vector2 leftDir = new(Mathf.Cos(leftRad), Mathf.Sin(leftRad));
         Vector2 rightDir = new(Mathf.Cos(rightRad), Mathf.Sin(rightRad));
 
         Vector3 leftStartPos = (Vector3)(leftDir * sideLineOffset);
         Vector3 rightStartPos = (Vector3)(rightDir * sideLineOffset);
-        Vector3 leftEndPos = (Vector3)(leftDir * (sideLineOffset + sideLineDistance));
-        Vector3 rightEndPos = (Vector3)(rightDir * (sideLineOffset + sideLineDistance));
+
+        float sideAccuracy = currentAccuracy - (sideLineOffset - aimLineOffset);
+
+        Vector3 leftEndPos = (Vector3)(leftDir * (sideLineOffset + sideAccuracy));
+        Vector3 rightEndPos = (Vector3)(rightDir * (sideLineOffset + sideAccuracy));
 
         leftLineRenderer.SetPosition(0, leftStartPos);
         leftLineRenderer.SetPosition(1, leftEndPos);

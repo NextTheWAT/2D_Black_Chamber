@@ -5,7 +5,8 @@ using System.Linq;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.InputSystem; // F키 입력 읽기용
-using System.Collections; // ⬅️ 코루틴 사용을 위해 추가
+using System.Collections;
+using Esper.Freeloader; // ⬅️ 코루틴 사용을 위해 추가
 
 // =============================
 // ▶ 진행 플래그 유틸 (PlayerPrefs)
@@ -302,7 +303,8 @@ public class StageSelectDialogueUI : UIBase
         PlayerPrefs.SetString("LastStage", sceneName);
         PlayerPrefs.Save();
 
-        LoadingCanvas.LoadScene(sceneName);
+        //LoadingCanvas.LoadScene(sceneName);
+        LoadingScreen.Instance.Load(sceneName);
     }
 
     /// <summary>

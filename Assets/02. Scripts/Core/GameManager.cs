@@ -54,7 +54,6 @@ public class GameManager : Singleton<GameManager>
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
-        LoadingCanvas.OnLoading += OnLoading;
         UIManager.Instance.OnUIActiveChanged += OnUIActiveChanged;
     }
 
@@ -62,7 +61,6 @@ public class GameManager : Singleton<GameManager>
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        LoadingCanvas.OnLoading -= OnLoading;
         UIManager.Instance.OnUIActiveChanged -= OnUIActiveChanged;
     }
 
