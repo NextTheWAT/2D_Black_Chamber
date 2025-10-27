@@ -16,10 +16,12 @@ public class NoiseManager : Singleton<NoiseManager>
     [SerializeField] private float walkNoise = 22f; // 걷기 소음
     [SerializeField] private float runNoise = 25f; // 달리기 소음
     [SerializeField] private float bulletHitNoise = 25f; // 총알 충돌 소음
+    [SerializeField] private float doorNoise = 23f; // 문 소음
 
     public float WalkNoise => walkNoise;
     public float RunNoise => runNoise;
     public float BulletHitNoise => bulletHitNoise;
+    public float DoorNoise => doorNoise;
 
     [Header("Noise Threshold")]
     [SerializeField] private float combatThreshold = 30f;
