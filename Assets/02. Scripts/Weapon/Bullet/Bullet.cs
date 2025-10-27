@@ -80,7 +80,7 @@ public class Bullet : MonoBehaviour
         {
             HandleObstacleHit(obstacleHit);
             obstacleHit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
-            NoiseManager.Instance.EmitNoise(transform, obstacleHit.point + obstacleHit.normal * .1f, NoiseManager.Instance.BulletHitNoise); // 총알 충돌 소음 발생
+            NoiseManager.Instance.EmitNoise(transform, obstacleHit.point + obstacleHit.normal * .1f, NoiseManager.Instance.BulletHitNoiseData); // 총알 충돌 소음 발생
             return;
         }
     }
