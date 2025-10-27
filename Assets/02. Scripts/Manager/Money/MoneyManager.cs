@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 public class MoneyManager : Singleton<MoneyManager>
 {
@@ -11,11 +12,15 @@ public class MoneyManager : Singleton<MoneyManager>
 
     public UnityEvent OnChanged = new UnityEvent();
 
+    [SerializeField] private TMP_Text balanceText;
+
     private void Awake()
     {
         // 첫 씬에서만 적용하도록 단순 처리 (원한다면 저장/로드로 대체)
         if (balance == 0 && startingBalance > 0)
             Set(startingBalance);
+
+        UpdateUI();
     }
 
     public void Set(int amount)
@@ -38,5 +43,11 @@ public class MoneyManager : Singleton<MoneyManager>
         balance -= cost;
         OnChanged.Invoke();
         return true;
+    }
+
+    private void UpdateUI()
+    {
+        if (balanceText != null)
+            balanceText.text = balance.ToString();
     }
 }
