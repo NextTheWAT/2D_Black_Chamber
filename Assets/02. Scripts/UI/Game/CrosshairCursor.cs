@@ -1,6 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using System.Collections;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class CrosshairCursor : MonoBehaviour
 {
@@ -14,6 +16,14 @@ public class CrosshairCursor : MonoBehaviour
 
     private RectTransform rect;
     private RectTransform canvasRect;
+
+    public GameObject reload;
+    [SerializeField] private float reloadDuration;
+
+    private void Start()
+    {
+        GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterAnimationController>().nowcrosshairCursor = this;
+    }
 
     private void Awake()
     {
@@ -63,4 +73,22 @@ public class CrosshairCursor : MonoBehaviour
         rightBar.rectTransform.anchoredPosition = new Vector2(delta, 0);
     }
 
+    public IEnumerator ReloadBlinkRoutine() //¿Á¿Â¿¸ 
+    {
+        reload.SetActive(false);
+        SetCrosshairVisible(false);
+        yield return new WaitForSeconds(0.1f);
+        reload.SetActive(true);
+        yield return new WaitForSeconds(1);
+        reload.SetActive(false);
+        SetCrosshairVisible(true);
+    }
+
+    private void SetCrosshairVisible(bool visible)
+    {
+        upBar.enabled = visible;
+        downBar.enabled = visible;
+        leftBar.enabled = visible;
+        rightBar.enabled = visible;
+    }
 }
