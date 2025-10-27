@@ -79,6 +79,7 @@ public class Bullet : MonoBehaviour
         if (TryRaycastHit(obstacleFilter, out RaycastHit2D obstacleHit))
         {
             HandleObstacleHit(obstacleHit);
+            obstacleHit.collider.GetComponent<WallHitEffects>()?.ReceiveHit();
             obstacleHit.collider.GetComponent<IDamageable>()?.TakeDamage(dmg);
             NoiseManager.Instance.EmitNoise(transform, obstacleHit.point + obstacleHit.normal * .1f, NoiseManager.Instance.BulletHitNoiseData); // 총알 충돌 소음 발생
             return;
@@ -90,6 +91,7 @@ public class Bullet : MonoBehaviour
         RaycastHit2D[] results = new RaycastHit2D[1];
         int count = Physics2D.Linecast(previousPos, transform.position, filter, results);
         hit = results[0];
+        if (count > 0 && hit.collider != null && hit.collider.gameObject.layer == ignoreLayer) return false;
         return count > 0 && hit.collider != null;
     }
 

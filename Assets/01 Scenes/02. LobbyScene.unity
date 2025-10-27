@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 1418655148552897180, guid: 7f1362c9ef33c2d49bf8ea310f993216, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3998474065936841431, guid: 7f1362c9ef33c2d49bf8ea310f993216, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5898,7 +5902,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e0f994779bbc55449dc17f999c54b49, type: 3}
---- !u!43 &933768365
+--- !u!43 &865495208
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
