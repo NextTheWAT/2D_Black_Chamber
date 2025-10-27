@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class CrosshairCursor : MonoBehaviour
 {
@@ -17,12 +16,22 @@ public class CrosshairCursor : MonoBehaviour
     private RectTransform rect;
     private RectTransform canvasRect;
 
-    public GameObject reload;
-   
+    [Header("재장전 UI")]
+    public GameObject reload;                 // 재장전 UI 루트
+    public Image reloadFillAmount;            // Type=Filled 인 Image
+    public float reloadFillDuration = 2f;     // 초 단위
+    [SerializeField] private bool useUnscaledTime = false;
+
+    private Coroutine reloadCR;
 
     private void Start()
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterAnimationController>().nowcrosshairCursor = this;
+        GameObject.FindGameObjectWithTag("Player")
+            .GetComponent<CharacterAnimationController>().nowcrosshairCursor = this;
+
+        // 안전장치: Type이 Filled가 아니면 강제로 전환
+        if (reloadFillAmount != null && reloadFillAmount.type != Image.Type.Filled)
+            reloadFillAmount.type = Image.Type.Filled;
     }
 
     private void Awake()
@@ -50,6 +59,48 @@ public class CrosshairCursor : MonoBehaviour
         // UpdateCrosshairSpread();
     }
 
+    // ----- 공개 API: 재장전 UI 시작/중단 -----
+    public void PlayReloadUI(float durationSeconds)
+    {
+        if (reloadCR != null) StopCoroutine(reloadCR);
+        reloadCR = StartCoroutine(Co_ReloadFill(Mathf.Max(0.0001f, durationSeconds)));
+    }
+
+    public void PlayReloadUI() => PlayReloadUI(reloadFillDuration);
+
+    public void StopReloadUI()
+    {
+        if (reloadCR != null) StopCoroutine(reloadCR);
+        reloadCR = null;
+        if (reloadFillAmount) reloadFillAmount.fillAmount = 0f;
+        if (reload) reload.SetActive(false);
+        SetCrosshairVisible(true);
+    }
+    // ---------------------------------------
+
+    private IEnumerator Co_ReloadFill(float duration)
+    {
+        // 준비
+        if (reloadFillAmount) reloadFillAmount.fillAmount = 0f;
+        if (reload) reload.SetActive(true);
+        SetCrosshairVisible(false);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            if (reloadFillAmount) reloadFillAmount.fillAmount = t;
+            yield return null;
+        }
+
+        // 종료
+        if (reloadFillAmount) reloadFillAmount.fillAmount = 1f;
+        if (reload) reload.SetActive(false);
+        SetCrosshairVisible(true);
+        reloadCR = null;
+    }
+
     public void UpdateCrosshairSpread()
     {
         if (WeaponManager.Instance.CurrentWeapon == null) return;
@@ -71,18 +122,6 @@ public class CrosshairCursor : MonoBehaviour
         downBar.rectTransform.anchoredPosition = new Vector2(0, -delta);
         leftBar.rectTransform.anchoredPosition = new Vector2(-delta, 0);
         rightBar.rectTransform.anchoredPosition = new Vector2(delta, 0);
-    }
-
-    public IEnumerator ReloadBlinkRoutine() //재장전 
-    {
-        reload.SetActive(false);
-        SetCrosshairVisible(false);
-        yield return new WaitForSeconds(0.1f);
-        reload.SetActive(true);
-        yield return new WaitForSeconds(1);
-        reload.SetActive(false);
-        SetCrosshairVisible(true);
-
     }
 
     private void SetCrosshairVisible(bool visible)
