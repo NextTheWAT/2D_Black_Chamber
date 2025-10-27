@@ -108,12 +108,12 @@ public class PlayerAimController : MonoBehaviour
         Color gaugeColor = Color.Lerp(gaugeArcDrawer.GetColor(), targetColor, Time.deltaTime * gaugeColorTransitionSpeed);
 
         gaugeArcDrawer.transform.position = gunPoint.position;
-        gaugeArcDrawer.DrawArc(currentPrecision * aimingGauge);
+        gaugeArcDrawer.DrawArc(precision * aimingGauge);
         gaugeArcDrawer.SetAlpha(aimingGauge * maxAlpha);
         gaugeArcDrawer.SetColor(gaugeColor);
 
         backgroundArcDrawer.transform.position = gunPoint.position;
-        backgroundArcDrawer.DrawArc(currentPrecision);
+        backgroundArcDrawer.DrawArc(precision);
     }
 
     void UpdatePenalty()
