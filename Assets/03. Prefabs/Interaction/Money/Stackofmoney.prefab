@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3049757658708422649}
   - component: {fileID: 8021456474531685076}
   m_Layer: 0
-  m_Name: coin
+  m_Name: Stackofmoney
   m_TagString: Interaction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -42
-  m_Sprite: {fileID: 982507648, guid: a54322673ce19e64e84a9da490d928c1, type: 3}
+  m_Sprite: {fileID: 412658991, guid: a54322673ce19e64e84a9da490d928c1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adc30e8d3c934d4b8d3cdb00f1c8f35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: "\uB3D9\uC804"
-  moneyType: 0
+  itemName: "\uB3C8\uC790\uB8E8"
+  moneyType: 1
 --- !u!58 &8021456474531685076
 CircleCollider2D:
   m_ObjectHideFlags: 0
