@@ -1,3 +1,4 @@
+using Esper.Freeloader;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -73,7 +74,8 @@ public class ExitPortal : MonoBehaviour
             // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
             PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
             PlayerPrefs.Save();
-            LoadingCanvas.LoadScene(loobySceneName);
+            //LoadingCanvas.LoadScene(loobySceneName);
+            LoadingScreen.Instance.Load(loobySceneName);
             //SceneManager.LoadScene(loobySceneName);
             return;
         }

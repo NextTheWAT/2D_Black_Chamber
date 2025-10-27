@@ -30,14 +30,9 @@ MonoBehaviour:
   enableBackgroundZoom: 1
   showTips: 1
   tips:
-  - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-    irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-    nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
-    qui officia deserunt mollit anim id est laborum.
-  - This is the second tip!
+  - "\uB85C\uB529 \uD654\uBA74 \uD14C\uC2A4\uD2B8"
+  - "\uD558\uC774\uD558\uC774"
   tipsTitle: Tip
   tipDisplayLength: 6
   requireInputToContinue: 1
-  continueText: Continue
+  continueText: "\uBC84\uD2BC \uC544\uBB34\uAC70\uB098 \uB204\uB974\uC1FC"

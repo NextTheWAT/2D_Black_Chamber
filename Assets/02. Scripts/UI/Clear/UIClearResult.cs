@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Esper.Freeloader;
 
 public class UIClearResult : UIBase
 {
@@ -88,7 +89,8 @@ public class UIClearResult : UIBase
 
         try
         {
-            LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
+            LoadingScreen.Instance.Load(lobbySceneName);
+            //LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
             //SceneManager.LoadScene(lobbySceneName);
             Debug.Log("[UIClearResult] LoadScene(lobby) 호출 완료");
         }
@@ -120,7 +122,8 @@ public class UIClearResult : UIBase
 
         try
         {
-            LoadingCanvas.LoadScene(lastStage); //이걸로 교체
+            LoadingScreen.Instance.Load(lastStage);
+            //LoadingCanvas.LoadScene(lastStage); //이걸로 교체
             //SceneManager.LoadScene(lastStage);
             Debug.Log("[UIClearResult] LoadScene(lastStage) 호출 완료");
         }
