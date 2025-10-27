@@ -309,10 +309,11 @@
       }
     },
     "com.unity.uiextensions": {
-      "version": "file:C:/Users/김유경/Desktop/UnityUIExtensions/com.unity.uiextensions-release",
+      "version": "https://github.com/Unity-UI-Extensions/com.unity.uiextensions.git",
       "depth": 0,
-      "source": "local",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "35b9985bf238cde2bad9c8e107c686ba3194471c"
     },
     "com.unity.visualscripting": {
       "version": "1.9.4",
