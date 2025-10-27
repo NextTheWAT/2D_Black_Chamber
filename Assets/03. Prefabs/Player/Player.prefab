@@ -1005,6 +1005,7 @@ GameObject:
   - component: {fileID: 2059217959560316814}
   - component: {fileID: 3943578476050053338}
   - component: {fileID: 3995217826896878850}
+  - component: {fileID: 5736203384528477055}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1103,7 +1104,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: -302870
+  m_InstanceId: 183978
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1466,6 +1467,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  useInvincible: 1
+  invincibleDuration: 1
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -1487,6 +1490,36 @@ MonoBehaviour:
       - m_Target: {fileID: -2828761219562335248}
         m_TargetAssemblyTypeName: PlayerHealthEventHandler, Assembly-CSharp
         m_MethodName: OnPlayerDie
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInvincibleStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5736203384528477055}
+        m_TargetAssemblyTypeName: SpriteColorFader, Assembly-CSharp
+        m_MethodName: StartFade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnInvincibleEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5736203384528477055}
+        m_TargetAssemblyTypeName: SpriteColorFader, Assembly-CSharp
+        m_MethodName: StopFade
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1622,6 +1655,21 @@ MonoBehaviour:
   DrawExtraCastLines: 0
   DrawHiderSamples: 0
   DebugLogHiderBlockerName: 0
+--- !u!114 &5736203384528477055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9379849defedaf48a4d0d74ee068d3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startColor: {r: 1, g: 0, b: 0, a: 0.78431374}
+  endColor: {r: 1, g: 1, b: 1, a: 1}
+  fadeDuration: 1
 --- !u!1 &6390167608740650960
 GameObject:
   m_ObjectHideFlags: 0
