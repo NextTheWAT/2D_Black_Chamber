@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8345858996110689560}
   - component: {fileID: 2128805216591843203}
-  - component: {fileID: 3049757658708422649}
   - component: {fileID: 8021456474531685076}
+  - component: {fileID: -6899488731323512123}
   m_Layer: 0
   m_Name: Stackofmoney
   m_TagString: Interaction
@@ -86,20 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &3049757658708422649
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8683426475694900639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9adc30e8d3c934d4b8d3cdb00f1c8f35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemName: "\uB3C8\uC790\uB8E8"
-  moneyType: 1
 --- !u!58 &8021456474531685076
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -135,3 +121,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-6899488731323512123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8683426475694900639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9beae23bacd68d4f95f382ded26d7df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  money: 0
