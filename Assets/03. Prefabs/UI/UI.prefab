@@ -29457,6 +29457,8 @@ MonoBehaviour:
     canvas: {fileID: 6995684981375265962}
   - key: 6
     canvas: {fileID: 4944688525945043361}
+  - key: 3
+    canvas: {fileID: 113735056483914566}
   alwaysOnCanvases:
   - {fileID: 774282611888781256}
 --- !u!1 &7867667310350214350
