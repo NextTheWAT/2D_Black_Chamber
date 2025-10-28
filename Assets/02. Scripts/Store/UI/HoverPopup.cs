@@ -28,7 +28,7 @@ public class HoverPopup : MonoBehaviour
 
     public void Show(GunData gun)
     {
-        if (!gun) { gameObject.SetActive(false); return; }
+        if (gun == null) { gameObject.SetActive(false); return; }
 
         // 표시 이름: weaponName → displayName(구스펙) → ScriptableObject name
         weaponNameText.text = GetDisplayName(gun);
@@ -87,7 +87,7 @@ public class HoverPopup : MonoBehaviour
     private static string GetDisplayName(GunData d)
     {
         var n = ReadStr(d, "weaponName") ?? ReadStr(d, "displayName");
-        return string.IsNullOrEmpty(n) ? d.name : n;
+        return string.IsNullOrEmpty(n) ? d.weaponName : n;
     }
 
     private static string ReadStr(object obj, string field)

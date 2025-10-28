@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Constants;
 
 /// <summary>
 /// Armory(무기방) 전용 컨트롤러.
@@ -18,15 +17,15 @@ public class ArmoryController : MonoBehaviour
     /// <summary>스텔스 슬롯에 무기 지정(저장)</summary>
     public void SelectStealth(GunData data)
     {
-        if (!Profile || !data) return;
-        string key = data.name;                  // ← id 대신 name 사용
+        if (!Profile || data == null) return;
+        string key = data.weaponName;                  // ← id 대신 name 사용
         Profile.SetStealth(key, save: true);
     }
 
     public void SelectCombat(GunData data)
     {
-        if (!Profile || !data) return;
-        string key = data.name;                  // ← id 대신 name 사용
+        if (!Profile || data == null) return;
+        string key = data.weaponName;                  // ← id 대신 name 사용
         Profile.SetCombat(key, save: true);
     }
 

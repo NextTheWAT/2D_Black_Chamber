@@ -14,22 +14,22 @@ public class WeaponCatalog : ScriptableObject
     public IEnumerable<GunData> FilterByTag(GunData.PhaseTag tag)
     {
         if (tag == GunData.PhaseTag.Any) return All;
-        return All.Where(d => d.phaseTag == tag || d.phaseTag == GunData.PhaseTag.Any);
+        return All.Where(d => d.prefabInfo.phaseTag == tag || d.prefabInfo.phaseTag == GunData.PhaseTag.Any);
     }
 
     public GunData FindByName(string assetName)
-        => All.FirstOrDefault(d => d && d.name == assetName);
+        => All.FirstOrDefault(d => d != null && d.weaponName == assetName);
 
     public GunData FindByDisplayName(string display)
-        => All.FirstOrDefault(d => d && GetDisplayName(d) == display);
+        => All.FirstOrDefault(d => d != null && GetDisplayName(d) == display);
 
     public static string GetDisplayName(GunData d)
     {
-        if (!d) return "";
+        if (d == null) return "";
         var t = d.GetType();
         var f1 = t.GetField("weaponName", BindingFlags.Instance | BindingFlags.Public);
         var f2 = t.GetField("displayName", BindingFlags.Instance | BindingFlags.Public); // ±¸½ºÆå
         string val = f1?.GetValue(d) as string ?? f2?.GetValue(d) as string;
-        return string.IsNullOrEmpty(val) ? d.name : val;
+        return string.IsNullOrEmpty(val) ? d.weaponName : val;
     }
 }

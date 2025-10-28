@@ -80,8 +80,18 @@ public class FirebaseManager : Singleton<FirebaseManager>
             isGunDataLoaded = true;
             GunDataLoaded?.Invoke();
 
+            // GunPrefabInfo 불러오기
             foreach (var kvp in gunDataDict)
+            {
+                GunPrefabInfo info = Resources.Load<GunPrefabInfo>($"GunPrefabInfo/{kvp.Value.gunPrefabInfoName}");
+
+                if (info != null)
+                    kvp.Value.prefabInfo = info;
+                else
+                    ConditionalLogger.LogError($"GunPrefabInfo '{kvp.Value.gunPrefabInfoName}' not found in Resources/GunPrefabInfo/");
+
                 ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.weaponName}");
+            }
         });
     }
 

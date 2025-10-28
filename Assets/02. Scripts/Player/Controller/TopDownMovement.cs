@@ -112,7 +112,7 @@ public class TopDownMovement : MonoBehaviour
         // 8) 무기 반동 처리
         Shooter shooter = WeaponManager.Instance.CurrentWeapon;
 
-        if (shooter && shooter.gunData)
+        if (shooter && shooter.gunData != null)
             shooter.CurrentSpread += curVel.magnitude * Time.fixedDeltaTime;
     }
 

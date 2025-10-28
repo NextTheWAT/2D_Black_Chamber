@@ -41,7 +41,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             clickButton.onClick.RemoveAllListeners();
             clickButton.onClick.AddListener(() =>
             {
-                if (purchasePopup && gun) purchasePopup.Show(gun);
+                if (purchasePopup && gun != null) purchasePopup.Show(gun);
             });
         }
     }
