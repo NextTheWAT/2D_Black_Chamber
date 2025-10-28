@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 26117549433228921}
   - component: {fileID: 6561513300129131149}
   - component: {fileID: 7333647792130928584}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: SteelDoor.Trigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8247351586227046266}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: SteelDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
