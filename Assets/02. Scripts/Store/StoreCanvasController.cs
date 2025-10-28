@@ -26,14 +26,28 @@ public class StoreCanvasController : MonoBehaviour
     {
         MoneyManager.Instance.OnMoneyChanged.AddListener(RefreshMoney);
         WeaponInventory.Instance.OnInventoryChanged.AddListener(RefreshGrid);
-        RefreshMoney();
-        RefreshGrid();
+
+        if (FirebaseManager.Instance.IsGunDataLoaded)
+        {
+            RefreshMoney();
+            RefreshGrid();
+        }
+        else
+        {
+            FirebaseManager.Instance.GunDataLoaded += RefreshMoney;
+            FirebaseManager.Instance.GunDataLoaded += RefreshGrid;
+        }
     }
 
     private void OnDisable()
     {
         if (MoneyManager.Instance) MoneyManager.Instance.OnMoneyChanged.RemoveListener(RefreshMoney);
         if (WeaponInventory.Instance) WeaponInventory.Instance.OnInventoryChanged.RemoveListener(RefreshGrid);
+        if (FirebaseManager.Instance)
+        {
+            FirebaseManager.Instance.GunDataLoaded -= RefreshMoney;
+            FirebaseManager.Instance.GunDataLoaded -= RefreshGrid;
+        }
     }
 
     private void RefreshMoney()

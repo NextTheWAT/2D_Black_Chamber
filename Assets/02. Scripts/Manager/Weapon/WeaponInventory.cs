@@ -10,7 +10,8 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public WeaponCatalog catalog;
 
     [Header("Starter Owned")]
-    [SerializeField] private List<GunData> starterOwned = new();
+    [SerializeField] private List<int> starterOwnedId = new();
+    // [SerializeField] private List<GunData> starterOwned = new();
 
     [Header("Runtime Owned (ReadOnly)")]
     [SerializeField] private List<GunData> owned = new();
@@ -20,13 +21,35 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public UnityEvent OnInventoryChanged = new();
     public UnityEvent<GunData> OnItemBought = new();
 
-    private void Start() => RebuildOwnedFromStarters();
+    private void OnEnable()
+    {
+        if (FirebaseManager.Instance.IsGunDataLoaded)
+            RebuildOwnedFromStarters();
+        else
+            FirebaseManager.Instance.GunDataLoaded += RebuildOwnedFromStarters;
+    }
+    void OnDisable()
+    {
+        if (GameManager.AppIsQuitting) return;
+        FirebaseManager.Instance.GunDataLoaded -= RebuildOwnedFromStarters;
+    }
+
 
     public void RebuildOwnedFromStarters()
     {
+        catalog.Initialize();
+
         owned.Clear();
 
-        foreach (var d in starterOwned) if (d != null) AddOwnedSilently(d);
+        foreach (var id in starterOwnedId)
+        {
+            GunData gunData = FirebaseManager.Instance.GetGunData(id);
+            if (gunData != null)
+                AddOwnedSilently(gunData);
+        }
+
+        // foreach (var d in starterOwned) if (d != null) AddOwnedSilently(d);
+
         if (catalog)
         {
             foreach (var d in catalog.All)

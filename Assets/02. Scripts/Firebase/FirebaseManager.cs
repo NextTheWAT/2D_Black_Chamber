@@ -72,13 +72,13 @@ public class FirebaseManager : Singleton<FirebaseManager>
         });
     }
 
+    public GunData GetGunData(int id) => gunDataDict[id];
+
     public void UpdateGunDatas()
     {
         RestClient.Get(gunDataURL).Then(response =>
         {
             gunDataDict = JsonConvert.DeserializeObject<Dictionary<int, GunData>>(response.Text);
-            isGunDataLoaded = true;
-            GunDataLoaded?.Invoke();
 
             // GunPrefabInfo 불러오기
             foreach (var kvp in gunDataDict)
@@ -90,8 +90,11 @@ public class FirebaseManager : Singleton<FirebaseManager>
                 else
                     ConditionalLogger.LogError($"GunPrefabInfo '{kvp.Value.gunPrefabInfoName}' not found in Resources/GunPrefabInfo/");
 
-                ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.weaponName}");
+                ConditionalLogger.Log($"ID: {kvp.Key}, Name: {kvp.Value.weaponName}, SubType {kvp.Value.subType} GunPrefabInfo {kvp.Value.gunPrefabInfoName}");
             }
+
+            isGunDataLoaded = true;
+            GunDataLoaded?.Invoke();
         });
     }
 

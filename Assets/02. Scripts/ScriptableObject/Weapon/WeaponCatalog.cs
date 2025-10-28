@@ -7,7 +7,18 @@ using System.Reflection;
 public class WeaponCatalog : ScriptableObject
 {
     [Tooltip("상점/무기방 등에 노출할 GunData 목록")]
-    public List<GunData> items = new List<GunData>();
+    public int[] gunDataIds;
+    private List<GunData> items = new();
+
+    public void Initialize()
+    {
+        items.Clear();
+        foreach (var id in gunDataIds)
+        {
+            var data = FirebaseManager.Instance.GetGunData(id);
+            items.Add(data);
+        }
+    }
 
     public IEnumerable<GunData> All => items.Where(d => d != null);
 
