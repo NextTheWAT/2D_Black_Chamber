@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static UnityEngine.LightProbeProxyVolume;
 
 public class UIHUDSlots : MonoBehaviour
 {
@@ -23,9 +24,13 @@ public class UIHUDSlots : MonoBehaviour
     [SerializeField] private Vector3 selectedScale = new Vector3(1.15f, 1.15f, 1f);
     [SerializeField] private Vector3 deselectedScale = new Vector3(0.9f, 0.9f, 1f);
 
+    [Header("Money Display")]
+    [SerializeField] private TMP_Text moneyText;
+
     private readonly List<GameObject> _hpSlots = new();
     private Health _playerHealth;
     private PlayerConditionManager _staminaMgr;
+
 
     private void Awake()
     {
@@ -33,6 +38,11 @@ public class UIHUDSlots : MonoBehaviour
         if (player) _playerHealth = player.GetComponent<Health>();
 
         _staminaMgr = PlayerConditionManager.Instance;
+
+        if(MoneyManager.Instance != null)
+        {
+            RefreshMoney();
+        }
     }
 
     private void OnEnable()
@@ -43,6 +53,8 @@ public class UIHUDSlots : MonoBehaviour
             _playerHealth.OnHealthChanged.AddListener(OnHealthChanged);
             OnHealthChanged(_playerHealth.CurrentHealth, _playerHealth.MaxHealth);
         }
+        // 머니 이벤트 구독
+        MoneyManager.Instance.OnMoneyChanged.AddListener(RefreshMoney);
 
         // 스태미나 이벤트 구독
         if (_staminaMgr)
@@ -72,6 +84,8 @@ public class UIHUDSlots : MonoBehaviour
         if (_playerHealth)
             _playerHealth.OnHealthChanged.RemoveListener(OnHealthChanged);
 
+        if (MoneyManager.Instance) MoneyManager.Instance.OnMoneyChanged.RemoveListener(RefreshMoney);
+
         if (_staminaMgr)
             _staminaMgr.OnStamina01Changed -= OnStaminaChanged01;
 
@@ -83,6 +97,10 @@ public class UIHUDSlots : MonoBehaviour
 
         if (GameManager.Instance)
             GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
+    }
+    private void RefreshMoney()
+    {
+        if (moneyText) moneyText.text = $"$ {MoneyManager.Instance.Balance:N0}";
     }
 
     private void OnHealthChanged(int cur, int max)

@@ -10,7 +10,7 @@ public class MoneyManager : Singleton<MoneyManager>
     [SerializeField] private int balance = 0;
     public int Balance => balance;
 
-    public UnityEvent OnChanged = new UnityEvent();
+    public UnityEvent OnMoneyChanged = new UnityEvent();
 
     [SerializeField] private TMP_Text balanceText;
 
@@ -22,18 +22,26 @@ public class MoneyManager : Singleton<MoneyManager>
 
         UpdateUI();
     }
+    private void OnEnable()
+    {
+        OnMoneyChanged.AddListener(UpdateUI);
+    }
+    private void OnDisable()
+    {
+        OnMoneyChanged.RemoveListener(UpdateUI);
+    }
 
     public void Set(int amount)
     {
         balance = Mathf.Max(0, amount);
-        OnChanged.Invoke();
+        OnMoneyChanged.Invoke();
     }
 
     public void Add(int amount)
     {
         if (amount == 0) return;
         balance = Mathf.Max(0, balance + amount);
-        OnChanged.Invoke();
+        OnMoneyChanged.Invoke();
     }
 
     public bool TrySpend(int cost)
@@ -41,7 +49,7 @@ public class MoneyManager : Singleton<MoneyManager>
         if (cost <= 0) return true;
         if (balance < cost) return false;
         balance -= cost;
-        OnChanged.Invoke();
+        OnMoneyChanged.Invoke();
         return true;
     }
 

@@ -24,7 +24,7 @@ public class StoreCanvasController : MonoBehaviour
 
     private void OnEnable()
     {
-        MoneyManager.Instance.OnChanged.AddListener(RefreshMoney);
+        MoneyManager.Instance.OnMoneyChanged.AddListener(RefreshMoney);
         WeaponInventory.Instance.OnInventoryChanged.AddListener(RefreshGrid);
         RefreshMoney();
         RefreshGrid();
@@ -32,7 +32,7 @@ public class StoreCanvasController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (MoneyManager.Instance) MoneyManager.Instance.OnChanged.RemoveListener(RefreshMoney);
+        if (MoneyManager.Instance) MoneyManager.Instance.OnMoneyChanged.RemoveListener(RefreshMoney);
         if (WeaponInventory.Instance) WeaponInventory.Instance.OnInventoryChanged.RemoveListener(RefreshGrid);
     }
 

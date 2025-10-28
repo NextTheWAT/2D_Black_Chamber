@@ -5058,6 +5058,7 @@ MonoBehaviour:
   ammoText: {fileID: 3986576744510390965}
   selectedScale: {x: 1.15, y: 1.15, z: 1}
   deselectedScale: {x: 0.9, y: 0.9, z: 1}
+  moneyText: {fileID: 7869785279910989604}
 --- !u!1 &1276008573701499040
 GameObject:
   m_ObjectHideFlags: 0
@@ -16130,7 +16131,7 @@ GameObject:
   - component: {fileID: 1103744784458648681}
   - component: {fileID: 7869785279910989604}
   m_Layer: 5
-  m_Name: TotalText
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
