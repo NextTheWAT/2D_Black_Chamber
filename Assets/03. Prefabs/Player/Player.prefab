@@ -1037,6 +1037,7 @@ Transform:
   - {fileID: 2948130965652801514}
   - {fileID: 147592950876266119}
   - {fileID: 6124668149114796956}
+  - {fileID: 7158771788847273885}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &34834167898860960
@@ -1104,7 +1105,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 240840
+  m_InstanceId: 253614
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1898,6 +1899,66 @@ MonoBehaviour:
   fillColor: {r: 1, g: 1, b: 1, a: 1}
   textureSize: 256
   offset: -90
+--- !u!1 &7432136204357381426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7158771788847273885}
+  - component: {fileID: 3646903222990579205}
+  m_Layer: 6
+  m_Name: Laser
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7158771788847273885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432136204357381426}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3507418152336651286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3646903222990579205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432136204357381426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17c829858f6aaea408d3ad8cc2b3159f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laserColor: {r: 1, g: 0, b: 0, a: 1}
+  startAlpha: 1
+  endAlpha: 0.01
+  tintDot: 1
+  use2D: 1
+  forwardAxis: 1
+  offsetScale: 1
+  maxDistance: 30
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  useSphereCast: 0
+  sphereRadius: 0.02
+  line: {fileID: 0}
+  lineWidth: 0.02
+  dotPrefab: {fileID: 8149336977183586442, guid: cd85a88a6ea844c419ee99286764cbb3, type: 3}
 --- !u!1 &8816509938101078650
 GameObject:
   m_ObjectHideFlags: 0
