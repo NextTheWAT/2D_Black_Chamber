@@ -1105,7 +1105,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 253614
+  m_InstanceId: 99364
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1953,7 +1953,7 @@ MonoBehaviour:
   maxDistance: 30
   hitMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 125568
   useSphereCast: 0
   sphereRadius: 0.02
   line: {fileID: 0}
