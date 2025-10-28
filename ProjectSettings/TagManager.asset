@@ -2,29 +2,30 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags:
+  - Pickup
   - Enemy
-  - Interaction
-  - Door
+  - Obstacle
+  - Wall
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Environment
   - Water
   - UI
   - Player
   - Enemy
-  - Ground
-  - Wall
-  - Bullet
-  - AssassinTarget
-  - MiniMap
-  - ForeDesign
-  - BackDesign
-  - Door
-  - CCTV
+  - Pickups
+  - Projectiles
+  - Post-Processing
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -44,18 +45,5 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: LightMask
-    uniqueID: 3967303837
-    locked: 0
-  - name: Mask
-    uniqueID: 310911395
-    locked: 0
-  - name: Prop
-    uniqueID: 1669979877
-    locked: 0
-  - name: Character
-    uniqueID: 1941537719
-    locked: 0
-  - name: Effect
-    uniqueID: 1755473531
-    locked: 0
+  m_RenderingLayers:
+  - Default
