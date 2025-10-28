@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Obstacle
   - Interaction
   - Door
   layers:
@@ -19,7 +20,7 @@ TagManager:
   - Ground
   - Wall
   - Bullet
-  - AssassinTarget
+  - AssassingTarget
   - MiniMap
   - ForeDesign
   - BackDesign
@@ -43,19 +44,4 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: LightMask
-    uniqueID: 3967303837
-    locked: 0
-  - name: Mask
-    uniqueID: 310911395
-    locked: 0
-  - name: Prop
-    uniqueID: 1669979877
-    locked: 0
-  - name: Character
-    uniqueID: 1941537719
-    locked: 0
-  - name: Effect
-    uniqueID: 1755473531
     locked: 0

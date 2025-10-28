@@ -1,9 +1,9 @@
-using Proyecto26;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using UnityEngine.SceneManagement;
+using Proyecto26;
 
 public class FirebaseManager : Singleton<FirebaseManager>
 {
