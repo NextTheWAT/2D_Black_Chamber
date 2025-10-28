@@ -28,40 +28,52 @@ namespace FOW
             StartFade(0f);
         }
 
-        // 'OnReveal'은 '1'로 페이드 인을 시작합니다.
         protected override void OnReveal()
         {
-            StartFade(1f);
+            if (currentFadeCoroutine != null) StopCoroutine(currentFadeCoroutine);
+            SetAlphaInstant(1f);   // ← 바로 보이게
         }
 
         // 알파 값을 부드럽게 변화시키는 코루틴
         private IEnumerator FadeCoroutine(float targetAlpha)
         {
-            float time = 0;
+            // 대상 머티리얼 모으기 + 시작 알파 저장
+            var mats = new List<Material>();
+            var startAlphas = new List<float>();
 
-            // 숨기려는 오브젝트가 Material을 가지고 있어야 합니다.
-            foreach (Renderer renderer in ObjectsToHide)
+            foreach (var r in ObjectsToHide)
             {
-                if (renderer.material.HasProperty("_Color")) // 머티리얼이 'Color' 속성을 가지고 있는지 확인 (대부분의 Standard Shader에 있음)
+                if (!r) continue;
+                var m = r.material;              // 인스턴스 재질 (개별 페이드)
+                mats.Add(m);
+                startAlphas.Add(m.color.a);      // 시작 알파 스냅샷
+            }
+
+            float t = 0f;
+            while (t < fadeDuration)
+            {
+                float k = t / fadeDuration;
+                for (int i = 0; i < mats.Count; i++)
                 {
-                    Color startColor = renderer.material.color;
-                    Color targetColor = new Color(startColor.r, startColor.g, startColor.b, targetAlpha);
-
-                    while (time < fadeDuration)
-                    {
-                        // Lerp를 사용하여 시간 기반으로 부드럽게 색상(알파)을 변화시킵니다.
-                        renderer.material.color = Color.Lerp(startColor, targetColor, time / fadeDuration);
-                        time += Time.deltaTime;
-                        yield return null; // 다음 프레임까지 대기
-                    }
-
-                    // 최종적으로 목표 알파 값으로 설정하여 정확도를 보장합니다.
-                    renderer.material.color = targetColor;
+                    var m = mats[i];
+                    var c = m.color;
+                    m.color = new Color(c.r, c.g, c.b, Mathf.Lerp(startAlphas[i], targetAlpha, k));
                 }
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            // 최종값 스냅
+            for (int i = 0; i < mats.Count; i++)
+            {
+                var m = mats[i];
+                var c = m.color;
+                m.color = new Color(c.r, c.g, c.b, targetAlpha);
             }
 
             currentFadeCoroutine = null;
         }
+
 
 
         // 새로운 배열로 교체 시, 현재 상태에 맞춰 페이드 인/아웃을 시작합니다.
