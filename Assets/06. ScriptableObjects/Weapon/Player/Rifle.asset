@@ -41,7 +41,7 @@ MonoBehaviour:
   aimPrecision: 10
   aimStability: 4.5
   aimDistance: 100
-  hasLaser: 0
+  hasLaser: 1
   baseReloadTime: 2
   reloadSpeed: 1
   moveSpeedModifier: 1
