@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8503074384106895309}
   - component: {fileID: 3941748502758259237}
   - component: {fileID: 6336173493331675919}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Door.Trigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1396340612875567919}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
