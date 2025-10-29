@@ -18,5 +18,5 @@ MonoBehaviour:
   bulletPrefab: {fileID: 8908556986258763193, guid: e6199e5bc8a5ecc40b6bee74a672bcef, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
   upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
-  weaponSprite: {fileID: 21300000, guid: 75e1a408906239f459f14346452743bc, type: 3}
+  weaponSprite: {fileID: -592128650, guid: 75e1a408906239f459f14346452743bc, type: 3}
   firePointOffset: {x: 0.04, y: 1.09}
