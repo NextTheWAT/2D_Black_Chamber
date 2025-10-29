@@ -650,7 +650,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
-  gunId: 20010500
+  gunId: hg_jakarov_00
   shooter: {fileID: 3380604470911330412}
   returnPoint: {fileID: 0}
   bloodPrefab: {fileID: 3797701039655770728, guid: 1f9f7eee172efdc448c3dce89fb86626, type: 3}

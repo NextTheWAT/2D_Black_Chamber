@@ -1,37 +1,17 @@
-ï»¿using Constants;
-using System.Collections; // Coroutineì„ ìœ„í•´ ì¶”ê°€
+using Constants;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
-using TMPro; // TextMeshProUGUI ì‚¬ìš©ì„ ìœ„í•´ ì¶”ê°€
 
 public class Enemy : MonoBehaviour
 {
-    // 1. ScriptableObject ì°¸ì¡° í•„ë“œ ì¶”ê°€
-    [Header("Dialogue Data")]
-    [Tooltip("ëŒ€ì‚¬ ì„¤ì •ì´ í¬í•¨ëœ ScriptableObject íŒŒì¼")]
-    [SerializeField] private EnemyDialogueData dialogueDataAsset;
-
-    [Header("Dialogue UI Settings")]
-    [Tooltip("ëŒ€ì‚¬ ë²„ë¸” ì „ì²´ë¥¼ ê°ì‹¸ëŠ” GameObject (í‘œì‹œ/ìˆ¨ê¹€ìš©)")]
-    public GameObject DialogueBubble;
-
-    [Tooltip("ëŒ€ì‚¬ í…ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•  TextMeshProUGUI ì»´í¬ë„ŒíŠ¸")]
-    public TMPro.TextMeshProUGUI DialogueText;
-
-    [Tooltip("ëŒ€ì‚¬ í‘œì‹œ ì§€ì† ì‹œê°„")]
-    public float DialogueDuration = 3.0f;
-
-    // private EnemyDialogue _dialogueData; // <-- ì œê±°
-    private Coroutine _currentDialogueCoroutine;
-
     [Header("FSM")]
     [SerializeField] private int id = 1001001;
     [SerializeField] private NonCombatStateType nonCombatStateType;
     [SerializeField] private CombatStateType combatStateType;
     [SerializeField] private bool useCollisionEnter = true;
-    public bool investigateUseStartDelay = false; // ì¡°ì‚¬ ì‹œì‘ ì „ ëŒ€ê¸° ì‚¬ìš© ì—¬ë¶€
+    public bool investigateUseStartDelay = false; // Á¶»ç ½ÃÀÛ Àü ´ë±â »ç¿ë ¿©ºÎ
 
     private EnemyData data;
 
@@ -56,20 +36,22 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int startPatrolPointIndex;
 
     [Header("Attack")]
-    [SerializeField] private int gunId; // ì‚¬ìš© ë¬´ê¸° ID
+    [SerializeField] private string gunId; // »ç¿ë ¹«±â ID
     [SerializeField] private Shooter shooter;
 
     [Header("Return")]
     [SerializeField] private Transform returnPoint;
 
+
+    // === UI: Alert Icons ===
     private enum AlertIconState { None, Suspicious, Alert }
     [Header("VFX")]
     [SerializeField] private BloodDecal bloodPrefab;
 
     [Header("UI - Alert Icons")]
-    [SerializeField] private GameObject questionIcon;Â  Â  Â  // ? ì˜¤ë¸Œì íŠ¸ (ì• ë‹ˆë©”ì´ì…˜ í¬í•¨ ê°€ëŠ¥)
-    [SerializeField] private GameObject exclamationIcon; // ! ì˜¤ë¸Œì íŠ¸ (ì• ë‹ˆë©”ì´ì…˜ í¬í•¨ ê°€ëŠ¥)
-    [SerializeField] private float minIconShowTime = 0.12f; // ë„ˆë¬´ ê¹œë¹¡ì„ ë°©ì§€
+    [SerializeField] private GameObject questionIcon;     // ? ¿ÀºêÁ§Æ® (¾Ö´Ï¸ŞÀÌ¼Ç Æ÷ÇÔ °¡´É)
+    [SerializeField] private GameObject exclamationIcon;  // ! ¿ÀºêÁ§Æ® (¾Ö´Ï¸ŞÀÌ¼Ç Æ÷ÇÔ °¡´É)
+    [SerializeField] private float minIconShowTime = 0.12f; // ³Ê¹« ±ôºıÀÓ ¹æÁö
 
     private AlertIconState _iconState = AlertIconState.None;
     private float _lastIconChangeTime = -999f;
@@ -103,6 +85,7 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
+
     public Transform Target
     {
         get => target;
@@ -134,7 +117,7 @@ public class Enemy : MonoBehaviour
         {
             if (nearbyDeathTriggered)
             {
-                nearbyDeathTriggered = false; // ì½ëŠ” ìˆœê°„ ì†Œë¹„
+                nearbyDeathTriggered = false; // ÀĞ´Â ¼ø°£ ¼Òºñ
                 return true;
             }
             return nearbyDeathTriggered;
@@ -144,11 +127,11 @@ public class Enemy : MonoBehaviour
 
     public Health Health => health;
 
-    private Transform newFoundBody; // ìƒˆë¡œ ë°œê²¬í•œ ì‹œì²´
+    private Transform newFoundBody; // »õ·Î ¹ß°ßÇÑ ½ÃÃ¼
 
-    private HashSet<Transform> foundBodies; // ë°œê²¬í–ˆë˜ ì  ì‹œì²´ë“¤Â 
+    private HashSet<Transform> foundBodies; // ¹ß°ßÇß´ø Àû ½ÃÃ¼µé 
 
-    // ëª©ì ì§€ì— ë„ì°©í–ˆëŠ”ì§€
+    // ¸ñÀûÁö¿¡ µµÂøÇß´ÂÁö
     public bool IsArrived
     {
         get
@@ -165,12 +148,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public float CurrentLookAngleDelta // í˜„ì¬ ë°”ë¼ë³´ëŠ” ê°ë„ì™€ ëª©í‘œ ê°ë„ì˜ ì°¨ì´
+    public float CurrentLookAngleDelta // ÇöÀç ¹Ù¶óº¸´Â °¢µµ¿Í ¸ñÇ¥ °¢µµÀÇ Â÷ÀÌ
     {
         get
         {
             Vector2 direction = (LookPoint - (Vector2)transform.position).normalized;
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // ìœ„ìª½ì„ ê¸°ì¤€ìœ¼ë¡œ ë³´ì •
+            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // À§ÂÊÀ» ±âÁØÀ¸·Î º¸Á¤
             return Mathf.DeltaAngle(transform.eulerAngles.z, targetAngle);
         }
     }
@@ -200,10 +183,10 @@ public class Enemy : MonoBehaviour
 
     public bool AutoRotate { get; set; }
 
-    public bool IsNoiseDetected { get; set; } = false; // ì†ŒìŒ ê°ì§€ ì—¬ë¶€
+    public bool IsNoiseDetected { get; set; } = false; // ¼ÒÀ½ °¨Áö ¿©ºÎ
     public float NoiseAmount
         => heardNoiseAmount;
-
+    
     private float heardNoiseAmount = 0f;
 
     public bool IsBodyDetected
@@ -252,12 +235,12 @@ public class Enemy : MonoBehaviour
             ConditionalLogger.Log($"Switch State Machine {(HasTarget ? "Combat" : "Non-Combat")}");
         }
 
-        TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // ì‹œì•¼ ë‚´ íƒ€ê²Ÿ ê°±ì‹ 
+        TargetInFOV = transform.FindTargetInFOV(ViewAngle, ViewDistance, targetMask, obstacleMask); // ½Ã¾ß ³» Å¸°Ù °»½Å
 
-        // ìƒˆë¡œìš´ ì‹œì²´ ë°œê²¬ì‹œ ê¸°ë¡
+        // »õ·Î¿î ½ÃÃ¼ ¹ß°ß½Ã ±â·Ï
         if (!GameManager.Instance.IsCombat)
         {
-            Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // ì‹œì²´ ê°±ì‹ 
+            Transform body = transform.FindTargetInFOV(ViewAngle, ViewDistance, bodyMask, obstacleMask); // ½ÃÃ¼ °»½Å
 
             if (body && !foundBodies.Contains(body))
             {
@@ -271,17 +254,17 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        CurrentStateMachine?.UpdateState(); // ìƒíƒœ ë¨¸ì‹  ì—…ë°ì´íŠ¸
-        stateType = CurrentStateMachine?.CurrentState?.ToString(); // ë””ë²„ê·¸ìš© ìƒíƒœ íƒ€ì… ë¬¸ìì—´
-        UpdateMoveBlend(); // ì´ë™ ì• ë‹ˆë©”ì´ì…˜ ë¸”ë Œë“œê°’ ê°±ì‹ 
-        Rotate(); // íšŒì „
+        CurrentStateMachine?.UpdateState(); // »óÅÂ ¸Ó½Å ¾÷µ¥ÀÌÆ®
+        stateType = CurrentStateMachine?.CurrentState?.ToString(); // µğ¹ö±×¿ë »óÅÂ Å¸ÀÔ ¹®ÀÚ¿­
+        UpdateMoveBlend(); // ÀÌµ¿ ¾Ö´Ï¸ŞÀÌ¼Ç ºí·»µå°ª °»½Å
+        Rotate(); // È¸Àü
 
 
-        if (IsHit) IsHit = false; // ë§ì•˜ë˜ ìƒíƒœ ì´ˆê¸°í™”
-        if (IsNoiseDetected) IsNoiseDetected = false; // ì†ŒìŒ ê°ì§€ ìƒíƒœ ì´ˆê¸°í™”
-        if (IsBodyDetected) newFoundBody = null; // ì‹œì²´ ê°ì§€ ìƒíƒœ ì´ˆê¸°í™”
+        if (IsHit) IsHit = false; // ¸Â¾Ò´ø »óÅÂ ÃÊ±âÈ­
+        if (IsNoiseDetected) IsNoiseDetected = false; // ¼ÒÀ½ °¨Áö »óÅÂ ÃÊ±âÈ­
+        if (IsBodyDetected) newFoundBody = null; // ½ÃÃ¼ °¨Áö »óÅÂ ÃÊ±âÈ­
 
-        UpdateAlertIcons(); // ?,! ì•„ì´ì½˜ ìƒíƒœ ê°±ì‹ 
+        UpdateAlertIcons(); // ?,! ¾ÆÀÌÄÜ »óÅÂ °»½Å
     }
 
 
@@ -297,12 +280,6 @@ public class Enemy : MonoBehaviour
         forwardLight.pointLightOuterAngle = data.viewAngle;
         backwardLight.pointLightOuterAngle = data.viewAngle;
 
-        // UI ì´ˆê¸° ìƒíƒœ ì„¤ì •: ëŒ€ì‚¬ ë²„ë¸” ìˆ¨ê¸°ê¸°
-        if (DialogueBubble != null)
-        {
-            DialogueBubble.SetActive(false);
-        }
-
         if (isTarget)
         {
             noncombatStateMachine = new TargetFSM(this, typeof(PatrolState));
@@ -314,7 +291,7 @@ public class Enemy : MonoBehaviour
             combatStateMachine = StateMachineFactory.CreateStateMachine(this, typeof(CoverState), combatStateType);
         }
 
-        OnPhaseChanged(GameManager.Instance.CurrentPhase); // í˜„ì¬ í˜ì´ì¦ˆì— ë§ì¶° íƒ€ê²Ÿ ì„¤ì •
+        OnPhaseChanged(GameManager.Instance.CurrentPhase); // ÇöÀç ÆäÀÌÁî¿¡ ¸ÂÃç Å¸°Ù ¼³Á¤
         CurrentStateMachine.Start();
 
         previousHasTarget = HasTarget;
@@ -335,7 +312,7 @@ public class Enemy : MonoBehaviour
         shooter.Initialize(gunData);
     }
 
-    // ?,! ì•„ì´ì½˜ ìƒíƒœ ë³€ê²½
+    // ?,! ¾ÆÀÌÄÜ »óÅÂ º¯°æ
     private void SetIconState(AlertIconState next)
     {
         _iconState = next;
@@ -347,23 +324,23 @@ public class Enemy : MonoBehaviour
 
     private void UpdateAlertIcons()
     {
-        bool isCombat = GameManager.Instance.IsCombat || HasTarget;Â  // ë‚œì „ or íƒ€ê¹ƒ í™•ì •
-        bool isSuspicious = !isCombat && HasTargetInFOV;Â  Â  Â  Â  Â  // ì‹œì•¼ì—” ë“¤ì–´ì™”ì§€ë§Œ ë‚œì „ ì•„ë‹˜
+        bool isCombat = GameManager.Instance.IsCombat || HasTarget;   // ³­Àü or Å¸±ê È®Á¤
+        bool isSuspicious = !isCombat && HasTargetInFOV;              // ½Ã¾ß¿£ µé¾î¿ÔÁö¸¸ ³­Àü ¾Æ´Ô
 
         AlertIconState next = AlertIconState.None;
         if (isCombat) next = AlertIconState.Alert;
         else if (isSuspicious) next = AlertIconState.Suspicious;
 
-        // ë„ˆë¬´ ìì£¼ ê¹œë¹¡ì´ëŠ” ê²ƒ ë°©ì§€
+        // ³Ê¹« ÀÚÁÖ ±ôºıÀÌ´Â °Í ¹æÁö
         if (next != _iconState && Time.time - _lastIconChangeTime >= minIconShowTime)
             SetIconState(next);
     }
-    //ì—¬ê¸°ê¹Œì§€ ì•„ì´ì½˜
+    //¿©±â±îÁö ¾ÆÀÌÄÜ
 
     void OnPhaseChanged(GamePhase phase)
     {
         Target = (phase == GamePhase.Combat) ? GameManager.Instance.Player : null;
-        UpdateAlertIcons();Â  Â  // â† ì—¬ê¸°ì„œ ì¦‰ì‹œ ? / ! ê°±ì‹ 
+        UpdateAlertIcons();   // ¡ç ¿©±â¼­ Áï½Ã ? / ! °»½Å
     }
 
 
@@ -394,7 +371,7 @@ public class Enemy : MonoBehaviour
         }
 
         Vector2 direction = (LookPoint - (Vector2)transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // ìœ„ìª½ì„ ê¸°ì¤€ìœ¼ë¡œ ë³´ì •
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90; // À§ÂÊÀ» ±âÁØÀ¸·Î º¸Á¤
         angle = Mathf.MoveTowardsAngle(transform.eulerAngles.z, angle, Time.deltaTime * angularSpeed);
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
@@ -449,7 +426,7 @@ public class Enemy : MonoBehaviour
     public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
-        if (noise < NoiseManager.Instance.InvestigateThreshold) return;
+        if(noise < NoiseManager.Instance.InvestigateThreshold) return;
         IsNoiseDetected = true;
         heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
@@ -489,7 +466,7 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
-        // === 30% í™•ë¥  ë“œë ===
+        // === 30% È®·ü µå¶ø ===
         if (dropItems != null && Random.value <= 0.3f)
         {
             Vector3 dropPos = transform.position + Vector3.up * 0.2f;
@@ -498,24 +475,24 @@ public class Enemy : MonoBehaviour
             var item = ob.GetComponent<MagazineItem>();
             if (item != null)
             {
-                // ì˜ˆì „: CurrentWeaponIndex ìŠ¤ìœ„ì¹˜ â†’ ì‚­ì œ
-                // í˜„ì¬ ë¬´ê¸°ê°€ 'ìŠ¤í…”ìŠ¤ ìŠ¬ë¡¯ ë¬´ê¸°'ë¼ë©´ ê¶Œì´ íƒ„(ì˜ˆ: 12) ë“œë
+                // ¿¹Àü: CurrentWeaponIndex ½ºÀ§Ä¡ ¡æ »èÁ¦
+                // ÇöÀç ¹«±â°¡ '½ºÅÚ½º ½½·Ô ¹«±â'¶ó¸é ±ÇÃÑ Åº(¿¹: 12) µå¶ø
                 var wm = WeaponManager.Instance;
                 var cur = wm ? wm.CurrentWeapon : null;
                 if (wm && cur && cur == wm.GetStealthShooter())
                 {
-                    item.ammoAmount = 12; // í•„ìš” ì‹œ ë°ì´í„° ê¸°ë°˜ìœ¼ë¡œ ë°”ê¿”ë„ ë¨
+                    item.ammoAmount = 12; // ÇÊ¿ä ½Ã µ¥ÀÌÅÍ ±â¹İÀ¸·Î ¹Ù²ãµµ µÊ
                 }
-                // else: ê¸°ë³¸ê°’ ìœ ì§€(í”„ë¦¬íŒ¹ ì„¤ì •ì¹˜)
+                // else: ±âº»°ª À¯Áö(ÇÁ¸®ÆÕ ¼³Á¤Ä¡)
             }
         }
-        // === í˜ˆí” ìƒì„± ===
+        // === Ç÷Èç »ı¼º ===
         if (bloodPrefab != null)
         {
-            // ë°”ë‹¥ì— ì‚´ì§ ë¶™ê²Œ ì˜¤í”„ì…‹
+            // ¹Ù´Ú¿¡ »ìÂ¦ ºÙ°Ô ¿ÀÇÁ¼Â
             Vector3 feet = transform.position + Vector3.down * 0.05f;
 
-            // ë°©í–¥ ê°’ì´ ìˆìœ¼ë©´ ê·¸ ê°ë„ë¥¼ ì“°ê³ , ì—†ìœ¼ë©´ ëœë¤
+            // ¹æÇâ °ªÀÌ ÀÖÀ¸¸é ±× °¢µµ¸¦ ¾²°í, ¾øÀ¸¸é ·£´ı
             float angle = Random.Range(0f, 360f);
 
             var decal = Instantiate(bloodPrefab, feet, Quaternion.identity);
@@ -563,67 +540,5 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawSphere(LookPoint, 0.2f);
     }
 
-    // ëŒ€ì‚¬ ì‹œê°í™” ë¡œì§ (TMPro ì ìš©)
-    public void DisplayDialogue(string text)
-    {
-        if (string.IsNullOrEmpty(text)) return;
 
-        // UI ì»´í¬ë„ŒíŠ¸ ìœ íš¨ì„± ê²€ì‚¬
-        if (DialogueText == null || DialogueBubble == null)
-        {
-            // UIê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ê¸°ì¡´ì²˜ëŸ¼ ë¡œê·¸ë§Œ ì¶œë ¥
-            Debug.LogWarning("Dialogue UI ì»´í¬ë„ŒíŠ¸ê°€ Enemy Inspectorì— ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤! ë¡œê·¸ë¡œë§Œ ì¶œë ¥ë©ë‹ˆë‹¤: " + text);
-            Debug.Log($"[{id} {gameObject.name}] : \"{text}\"");
-            return;
-        }
-
-        // ì´ì „ ì½”ë£¨í‹´ì´ ìˆë‹¤ë©´ ì¤‘ì§€í•˜ê³  ìƒˆë¡œìš´ ëŒ€ì‚¬ ì¶œë ¥ ì½”ë£¨í‹´ ì‹œì‘
-        if (_currentDialogueCoroutine != null)
-        {
-            StopCoroutine(_currentDialogueCoroutine);
-        }
-        _currentDialogueCoroutine = StartCoroutine(ShowDialogueCoroutine(text));
-    }
-
-    private IEnumerator ShowDialogueCoroutine(string dialogue)
-    {
-        Debug.Log($"[Dialogue Start] {dialogue}");
-
-        // TextMeshProUGUIì— í…ìŠ¤íŠ¸ ì„¤ì •
-        DialogueText.text = dialogue;
-        DialogueBubble.SetActive(true);
-
-        // DialogueDuration ì‹œê°„ë§Œí¼ ëŒ€ê¸°
-        yield return new WaitForSeconds(DialogueDuration);
-
-        // ëŒ€ì‚¬ê°€ ëë‚˜ë©´ ë²„ë¸”ì„ ë¹„í™œì„±í™”í•˜ê³  ì½”ë£¨í‹´ ì°¸ì¡° ì œê±°
-        DialogueBubble.SetActive(false);
-        _currentDialogueCoroutine = null;
-    }
-
-    // 2. ëœë¤ ëŒ€ì‚¬ ì¶”ì¶œ í•¨ìˆ˜ ì¶”ê°€ (ê¸°ì¡´ GetDialogueData() ëŒ€ì²´)
-    // í˜„ì¬ ìƒíƒœì— ë§ëŠ” ëŒ€ì‚¬ ëª©ë¡ì—ì„œ ëœë¤ìœ¼ë¡œ í•˜ë‚˜ë¥¼ ì„ íƒí•´ ë°˜í™˜
-    // <param name="state">ëŒ€ì‚¬ë¥¼ ê°€ì ¸ì˜¬ FSM ìƒíƒœ (EnemyState Enum ì‚¬ìš©)</param>
-    // ëœë¤ìœ¼ë¡œ ì„ íƒëœ ëŒ€ì‚¬ ë¬¸ìì—´
-    public string GetRandomDialogue(EnemyState state)
-    {
-        if (dialogueDataAsset == null)
-        {
-            Debug.LogError("EnemyDialogueData Assetì´ Enemy Inspectorì— ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤! ëŒ€ì‚¬ ì¶œë ¥ ë¶ˆê°€.");
-            return string.Empty;
-        }
-
-        // ScriptableObjectì—ì„œ IDì™€ ìƒíƒœì— ë§ëŠ” ëŒ€ì‚¬ ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜´
-        // IDë¥¼ ì‚¬ìš©í•´ EnemyDialogueData.csì—ì„œ 1002001, 1002002 ë“± íŠ¹ì • ë°ì´í„°ë¥¼ ì°¾ì„ ìˆ˜ ìˆìŒ
-        List<string> dialogueList = dialogueDataAsset.GetDialogueList(id, state);
-
-        if (dialogueList == null || dialogueList.Count == 0)
-        {
-            return string.Empty; // ëŒ€ì‚¬ê°€ ì—†ìœ¼ë©´ ë¹ˆ ë¬¸ìì—´ ë°˜í™˜
-        }
-
-        // ë¦¬ìŠ¤íŠ¸ì—ì„œ ëœë¤ìœ¼ë¡œ í•˜ë‚˜ ì„ íƒ
-        int randomIndex = Random.Range(0, dialogueList.Count);
-        return dialogueList[randomIndex];
-    }
 }
