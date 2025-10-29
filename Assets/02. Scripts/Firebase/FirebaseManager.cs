@@ -57,7 +57,13 @@ public class FirebaseManager : Singleton<FirebaseManager>
         SaveMyUserData();
     }
 
-    public EnemyData GetEnemyData(int id) => enemyDataDict[id];
+    public EnemyData GetEnemyData(int id)
+    {
+        if (enemyDataDict.ContainsKey(id))
+            return enemyDataDict[id];
+        else
+            return null;
+    }
 
     public void UpdateEnemyDatas()
     {
@@ -72,7 +78,15 @@ public class FirebaseManager : Singleton<FirebaseManager>
         });
     }
 
-    public GunData GetGunData(int id) => gunDataDict[id];
+    public GunData GetGunData(int id)
+    {
+        if (gunDataDict.ContainsKey(id))
+            return gunDataDict[id];
+        else
+            return null;
+    }
+
+    public List<GunData> GetGunDatas() => new(gunDataDict.Values);
 
     public void UpdateGunDatas()
     {

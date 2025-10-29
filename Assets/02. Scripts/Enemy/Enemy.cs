@@ -36,6 +36,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int startPatrolPointIndex;
 
     [Header("Attack")]
+    [SerializeField] private int gunId; // 사용 무기 ID
     [SerializeField] private Shooter shooter;
 
     [Header("Return")]
@@ -210,7 +211,6 @@ public class Enemy : MonoBehaviour
             Initialize();
         else
             FirebaseManager.Instance.EnemyDataLoaded += Initialize;
-
     }
 
     void OnDisable()
@@ -218,6 +218,7 @@ public class Enemy : MonoBehaviour
         if (GameManager.AppIsQuitting) return;
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
         FirebaseManager.Instance.EnemyDataLoaded -= Initialize;
+        FirebaseManager.Instance.GunDataLoaded -= InitializeGunData;
     }
 
 
@@ -295,6 +296,18 @@ public class Enemy : MonoBehaviour
 
         SetIconState(AlertIconState.None);
         UpdateAlertIcons();
+
+        if (FirebaseManager.Instance.IsGunDataLoaded)
+            InitializeGunData();
+        else
+            FirebaseManager.Instance.GunDataLoaded += InitializeGunData;
+    }
+
+    private void InitializeGunData()
+    {
+        GunData gunData = FirebaseManager.Instance.GetGunData(gunId);
+        if (gunData == null) return;
+        shooter.Initialize(gunData);
     }
 
     // ?,! 아이콘 상태 변경

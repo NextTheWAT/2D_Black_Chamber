@@ -13,11 +13,15 @@ public class WeaponCatalog : ScriptableObject
     public void Initialize()
     {
         items.Clear();
+        items = FirebaseManager.Instance.GetGunDatas();
+
+        /*
         foreach (var id in gunDataIds)
         {
             var data = FirebaseManager.Instance.GetGunData(id);
             items.Add(data);
         }
+        */
     }
 
     public IEnumerable<GunData> All => items.Where(d => d != null);

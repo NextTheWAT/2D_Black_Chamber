@@ -42,7 +42,8 @@ public class HoverPopup : MonoBehaviour
         compensatorNameText.text = ReadStr(gun, "compensatorName") ?? "-";
 
         // 분류: phaseTag / subType
-        var cat = ReadStr(gun, "phaseTag") ?? "Unknown";
+        // var cat = ReadStr(gun, "phaseTag") ?? "Unknown";
+        var cat = gun.prefabInfo.phaseTag;
         var sub = ReadStr(gun, "subType");
         categoryText.text = string.IsNullOrEmpty(sub) ? $"분류 : {cat}" : $"분류 : {cat} / {sub}";
 

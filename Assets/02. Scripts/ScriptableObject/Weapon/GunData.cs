@@ -75,6 +75,7 @@ public class GunData
 
     // ============= 비주얼/프리팹 =============
     public string gunPrefabInfoName;       // GunPrefabInfo 프리팹 정보 이름
+
     public GunPrefabInfo prefabInfo;
 
     /*
