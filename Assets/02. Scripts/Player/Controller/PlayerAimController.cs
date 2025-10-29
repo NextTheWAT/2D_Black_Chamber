@@ -214,7 +214,6 @@ public class PlayerAimController : MonoBehaviour
 
     void UpdateCameraSize()
     {
-        ConditionalLogger.Log($"AimDistancew {GunData.aimDistance}");
         float targetSize = isAiming ? originalCameraSize * GunData.aimDistance : originalCameraSize;
         float currentSize = Mathf.Lerp(Camera.main.orthographicSize, targetSize, Time.deltaTime * 5f);
         CameraUtility.SetOrthographicSize(currentSize);
