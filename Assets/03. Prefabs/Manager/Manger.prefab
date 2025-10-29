@@ -1076,7 +1076,9 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
   catalog: {fileID: 11400000, guid: e58a055b1194d8a438ad053a012cbeca, type: 2}
-  starterOwnedId: 10543101207b3101
+  starterOwnedId:
+  - hg_valther_00
+  - smg_np9_00
   owned: []
   OnInventoryChanged:
     m_PersistentCalls:

@@ -36,7 +36,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int startPatrolPointIndex;
 
     [Header("Attack")]
-    [SerializeField] private int gunId; // 사용 무기 ID
+    [SerializeField] private string gunId; // 사용 무기 ID
     [SerializeField] private Shooter shooter;
 
     [Header("Return")]
