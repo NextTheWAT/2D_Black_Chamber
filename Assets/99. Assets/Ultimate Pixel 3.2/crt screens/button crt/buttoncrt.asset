@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6940cdda447048efa58605bd546f9920, type: 3}
+  m_Name: buttoncrt
+  m_EditorClassIdentifier: 
+  Frames:
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: ac2e069fd1f7a1e449aa460fb1cafb23, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: 13a5e4b94cb4b7941b48a9e56732b5ef, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: c0d8008f53affbd41ab2d2aed8d6bde4, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: 04cd64be21a10ab448947524f2fa78d0, type: 3}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6940cdda447048efa58605bd546f9920, type: 3}
+  m_Name: buttons_Preview
+  m_EditorClassIdentifier: 
+  Frames:
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 5ccedb2dcfc573c40b1b3aea97a17314, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: a309e39c28689f342839e4d2a1f2a879, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 5c2ce13b31478fa4b8a93e5faa44387a, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: ad90caa06cfeadc4d893dbe55e16883d, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: d1c7ecbe18c375044b4eac21c1fa0664, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 6679ac43137b5f743b7151060c6952dd, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 4dbae98d5e5d42c4baff5e45d108fa53, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 44a2731f572fd5d45bdd4e0b852ef462, type: 3}
+  - DelayInMs: 140
+    Sprite: {fileID: 21300000, guid: 311ccfc179fb64f468b0aff5700571d8, type: 3}
