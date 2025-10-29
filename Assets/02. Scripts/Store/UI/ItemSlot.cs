@@ -13,6 +13,20 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [Header("UI on Slot")]
     public Button clickButton;             // 슬롯 버튼
     public Image iconImage;               // 썸네일
+    public Image coverImage;             // 등급 커버 이미지
+    public Image borderImage;           // 테두리 이미지
+    public TMP_Text nameText;         // 아이템 이름 텍스트
+    public TMP_Text priceText;       // 아이템 가격 텍스트
+
+    [Header("Sprites")]
+    public Sprite basicBackgroundSprite; // 기본 배경 스프라이트
+    public Sprite basicBorderSprite;           // 기본 테두리 스프라이트
+    public Sprite hoverBackgroundSprite; // 마우스 올렸을 때 스프라이트
+    public Sprite hoverBorderSprite;     // 마우스 올렸을 때 테두리 스프라이트
+
+    [Header("Grade Color")]
+    public Color[] backgroundGradeColors; // 등급별 배경 색상 배열
+    public Color[] borderGradeColors;     // 등급별 테두리 색상 배열
 
     [Header("Popup Positioning")]
     public Vector2 offset = new Vector2(400f, 0f);
@@ -33,6 +47,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         hoverPopup = popupHover;
         purchasePopup = popupPurchase;
 
+        UpdateNameText(gunData);
+        UpdatePriceText(gunData);
+        UpdateGradeImageColor(gunData);
+
         if (iconImage)
             iconImage.sprite = gunData?.prefabInfo.weaponSprite;
 
@@ -46,13 +64,48 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 if (purchasePopup && gun != null) purchasePopup.Show(gun);
             });
+
+            UpdateNameText(gunData);
+            UpdatePriceText(gunData);
+            UpdateGradeImageColor(gunData);
         }
+    }
+
+    private void UpdateNameText(GunData gunData)
+    {
+        if (gunData == null) return;
+
+        if (nameText)
+            nameText.text = gunData.weaponName;
+    }
+
+    private void UpdatePriceText(GunData gunData)
+    {
+        if (gunData == null) return;
+
+        if (priceText)
+            priceText.text = $"$ {gunData.price:N0}";
+    }
+
+    private void UpdateGradeImageColor(GunData gunData)
+    {
+        if (gunData == null) return;
+
+        int gradeIndex = Mathf.Clamp(gunData.Grade, 0, backgroundGradeColors.Length - 1);
+
+        if(coverImage)
+            coverImage.color = backgroundGradeColors[gradeIndex];
+
+        if(borderImage)
+            borderImage.color = borderGradeColors[gradeIndex];
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (isHovering || hoverPopup == null || gun == null) return;
         isHovering = true;
+        coverImage.sprite = hoverBackgroundSprite;
+        borderImage.sprite = hoverBorderSprite;
         StartCoroutine(ShowPopupDelay());
     }
 
@@ -72,6 +125,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (!isHovering || hoverPopup == null) return;
         isHovering = false;
+        coverImage.sprite = basicBackgroundSprite;
+        borderImage.sprite = basicBorderSprite;
         hoverPopup.Hide();
     }
 
