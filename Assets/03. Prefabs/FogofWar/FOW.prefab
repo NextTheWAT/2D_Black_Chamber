@@ -82,7 +82,7 @@ MonoBehaviour:
   RevealerFadeIn: 0
   FogRegrowSpeed: 10
   InitialFogExplorationValue: 0
-  MaxFogRegrowAmount: 0.05
+  MaxFogRegrowAmount: 0.2
   FowTextureMaterial: {fileID: 0}
   FowResX: 256
   FowResY: 256
