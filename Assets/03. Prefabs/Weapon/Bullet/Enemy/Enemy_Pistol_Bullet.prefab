@@ -406,4 +406,4 @@ MonoBehaviour:
     m_Bits: 32768
   steelDoorSoundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 131072

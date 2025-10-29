@@ -1,24 +1,26 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Collider2D))]
 public partial class Bullet : MonoBehaviour
 {
     [SerializeField] private LayerMask wallSoundLayer;
     [SerializeField] private LayerMask doorSoundLayer;
     [SerializeField] private LayerMask steelDoorSoundLayer;
 
-
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == wallSoundLayer) {
+        int mask = 1 << other.gameObject.layer;
+
+        if ((wallSoundLayer.value & mask) != 0)
+        {
             StructSoundManager.Instance.PlayWallAttackSound(transform.position);
+            Debug.Log("Wall Hit Sound Played");
         }
-        else if (other.gameObject.layer == doorSoundLayer) 
+        else if ((doorSoundLayer.value & mask) != 0)
         {
             StructSoundManager.Instance.PlayDoorAttackSound(transform.position);
         }
-        else if (other.gameObject.layer == steelDoorSoundLayer) 
+        else if ((steelDoorSoundLayer.value & mask) != 0)
         {
             StructSoundManager.Instance.PlaySteelDoorAttackSound(transform.position);
         }
