@@ -1579,6 +1579,7 @@ MonoBehaviour:
   rifleShootSound: {fileID: 11400000, guid: ad608595013ddba4dbb15f1d39e26993, type: 2}
   reloadSound: {fileID: 11400000, guid: b673ffba9edd01f4c99b1dfc42a50493, type: 2}
   emptySound: {fileID: 11400000, guid: 2025da937ecb0a9439f4dc9e704834a7, type: 2}
+  closeAttackSound: {fileID: 11400000, guid: 0241b6bda7fd91246ac180d0d225f55a, type: 2}
   weaponVol: 0.2
 --- !u!1 &6294108030638303368
 GameObject:
@@ -2134,6 +2135,9 @@ MonoBehaviour:
   doorCloseSound: {fileID: 11400000, guid: fe6cfef3c0117a444acffd521e969072, type: 2}
   steelDoorOpenSound: {fileID: 11400000, guid: 351ee53569e4f5745b98af1b6dc1845c, type: 2}
   steelDoorCloseSound: {fileID: 11400000, guid: cd8df1147ab8fd34ba67693a6530aa0f, type: 2}
+  wallAttackSound: {fileID: 11400000, guid: 9f64ffdd68048b44ebc6b830054e9a69, type: 2}
+  doorAttackSound: {fileID: 11400000, guid: 4331e26511925bc4c8a730fdf6a592aa, type: 2}
+  steelDoorAttackSound: {fileID: 11400000, guid: b1b86a53aa666cf408063b4aef1cd785, type: 2}
   structVol: 0.8
 --- !u!1 &8129387095671507109
 GameObject:

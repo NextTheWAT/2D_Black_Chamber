@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
+  m_Name: DoorAttackSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: d32385e386ac97741bc7042a4cc28743, type: 3}
+  - {fileID: 8300000, guid: ce83bf9c66c15db49819f571b13adf60, type: 3}
+  - {fileID: 8300000, guid: e70afba8a05ae674ea18732ccd4fe512, type: 3}
+  - {fileID: 8300000, guid: cf9cb737284e99a44aa81d4ef0e3d888, type: 3}
+  volume: 1

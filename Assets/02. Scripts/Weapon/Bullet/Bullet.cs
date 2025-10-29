@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
-public class Bullet : MonoBehaviour
+public partial class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
 
