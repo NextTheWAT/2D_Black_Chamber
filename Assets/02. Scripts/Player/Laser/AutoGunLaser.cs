@@ -153,7 +153,7 @@ public class AutoGunLaser : MonoBehaviour
 
     void ApplyToggleImmediate()
     {
-        bool on = currentData && currentData.hasLaser;
+        bool on = currentData != null && currentData.hasLaser;
         if (line) line.enabled = on;
         if (!on && dot) dot.gameObject.SetActive(false);
         if (on) RenderLaser(); // 즉시 1회 갱신
@@ -161,7 +161,7 @@ public class AutoGunLaser : MonoBehaviour
 
     void Update()
     {
-        if (!currentShooter || !currentData || !currentData.hasLaser)
+        if (!currentShooter || currentData == null || !currentData.hasLaser)
         {
             if (line && line.enabled) line.enabled = false;
             if (dot && dot.gameObject.activeSelf) dot.gameObject.SetActive(false);
@@ -178,7 +178,7 @@ public class AutoGunLaser : MonoBehaviour
         Transform t = currentShooter.transform;
 
         // GunData.firePointOffset(x,y) 사용
-        Vector2 of2 = currentData.firePointOffset * offsetScale;
+        Vector2 of2 = currentData.prefabInfo.firePointOffset * offsetScale;
         Vector3 local = use2D
             ? new Vector3(of2.x, of2.y, 0f)   // 2D(Top-Down, XY 평면)
             : new Vector3(of2.x, 0f, of2.y);  // 3D(XZ 평면)

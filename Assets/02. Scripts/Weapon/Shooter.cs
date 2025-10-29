@@ -110,7 +110,7 @@ public class Shooter : MonoBehaviour
 
     public bool Shoot(Vector2 direction)
     {
-        if (gunData == null || gunPoint == null || gunData.bulletPrefab == null) return false;
+        if (gunData == null || gunPoint == null || gunData.prefabInfo.bulletPrefab == null) return false;
         if (respectFireRate && cooldown > 0f) return false;
 
         if (currentMagazine <= 0 || shooterLocked)
@@ -138,9 +138,9 @@ public class Shooter : MonoBehaviour
 
         if (respectFireRate) cooldown = 1f / fireRatePerSec;
 
-        if (gunData.muzzleFlashPrefab)
+        if (gunData.prefabInfo.muzzleFlashPrefab)
         {
-            var fx = Instantiate(gunData.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
+            var fx = Instantiate(gunData.prefabInfo.muzzleFlashPrefab, gunPoint.position, gunPoint.rotation);
             Destroy(fx, 0.05f);
         }
 
@@ -183,7 +183,7 @@ public class Shooter : MonoBehaviour
 
     private void SpawnBullet(GunData gun, Transform muzzle, Vector2 dir)
     {
-        var go = Instantiate(gun.bulletPrefab);
+        var go = Instantiate(gun.prefabInfo.bulletPrefab);
         var b = go.GetComponent<Bullet>();
         if (!b)
         {
