@@ -119,6 +119,7 @@ public class CharacterAnimationController : MonoBehaviour
     /// 무기 타입에 따라 "상체" Animator Controller만 교체.
     /// (하체는 하나만 사용)
     /// </summary>
+
     public void ApplyUpperWeaponAnimator(GunData gunData, bool playSwitchAnim = true)
     {
         if (!upperAnimator) return;
@@ -126,6 +127,10 @@ public class CharacterAnimationController : MonoBehaviour
         if (playSwitchAnim) PlaySwitch();
 
         var snap = TakeSnapshot();
+
+        // 추가: 무기 기본 재장전 시간 연동
+        if (gunData != null)
+            reloadDuration = Mathf.Max(0.0001f, gunData.baseReloadTime);
 
         upperAnimator.runtimeAnimatorController = gunData.upperAnimator;
         upperAnimator.Update(0f); // 즉시 반영
