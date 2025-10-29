@@ -71,10 +71,13 @@ public class PlayerAimController : MonoBehaviour
     private bool aimingCooldown = false;
 
     private PlayerInputController inputController;
+    private float originalCameraSize;
+
 
     void Start()
     {
         inputController = GetComponent<PlayerInputController>();
+        originalCameraSize = Camera.main.orthographicSize;
         EnsureCachedTransforms();
 
         if (leftLineRenderer) leftLineRenderer.positionCount = 2;
@@ -85,7 +88,7 @@ public class PlayerAimController : MonoBehaviour
     {
         EnsureCachedTransforms();
 
-        isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
+        InputAiming();
         UpdateAimingTime();
         UpdatePenalty();
         UpdateAimParameters();
@@ -95,8 +98,13 @@ public class PlayerAimController : MonoBehaviour
 
         UpdateAimLine();
         UpdateSideLine();
+        UpdateCameraSize();
         DrawArc();
     }
+
+    void InputAiming()
+        => isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
+
     void DrawArc()
     {
         if (gaugeArcDrawer == null || backgroundArcDrawer == null) return;
@@ -202,6 +210,14 @@ public class PlayerAimController : MonoBehaviour
         leftLineRenderer.SetPosition(1, leftEndPos);
         rightLineRenderer.SetPosition(0, rightStartPos);
         rightLineRenderer.SetPosition(1, rightEndPos);
+    }
+
+    void UpdateCameraSize()
+    {
+        ConditionalLogger.Log($"AimDistancew {GunData.aimDistance}");
+        float targetSize = isAiming ? originalCameraSize * GunData.aimDistance : originalCameraSize;
+        float currentSize = Mathf.Lerp(Camera.main.orthographicSize, targetSize, Time.deltaTime * 5f);
+        CameraUtility.SetOrthographicSize(currentSize);
     }
 
 

@@ -9,6 +9,21 @@ public static class CameraUtility
     private static CinemachineBasicMultiChannelPerlin perlin;
     private static Coroutine shakeCoroutine;
 
+    public static void SetOrthographicSize(float size)
+    {
+        if (cachedVcam == null)
+        {
+            cachedVcam = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
+            if (cachedVcam == null)
+            {
+                ConditionalLogger.LogWarning("CameraUtility.SetOrthographicSize: No CinemachineVirtualCamera found in the scene.");
+                return;
+            }
+        }
+
+        cachedVcam.m_Lens.OrthographicSize = size;
+    }
+
     public static void Shake(float amplitude)
     {
         if (cachedVcam == null)
@@ -16,7 +31,7 @@ public static class CameraUtility
             cachedVcam = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
             if (cachedVcam == null)
             {
-                Debug.LogWarning("CameraUtility.Shake: No CinemachineVirtualCamera found in the scene.");
+                ConditionalLogger.LogWarning("CameraUtility.Shake: No CinemachineVirtualCamera found in the scene.");
                 return;
             }
         }
