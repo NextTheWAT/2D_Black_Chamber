@@ -9,45 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e44e0b97c9d3f64da7cfdf13eb5245d, type: 3}
-  m_Name: Rifle
+  m_Script: {fileID: 11500000, guid: f2b42fcf7042d2a46b72240ab2717d87, type: 3}
+  m_Name: Player_Rifle_02
   m_EditorClassIdentifier: 
   phaseTag: 2
-  autoOwnedOnStart: 1
-  hideFromShop: 1
-  id: 0
-  weaponName: Rifle
-  Grade: 4
-  subType: 2
-  attachment: 
-  price: 0
-  damage: 30
-  rpm: 600
-  bulletSpeed: 100
-  bulletPerShot: 1
-  bulletDuration: 2
-  gunNoiseData:
-    strength: 0
-    range: 0
-  curAmmo: 30
-  curReserveAmmo: 120
-  maxAmmo: 30
-  maxReserveAmmo: 120
-  volume: 50
-  accuracy: 2
-  precision: 20
-  stability: 5
-  aimAccuracy: 3
-  aimPrecision: 10
-  aimStability: 4.5
-  aimDistance: 100
-  hasLaser: 1
-  baseReloadTime: 2
-  reloadSpeed: 1
-  moveSpeedModifier: 1
-  aimMoveSpeedModifier: 100
-  recoilAmount: 3
-  recoilRecovery: 3
+  autoOwnedOnStart: 0
+  hideFromShop: 0
   bulletPrefab: {fileID: 8908556986258763193, guid: 9b1e99386de2bae45b00a487fd55718e, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: 421645e252778e543a5b70ed673861f0, type: 3}
   upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}

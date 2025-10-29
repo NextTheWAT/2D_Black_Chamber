@@ -33,7 +33,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         hoverPopup = popupHover;
         purchasePopup = popupPurchase;
 
-        if (iconImage) iconImage.sprite = GetSprite(gun, "weaponSprite") ?? GetSprite(gun, "shopIcon");
+        if (iconImage)
+            iconImage.sprite = gunData?.prefabInfo.weaponSprite;
+
+        // if (iconImage) iconImage.sprite = GetSprite(gun, "weaponSprite") ?? GetSprite(gun, "shopIcon");
 
         if (!clickButton) clickButton = GetComponent<Button>();
         if (clickButton)
@@ -41,7 +44,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             clickButton.onClick.RemoveAllListeners();
             clickButton.onClick.AddListener(() =>
             {
-                if (purchasePopup && gun) purchasePopup.Show(gun);
+                if (purchasePopup && gun != null) purchasePopup.Show(gun);
             });
         }
     }

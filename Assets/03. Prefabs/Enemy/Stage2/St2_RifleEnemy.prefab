@@ -300,6 +300,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
+  gunId: 20030000
   shooter: {fileID: 7165611205558197295}
   returnPoint: {fileID: 0}
   questionIcon: {fileID: 7741437577493285040}
@@ -321,6 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 70
+  useInvincible: 0
+  invincibleDuration: 1
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -339,6 +342,12 @@ MonoBehaviour:
   OnDie:
     m_PersistentCalls:
       m_Calls: []
+  OnInvincibleStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInvincibleEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1439789926576622132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,6 +362,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 8804003209034031421}
   lowerAnimator: {fileID: 4163915192548266303}
+  reloadDuration: 0
+  nowcrosshairCursor: {fileID: 0}
 --- !u!114 &7165611205558197295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,7 +377,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunPoint: {fileID: 3614680319992564762}
-  gunData: {fileID: 11400000, guid: 9933e2e930c924f4bac18e8e28cda6d3, type: 2}
+  gunData:
+    id: 0
+    weaponName: Pistol
+    Grade: 4
+    subType: 0
+    attachment: 
+    price: 0
+    damage: 10
+    rpm: 360
+    bulletSpeed: 25
+    bulletPerShot: 1
+    bulletDuration: 2
+    gunNoiseData:
+      strength: 0
+      range: 0
+    curAmmo: 0
+    curReserveAmmo: 0
+    maxAmmo: 12
+    maxReserveAmmo: 60
+    volume: 50
+    accuracy: 5.5
+    precision: 20
+    stability: 5
+    aimAccuracy: 5
+    aimPrecision: 15
+    aimStability: 4.5
+    aimDistance: 100
+    hasLaser: 0
+    baseReloadTime: 2
+    reloadSpeed: 100
+    moveSpeedModifier: 100
+    aimMoveSpeedModifier: 100
+    recoilAmount: 0
+    gunPrefabInfoName: 
+    prefabInfo: {fileID: 0}
   respectFireRate: 1
   shooterLocked: 0
 --- !u!114 &7143053201240295408
@@ -478,6 +523,7 @@ MonoBehaviour:
   ObjectsToHide:
   - {fileID: 7686081802480141617}
   - {fileID: 429820351298762566}
+  fadeDuration: 0.5
 --- !u!1 &3701971890355837532
 GameObject:
   m_ObjectHideFlags: 0

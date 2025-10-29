@@ -132,7 +132,7 @@ public class CharacterAnimationController : MonoBehaviour
         if (gunData != null)
             reloadDuration = Mathf.Max(0.0001f, gunData.baseReloadTime);
 
-        upperAnimator.runtimeAnimatorController = gunData.upperAnimator;
+        upperAnimator.runtimeAnimatorController = gunData.prefabInfo.upperAnimator;
         upperAnimator.Update(0f); // 즉시 반영
 
         Restore(snap);

@@ -10,7 +10,8 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public WeaponCatalog catalog;
 
     [Header("Starter Owned")]
-    [SerializeField] private List<GunData> starterOwned = new();
+    [SerializeField] private List<int> starterOwnedId = new();
+    // [SerializeField] private List<GunData> starterOwned = new();
 
     [Header("Runtime Owned (ReadOnly)")]
     [SerializeField] private List<GunData> owned = new();
@@ -20,24 +21,46 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public UnityEvent OnInventoryChanged = new();
     public UnityEvent<GunData> OnItemBought = new();
 
-    private void Start() => RebuildOwnedFromStarters();
+    private void OnEnable()
+    {
+        if (FirebaseManager.Instance.IsGunDataLoaded)
+            RebuildOwnedFromStarters();
+        else
+            FirebaseManager.Instance.GunDataLoaded += RebuildOwnedFromStarters;
+    }
+    void OnDisable()
+    {
+        if (GameManager.AppIsQuitting) return;
+        FirebaseManager.Instance.GunDataLoaded -= RebuildOwnedFromStarters;
+    }
+
 
     public void RebuildOwnedFromStarters()
     {
+        catalog.Initialize();
+
         owned.Clear();
 
-        foreach (var d in starterOwned) if (d) AddOwnedSilently(d);
+        foreach (var id in starterOwnedId)
+        {
+            GunData gunData = FirebaseManager.Instance.GetGunData(id);
+            if (gunData != null)
+                AddOwnedSilently(gunData);
+        }
+
+        // foreach (var d in starterOwned) if (d != null) AddOwnedSilently(d);
+
         if (catalog)
         {
             foreach (var d in catalog.All)
-                if (d && d.autoOwnedOnStart) AddOwnedSilently(d);
+                if (d != null && d.prefabInfo.autoOwnedOnStart) AddOwnedSilently(d);
         }
         OnInventoryChanged.Invoke();
     }
 
     public bool Buy(GunData data)
     {
-        if (!data || owned.Contains(data)) return false;
+        if (data == null || owned.Contains(data)) return false;
 
         // 결제 시도: 잔액 부족이면 실패 처리
         var money = MoneyManager.Instance;
@@ -55,12 +78,12 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
         return true;
     }
 
-    public bool IsOwned(GunData data) => data && owned.Contains(data);
+    public bool IsOwned(GunData data) => data != null && owned.Contains(data);
 
     public IEnumerable<GunData> GetShopList(bool includeOwned = false, bool hideHidden = true)
     {
         var all = catalog ? catalog.All : Enumerable.Empty<GunData>();
-        if (hideHidden) all = all.Where(d => !d.hideFromShop);
+        if (hideHidden) all = all.Where(d => !d.prefabInfo.hideFromShop);
         return includeOwned ? all : all.Where(d => !IsOwned(d));
     }
 
@@ -72,8 +95,8 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
 
         foreach (var d in src)
         {
-            if (!d) continue;
-            if (d.name == key) return d;
+            if (d == null) continue;
+            if (d.weaponName == key) return d;
 
             var weaponName = GetStringField(d, "weaponName");
             if (!string.IsNullOrEmpty(weaponName) && weaponName == key) return d;
@@ -89,7 +112,7 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
 
     private void AddOwnedSilently(GunData d)
     {
-        if (d && !owned.Contains(d)) owned.Add(d);
+        if (d != null && !owned.Contains(d)) owned.Add(d);
     }
 
     // ---- reflection helpers (신/구 스펙 동시 호환) ----
