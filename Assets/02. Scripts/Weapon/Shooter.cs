@@ -96,7 +96,7 @@ public class Shooter : MonoBehaviour
         currentAmmo = startReserve;
 
         // 총구 위치 (있다면)
-        var fpo = GetVector2(gd, "firePointOffset");
+        var fpo = GetVector2(gd.prefabInfo, "firePointOffset");
         if (fpo.HasValue)
             gunPoint.SetLocalPositionAndRotation(fpo.Value, Quaternion.identity);
 
