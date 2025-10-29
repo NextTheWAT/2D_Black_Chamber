@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
+  m_Name: SteelDoorAttackSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 0212a5a945d281d4c98afd59d089416b, type: 3}
+  - {fileID: 8300000, guid: c7a69236433c6dc439f54bc035a7854f, type: 3}
+  - {fileID: 8300000, guid: 183a6e37896ab82418a18e3922aa8984, type: 3}
+  - {fileID: 8300000, guid: 6c3bc83b4127c7b49a70e4443fa652d1, type: 3}
+  volume: 1

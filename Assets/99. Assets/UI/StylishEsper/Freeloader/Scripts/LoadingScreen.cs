@@ -108,6 +108,10 @@ namespace Esper.Freeloader
         /// </summary>
         protected int currentBackgroundIndex = 0;
 
+        // NEW: randomized order containers
+        protected List<int> backgroundOrder = null;
+        protected List<int> tipOrder = null;
+
         /// <summary>
         /// A list of loading processes to undergo. This list will be automatically cleared when loading is complete.
         /// </summary>
@@ -282,14 +286,27 @@ namespace Esper.Freeloader
         /// </summary>
         protected virtual void NextTip()
         {
+            // ensure tipOrder is prepared
+            if (settings.tips == null || settings.tips.Count == 0)
+            {
+                tipLabel.text = string.Empty;
+                return;
+            }
+
+            if (tipOrder == null || tipOrder.Count != settings.tips.Count)
+            {
+                PrepareTipOrder();
+            }
+
             currentTipIndex++;
 
-            if (currentTipIndex >= settings.tips.Count)
+            if (currentTipIndex >= tipOrder.Count)
             {
                 currentTipIndex = 0;
             }
 
-            tipLabel.text = settings.tips[currentTipIndex];
+            int tipIdx = tipOrder[currentTipIndex];
+            tipLabel.text = settings.tips[tipIdx];
         }
 
         /// <summary>
@@ -346,22 +363,30 @@ namespace Esper.Freeloader
         /// <returns>Yields for a delay.</returns>
         protected IEnumerator BackgroundSlideshowLoopCoroutine()
         {
+            // advance index in our shuffled order
             currentBackgroundIndex++;
 
-            if (currentBackgroundIndex >= settings.backgrounds.Count)
+            if (backgroundOrder == null || backgroundOrder.Count == 0)
+            {
+                PrepareBackgroundOrder();
+            }
+
+            if (currentBackgroundIndex >= backgroundOrder.Count)
             {
                 currentBackgroundIndex = 0;
             }
 
             yield return new WaitForSeconds(0.5f);
 
+            int bgIdx = backgroundOrder[currentBackgroundIndex];
+
             if (backgroundOne.enabledSelf)
             {
-                backgroundTwo.style.backgroundImage = settings.backgrounds[currentBackgroundIndex];
+                backgroundTwo.style.backgroundImage = settings.backgrounds[bgIdx];
             }
             else
             {
-                backgroundOne.style.backgroundImage = settings.backgrounds[currentBackgroundIndex];
+                backgroundOne.style.backgroundImage = settings.backgrounds[bgIdx];
             }
 
             yield return new WaitForSeconds(settings.backgroundDisplayLength);
@@ -384,10 +409,15 @@ namespace Esper.Freeloader
                 return;
             }
 
+            // prepare randomized order
+            PrepareBackgroundOrder();
+
             currentBackgroundIndex = 0;
 
+            int firstIdx = backgroundOrder != null && backgroundOrder.Count > 0 ? backgroundOrder[0] : 0;
+
             backgroundOne.SetEnabled(true);
-            backgroundOne.style.backgroundImage = settings.backgrounds[currentBackgroundIndex];
+            backgroundOne.style.backgroundImage = settings.backgrounds[firstIdx];
 
             if (settings.backgrounds.Count > 1)
             {
@@ -427,8 +457,11 @@ namespace Esper.Freeloader
                 return;
             }
 
+            // prepare randomized order for tips
             if (settings.tips.Count > 1)
             {
+                PrepareTipOrder();
+                currentTipIndex = -1; // NextTip will advance to first
                 StartCoroutine(TipSlideshowLoopCoroutine());
             }
             else
@@ -442,7 +475,7 @@ namespace Esper.Freeloader
         /// Loads a scene. You can use loading processes to track other things that need to be loaded.
         /// </summary>
         /// <param name="buildIndex">The build index of the scene.</param>
-        /// <param name="processes">A list of loading processes other than the scene.</param>
+        /// <param="processes">A list of loading processes other than the scene.</param>
         public virtual void Load(int buildIndex = -1, params LoadingProgressTracker[] processes)
         {
             var sceneName = System.IO.Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(buildIndex));
@@ -453,7 +486,7 @@ namespace Esper.Freeloader
         /// Loads a scene. You can use loading processes to track other things that need to be loaded.
         /// </summary>
         /// <param name="sceneName">The name of the scene to load.</param>
-        /// <param name="processes">A list of loading processes other than the scene.</param>
+        /// <param="processes">A list of loading processes other than the scene.</param>
         public virtual void Load(string sceneName = "", params LoadingProgressTracker[] processes)
         {
             if (IsLoading)
@@ -633,6 +666,36 @@ namespace Esper.Freeloader
             }
 
             SetPickingModeRecursively(root, PickingMode.Ignore);
+        }
+
+        // ---------- Helper methods for randomization ----------
+        private void PrepareBackgroundOrder()
+        {
+            if (settings == null || settings.backgrounds == null) return;
+            int n = settings.backgrounds.Count;
+            backgroundOrder = new List<int>(n);
+            for (int i = 0; i < n; i++) backgroundOrder.Add(i);
+            Shuffle(backgroundOrder);
+        }
+
+        private void PrepareTipOrder()
+        {
+            if (settings == null || settings.tips == null) return;
+            int n = settings.tips.Count;
+            tipOrder = new List<int>(n);
+            for (int i = 0; i < n; i++) tipOrder.Add(i);
+            Shuffle(tipOrder);
+        }
+
+        private static void Shuffle<T>(IList<T> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                T tmp = list[i];
+                list[i] = list[j];
+                list[j] = tmp;
+            }
         }
     }
 }

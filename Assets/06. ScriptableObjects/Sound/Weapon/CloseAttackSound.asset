@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db952e5b4bdbaa945984930fc51cfbb1, type: 3}
+  m_Name: CloseAttackSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 52378519c26ec1147abe6e80d07d8c9b, type: 3}
+  - {fileID: 8300000, guid: 7df7c1c8e1281724ab7acaa37c232c13, type: 3}
+  - {fileID: 8300000, guid: ef5f31005a6681042b4106731fd7fa26, type: 3}
+  volume: 1

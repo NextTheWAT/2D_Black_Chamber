@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6940cdda447048efa58605bd546f9920, type: 3}
+  m_Name: crt1
+  m_EditorClassIdentifier: 
+  Frames:
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: f8c8b0a2b1efc204098df77d6dc32a26, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: 084f3e4ecce6a4243b757a27dee86fd9, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: dd0d8068a5606d84cbaed3513490d923, type: 3}
+  - DelayInMs: 100
+    Sprite: {fileID: 21300000, guid: 7712b1f757cbf10448141e0e0fb96413, type: 3}
