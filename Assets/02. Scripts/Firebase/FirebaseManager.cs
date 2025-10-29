@@ -12,8 +12,8 @@ public class FirebaseManager : Singleton<FirebaseManager>
     public Action UserDataLoaded;
 
     public Dictionary<int, EnemyData> enemyDataDict = new();
-    public Dictionary<int, GunData> gunDataDict = new();
-    public Dictionary<int, EnemyData> attachmentDataDict = new();
+    public Dictionary<string, GunData> gunDataDict = new();
+    public Dictionary<string, EnemyData> attachmentDataDict = new();
     public Dictionary<string, UserData> userDataDict = new();
 
     private const string enemyDataURL = "https://blackchamber-f4f4a-default-rtdb.firebaseio.com/EnemyData.json";
@@ -78,7 +78,7 @@ public class FirebaseManager : Singleton<FirebaseManager>
         });
     }
 
-    public GunData GetGunData(int id)
+    public GunData GetGunData(string id)
     {
         if (gunDataDict.ContainsKey(id))
             return gunDataDict[id];
@@ -92,7 +92,9 @@ public class FirebaseManager : Singleton<FirebaseManager>
     {
         RestClient.Get(gunDataURL).Then(response =>
         {
-            gunDataDict = JsonConvert.DeserializeObject<Dictionary<int, GunData>>(response.Text);
+            Debug.Log("GunData " + response.Text);
+            gunDataDict = JsonConvert.DeserializeObject<Dictionary<string, GunData>>(response.Text);
+
 
             // GunPrefabInfo 불러오기
             foreach (var kvp in gunDataDict)
