@@ -1,11 +1,22 @@
 using Constants;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Dialogue")]
+    [SerializeField] private EnemyDialogueData dialogueData; // 인스펙터에서 할당
+    [SerializeField] private GameObject dialogueBubble; // 머리 위 대화 버블
+    [SerializeField] private MonoBehaviour dialogueTextComponent; // UI Text
+    [SerializeField] private float dialogueDuration = 3f; // 기본 대사 유지 시간
+
+    private Coroutine dialogueCoroutine;
+
     [Header("FSM")]
     [SerializeField] private int id = 1001001;
     [SerializeField] private NonCombatStateType nonCombatStateType;
@@ -85,7 +96,6 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public CharacterAnimationController AnimationController => animationController;
 
-
     public Transform Target
     {
         get => target;
@@ -98,6 +108,7 @@ public class Enemy : MonoBehaviour
             UpdateLight();
         }
     }
+
     public bool HasTarget => Target;
     public Vector2 LastKnownTargetPos { get; set; }
 
@@ -111,6 +122,7 @@ public class Enemy : MonoBehaviour
         }
     }
     private bool nearbyDeathTriggered;
+
     public bool NearbyDeathTriggered
     {
         get
@@ -186,7 +198,7 @@ public class Enemy : MonoBehaviour
     public bool IsNoiseDetected { get; set; } = false; // 소음 감지 여부
     public float NoiseAmount
         => heardNoiseAmount;
-    
+
     private float heardNoiseAmount = 0f;
 
     public bool IsBodyDetected
@@ -221,6 +233,13 @@ public class Enemy : MonoBehaviour
         GameManager.Instance.OnPhaseChanged -= OnPhaseChanged;
         FirebaseManager.Instance.EnemyDataLoaded -= Initialize;
         FirebaseManager.Instance.GunDataLoaded -= InitializeGunData;
+
+        // 대사 코루틴 정리
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
     }
 
 
@@ -426,7 +445,7 @@ public class Enemy : MonoBehaviour
     public void HeardNoise(float noise, Vector2 noisePosition)
     {
         if (GameManager.Instance.IsCombat) return;
-        if(noise < NoiseManager.Instance.InvestigateThreshold) return;
+        if (noise < NoiseManager.Instance.InvestigateThreshold) return;
         IsNoiseDetected = true;
         heardNoiseAmount = noise;
         LastKnownTargetPos = noisePosition;
@@ -466,6 +485,9 @@ public class Enemy : MonoBehaviour
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
 
+        // 대사 버블도 끄기
+        if (dialogueBubble) dialogueBubble.SetActive(false);
+
         // === 30% 확률 드랍 ===
         if (dropItems != null && Random.value <= 0.3f)
         {
@@ -500,7 +522,6 @@ public class Enemy : MonoBehaviour
         }
 
     }
-
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -540,5 +561,89 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawSphere(LookPoint, 0.2f);
     }
 
+    // 상태에 맞는 랜덤 대사 반환. dialogueData가 없거나 리스트가 비어있으면 빈 문자열 반환.
+    public string GetRandomDialogue(EnemyState state)
+    {
+        if (dialogueData == null)
+            return string.Empty;
 
+        List<string> list = dialogueData.GetDialogueList(id, state);
+        if (list == null || list.Count == 0)
+            return string.Empty;
+
+        int idx = Random.Range(0, list.Count);
+        return list[idx];
+    }
+
+    /// 대사 출력. dialogueBubble을 활성화하고 텍스트를 세팅 후 duration 뒤에 비활성화.
+    /// Text가 할당되어 있으면 그것을 사용. 할당되어 있지 않으면 dialogueBubble 자식에서 Text를 찾아 시도.
+    public void DisplayDialogue(string dialogue, float? durationOverride = null)
+    {
+        if (string.IsNullOrEmpty(dialogue)) return;
+        if (dialogueBubble == null)
+        {
+            // 대사 UI가 할당되어 있지 않으면 로그만 남기고 종료
+            ConditionalLogger.LogWarning($"{name} DialogueBubble is not assigned. Dialogue: {dialogue}");
+            return;
+        }
+
+        // 기존 코루틴 정리
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+
+        bool wroteText = false;
+
+        if (dialogueTextComponent != null)
+        {
+            var tmp = dialogueTextComponent as TextMeshProUGUI;
+            if (tmp != null)
+            {
+                tmp.text = dialogue;
+                wroteText = true;
+            }
+            else
+            {
+                var uiText = dialogueTextComponent as Text;
+                if (uiText != null)
+                {
+                    uiText.text = dialogue;
+                    wroteText = true;
+                }
+            }
+        }
+
+        // 만약 별도 컴포넌트 할당 안했거나 실패하면 dialogueBubble 자식에서 자동 검색 시도
+        if (!wroteText)
+        {
+            var tmpChild = dialogueBubble.GetComponentInChildren<TextMeshProUGUI>();
+            if (tmpChild != null)
+            {
+                tmpChild.text = dialogue;
+                wroteText = true;
+            }
+            else
+            {
+                var textChild = dialogueBubble.GetComponentInChildren<Text>();
+                if (textChild != null)
+                {
+                    textChild.text = dialogue;
+                    wroteText = true;
+                }
+            }
+        }
+
+        dialogueBubble.SetActive(true);
+        float dur = durationOverride ?? dialogueDuration;
+        dialogueCoroutine = StartCoroutine(HideDialogueAfterSeconds(dur));
+    }
+
+    private IEnumerator HideDialogueAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        if (dialogueBubble) dialogueBubble.SetActive(false);
+        dialogueCoroutine = null;
+    }
 }

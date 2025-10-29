@@ -623,10 +623,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueDataAsset: {fileID: 11400000, guid: 356a9d26070ab1346b50e0eeabacd092, type: 2}
-  DialogueBubble: {fileID: 7082139427412766280}
-  DialogueText: {fileID: 4902280082590269456}
-  DialogueDuration: 3
+  dialogueData: {fileID: 11400000, guid: 356a9d26070ab1346b50e0eeabacd092, type: 2}
+  dialogueBubble: {fileID: 7082139427412766280}
+  dialogueTextComponent: {fileID: 4902280082590269456}
+  dialogueDuration: 3
   id: 1001001
   nonCombatStateType: 0
   combatStateType: 0
@@ -650,7 +650,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
-  gunId: hg_jakarov_00
+  gunId: 
   shooter: {fileID: 3380604470911330412}
   returnPoint: {fileID: 0}
   bloodPrefab: {fileID: 3797701039655770728, guid: 1f9f7eee172efdc448c3dce89fb86626, type: 3}
@@ -729,7 +729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunPoint: {fileID: 2767533247749550569}
   gunData:
-    id: 0
+    id: 
     weaponName: Pistol
     Grade: 4
     subType: 0

@@ -291,10 +291,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueDataAsset: {fileID: 11400000, guid: 356a9d26070ab1346b50e0eeabacd092, type: 2}
-  DialogueBubble: {fileID: 255161638582244035}
-  DialogueText: {fileID: 682544786461131480}
-  DialogueDuration: 3
+  dialogueData: {fileID: 11400000, guid: 356a9d26070ab1346b50e0eeabacd092, type: 2}
+  dialogueBubble: {fileID: 255161638582244035}
+  dialogueTextComponent: {fileID: 682544786461131480}
+  dialogueDuration: 3
   id: 1001001
   nonCombatStateType: 0
   combatStateType: 0
