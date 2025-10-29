@@ -29,8 +29,8 @@ public class PurchasePopup : MonoBehaviour
     {
         pending = data;
         var nameToShow = WeaponCatalog.GetDisplayName(data);
-        if (itemNameText) itemNameText.text = data ? nameToShow : "-";
-        if (priceText) priceText.text = data ? $"$ {data.price:N0}" : "$ 0";
+        if (itemNameText) itemNameText.text = data != null ? nameToShow : "-";
+        if (priceText) priceText.text = data != null ? $"$ {data.price:N0}" : "$ 0";
         ShowPurchasePopup();
     }
 
@@ -46,7 +46,7 @@ public class PurchasePopup : MonoBehaviour
 
     private void BuyNow()
     {
-        if (!pending) return;
+        if (pending == null) return;
         bool ok = WeaponInventory.Instance.Buy(pending);
         ClosePurchasePopup();
         if (condition != null) condition.EnoughMoneyPopup(ok);

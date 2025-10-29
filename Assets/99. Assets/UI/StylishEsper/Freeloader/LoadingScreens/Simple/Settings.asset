@@ -26,6 +26,8 @@ MonoBehaviour:
   backgrounds:
   - {fileID: 2800000, guid: 9939e0e5f181ac448b59798e0be108fa, type: 3}
   - {fileID: 2800000, guid: f0b9f41e5ff58774e835e63b1107b8d4, type: 3}
+  - {fileID: 2800000, guid: 9d394c5a6f7802a4aab5af11e16bc344, type: 3}
+  - {fileID: 2800000, guid: 91b457ddd6f0bfe48a48e1f16f09e8cc, type: 3}
   backgroundDisplayLength: 6
   enableBackgroundZoom: 1
   showTips: 1

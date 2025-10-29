@@ -60,17 +60,17 @@ public class ArmorySlotViewSimple : MonoBehaviour
         var inv = WeaponInventory.Instance;
         if (inv == null || inv.Owned == null) return;
 
-        IEnumerable<GunData> q = inv.Owned.Where(d => d);
+        IEnumerable<GunData> q = inv.Owned.Where(d => d != null);
 
         if (filterByPhaseTag)
         {
             var want = (slot == SlotPhase.Stealth) ? GunData.PhaseTag.Stealth : GunData.PhaseTag.Combat;
-            q = q.Where(d => d.phaseTag == want || d.phaseTag == GunData.PhaseTag.Any);
+            q = q.Where(d => d.prefabInfo.phaseTag == want || d.prefabInfo.phaseTag == GunData.PhaseTag.Any);
         }
 
         // 스프라이트 없어도 동작은 하지만, UI 품질을 위해 있으면 우선
         // (스프라이트 없는 것도 포함하려면 아래 Where 제거)
-        q = q.Where(d => d.weaponSprite != null);
+        q = q.Where(d => d.prefabInfo.weaponSprite != null);
 
         candidates = q.Distinct().ToList();
         currentItemIndex = Mathf.Clamp(currentItemIndex, 0, Mathf.Max(0, candidates.Count - 1));
@@ -97,7 +97,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
     {
         if (!carousel || carousel.panels == null) return;
         var cur = GetCurrent();
-        var sp = cur ? cur.weaponSprite : null;
+        var sp = cur != null ? cur.prefabInfo.weaponSprite : null;
 
         for (int i = 0; i < carousel.panels.Length; i++)
         {
@@ -132,7 +132,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
     private void RefreshDetails()
     {
         var d = GetCurrent();
-        if (!d)
+        if (d == null)
         {
             if (titleText) titleText.text = "-";
             if (damageText) damageText.text = "공격력 : -";
@@ -157,10 +157,10 @@ public class ArmorySlotViewSimple : MonoBehaviour
     private void SaveLoadoutAndApply()
     {
         var d = GetCurrent();
-        if (!d) return;
+        if (d == null) return;
 
-        if (slot == SlotPhase.Stealth) LoadoutProfile.Instance?.SetStealth(d.name, save: true);
-        else LoadoutProfile.Instance?.SetCombat(d.name, save: true);
+        if (slot == SlotPhase.Stealth) LoadoutProfile.Instance?.SetStealth(d.weaponName, save: true);
+        else LoadoutProfile.Instance?.SetCombat(d.weaponName, save: true);
 
         var wm = WeaponManager.Instance;
         if (wm)

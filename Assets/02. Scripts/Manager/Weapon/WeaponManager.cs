@@ -73,12 +73,12 @@ public sealed class WeaponManager : Singleton<WeaponManager>
 
         if (owned != null && owned.Count > 0)
         {
-            foreach (var d in owned) if (d) weaponSlots.Add(CreateShooter(d));
+            foreach (var d in owned) if (d != null) weaponSlots.Add(CreateShooter(d));
         }
         else
         {
             // 2) 폴백
-            foreach (var d in initializeDatas) if (d) weaponSlots.Add(CreateShooter(d));
+            foreach (var d in initializeDatas) if (d != null) weaponSlots.Add(CreateShooter(d));
         }
 
         // 로드아웃 적용(슬롯 인덱스 확정)
@@ -93,7 +93,7 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     private Shooter CreateShooter(GunData data)
     {
         var parent = (GameManager.Instance && GameManager.Instance.Player) ? GameManager.Instance.Player : transform;
-        var go = new GameObject($"Shooter_{data.name}");
+        var go = new GameObject($"Shooter_{data.weaponName}");
         go.transform.SetParent(parent, false);
         go.transform.localPosition = Vector3.zero;
         go.transform.localRotation = Quaternion.identity;
@@ -121,7 +121,7 @@ public sealed class WeaponManager : Singleton<WeaponManager>
         // 2) 슬롯 인덱스 찾기
         int FindIndex(GunData target)
         {
-            if (!target) return -1;
+            if (target == null) return -1;
             for (int i = 0; i < weaponSlots.Count; i++)
                 if (weaponSlots[i] && weaponSlots[i].gunData == target) return i;
             return -1;
@@ -144,13 +144,13 @@ public sealed class WeaponManager : Singleton<WeaponManager>
             for (int i = 0; i < weaponSlots.Count; i++)
             {
                 var s = weaponSlots[i]; if (!s || i == avoid) continue;
-                var d = s.gunData; if (d && pred(d)) return i;
+                var d = s.gunData; if (d != null && pred(d)) return i;
             }
             return -1;
         }
-        int idx = AnyMatch(d => d.phaseTag == tag);
+        int idx = AnyMatch(d => d.prefabInfo.phaseTag == tag);
         if (idx >= 0) return idx;
-        if (preferAny) idx = AnyMatch(d => d.phaseTag == GunData.PhaseTag.Any);
+        if (preferAny) idx = AnyMatch(d => d.prefabInfo.phaseTag == GunData.PhaseTag.Any);
         return idx;
     }
 
@@ -184,7 +184,7 @@ public sealed class WeaponManager : Singleton<WeaponManager>
 
     public bool EquipByData(GunData data)
     {
-        if (!data) return false;
+        if (data == null) return false;
         for (int i = 0; i < weaponSlots.Count; i++)
             if (weaponSlots[i] && weaponSlots[i].gunData == data)
                 return EquipByIndex(i);
@@ -194,15 +194,15 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     // === 상점 구매 이벤트: 풀 전체 리빌드 없이 "Shooter 1개만" 증설 ===
     private void OnItemBought(GunData data)
     {
-        if (!data) return;
+        if (data == null) return;
 
         var shooter = CreateShooter(data);
         int newIdx = weaponSlots.Count;
         weaponSlots.Add(shooter);
 
         // 빈 슬롯 자동 채움
-        bool stealthOK = data.phaseTag == GunData.PhaseTag.Stealth || data.phaseTag == GunData.PhaseTag.Any;
-        bool combatOK = data.phaseTag == GunData.PhaseTag.Combat || data.phaseTag == GunData.PhaseTag.Any;
+        bool stealthOK = data.prefabInfo.phaseTag == GunData.PhaseTag.Stealth || data.prefabInfo.phaseTag == GunData.PhaseTag.Any;
+        bool combatOK = data.prefabInfo.phaseTag == GunData.PhaseTag.Combat || data.prefabInfo.phaseTag == GunData.PhaseTag.Any;
         if (stealthSlotIndex < 0 && stealthOK) stealthSlotIndex = newIdx;
         if (combatSlotIndex < 0 && combatOK) combatSlotIndex = newIdx;
     }
@@ -228,7 +228,7 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     public int AddAmmoToPhase(GamePhase phase, int amount)
     {
         var s = (phase == GamePhase.Combat) ? GetCombatShooter() : GetStealthShooter();
-        if (!s) return 0;
+        if (s == null) return 0;
         int added = s.AddAmmo(amount); // Shooter.cs의 API
         OnAmmoChanged.Invoke();
         return added;
