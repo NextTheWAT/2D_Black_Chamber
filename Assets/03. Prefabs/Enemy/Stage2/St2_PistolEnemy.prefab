@@ -515,6 +515,7 @@ MonoBehaviour:
   gunId: 20010500
   shooter: {fileID: 3380604470911330412}
   returnPoint: {fileID: 0}
+  bloodPrefab: {fileID: 3797701039655770728, guid: 1f9f7eee172efdc448c3dce89fb86626, type: 3}
   questionIcon: {fileID: 1578762997980991753}
   exclamationIcon: {fileID: 3728386341490308760}
   minIconShowTime: 0.12

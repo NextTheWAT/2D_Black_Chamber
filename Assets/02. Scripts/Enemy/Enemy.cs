@@ -45,6 +45,8 @@ public class Enemy : MonoBehaviour
 
     // === UI: Alert Icons ===
     private enum AlertIconState { None, Suspicious, Alert }
+    [Header("VFX")]
+    [SerializeField] private BloodDecal bloodPrefab;
 
     [Header("UI - Alert Icons")]
     [SerializeField] private GameObject questionIcon;     // ? 오브젝트 (애니메이션 포함 가능)
@@ -484,6 +486,19 @@ public class Enemy : MonoBehaviour
                 // else: 기본값 유지(프리팹 설정치)
             }
         }
+        // === 혈흔 생성 ===
+        if (bloodPrefab != null)
+        {
+            // 바닥에 살짝 붙게 오프셋
+            Vector3 feet = transform.position + Vector3.down * 0.05f;
+
+            // 방향 값이 있으면 그 각도를 쓰고, 없으면 랜덤
+            float angle = Random.Range(0f, 360f);
+
+            var decal = Instantiate(bloodPrefab, feet, Quaternion.identity);
+            decal.Setup(feet, angle);
+        }
+
     }
 
 
