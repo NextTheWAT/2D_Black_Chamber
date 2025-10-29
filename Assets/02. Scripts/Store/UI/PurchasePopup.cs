@@ -22,7 +22,8 @@ public class PurchasePopup : MonoBehaviour
     {
         if (buyButton) buyButton.onClick.AddListener(BuyNow);
         if (closeButton) closeButton.onClick.AddListener(ClosePurchasePopup);
-        ClosePurchasePopup();
+        if(Time.time < 1f)
+            ClosePurchasePopup();
     }
 
     public void Show(GunData data)
