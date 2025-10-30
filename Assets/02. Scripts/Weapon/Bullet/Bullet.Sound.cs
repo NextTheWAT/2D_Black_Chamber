@@ -1,28 +1,43 @@
+// Bullet.Sound.cs
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D)), RequireComponent(typeof(Collider2D))]
-public partial class Bullet : MonoBehaviour
+public partial class Bullet
 {
-    [SerializeField] private LayerMask wallSoundLayer;
-    [SerializeField] private LayerMask doorSoundLayer;
-    [SerializeField] private LayerMask steelDoorSoundLayer;
-
-    private void OnTriggerEnter2D(Collider2D other)
+    // Bullet.cs에서 호출됨
+    partial void OnBulletObstacleHit(RaycastHit2D hit)
     {
-        int mask = 1 << other.gameObject.layer;
+        if (hit.collider == null) return;
+        if (StructSoundManager.Instance == null) return;
 
-        if ((wallSoundLayer.value & mask) != 0)
+        int layer = hit.collider.gameObject.layer;
+        Vector2 pos = hit.point;
+
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        int doorLayer = LayerMask.NameToLayer("Door");
+        int steelDoorLayer = LayerMask.NameToLayer("SteelDoor");
+
+        if (layer == wallLayer)
         {
-            StructSoundManager.Instance.PlayWallAttackSound(transform.position);
-            Debug.Log("Wall Hit Sound Played");
+            // 벽 타격
+            StructSoundManager.Instance.PlayWallAttackSound(pos);
+            return;
         }
-        else if ((doorSoundLayer.value & mask) != 0)
+
+        if (layer == doorLayer)
         {
-            StructSoundManager.Instance.PlayDoorAttackSound(transform.position);
+            // 일반 문 타격
+            StructSoundManager.Instance.PlayDoorAttackSound(pos);
+            return;
         }
-        else if ((steelDoorSoundLayer.value & mask) != 0)
+
+        if (layer == steelDoorLayer)
         {
-            StructSoundManager.Instance.PlaySteelDoorAttackSound(transform.position);
+            // 강철문 타격
+            StructSoundManager.Instance.PlaySteelDoorAttackSound(pos);
+            return;
         }
+
+        // 필요하면 기타 표면 기본 사운드 추가
+        // StructSoundManager.Instance.PlayWallAttackSound(pos);
     }
 }
