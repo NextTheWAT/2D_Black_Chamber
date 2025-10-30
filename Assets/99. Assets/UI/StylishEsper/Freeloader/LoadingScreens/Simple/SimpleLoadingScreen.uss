@@ -11,6 +11,7 @@
     padding-left: 0;
     letter-spacing: 4px;
     word-spacing: 4px;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .h1 {
@@ -24,6 +25,8 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
+    -unity-font-style: normal;
 }
 
 .loadingBar {
@@ -31,6 +34,7 @@
     max-height: 24px;
     background-color: rgb(255, 255, 255);
     transition-duration: 0.4s;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .tipsContainer {
@@ -44,6 +48,7 @@
     padding-bottom: 16px;
     padding-left: 16px;
     background-color: rgba(0, 0, 0, 0.5);
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .heightFull {
@@ -51,6 +56,7 @@
     transition-duration: 0.5s;
     transition-timing-function: ease-in-out;
     transition-delay: 0s;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .heightZero {
@@ -58,24 +64,30 @@
     transition-duration: 0.5s;
     transition-delay: 0s;
     transition-timing-function: ease-in-out;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
-.root {
-    transition-duration: 0.5s;
+:root {
+  /* 전역으로 갈무리 적용 */
+  -unity-font-definition: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
+
 
 .root:disabled {
     opacity: 0;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .fadeOut {
     opacity: 0;
     transition-duration: 0.5s;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .fadeIn {
     opacity: 1;
     transition-duration: 0.5s;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .background {
@@ -90,6 +102,7 @@
     transition-delay: 0s;
     transition-property: opacity;
     -unity-background-scale-mode: scale-and-crop;
+    -unity-font: url("project://database/Assets/08.%20Fonts/Galmuri11.ttf?fileID=12800000&guid=c4ef8635877ff6448b2f8ab81f33d67e&type=3#Galmuri11");
 }
 
 .background:disabled {
