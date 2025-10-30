@@ -69,6 +69,7 @@ public class UIClearResult : UIBase
 
     private void GoLobby()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Debug.Log("[UIClearResult] GoLobby() clicked");
         Time.timeScale = 1f;
 
@@ -102,6 +103,7 @@ public class UIClearResult : UIBase
 
     private void Retry()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Debug.Log("[UIClearResult] Retry() clicked");
         Time.timeScale = 1f;
 

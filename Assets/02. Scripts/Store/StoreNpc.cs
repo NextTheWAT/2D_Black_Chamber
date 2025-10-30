@@ -19,6 +19,7 @@ public class StoreNpc : MonoBehaviour, Iinteraction
 
     public void OpenStore()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         weaponsPanel.SetActive(true);
         toolsPanel.SetActive(false);
         Time.timeScale = 0f;
@@ -27,6 +28,7 @@ public class StoreNpc : MonoBehaviour, Iinteraction
 
     public void CloseStore()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         weaponsPanel.SetActive(false);
         toolsPanel.SetActive(false);
         Time.timeScale = 1f;

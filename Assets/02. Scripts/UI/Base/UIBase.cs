@@ -31,6 +31,7 @@ public abstract class UIBase : MonoBehaviour
 
     public virtual void OpenUI()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         gameObject.SetActive(true);
         EnsureRefs();
 
@@ -45,6 +46,7 @@ public abstract class UIBase : MonoBehaviour
 
     public virtual void CloseUI()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         EnsureRefs();
 
         // 원래 의미 보존: 닫기 시작 시 훅 호출

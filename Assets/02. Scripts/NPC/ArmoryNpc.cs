@@ -18,6 +18,7 @@ public class ArmoryNpc : MonoBehaviour, Iinteraction
 
     public void Open()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         arMoryPanel.SetActive(true);
         Time.timeScale = 0f;
         isOpen = true;
@@ -25,6 +26,7 @@ public class ArmoryNpc : MonoBehaviour, Iinteraction
 
     public void Close()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         arMoryPanel.SetActive(false);
         Time.timeScale = 1f;
         isOpen = false;
