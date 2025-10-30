@@ -39,12 +39,16 @@ public class StageSelectDialogueUI : UIBase
     [SerializeField] private Button stage1Button;
     [SerializeField] private Button stage2Button;
     [SerializeField] private Button stage3Button;
+    [SerializeField] private Button stage4Button;
+    [SerializeField] private Button stage5Button;
     [SerializeField] private Button exitButton;
 
     [Header("Scene Names")]
     [SerializeField] private string stage1SceneName = "ProtoTypeScene";
     [SerializeField] private string stage2SceneName = "ProtoTypeScene";
     [SerializeField] private string stage3SceneName = "ProtoTypeScene";
+    [SerializeField] private string stage4SceneName = "ProtoTypeScene";
+    [SerializeField] private string stage5SceneName = "ProtoTypeScene";
 
     // ⬅️ 타이핑 설정 추가
     [Header("Typing Settings")]
@@ -87,6 +91,18 @@ public class StageSelectDialogueUI : UIBase
             {
                 stage3Button.onClick.RemoveAllListeners();
                 stage3Button.onClick.AddListener(() => TryStartStage(3, stage3SceneName));
+            }
+
+            if (stage4Button)
+            {
+                stage4Button.onClick.RemoveAllListeners();
+                stage4Button.onClick.AddListener(() => TryStartStage(4, stage4SceneName));
+            }
+
+            if (stage5Button)
+            {
+                stage5Button.onClick.RemoveAllListeners();
+                stage5Button.onClick.AddListener(() => TryStartStage(5, stage5SceneName));
             }
 
             if (exitButton)
@@ -248,7 +264,7 @@ public class StageSelectDialogueUI : UIBase
 
     public void RequestClose()
     {
-        UIManager.Instance.CloseUI<StageSelectDialogueUI>();
+        OnClose();
     }
 
     protected override void OnClose()
@@ -302,9 +318,6 @@ public class StageSelectDialogueUI : UIBase
 
         PlayerPrefs.SetString("LastStage", sceneName);
         PlayerPrefs.Save();
-
-        //LoadingCanvas.LoadScene(sceneName);
-        LoadingScreen.Instance.Load(sceneName);
     }
 
     /// <summary>
@@ -356,6 +369,34 @@ public class StageSelectDialogueUI : UIBase
             }
         }
 
+        if (PlayerPrefs.GetInt("Stage4_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage4_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage4ClearDialogues != null &&
+                dialogueData.stage4ClearDialogues.Count > 0 &&
+                dialogueData.stage4ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage4ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
+        if (PlayerPrefs.GetInt("Stage5_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage5_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage5ClearDialogues != null &&
+                dialogueData.stage5ClearDialogues.Count > 0 &&
+                dialogueData.stage5ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage5ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -393,6 +434,8 @@ public class StageSelectDialogueUI : UIBase
         UpdateButton(stage1Button, IsUnlocked(1)); // 항상 true(표기 일관성)
         UpdateButton(stage2Button, IsUnlocked(2)); // Stage1_Cleared==1이면 true
         UpdateButton(stage3Button, IsUnlocked(3)); // Stage2_Cleared==1이면 true
-    }
+        UpdateButton(stage4Button, IsUnlocked(4)); // Stage3_Cleared==1이면 true
+        UpdateButton(stage5Button, IsUnlocked(5));
+    }
 
 }

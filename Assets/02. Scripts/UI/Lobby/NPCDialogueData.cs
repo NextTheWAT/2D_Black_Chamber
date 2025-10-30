@@ -17,4 +17,6 @@ public class NPCDialogueData : ScriptableObject
     public List<DialogueEntry> stage1ClearDialogues;
     public List<DialogueEntry> stage2ClearDialogues;
     public List<DialogueEntry> stage3ClearDialogues;
+    public List<DialogueEntry> stage4ClearDialogues;
+    public List<DialogueEntry> stage5ClearDialogues;
 }

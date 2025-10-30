@@ -176,6 +176,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoadingScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 1418655148552897180, guid: 7f1362c9ef33c2d49bf8ea310f993216, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3998474065936841431, guid: 7f1362c9ef33c2d49bf8ea310f993216, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -241,6 +245,10 @@ PrefabInstance:
     - target: {fileID: 4444015179403229149, guid: 527c978593557c949a62db3296c465cf, type: 3}
       propertyPath: m_Name
       value: Manger
+      objectReference: {fileID: 0}
+    - target: {fileID: 4444015179403229149, guid: 527c978593557c949a62db3296c465cf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5115538189022398859, guid: 527c978593557c949a62db3296c465cf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -447,10 +455,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 651200045435593960, guid: 0d9c331dac48c9147bb6f6aeeeb2bc8e, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1256578998127337858, guid: 0d9c331dac48c9147bb6f6aeeeb2bc8e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
