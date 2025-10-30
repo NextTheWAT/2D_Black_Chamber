@@ -27,6 +27,7 @@ public class Gunimage : MonoBehaviour
 
     public void clickshowpanel(bool plus)  //클릭 시 계속 넘어감
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         int targetindex = currentIndex;
         if (plus) targetindex++;
         else targetindex--;

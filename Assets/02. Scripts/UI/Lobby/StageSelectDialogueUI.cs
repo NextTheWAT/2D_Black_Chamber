@@ -248,11 +248,13 @@ public class StageSelectDialogueUI : UIBase
 
     public void RequestClose()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         UIManager.Instance.CloseUI<StageSelectDialogueUI>();
     }
 
     protected override void OnClose()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Time.timeScale = 1f;
     }
 
@@ -261,6 +263,7 @@ public class StageSelectDialogueUI : UIBase
     // =========================
     private void TryStartStage(int stageNumber, string sceneName)
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         if (!IsUnlocked(stageNumber))
         {
             // 잠겨있으면 Locked 시퀀스만 출력, 씬 이동 없음

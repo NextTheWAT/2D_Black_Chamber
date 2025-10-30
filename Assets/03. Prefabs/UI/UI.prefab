@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 1245952718097826298}
   - component: {fileID: 8458289305022089876}
   - component: {fileID: 6685368731063062915}
-  - component: {fileID: 5554475070360195577}
   - component: {fileID: 3399346255786632071}
   m_Layer: 0
   m_Name: CloseBtn
@@ -288,20 +287,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5554475070360195577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 64317968422669212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b38831fb35e486458a01620d008cd21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponsPanel: {fileID: 0}
-  toolsPanel: {fileID: 0}
 --- !u!114 &3399346255786632071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,7 +772,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7836651596544010638}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: StoreNpc, Assembly-CSharp
+        m_MethodName: CloseStore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7520139955684228974
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class TitleUIController : MonoBehaviour
 
     public void StartGame()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+
         const string PrefKey_TutorialDone = "TutorialDone";
         string tutorialSceneName = "TutorialScene";
         string lobbySceneName = "02. LobbyScene";
@@ -34,11 +36,13 @@ public class TitleUIController : MonoBehaviour
 
     public void OpenSetting()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         UIManager.Instance.OpenUI<SettingPopup>();
     }
 
     public void QuitGame()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Debug.Log("게임 종료");
 
 #if UNITY_EDITOR

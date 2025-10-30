@@ -31,6 +31,7 @@ public class UIGameOVer : UIBase
 
     private void OnClickLobby()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Debug.Log("[UIGameOver] Lobby clicked");
         if (string.IsNullOrEmpty(lobbySceneName))
         {
@@ -49,6 +50,7 @@ public class UIGameOVer : UIBase
 
     private void OnClickRetry()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Debug.Log("[UIGameOver] Retry clicked");
 
         string lastStage = PlayerPrefs.GetString("LastStage", string.Empty);

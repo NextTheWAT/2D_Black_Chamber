@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UISoundManager : SoundManagerBase<StructSoundManager>
+public class UISoundManager : SoundManagerBase<UISoundManager>
 {
     [Header("UI SFX")]
     public SoundData uiButtonClickSound;
