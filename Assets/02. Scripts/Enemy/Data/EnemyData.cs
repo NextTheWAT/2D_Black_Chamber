@@ -10,7 +10,7 @@ public class EnemyData
     public float speed;
     public float viewDistance;
     public float viewAngle;
-    public int equipWepaon;
+    public string equipWeapon;
 
     [Header("Patorl")]
     public float patrolPauseTime; // ¼øÂû Áß ¸ØÃß´Â ½Ã°£
