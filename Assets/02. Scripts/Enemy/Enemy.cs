@@ -47,6 +47,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int startPatrolPointIndex;
 
     [Header("Attack")]
+    [SerializeField] private bool useGunID = true; // 무기 ID 사용 여부
     [SerializeField] private string gunId; // 사용 무기 ID
     [SerializeField] private Shooter shooter;
 
@@ -326,7 +327,8 @@ public class Enemy : MonoBehaviour
 
     private void InitializeGunData()
     {
-        GunData gunData = FirebaseManager.Instance.GetGunData(gunId);
+        string myGunID = useGunID ? gunId : data.equipWeapon;
+        GunData gunData = FirebaseManager.Instance.GetGunData(myGunID);
         if (gunData == null) return;
         shooter.Initialize(gunData);
     }
