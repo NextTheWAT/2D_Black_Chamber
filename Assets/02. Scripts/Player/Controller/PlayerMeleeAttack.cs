@@ -11,6 +11,8 @@ public class PlayerMeleeAttack : MonoBehaviour
 
     public void MeleeAttack()
     {
+        WeaponSoundManager.Instance.PlayCloseAttackSound(transform.position);
+
         Vector2 boxOrigin = (Vector2)transform.position + (Vector2)(transform.up * hitBoxDistance);
         float angle = Vector2.SignedAngle(Vector2.right, transform.up);
         Collider2D hit = Physics2D.OverlapBox(boxOrigin, hitBoxSize, angle, enemyLayer);
