@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phaseTag: 0
   autoOwnedOnStart: 0
-  hideFromShop: 0
+  hideFromShop: 1
   bulletPrefab: {fileID: 8908556986258763193, guid: 31971c2a0ebeb4046a7e923603d71f7d, type: 3}
   muzzleFlashPrefab: {fileID: 7841737132505529772, guid: e676768f42219c740ac29d289c13c241, type: 3}
   upperAnimator: {fileID: 9100000, guid: 01a6f7a40d4c2004f8b75b762f0d3161, type: 2}
