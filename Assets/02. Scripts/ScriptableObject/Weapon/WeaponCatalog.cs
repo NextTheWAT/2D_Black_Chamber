@@ -7,7 +7,7 @@ using System.Reflection;
 public class WeaponCatalog : ScriptableObject
 {
     [Tooltip("상점/무기방 등에 노출할 GunData 목록")]
-    public int[] gunDataIds;
+    // public string[] gunDataIds;
     private List<GunData> items = new();
 
     public void Initialize()

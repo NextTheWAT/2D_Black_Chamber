@@ -10,7 +10,7 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public WeaponCatalog catalog;
 
     [Header("Starter Owned")]
-    [SerializeField] private List<int> starterOwnedId = new();
+    [SerializeField] private List<string> starterOwnedId = new();
     // [SerializeField] private List<GunData> starterOwned = new();
 
     [Header("Runtime Owned (ReadOnly)")]
@@ -83,7 +83,11 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public IEnumerable<GunData> GetShopList(bool includeOwned = false, bool hideHidden = true)
     {
         var all = catalog ? catalog.All : Enumerable.Empty<GunData>();
-        if (hideHidden) all = all.Where(d => !d.prefabInfo.hideFromShop);
+
+        if (hideHidden)
+        {
+            all = all.Where(d => d.prefabInfo? !d.prefabInfo.hideFromShop : false);
+        }
         return includeOwned ? all : all.Where(d => !IsOwned(d));
     }
 

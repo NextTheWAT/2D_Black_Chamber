@@ -18,6 +18,8 @@ public partial class Bullet : MonoBehaviour
     private ContactFilter2D damageFilter; // 데미지 충돌 필터
     private ContactFilter2D obstacleFilter; // 장애물 충돌 필터
 
+    partial void OnBulletObstacleHit(RaycastHit2D hit);
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -108,8 +110,12 @@ public partial class Bullet : MonoBehaviour
         if (obstacleHitEffect != null)
             SpawnEffect(obstacleHitEffect, hit);
 
+        // 레이어별 사운드: StructSoundManager 호출 (구현은 .Sound 쪽)
+        OnBulletObstacleHit(hit);
+
         Destroy(gameObject);
     }
+
 
     private void SpawnEffect(GameObject effectPrefab, RaycastHit2D hit)
     {

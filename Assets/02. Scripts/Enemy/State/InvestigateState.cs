@@ -13,6 +13,11 @@ public class InvestigateState : BaseState
 
     public override void Enter()
     {
+        // '수색' 대사 출력 로직 수정 (ScriptableObject 기반)
+        // EnemyState.Investigate 상태의 랜덤 대사를 가져옴
+        string dialogue = owner.GetRandomDialogue(EnemyState.Investigate);
+        owner.DisplayDialogue(dialogue);
+
         BeginInvestigate();
         ConditionalLogger.Log("InvestigateState Enter");
     }

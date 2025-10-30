@@ -150,6 +150,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueData: {fileID: 0}
+  dialogueBubble: {fileID: 0}
+  dialogueTextComponent: {fileID: 0}
+  dialogueDuration: 3
   id: 1001001
   nonCombatStateType: 0
   combatStateType: 0
@@ -173,7 +177,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
-  gunId: 20030000
+  gunId: smg_pizon_00
   shooter: {fileID: 7165611205558197295}
   returnPoint: {fileID: 0}
   bloodPrefab: {fileID: 3797701039655770728, guid: 1f9f7eee172efdc448c3dce89fb86626, type: 3}

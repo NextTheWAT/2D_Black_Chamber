@@ -1,4 +1,5 @@
 using UnityEngine;
+using Constants; // EnemyState Enum 사용을 위해 추가 (프로젝트 구조에 따라 필요할 수 있음)
 
 public class SuspectState : BaseState
 {
@@ -18,6 +19,10 @@ public class SuspectState : BaseState
         currentDetectionRange = 0f;
         owner.SetBackwardLightRadius(0f);
         ConditionalLogger.Log("Enter Suspect State");
+
+        // '의심' 대사 출력 로직 수정 (ScriptableObject 기반)
+        string dialogue = owner.GetRandomDialogue(EnemyState.Suspect);
+        owner.DisplayDialogue(dialogue);
     }
 
     public override void Update()
@@ -48,5 +53,4 @@ public class SuspectState : BaseState
         owner.SetBackwardLightRadius(0f);
         ConditionalLogger.Log("Exit Suspect State");
     }
-
 }

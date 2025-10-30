@@ -9,10 +9,3 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 12385, guid: 0000000000000000e000000000000000, type: 0}
   disableValidation: 0
-AssetOrigin:
-  serializedVersion: 1
-  productId: 301874
-  packageName: Freeloader
-  packageVersion: 1.0.1
-  assetPath: Assets/StylishEsper/Freeloader/LoadingScreens/Pixel/PixelLoadingScreen.uss
-  uploadId: 759973

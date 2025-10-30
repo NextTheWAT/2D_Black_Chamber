@@ -13,7 +13,7 @@ public class GunData
     // ============= 공통 태그 (기존 시스템 호환) =============
     public enum PhaseTag { Any, Stealth, Combat } // 전투/잠입 로드아웃 구분(기존 무기매니저 호환)
     // ============= ID / 표시 정보 / 분류 =============
-    public int id = 0;                         // 무기 고유 ID (표 스펙)
+    public string id;                         // 무기 고유 ID (표 스펙)
     public string weaponName = "Pistol";       // 무기 표시 이름 (예: "M1911")
     public int Grade = 4;                      // 무기 등급(1~4 등, 스펙 표의 4~1 역순 사용 가능)
 
