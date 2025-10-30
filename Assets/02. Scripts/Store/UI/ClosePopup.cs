@@ -16,6 +16,7 @@ public class ClosePopup : MonoBehaviour
 
     public void CloseThisPopup()
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         gameObject.SetActive(false);
     }
 }
