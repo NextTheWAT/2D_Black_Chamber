@@ -6255,6 +6255,9 @@ MonoBehaviour:
   pistolObject: {fileID: 2371444319943290370}
   rifleObject: {fileID: 8341841006860028452}
   knifeObject: {fileID: 8710064594400648582}
+  pistolImage: {fileID: 2128719649890328715}
+  rifleImage: {fileID: 6501681769629496457}
+  knifeImage: {fileID: 8167008582186367382}
   ammoText: {fileID: 3986576744510390965}
   selectedScale: {x: 1.15, y: 1.15, z: 1}
   deselectedScale: {x: 0.9, y: 0.9, z: 1}
@@ -32309,6 +32312,9 @@ MonoBehaviour:
   pistolObject: {fileID: 6909066461755994377}
   rifleObject: {fileID: 6002147832010087349}
   knifeObject: {fileID: 4045152990219034719}
+  pistolImage: {fileID: 1394798183808253477}
+  rifleImage: {fileID: 1487775054070747905}
+  knifeImage: {fileID: 8304629060718887448}
   ammoText: {fileID: 5470503700662778902}
   selectedScale: {x: 1.15, y: 1.15, z: 1}
   deselectedScale: {x: 0.9, y: 0.9, z: 1}

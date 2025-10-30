@@ -18,6 +18,11 @@ public class UIHUDSlots : MonoBehaviour
     [SerializeField] private GameObject pistolObject; //잠입
     [SerializeField] private GameObject rifleObject; //난전
     [SerializeField] private GameObject knifeObject; //총알없음
+
+    [SerializeField] private Image pistolImage;
+    [SerializeField] private Image rifleImage;
+    [SerializeField] private Image knifeImage;
+
     [SerializeField] private TMP_Text ammoText; //총알 수
 
     [Header("Weapon Scale (선택/비선택)")]
@@ -143,10 +148,12 @@ public class UIHUDSlots : MonoBehaviour
 
     private void RefreshWeaponUI()
     {
-        if (WeaponManager.Instance == null || WeaponManager.Instance.CurrentWeapon == null)
+        WeaponManager weaponManager = WeaponManager.Instance;
+
+        if (weaponManager == null || weaponManager.CurrentWeapon == null)
             return;
 
-        int total = WeaponManager.Instance.GetMagazine() + WeaponManager.Instance.GetReserve();
+        int total = weaponManager.GetMagazine() + weaponManager.GetReserve();
         bool hasAnyAmmo = total > 0;
 
         GameObject activeObj;
@@ -162,6 +169,12 @@ public class UIHUDSlots : MonoBehaviour
                             GameManager.Instance.CurrentPhase == Constants.GamePhase.Combat;
             activeObj = isCombat ? rifleObject : pistolObject;
         }
+
+        if (pistolImage && weaponManager.StealthWeapon)
+            pistolImage.sprite = weaponManager.StealthWeapon.gunData.prefabInfo.weaponSprite;
+
+        if (rifleImage && weaponManager.CombatWeapon)
+            rifleImage.sprite = weaponManager.CombatWeapon.gunData.prefabInfo.weaponSprite;
 
         UpdateWeaponVisuals(activeObj);
         RefreshAmmo();

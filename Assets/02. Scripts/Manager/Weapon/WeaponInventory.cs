@@ -83,10 +83,6 @@ public sealed class WeaponInventory : Singleton<WeaponInventory>
     public IEnumerable<GunData> GetShopList(bool includeOwned = false, bool hideHidden = true)
     {
         var all = catalog ? catalog.All : Enumerable.Empty<GunData>();
-        foreach (var item in all)
-        {
-            Debug.Log(item.weaponName);
-        }
 
         if (hideHidden)
         {
