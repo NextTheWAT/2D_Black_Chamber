@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6654339342619343913}
   - component: {fileID: 7838256432857208227}
   - component: {fileID: 8732414181796848982}
+  - component: {fileID: 3942622514226996149}
   m_Layer: 5
   m_Name: DialogueBubble
   m_TagString: Untagged
@@ -76,6 +77,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3942622514226996149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255161638582244035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c9bccf52e3ee634d9957c71545207c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1302543470771056428}
+  worldOffsetX: 0.7
+  worldOffsetY: 0.4
+  zWorld: 0
+  keepUpright: 1
 --- !u!1 &334720690005629761
 GameObject:
   m_ObjectHideFlags: 0
