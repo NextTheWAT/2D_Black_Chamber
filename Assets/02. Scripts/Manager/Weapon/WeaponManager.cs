@@ -35,6 +35,9 @@ public sealed class WeaponManager : Singleton<WeaponManager>
 
     private int currentIndex = -1;
     public Shooter CurrentWeapon => IsValidSlot(currentIndex) ? weaponSlots[currentIndex] : null;
+    public Shooter CombatWeapon => IsValidSlot(combatSlotIndex) ? weaponSlots[combatSlotIndex] : null;
+    public Shooter StealthWeapon => IsValidSlot(stealthSlotIndex) ? weaponSlots[stealthSlotIndex] : null;
+
 
     private void OnEnable()
     {
