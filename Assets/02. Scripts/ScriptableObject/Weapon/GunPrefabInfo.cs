@@ -16,4 +16,5 @@ public class GunPrefabInfo : ScriptableObject
     public RuntimeAnimatorController upperAnimator;
     public Sprite weaponSprite;
     public Vector2 firePointOffset;
+    public SoundData fireSFX;
 }

@@ -145,6 +145,8 @@ public class Shooter : MonoBehaviour
         }
 
         // 간단한 사운드 예시 (표시명 기반)
+        WeaponSoundManager.Instance.PlaySFX(gunData.prefabInfo.fireSFX, transform.position);
+        /*
         string shown = GetString(gunData, "weaponName") ?? GetString(gunData, "displayName");
         if (!string.IsNullOrEmpty(shown))
         {
@@ -153,6 +155,7 @@ public class Shooter : MonoBehaviour
             else if (shown.Contains("Rifle"))
                 WeaponSoundManager.Instance?.PlayRifleShootSound(transform.position);
         }
+        */
 
         // 소음 추가
         NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.gunNoiseData);
