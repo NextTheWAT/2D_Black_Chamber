@@ -265,6 +265,7 @@ public class StageSelectDialogueUI : UIBase
     public void RequestClose()
     {
         OnClose();
+        UIManager.Instance.CloseUI<StageSelectDialogueUI>();
     }
 
     protected override void OnClose()
@@ -277,6 +278,8 @@ public class StageSelectDialogueUI : UIBase
     // =========================
     private void TryStartStage(int stageNumber, string sceneName)
     {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+
         if (!IsUnlocked(stageNumber))
         {
             // 잠겨있으면 Locked 시퀀스만 출력, 씬 이동 없음
@@ -318,6 +321,8 @@ public class StageSelectDialogueUI : UIBase
 
         PlayerPrefs.SetString("LastStage", sceneName);
         PlayerPrefs.Save();
+
+        LoadingScreen.Instance.Load(sceneName);
     }
 
     /// <summary>
