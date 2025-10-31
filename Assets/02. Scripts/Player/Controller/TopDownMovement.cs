@@ -12,7 +12,7 @@ public class TopDownMovement : MonoBehaviour
     private PlayerConditionManager condition;
 
     public Transform mouseTr;
-    public float maxMouseDistance = 5f;
+    private float currentMouseDistance;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;
@@ -56,12 +56,19 @@ public class TopDownMovement : MonoBehaviour
     {
         controller.OnMoveEvent += HandleMove;
         controller.OnLookEvent += HandleLook;
+        CameraUtility.OnCamSizeChanged += OnCamSizeChanged;
     }
 
     private void OnDisable()
     {
         controller.OnMoveEvent -= HandleMove;
         controller.OnLookEvent -= HandleLook;
+        CameraUtility.OnCamSizeChanged -= OnCamSizeChanged;
+    }
+
+    void OnCamSizeChanged(float size)
+    {
+        currentMouseDistance = size;
     }
 
     private void FixedUpdate()
@@ -105,8 +112,9 @@ public class TopDownMovement : MonoBehaviour
         if (mouseTr != null)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos = Vector2.ClampMagnitude(mousePos - (Vector2)transform.position, maxMouseDistance) + (Vector2)transform.position;
-            mouseTr.position = mousePos;
+            Vector2 dirToMouse = (mousePos - (Vector2)transform.position);
+            mouseTr.position = Vector2.ClampMagnitude(dirToMouse, currentMouseDistance) + (Vector2)transform.position;
+            Debug.Log(Vector2.ClampMagnitude(dirToMouse, currentMouseDistance).magnitude);
         }
 
         // 8) 무기 반동 처리

@@ -1,13 +1,18 @@
 using System.Collections;
 using UnityEngine;
 using Cinemachine;
+using System;
 
 
 public static class CameraUtility
 {
+    public static Action<float> OnCamSizeChanged;
+
     private static CinemachineVirtualCamera cachedVcam;
     private static CinemachineBasicMultiChannelPerlin perlin;
     private static Coroutine shakeCoroutine;
+
+    public static float CamSize => cachedVcam != null ? cachedVcam.m_Lens.OrthographicSize : 0f;
 
     public static void SetOrthographicSize(float size)
     {
@@ -22,6 +27,7 @@ public static class CameraUtility
         }
 
         cachedVcam.m_Lens.OrthographicSize = size;
+        OnCamSizeChanged?.Invoke(size);
     }
 
     public static void Shake(float amplitude)
