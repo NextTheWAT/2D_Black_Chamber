@@ -107,7 +107,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
 
             img.sprite = sp;
 
-            // ★ 스프라이트 교체 시 정렬/위치 보정(위로 붙는 증상 방지)
+            // 스프라이트 교체 시 정렬/위치 보정(위로 붙는 증상 방지)
             var r = img.rectTransform;
             r.anchorMin = new Vector2(0.5f, 0.5f);
             r.anchorMax = new Vector2(0.5f, 0.5f);
@@ -123,40 +123,31 @@ public class ArmorySlotViewSimple : MonoBehaviour
     // ----- 좌우 화살표 처리 -----
     private void Step(int delta)
     {
-        if (candidates.Count == 0 || !carousel) return;
+        if (candidates == null || candidates.Count == 0 || carousel == null) return;
 
+        // 다음 인덱스(순환)
         int next = currentItemIndex + delta;
         if (next >= candidates.Count) next = 0;
         else if (next < 0) next = candidates.Count - 1;
 
-        // 1) 들어올 패널에 '다음 무기' 스프라이트 미리 칠하기
-        var nextData = candidates[next];
-        var nextSprite = (nextData != null) ? nextData.prefabInfo?.weaponSprite : null;
+        // 현재/다음 스프라이트
+        var curSprite = candidates[currentItemIndex]?.prefabInfo?.weaponSprite;
+        var nextSprite = candidates[next]?.prefabInfo?.weaponSprite;
 
-        int toIdx = carousel.PeekTargetIndex(delta > 0);
-        var toImg = carousel.GetPanel(toIdx)?.GetComponent<Image>();
-        if (toImg) // Image는 UnityEngine.Object라 이렇게 써도 OK
-        {
-            var r = toImg.rectTransform;
-            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = Vector2.zero;
-            toImg.preserveAspect = true;
-            toImg.sprite = nextSprite;
-        }
-
-        // 2) 캐러셀 슬라이드 (Gunimage에서 SetUpdate(true)로 타임스케일 0에서도 동작)
-        carousel.clickshowpanel(delta > 0);
-
-        // 3) 선택/텍스트/장착 반영
-        currentItemIndex = next;
-        RefreshDetails();
-        SaveLoadoutAndApply();
-
-        // 4) 슬라이드 끝난 뒤 패널들 통일
-        DOVirtual.DelayedCall(carousel.SlideDuration, () =>
-        {
-            PaintPanelsWithCurrent();
-        }).SetUpdate(true);
+        // 슬라이드 전에 from=현재, to=다음 스프라이트 확정하고 슬라이드
+        carousel.SlideWithSprites(
+            toRight: delta > 0,
+            fromSprite: curSprite,
+            toSprite: nextSprite,
+            onComplete: () =>
+            {
+                // 슬라이드가 끝난 뒤에만 확정/장착/통일
+                currentItemIndex = next;
+                RefreshDetails();             // (있다면) 스펙 텍스트 갱신
+                SaveLoadoutAndApply();        // (있다면) 실제 장착 반영
+                carousel.SetAllSprites(nextSprite); // 패널 전체 통일
+            }
+        );
     }
 
     // ----- 하단 스펙 갱신 -----

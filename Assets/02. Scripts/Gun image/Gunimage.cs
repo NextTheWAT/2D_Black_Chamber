@@ -85,7 +85,7 @@ public class Gunimage : MonoBehaviour
         toPanel.gameObject.SetActive(true);
         toPanel.anchoredPosition = -offset;
 
-        // ★ 타임스케일 무시: SetUpdate(true)
+        // 타임스케일 무시: SetUpdate(true)
         var t1 = fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
         var t2 = toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
 
@@ -106,4 +106,58 @@ public class Gunimage : MonoBehaviour
         var img = p.GetComponent<Image>();
         if (img) img.sprite = sprite;
     }
+    public void SlideWithSprites(bool toRight, UnityEngine.Sprite fromSprite, UnityEngine.Sprite toSprite, System.Action onComplete = null)
+    {
+        if (panels == null || panels.Length == 0) { onComplete?.Invoke(); return; }
+
+        // 현재 패널/들어올 패널 계산
+        int toIndex = currentIndex + (toRight ? 1 : -1);
+        if (toIndex >= panels.Length) toIndex = 0;
+        else if (toIndex < 0) toIndex = panels.Length - 1;
+
+        bool moveLeft = toRight;                         // 오른쪽 버튼이면 오른쪽→왼쪽으로 미는 연출
+        Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
+
+        var fromPanel = panels[currentIndex];
+        var toPanel = panels[toIndex];
+
+        // from/to 이미지에 각각 현재/다음 스프라이트를 “슬라이드 직전”에 세팅
+        var fromImg = fromPanel.GetComponent<UnityEngine.UI.Image>() ?? fromPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
+        var toImg = toPanel.GetComponent<UnityEngine.UI.Image>() ?? toPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
+        if (fromImg) fromImg.sprite = fromSprite;
+        if (toImg) toImg.sprite = toSprite;
+
+        // 계층/위치 세팅
+        fromPanel.transform.SetAsLastSibling();
+        toPanel.transform.SetAsFirstSibling();
+        toPanel.gameObject.SetActive(true);
+        toPanel.anchoredPosition = -offset;
+
+        // 타임스케일 0에서도 동작
+        fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+        toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true)
+        .OnComplete(() =>
+        {
+            fromPanel.anchoredPosition = Vector2.zero;
+            fromPanel.gameObject.SetActive(false);
+            currentIndex = toIndex;
+            onComplete?.Invoke();
+        });
+    }
+    public void SetAllSprites(Sprite sprite)
+    {
+        if (panels == null) return;
+        foreach (var rt in panels)
+        {
+            if (!rt) continue;
+            var img = rt.GetComponent<UnityEngine.UI.Image>() ?? rt.GetComponentInChildren<UnityEngine.UI.Image>(true);
+            if (!img) continue;
+            var r = img.rectTransform;
+            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
+            r.anchoredPosition = Vector2.zero;
+            img.preserveAspect = true;
+            img.sprite = sprite;
+        }
+    }
+
 }
