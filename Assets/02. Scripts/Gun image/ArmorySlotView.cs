@@ -1,15 +1,16 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Constants; // GamePhase
+using DG.Tweening;
 
 /// <summary>
-/// ¹«±â¹æÀÇ "ÇÑ ½½·Ô(ÀáÀÔ/³­Àü)"À» ´ã´çÇÏ´Â ÃÊ°£´Ü ÄÁÆ®·Ñ·¯.
-/// - Å¸ÀÔ(HG/AR µî) ÇÊÅÍ ¾øÀ½.
-/// - Owned ÀüÃ¼¸¦ µ¹·Á°¡¸ç ¼±ÅÃ ÀúÀå.
-/// - ¿É¼Ç: ÆäÀÌÁî ÅÂ±×(Any/Stealth/Combat)·Î¸¸ °É·¯º¸±â.
+/// ë¬´ê¸°ë°©ì˜ "í•œ ìŠ¬ë¡¯(ì ì…/ë‚œì „)"ì„ ë‹´ë‹¹í•˜ëŠ” ì´ˆê°„ë‹¨ ì»¨íŠ¸ë¡¤ëŸ¬.
+/// - íƒ€ì…(HG/AR ë“±) í•„í„° ì—†ìŒ.
+/// - Owned ì „ì²´ë¥¼ ëŒë ¤ê°€ë©° ì„ íƒ ì €ì¥.
+/// - ì˜µì…˜: í˜ì´ì¦ˆ íƒœê·¸(Any/Stealth/Combat)ë¡œë§Œ ê±¸ëŸ¬ë³´ê¸°.
 /// </summary>
 public class ArmorySlotViewSimple : MonoBehaviour
 {
@@ -19,22 +20,22 @@ public class ArmorySlotViewSimple : MonoBehaviour
     public SlotPhase slot = SlotPhase.Stealth;
 
     [Header("Filter Option")]
-    [Tooltip("Ã¼Å©ÇÏ¸é ÇØ´ç ÆäÀÌÁî(+Any)¸¸ ÈÄº¸¿¡ Æ÷ÇÔ. ²ô¸é Owned ÀüºÎ ´ë»ó.")]
+    [Tooltip("ì²´í¬í•˜ë©´ í•´ë‹¹ í˜ì´ì¦ˆ(+Any)ë§Œ í›„ë³´ì— í¬í•¨. ë„ë©´ Owned ì „ë¶€ ëŒ€ìƒ.")]
     public bool filterByPhaseTag = true;
 
     [Header("UI")]
-    public Gunimage carousel;    // ±âÁ¸ Ä³·¯¼¿
-    public Button nextButton;    // ¿À¸¥ÂÊ È­»ìÇ¥
-    public Button prevButton;    // ¿ŞÂÊ È­»ìÇ¥
+    public Gunimage carousel;    // ê¸°ì¡´ ìºëŸ¬ì…€
+    public Button nextButton;    // ì˜¤ë¥¸ìª½ í™”ì‚´í‘œ
+    public Button prevButton;    // ì™¼ìª½ í™”ì‚´í‘œ
 
     [Header("Bottom Texts")]
-    public TMP_Text titleText;   // ¹«±â ÀÌ¸§
-    public TMP_Text damageText;  // °ø°İ·Â
-    public TMP_Text accuracyText;// ¸íÁß·ü(Á¤È®µµ)
-    public TMP_Text rpmText;     // ¹ß»ç ¼Óµµ
-    public TMP_Text ammoText;    // ÀåÅº¼ö
+    public TMP_Text titleText;   // ë¬´ê¸° ì´ë¦„
+    public TMP_Text damageText;  // ê³µê²©ë ¥
+    public TMP_Text accuracyText;// ëª…ì¤‘ë¥ (ì •í™•ë„)
+    public TMP_Text rpmText;     // ë°œì‚¬ ì†ë„
+    public TMP_Text ammoText;    // ì¥íƒ„ìˆ˜
 
-    // ³»ºÎ »óÅÂ
+    // ë‚´ë¶€ ìƒíƒœ
     private List<GunData> candidates = new List<GunData>();
     private int currentItemIndex = 0;
 
@@ -52,7 +53,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
         RefreshDetails();
     }
 
-    // ----- ÈÄº¸ ±¸¼º: Owned ÀüÃ¼(¿É¼Ç: ÆäÀÌÁî ÅÂ±×·Î¸¸ ÇÊÅÍ) -----
+    // ----- í›„ë³´ êµ¬ì„±: Owned ì „ì²´(ì˜µì…˜: í˜ì´ì¦ˆ íƒœê·¸ë¡œë§Œ í•„í„°) -----
     private void BuildCandidates()
     {
         candidates.Clear();
@@ -68,15 +69,15 @@ public class ArmorySlotViewSimple : MonoBehaviour
             q = q.Where(d => d.prefabInfo.phaseTag == want || d.prefabInfo.phaseTag == GunData.PhaseTag.Any);
         }
 
-        // ½ºÇÁ¶óÀÌÆ® ¾ø¾îµµ µ¿ÀÛÀº ÇÏÁö¸¸, UI Ç°ÁúÀ» À§ÇØ ÀÖÀ¸¸é ¿ì¼±
-        // (½ºÇÁ¶óÀÌÆ® ¾ø´Â °Íµµ Æ÷ÇÔÇÏ·Á¸é ¾Æ·¡ Where Á¦°Å)
+        // ìŠ¤í”„ë¼ì´íŠ¸ ì—†ì–´ë„ ë™ì‘ì€ í•˜ì§€ë§Œ, UI í’ˆì§ˆì„ ìœ„í•´ ìˆìœ¼ë©´ ìš°ì„ 
+        // (ìŠ¤í”„ë¼ì´íŠ¸ ì—†ëŠ” ê²ƒë„ í¬í•¨í•˜ë ¤ë©´ ì•„ë˜ Where ì œê±°)
         q = q.Where(d => d.prefabInfo.weaponSprite != null);
 
         candidates = q.Distinct().ToList();
         currentItemIndex = Mathf.Clamp(currentItemIndex, 0, Mathf.Max(0, candidates.Count - 1));
     }
 
-    // ----- ÀúÀåµÈ ·Îµå¾Æ¿ôÀ» ÇöÀç ¼±ÅÃÀ¸·Î -----
+    // ----- ì €ì¥ëœ ë¡œë“œì•„ì›ƒì„ í˜„ì¬ ì„ íƒìœ¼ë¡œ -----
     private void PickInitialFromLoadout()
     {
         if (candidates.Count == 0) return;
@@ -92,7 +93,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
         currentItemIndex = (idx >= 0) ? idx : 0;
     }
 
-    // ----- Ä³·¯¼¿ ÆĞ³Î ÀÌ¹ÌÁö¸¦ "ÇöÀç ¼±ÅÃ" ½ºÇÁ¶óÀÌÆ®·Î Ä¥ÇØµÎ±â -----
+    // ----- ìºëŸ¬ì…€ íŒ¨ë„ ì´ë¯¸ì§€ë¥¼ "í˜„ì¬ ì„ íƒ" ìŠ¤í”„ë¼ì´íŠ¸ë¡œ ì¹ í•´ë‘ê¸° -----
     private void PaintPanelsWithCurrent()
     {
         if (!carousel || carousel.panels == null) return;
@@ -102,11 +103,24 @@ public class ArmorySlotViewSimple : MonoBehaviour
         for (int i = 0; i < carousel.panels.Length; i++)
         {
             var img = carousel.panels[i].GetComponent<Image>();
-            if (img) img.sprite = sp;
+            if (!img) continue;
+
+            img.sprite = sp;
+
+            // â˜… ìŠ¤í”„ë¼ì´íŠ¸ êµì²´ ì‹œ ì •ë ¬/ìœ„ì¹˜ ë³´ì •(ìœ„ë¡œ ë¶™ëŠ” ì¦ìƒ ë°©ì§€)
+            var r = img.rectTransform;
+            r.anchorMin = new Vector2(0.5f, 0.5f);
+            r.anchorMax = new Vector2(0.5f, 0.5f);
+            r.pivot = new Vector2(0.5f, 0.5f);
+            r.anchoredPosition = Vector2.zero;
+
+            // í•„ìš” ì‹œ, ë¹„ìœ¨ ìœ ì§€
+            img.preserveAspect = true;
+            // img.SetNativeSize(); // ë””ìì¸ì— ë§ê²Œ ì„ íƒ
         }
     }
 
-    // ----- ÁÂ¿ì È­»ìÇ¥ Ã³¸® -----
+    // ----- ì¢Œìš° í™”ì‚´í‘œ ì²˜ë¦¬ -----
     private void Step(int delta)
     {
         if (candidates.Count == 0 || !carousel) return;
@@ -115,30 +129,47 @@ public class ArmorySlotViewSimple : MonoBehaviour
         if (next >= candidates.Count) next = 0;
         else if (next < 0) next = candidates.Count - 1;
 
-        // Ä³·¯¼¿ ½½¶óÀÌµå (½Ã°¢ È¿°ú)
+        // 1) ë“¤ì–´ì˜¬ íŒ¨ë„ì— 'ë‹¤ìŒ ë¬´ê¸°' ìŠ¤í”„ë¼ì´íŠ¸ ë¯¸ë¦¬ ì¹ í•˜ê¸°
+        var nextData = candidates[next];
+        var nextSprite = (nextData != null) ? nextData.prefabInfo?.weaponSprite : null;
+
+        int toIdx = carousel.PeekTargetIndex(delta > 0);
+        var toImg = carousel.GetPanel(toIdx)?.GetComponent<Image>();
+        if (toImg) // ImageëŠ” UnityEngine.Objectë¼ ì´ë ‡ê²Œ ì¨ë„ OK
+        {
+            var r = toImg.rectTransform;
+            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
+            r.anchoredPosition = Vector2.zero;
+            toImg.preserveAspect = true;
+            toImg.sprite = nextSprite;
+        }
+
+        // 2) ìºëŸ¬ì…€ ìŠ¬ë¼ì´ë“œ (Gunimageì—ì„œ SetUpdate(true)ë¡œ íƒ€ì„ìŠ¤ì¼€ì¼ 0ì—ì„œë„ ë™ì‘)
         carousel.clickshowpanel(delta > 0);
 
-        // ¼±ÅÃ ¹İ¿µ
+        // 3) ì„ íƒ/í…ìŠ¤íŠ¸/ì¥ì°© ë°˜ì˜
         currentItemIndex = next;
-
-        // º¸ÀÌ´Â ÆĞ³Î ½ºÇÁ¶óÀÌÆ®¸¦ »õ ¼±ÅÃÀ¸·Î Ä¥ÇØÁÜ
-        PaintPanelsWithCurrent();
-
         RefreshDetails();
         SaveLoadoutAndApply();
+
+        // 4) ìŠ¬ë¼ì´ë“œ ëë‚œ ë’¤ íŒ¨ë„ë“¤ í†µì¼
+        DOVirtual.DelayedCall(carousel.SlideDuration, () =>
+        {
+            PaintPanelsWithCurrent();
+        }).SetUpdate(true);
     }
 
-    // ----- ÇÏ´Ü ½ºÆå °»½Å -----
+    // ----- í•˜ë‹¨ ìŠ¤í™ ê°±ì‹  -----
     private void RefreshDetails()
     {
         var d = GetCurrent();
         if (d == null)
         {
             if (titleText) titleText.text = "-";
-            if (damageText) damageText.text = "°ø°İ·Â : -";
-            if (accuracyText) accuracyText.text = "¸íÁß·ü : -";
-            if (rpmText) rpmText.text = "¹ß»ç ¼Óµµ : -";
-            if (ammoText) ammoText.text = "ÀåÅº¼ö : -";
+            if (damageText) damageText.text = "ê³µê²©ë ¥ : -";
+            if (accuracyText) accuracyText.text = "ëª…ì¤‘ë¥  : -";
+            if (rpmText) rpmText.text = "ë°œì‚¬ ì†ë„ : -";
+            if (ammoText) ammoText.text = "ì¥íƒ„ìˆ˜ : -";
             return;
         }
 
@@ -147,13 +178,13 @@ public class ArmorySlotViewSimple : MonoBehaviour
             : WeaponCatalog.GetDisplayName(d);
 
         if (titleText) titleText.text = nameToShow;
-        if (damageText) damageText.text = $"°ø°İ·Â : {d.damage}";
-        if (accuracyText) accuracyText.text = $"¸íÁß·ü : {Mathf.RoundToInt(d.accuracy)}";
-        if (rpmText) rpmText.text = $"¹ß»ç ¼Óµµ : {d.rpm}";
-        if (ammoText) ammoText.text = $"ÀåÅº¼ö : {d.maxAmmo}";
+        if (damageText) damageText.text = $"ê³µê²©ë ¥ : {d.damage}";
+        if (accuracyText) accuracyText.text = $"ëª…ì¤‘ë¥  : {Mathf.RoundToInt(d.accuracy)}";
+        if (rpmText) rpmText.text = $"ë°œì‚¬ ì†ë„ : {d.rpm}";
+        if (ammoText) ammoText.text = $"ì¥íƒ„ìˆ˜ : {d.maxAmmo}";
     }
 
-    // ----- ÀúÀå + (ÀÖÀ¸¸é) Áï½Ã ÀåÂø ¹İ¿µ -----
+    // ----- ì €ì¥ + (ìˆìœ¼ë©´) ì¦‰ì‹œ ì¥ì°© ë°˜ì˜ -----
     private void SaveLoadoutAndApply()
     {
         var d = GetCurrent();
