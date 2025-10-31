@@ -5,12 +5,14 @@ public partial class PlayerInputController : TopDownController
 {
     private Shooter shooter;
     private CharacterAnimationController animationController;
+    private PlayerCameraController cameraController;
     private Health health;
 
     private void Awake()
     {
         _camera = Camera.main;
         animationController = GetComponent<CharacterAnimationController>();
+        cameraController = GetComponent<PlayerCameraController>();
         health = GetComponent<Health>();
 
         WeaponManager.Instance.OnWeaponChanged.AddListener((shooter) =>
