@@ -57,19 +57,46 @@ public class StoreCanvasController : MonoBehaviour
 
     public void RefreshGrid()
     {
-        var list = WeaponInventory.Instance
-            .GetShopList(showOwnedInStore, hideHiddenInStore)
-            .Take(slots.Length)
-            .ToList();
+        var list = WeaponInventory.Instance.GetShopList(showOwnedInStore, hideHiddenInStore);
 
-        for (int i = 0; i < slots.Length; i++)
+        var stealthList = list.Where(gun => gun.subType == GunData.WeaponSubType.HG).ToList();
+        var combatList = list.Where(gun => gun.subType != GunData.WeaponSubType.HG).ToList();
+
+        stealthList.Shuffle();
+        combatList.Shuffle();
+
+        int stealSlotCount = Mathf.Min(stealthList.Count, 4);
+
+        // stealth 슬롯 바인딩
+        for (int i = 0; i < stealSlotCount; i++)
         {
             var slot = slots[i];
             if (!slot) continue;
 
-            if (i < list.Count)
+            if (i < stealSlotCount)
             {
-                var gun = list[i];
+                var gun = stealthList[i];
+                bool isRightColumn = i >= 4; // 4x2 레이아웃 기준
+
+                // 새 인터페이스 한 줄로 바인딩
+                slot.Bind(gun, hoverPopup, purchasePopup, isRightColumn);
+                slot.gameObject.SetActive(true);
+            }
+            else
+            {
+                slot.gameObject.SetActive(false);
+            }
+        }
+
+        // combat 슬롯 바인딩
+        for (int i = stealSlotCount; i < slots.Length; i++)
+        {
+            var slot = slots[i];
+            if (!slot) continue;
+
+            if (i < combatList.Count)
+            {
+                var gun = combatList[i];
                 bool isRightColumn = i >= 4; // 4x2 레이아웃 기준
 
                 // 새 인터페이스 한 줄로 바인딩
