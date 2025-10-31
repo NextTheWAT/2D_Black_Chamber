@@ -28,7 +28,7 @@ public class PurchasePopup : MonoBehaviour
 
     public void Show(GunData data)
     {
-        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+        UISoundManager.Instance.PlayShopClickSound(Vector2.zero);
         pending = data;
         var nameToShow = WeaponCatalog.GetDisplayName(data);
         if (itemNameText) itemNameText.text = data != null ? nameToShow : "-";
@@ -38,17 +38,19 @@ public class PurchasePopup : MonoBehaviour
 
     public void ShowPurchasePopup()
     {
+        UISoundManager.Instance.PlayShopClickSound(Vector2.zero);
         if (purchasePanel) purchasePanel.SetActive(true);
     }
 
     public void ClosePurchasePopup()
     {
+        UISoundManager.Instance.PlayShopClickSound(Vector2.zero);
         if (purchasePanel) purchasePanel.SetActive(false);
     }
 
     private void BuyNow()
     {
-        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+        UISoundManager.Instance.PlayShopClickSound(Vector2.zero);
         if (pending == null) return;
         bool ok = WeaponInventory.Instance.Buy(pending);
         ClosePurchasePopup();

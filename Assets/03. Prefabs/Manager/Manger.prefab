@@ -853,7 +853,8 @@ MonoBehaviour:
   minDistance: 3
   maxDistance: 5
   outputGroup: {fileID: 9071368508778807816, guid: 5ceb6476fbf2106478816a9653c144b2, type: 2}
-  uiButtonClickSound: {fileID: 11400000, guid: 4ba9a5e01b56a014cb734642c1f2ba55, type: 2}
+  uiShopClickSound: {fileID: 11400000, guid: 4ba9a5e01b56a014cb734642c1f2ba55, type: 2}
+  uiButtonClickSound: {fileID: 11400000, guid: b4c077e3b2cfd2e4c986f494d9d0862d, type: 2}
   uiVol: 0.5
 --- !u!1 &3451207654649303188
 GameObject:
