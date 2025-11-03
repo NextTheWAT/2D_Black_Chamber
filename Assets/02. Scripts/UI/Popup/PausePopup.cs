@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PausePopup : UIBase
 {
@@ -10,7 +11,7 @@ public class PausePopup : UIBase
     [SerializeField] private Button dimmerButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button settingButton;
-    [SerializeField] private Button lobbyButton;   // 로비로
+    [SerializeField] private Button lobbyButton;    // 로비로
     [SerializeField] private Button quitButton;    // 게임 종료
 
     [SerializeField] private string lobbySceneName = "LobbyScene";
@@ -23,7 +24,6 @@ public class PausePopup : UIBase
 
     private void Reset()
     {
-        if (!canvasGroup) _canvasGroup = GetComponent<CanvasGroup>();
         if (!dimmerButton) dimmerButton = transform.Find("Dimmer")?.GetComponent<Button>();
         if (!continueButton) continueButton = transform.Find("Window/ButtonGroup/ContinueButton")?.GetComponent<Button>();
         if (!settingButton) settingButton = transform.Find("Window/ButtonGroup/SettingButton")?.GetComponent<Button>();
@@ -33,7 +33,7 @@ public class PausePopup : UIBase
 
     private void Start()
     {
-        gameObject.SetActive(false); // 기본 비활성   이녀석이 문제였어
+        gameObject.SetActive(false);
     }
 
     protected override void OnOpen()
@@ -44,13 +44,13 @@ public class PausePopup : UIBase
         {
             if (dimmerButton) dimmerButton.onClick.AddListener(RequestClose);
             if (continueButton) continueButton.onClick.AddListener(RequestClose);
-            if (settingButton) settingButton.onClick.AddListener(() => UIManager.Instance.OpenUI<SettingPopup>());
+            if (settingButton) settingButton.onClick.AddListener(OpenSettingFromPause);
             if (lobbyButton) lobbyButton.onClick.AddListener(OnClickLobby);
             if (quitButton) quitButton.onClick.AddListener(OnClickQuit);
             Initialized = true;
         }
 
-        // 시간 멈춤 + 커서 표시
+        // 시간 멈춤 + 커서 표시 (PausePopup 고유 로직)
         if (Time.timeScale > 0f)
             prevTimeScale = Time.timeScale;
         Time.timeScale = 0f;
@@ -60,38 +60,22 @@ public class PausePopup : UIBase
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        if (canvasGroup)
-        {
-            canvasGroup.alpha = 1f;
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
-        }
-
         UpdateLobbyButtonVisibility();
     }
 
     public void RequestClose()
     {
         if (!gameObject.activeInHierarchy) return;
-        StartCoroutine(CloseSequence());
-    }
 
-    private IEnumerator CloseSequence()
-    {
-        if (canvasGroup)
-        {
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
-        yield return null;
-        UIManager.Instance.CloseUI<PausePopup>();
+        // UIBase의 CloseUI() 호출 (애니메이션 시작)
+        CloseUI();
     }
 
     protected override void OnClose()
     {
         CursorManager.Instance?.SetGameplayCursor(true);
 
-        // 설정으로 배턴 넘기는 상황이면 이번 한 번은 복원 생략 (일시정지 유지)
+        // 시간 복원 (PausePopup 고유 로직)
         if (!suppressRestoreOnce)
             Time.timeScale = prevTimeScale;
         else
@@ -99,13 +83,6 @@ public class PausePopup : UIBase
 
         Cursor.visible = cursorPrevVisible;
         Cursor.lockState = cursorPrevLock;
-
-        if (canvasGroup)
-        {
-            canvasGroup.alpha = 0f;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
     }
 
     private void OpenSettingFromPause()
@@ -139,9 +116,12 @@ public class PausePopup : UIBase
 
     private IEnumerator ReturnToLobby()
     {
-        LoadingScreen.Instance.Load(lobbySceneName);
+        //  UIBase의 CloseUI를 호출하기 위해 RequestClose() 사용
         RequestClose();
-        while (gameObject.activeInHierarchy) yield return null; // 닫힐 때까지 대기
+
+        // UIBase의 CloseUI 애니메이션 완료(gameObject.activeInHierarchy == false)를 대기
+        while (gameObject.activeInHierarchy) yield return null;
+
         if (Time.timeScale == 0f) Time.timeScale = 1f;
         if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
         {
@@ -156,9 +136,7 @@ public class PausePopup : UIBase
         if (!lobbyButton) return;
 
         bool isLobby = SceneManager.GetActiveScene().name == lobbySceneName;
-        lobbyButton.gameObject.SetActive(!isLobby);   // 로비면 숨김, 그 외엔 표시
-                                                      // 만약 레이아웃 유지하고 싶으면 ↓로 교체
-                                                      // lobbyButton.interactable = !isLobby;
+        lobbyButton.gameObject.SetActive(!isLobby);
     }
 
     private void OnClickQuit()

@@ -8,11 +8,6 @@ using UnityEngine.InputSystem; // F키 입력 읽기용
 using System.Collections;
 using Esper.Freeloader; // ⬅️ 코루틴 사용을 위해 추가
 
-// =============================
-// ▶ 진행 플래그 유틸 (PlayerPrefs)
-//  - First Meet 1회 처리
-//  - 스테이지 잠금 해제 판단(다음 단계에서 실제 세팅 붙일 예정)
-// =============================
 static class ProgressFlags
 {
     public static bool Get(string key) => PlayerPrefs.GetInt(key, 0) == 1;
@@ -59,43 +54,40 @@ public class StageSelectDialogueUI : UIBase
     [SerializeField] private GameObject tvOnEffect1; // 첫 번째 TV 효과
     [SerializeField] private GameObject tvOnEffect2; // 두 번째 TV 효과
     [SerializeField] private GameObject tvOnEffect3; // 세 번째 TV 효과
-    [SerializeField] private GameObject tvOnEffect4; // ⬅️ 추가: 네 번째 TV 효과
-    [SerializeField] private GameObject tvOnEffect5; // ⬅️ 추가: 다섯 번째 TV 효과
-    [SerializeField] private GameObject tvOnEffect6; // ⬅️ 추가: 여섯 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect4; // 네 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect5; // 다섯 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect6; // 여섯 번째 TV 효과
 
     // 추가: 각 효과 간의 지연 시간 (초)
     [SerializeField] private float effectDelay = 0.2f;
 
-    // =========================
-    // 대사 진행 상태 변수
-    // =========================
     private List<string> currentLines; // 현재 진행 중 "한 세트"의 줄들
     private int currentIndex = -1;     // 다음에 보여줄 줄 인덱스
     private bool inSequence = false;   // 대사 진행 중 여부
-    private Coroutine typingCoroutine; // ⬅️ 추가: 타이핑 코루틴 제어용
+    private Coroutine typingCoroutine; // 타이핑 코루틴 제어용
+
+    private bool _isEffectPlaying = false;
+    private bool _hasOpenExecuted = false;
 
     private void Start()
     {
         gameObject.SetActive(false);
     }
 
-    // ===================================================================================
-    // 💡 수정됨: OnOpen()은 이제 TV 효과 코루틴만 시작하고, 실제 UI 로직은 ExecuteOnOpenLogic()이 담당
-    // ===================================================================================
     protected override void OnOpen()
     {
+        if (_hasOpenExecuted) return;
+        _hasOpenExecuted = true;
+
         // UI가 열리면, 실제 UI 내용을 보여주기 전에 TV 켜짐 효과 시퀀스 시작
         StartCoroutine(PlayTVOnEffectSequence());
     }
 
-    // ===================================================================================
-    // 💡 수정됨: TV 켜짐 효과 시퀀스 (6단계)
-    // ===================================================================================
-    /// <summary>
-    /// TV 켜짐 효과 6단계를 순차적으로 보여준 후, StageSelectDialogueUI 본체를 초기화하고 팝업합니다.
-    /// </summary>
+    // TV 켜짐 효과 6단계를 순차적으로 보여준 후, StageSelectDialogueUI 본체를 초기화하고 팝업
     private IEnumerator PlayTVOnEffectSequence()
     {
+        _isEffectPlaying = true;
+
         // 1. 초기 상태: TVonEffect 오브젝트들 비활성화 (Unity Inspector에서 미리 설정해두는 것을 권장)
         if (tvOnEffect1) tvOnEffect1.SetActive(false);
         if (tvOnEffect2) tvOnEffect2.SetActive(false);
@@ -108,7 +100,6 @@ public class StageSelectDialogueUI : UIBase
         if (tvOnEffect1)
         {
             tvOnEffect1.SetActive(true);
-            // TimeScale이 0일 수 있으므로 WaitForSecondsRealtime 사용
             yield return new WaitForSecondsRealtime(effectDelay);
             tvOnEffect1.SetActive(false);
         }
@@ -129,7 +120,7 @@ public class StageSelectDialogueUI : UIBase
             tvOnEffect3.SetActive(false);
         }
 
-        // D. 네 번째 효과 (TVonEffect4) ⬅️ 추가됨
+        // D. 네 번째 효과 (TVonEffect4)
         if (tvOnEffect4)
         {
             tvOnEffect4.SetActive(true);
@@ -137,7 +128,7 @@ public class StageSelectDialogueUI : UIBase
             tvOnEffect4.SetActive(false);
         }
 
-        // E. 다섯 번째 효과 (TVonEffect5) ⬅️ 추가됨
+        // E. 다섯 번째 효과 (TVonEffect5)
         if (tvOnEffect5)
         {
             tvOnEffect5.SetActive(true);
@@ -145,7 +136,7 @@ public class StageSelectDialogueUI : UIBase
             tvOnEffect5.SetActive(false);
         }
 
-        // F. 여섯 번째 효과 (TVonEffect6) ⬅️ 추가됨 (마지막은 조금 더 길게 유지)
+        // F. 여섯 번째 효과 (TVonEffect6)
         if (tvOnEffect6)
         {
             tvOnEffect6.SetActive(true);
@@ -153,13 +144,12 @@ public class StageSelectDialogueUI : UIBase
             tvOnEffect6.SetActive(false);
         }
 
+        _isEffectPlaying = false;
+
         // 2. 모든 효과가 끝나면 원래의 OnOpen 로직 실행 (UI 표시 시작)
         ExecuteOnOpenLogic();
     }
 
-    // ===================================================================================
-    // 기존 OnOpen()의 UI 초기화 및 대사 시작 로직
-    // ===================================================================================
     private void ExecuteOnOpenLogic()
     {
         Time.timeScale = 0f; // 일시정지 (TV 효과가 끝난 후 정지)
@@ -238,8 +228,8 @@ public class StageSelectDialogueUI : UIBase
 
     private void Update()
     {
-        // F키로 다음 줄 ⬅️ 수정: 타이핑 중/완료 상태에 따라 다른 처리
-        if (!inSequence) return;
+        // 1. TV 효과 재생 중이거나, 2. 대사 시퀀스 진행 중이 아닐 때는 F키 입력 무시
+        if (_isEffectPlaying || !inSequence) return;
 
         if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -250,20 +240,17 @@ public class StageSelectDialogueUI : UIBase
                 typingCoroutine = null;
                 if (lineText && currentLines != null && currentIndex < currentLines.Count)
                 {
-                    lineText.text = currentLines[currentIndex]; // 현재 줄 전체를 즉시 출력
+                    lineText.text = currentLines[currentIndex];
                 }
             }
             else
             {
-                // 2. 타이핑이 완료되었거나 즉시 완료되었다면, 다음 줄로 넘어감
+                // 2. 타이핑이 완료되었다면, 다음 줄로 넘어감
                 NextLine();
             }
         }
     }
 
-    // =========================
-    // 대사 진행 메서드
-    // =========================
     private void StartSequence(List<string> lines)
     {
         if (lines == null || lines.Count == 0)
@@ -289,7 +276,7 @@ public class StageSelectDialogueUI : UIBase
             return;
         }
 
-        // ⬅️ 수정: 기존 즉시 출력 대신 타이핑 코루틴 시작
+        // 기존 즉시 출력 대신 타이핑 코루틴 시작
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
@@ -300,9 +287,7 @@ public class StageSelectDialogueUI : UIBase
         typingCoroutine = StartCoroutine(TypeSentence(currentLines[currentIndex]));
     }
 
-    /// <summary>
     /// 글자를 한 글자씩 출력하는 코루틴 (타이핑 애니메이션)
-    /// </summary>
     private IEnumerator TypeSentence(string sentence)
     {
         // TimeScale이 0이므로 WaitForSecondsRealtime을 사용해야 멈추지 않고 재생됨
@@ -324,7 +309,7 @@ public class StageSelectDialogueUI : UIBase
         currentLines = null;
         currentIndex = -1;
 
-        // ⬅️ 타이핑 코루틴이 남아있을 경우 정지
+        // 타이핑 코루틴이 남아있을 경우 정지
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
@@ -350,7 +335,6 @@ public class StageSelectDialogueUI : UIBase
                 lineText.text = "";
         }
     }
-
     public void RequestClose()
     {
         OnClose();
@@ -360,14 +344,12 @@ public class StageSelectDialogueUI : UIBase
     protected override void OnClose()
     {
         Time.timeScale = 1f;
+        _hasOpenExecuted = false;
     }
 
-    // =========================
-    // 스테이지 시작 시도 (잠금 검사 → 대사 or 로드)
-    // =========================
     private void TryStartStage(int stageNumber, string sceneName)
     {
-        // ... (생략된 기존 TryStartStage 로직)
+        // (생략된 기존 TryStartStage 로직)
         UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
 
         if (!IsUnlocked(stageNumber))
@@ -496,7 +478,7 @@ public class StageSelectDialogueUI : UIBase
         return false;
     }
 
-    /// 버튼의 활성/비활성 상태에 맞게 인터랙션과 글자색 변경
+    // 버튼의 활성/비활성 상태에 맞게 인터랙션과 글자색 변경
     private void UpdateButton(Button button, bool unlocked)
     {
         if (button == null) return;

@@ -14,6 +14,14 @@ public partial class PlayerInputController : TopDownController
         if (!ctx.performed) return;
         if (health.IsDead) return; // 사망 시 무시
 
+        // TimeScale이 0 (UI 열림 상태)일 때, 이 컨트롤러의 상호작용 입력 무시.
+        // StageSelectDialogueUI 내부의 F키 처리는 TimeScale이 0일 때도 정상 작동
+        if (Time.timeScale == 0f)
+        {
+            return;
+        }
+
+        // 정상 상호작용 로직
         var temp = new HashSet<Iinteraction>(iinteractions);
         foreach (var interaction in temp)
             interaction?.Interaction(transform);
@@ -41,6 +49,5 @@ public partial class PlayerInputController : TopDownController
 
         if (iinteractions.Count == 0)
             fKeyPrompt.SetActive(false);
-
     }
 }
