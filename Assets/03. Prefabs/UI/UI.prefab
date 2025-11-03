@@ -429,6 +429,7 @@ GameObject:
   - component: {fileID: 870982267816445202}
   - component: {fileID: 8211382797699975192}
   - component: {fileID: 3264999670288809672}
+  - component: {fileID: 8594996129219454657}
   m_Layer: 5
   m_Name: WeaponsPanel
   m_TagString: Untagged
@@ -498,6 +499,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8594996129219454657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 94225972114213000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &155927356973505968
 GameObject:
   m_ObjectHideFlags: 0
@@ -11882,6 +11895,7 @@ GameObject:
   - component: {fileID: 7819697293863157981}
   - component: {fileID: 9001785566918457534}
   - component: {fileID: 5873591410492573761}
+  - component: {fileID: 6879711782629974845}
   m_Layer: 5
   m_Name: ClearCanvas
   m_TagString: Untagged
@@ -11998,6 +12012,18 @@ MonoBehaviour:
   backToLobbyButton: {fileID: 2958992778206055333}
   retryButton: {fileID: 6792524800861917577}
   lobbySceneName: 02. LobbyScene
+--- !u!114 &6879711782629974845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3033603352270739824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3033847589409111839
 GameObject:
   m_ObjectHideFlags: 0
@@ -19380,6 +19406,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6201650196085101431}
   - component: {fileID: 3586465992727416524}
+  - component: {fileID: 5013908357352922066}
   m_Layer: 5
   m_Name: PausePopup
   m_TagString: Untagged
@@ -19431,6 +19458,18 @@ MonoBehaviour:
   lobbyButton: {fileID: 8584057074610067213}
   quitButton: {fileID: 6179079859931480173}
   lobbySceneName: 02. LobbyScene
+--- !u!114 &5013908357352922066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4692511148234989073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4704754030278672523
 GameObject:
   m_ObjectHideFlags: 0
@@ -28152,6 +28191,7 @@ GameObject:
   - component: {fileID: 4944688525945043361}
   - component: {fileID: 1524800304749289207}
   - component: {fileID: 6439652123384118663}
+  - component: {fileID: 5350436486911373169}
   m_Layer: 5
   m_Name: Armory_Canvas
   m_TagString: Untagged
@@ -28246,6 +28286,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5350436486911373169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6841423069743375426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6884270882622908028
 GameObject:
   m_ObjectHideFlags: 0
@@ -29748,6 +29800,7 @@ GameObject:
   - component: {fileID: 2033779553008992668}
   - component: {fileID: 429467174149512791}
   - component: {fileID: 4813424316534427405}
+  - component: {fileID: 8237179529908733539}
   m_Layer: 5
   m_Name: GameOverCanvas
   m_TagString: Untagged
@@ -29859,6 +29912,18 @@ MonoBehaviour:
   retryButton: {fileID: 1966834366684596093}
   lobbyButton: {fileID: 8247101985503882562}
   lobbySceneName: 02. LobbyScene
+--- !u!114 &8237179529908733539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7184419747582731425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7207531851731744759
 GameObject:
   m_ObjectHideFlags: 0
@@ -30971,6 +31036,7 @@ GameObject:
   - component: {fileID: 1155024201891117304}
   - component: {fileID: 1263156874105118254}
   - component: {fileID: 1721128584435564821}
+  - component: {fileID: 6988390018388167312}
   m_Layer: 5
   m_Name: SettingPopup
   m_TagString: Untagged
@@ -31048,6 +31114,18 @@ MonoBehaviour:
   masterParam: MasterVolume
   bgmParam: BGMVolume
   sfxParam: SFXVolume
+--- !u!114 &6988390018388167312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7382932213252964530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7401003676990742150
 GameObject:
   m_ObjectHideFlags: 0
@@ -33179,6 +33257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8637503510299770584}
   - component: {fileID: 8880274533917837013}
+  - component: {fileID: 3187374763044507172}
   m_Layer: 5
   m_Name: StageSelectDialogueUI
   m_TagString: Untagged
@@ -33255,6 +33334,18 @@ MonoBehaviour:
   tvOnEffect5: {fileID: 2244284621267704981}
   tvOnEffect6: {fileID: 1818503000824061351}
   effectDelay: 0.05
+--- !u!114 &3187374763044507172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7996439379360546188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ec6081539a66a0439152201b6e03bd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8030859874005228496
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,8 +38,6 @@ public class PausePopup : UIBase
 
     protected override void OnOpen()
     {
-        CursorManager.Instance?.SetGameplayCursor(false);
-
         if (!Initialized)
         {
             if (dimmerButton) dimmerButton.onClick.AddListener(RequestClose);
@@ -55,11 +53,6 @@ public class PausePopup : UIBase
             prevTimeScale = Time.timeScale;
         Time.timeScale = 0f;
 
-        cursorPrevVisible = Cursor.visible;
-        cursorPrevLock = Cursor.lockState;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
         UpdateLobbyButtonVisibility();
     }
 
@@ -73,16 +66,11 @@ public class PausePopup : UIBase
 
     protected override void OnClose()
     {
-        CursorManager.Instance?.SetGameplayCursor(true);
-
         // 시간 복원 (PausePopup 고유 로직)
         if (!suppressRestoreOnce)
             Time.timeScale = prevTimeScale;
         else
             suppressRestoreOnce = false; // 1회성 플래그 초기화
-
-        Cursor.visible = cursorPrevVisible;
-        Cursor.lockState = cursorPrevLock;
     }
 
     private void OpenSettingFromPause()
