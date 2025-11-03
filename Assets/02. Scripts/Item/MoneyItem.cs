@@ -13,13 +13,23 @@ public class MoneyItem : MonoBehaviour, Iinteraction
 
     public void Interaction(Transform interactor)
     {
+        // 1. 플레이어의 총 잔액에 돈을 추가 (MoneyManager)
         MoneyManager.Instance.Add(money);
 
-        if (MoneyPickupPopup.instance != null )
+        // 2. 클리어 통계를 위해 GameStats에도 돈을 기록
+        if (GameStats.Instance != null)
+        {
+            GameStats.Instance.AddMoney(money);
+        }
+
+        // 3. 팝업 표시
+        if (MoneyPickupPopup.instance != null)
             MoneyPickupPopup.instance.Show(money);
 
+        // 4. 사운드 재생
         StructSoundManager.Instance.PlayPickUpSound(transform.position);
 
+        // 5. 아이템 파괴
         Destroy(gameObject);
     }
 }

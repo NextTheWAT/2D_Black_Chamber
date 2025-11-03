@@ -41,6 +41,7 @@ public class UIClearResult : UIBase
         {
             SetResult(TempResultHolder.Data);
             FirebaseManager.Instance.UploadClearData(TempResultHolder.Data);
+            MoneyManager.Instance.Add(_data.rewardDollar);
             TempResultHolder.Data = null;
             return;
         }

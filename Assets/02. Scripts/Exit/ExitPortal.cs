@@ -74,9 +74,7 @@ public class ExitPortal : MonoBehaviour
             // 튜토리얼 출구: 클리어 씬을 건너뛰고 로비로 이동
             PlayerPrefs.SetInt(PrefKey_TutorialDone, 1);
             PlayerPrefs.Save();
-            //LoadingCanvas.LoadScene(loobySceneName);
             LoadingScreen.Instance.Load(loobySceneName);
-            //SceneManager.LoadScene(loobySceneName);
             return;
         }
 
@@ -87,15 +85,15 @@ public class ExitPortal : MonoBehaviour
         bool isStealthClear = (GameManager.Instance != null && !GameManager.Instance.IsCombat);
         string clearStateText = isStealthClear ? "잠입 상태 클리어" : "난전 상태 클리어";
 
-        // 2) 스테이지별 보상 데이터 조회
-        int reward = 0;
+        // 2) 스테이지별 기본 보상 데이터 조회
+        int basicReward = 0;
         var srm = StageRewardManager.Instance;
         if (srm != null && stageNumber > 0)
         {
             StageReward data = srm.GetReward(stageNumber);
             if (data != null)
             {
-                reward = isStealthClear ? data.stealthReward : data.combatReward;
+                basicReward = isStealthClear ? data.stealthReward : data.combatReward;
             }
             else
             {
@@ -107,19 +105,33 @@ public class ExitPortal : MonoBehaviour
             Debug.LogWarning("[ExitPortal] StageRewardManager 없음 또는 stageNumber 잘못 설정됨");
         }
 
-        // 3) 플레이어 소지금에 반영
-        if (MoneyManager.Instance != null && reward > 0)
-            MoneyManager.Instance.Add(reward);
-
-        // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
+        // 3) 결과 데이터 생성 (GameStats에서 맵 획득 돈과 합산)
+        ClearResultData finalResult = null;
         if (GameStats.Instance != null)
-            TempResultHolder.Data = GameStats.Instance.BuildClearResult(stageNumber, clearStateText, reward);
+        {
+            // GameStats.BuildClearResult 내부에서 basicReward와 GameStats.moneyCollected를 합산하여 ClearResultData를 생성합니다.
+            finalResult = GameStats.Instance.BuildClearResult(stageNumber, clearStateText, basicReward);
+            TempResultHolder.Data = finalResult;
 
-        ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);                 // 예: Stage1_Cleared = 1
-        PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);               // 예: Stage1_ClearDialoguePending = 1
+            // 디버그 로그: 합산된 최종 금액 확인
+            Debug.Log($"[ExitPortal Check] GameStats에서 합산된 최종 보상 금액: {finalResult.rewardDollar}$");
+        }
+
+        // 4) 플레이어 소지금에 반영 (합산된 총 보상 금액 반영)
+        // finalResult가 있으면 그 값을, 없으면 최소한 기본 보상이라도 지급
+        int totalRewardToGive = finalResult != null ? finalResult.rewardDollar : basicReward;
+
+        if (MoneyManager.Instance != null && totalRewardToGive > 0)
+        {
+            // 합산된 최종 보상 금액을 MoneyManager에 추가
+            MoneyManager.Instance.Add(totalRewardToGive);
+        }
+
+        ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);
+        PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);
         PlayerPrefs.Save();
 
         // 5) 클리어 씬 로드
-        SceneManager.LoadScene(clearSceneName);
+        LoadingScreen.Instance.Load(clearSceneName);
     }
 }
