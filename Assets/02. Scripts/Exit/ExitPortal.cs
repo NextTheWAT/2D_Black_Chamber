@@ -111,6 +111,10 @@ public class ExitPortal : MonoBehaviour
         if (MoneyManager.Instance != null && reward > 0)
             MoneyManager.Instance.Add(reward);
 
+        // 잠입모드클리어 업적
+        if (isStealthClear)
+            AchievementManager.instance.UnlockAchievement(stageNumber - 1);
+
         // 4) 결과 데이터 생성(클리어 씬 UI에서 사용)
         if (GameStats.Instance != null)
             TempResultHolder.Data = GameStats.Instance.BuildClearResult(stageNumber, clearStateText, reward);
