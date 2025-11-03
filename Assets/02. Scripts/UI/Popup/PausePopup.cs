@@ -13,12 +13,8 @@ public class PausePopup : UIBase
     [SerializeField] private Button lobbyButton;   // 로비로
     [SerializeField] private Button quitButton;    // 게임 종료
 
-    [Header("Anim")]
-    [SerializeField] private float fadeDuration = 0.18f;
-
     [SerializeField] private string lobbySceneName = "LobbyScene";
 
-    private Coroutine fadeCo;
     private float prevTimeScale = 1f; // 닫을 때 복원용
     private bool suppressRestoreOnce = false;
 
@@ -66,12 +62,9 @@ public class PausePopup : UIBase
 
         if (canvasGroup)
         {
-            canvasGroup.alpha = 0f;
+            canvasGroup.alpha = 1f;
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
-
-            if (fadeCo != null) StopCoroutine(fadeCo);
-            fadeCo = StartCoroutine(Fade(0f, 1f, fadeDuration));
         }
 
         UpdateLobbyButtonVisibility();
@@ -80,8 +73,7 @@ public class PausePopup : UIBase
     public void RequestClose()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (fadeCo != null) StopCoroutine(fadeCo);
-        fadeCo = StartCoroutine(CloseSequence());
+        StartCoroutine(CloseSequence());
     }
 
     private IEnumerator CloseSequence()
@@ -89,9 +81,9 @@ public class PausePopup : UIBase
         if (canvasGroup)
         {
             canvasGroup.interactable = false;
-            yield return Fade(1f, 0f, fadeDuration);
             canvasGroup.blocksRaycasts = false;
         }
+        yield return null;
         UIManager.Instance.CloseUI<PausePopup>();
     }
 
@@ -114,26 +106,6 @@ public class PausePopup : UIBase
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
         }
-    }
-
-    private IEnumerator Fade(float from, float to, float dur)
-    {
-        float t = 0f;
-        if (dur <= 0f)
-        {
-            if (canvasGroup) canvasGroup.alpha = to;
-            yield break;
-        }
-        if (canvasGroup) canvasGroup.alpha = from;
-
-        // unscaledDeltaTime 사용
-        while (t < dur)
-        {
-            t += Time.unscaledDeltaTime;
-            if (canvasGroup) canvasGroup.alpha = Mathf.Lerp(from, to, t / dur);
-            yield return null;
-        }
-        if (canvasGroup) canvasGroup.alpha = to;
     }
 
     private void OpenSettingFromPause()
@@ -167,7 +139,6 @@ public class PausePopup : UIBase
 
     private IEnumerator ReturnToLobby()
     {
-        //LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
         LoadingScreen.Instance.Load(lobbySceneName);
         RequestClose();
         while (gameObject.activeInHierarchy) yield return null; // 닫힐 때까지 대기
@@ -178,8 +149,6 @@ public class PausePopup : UIBase
             yield break;
         }
         LoadingScreen.Instance.Load(lobbySceneName);
-        //LoadingCanvas.LoadScene(lobbySceneName); //이걸로 교체
-        //SceneManager.LoadScene(lobbySceneName);
     }
 
     private void UpdateLobbyButtonVisibility()

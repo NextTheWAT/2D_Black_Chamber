@@ -8,16 +8,20 @@ public class SettingPopup : UIBase
     [SerializeField] private Button closeButton;
     [SerializeField] private Button dimmerButton;
 
-    [Header("Anim")]
-    [SerializeField] private float fadeDuration = 0.18f;
+    [Header("Animation")]
+    [SerializeField] private Image animationImage; // 애니메이션 이미지
+    [SerializeField] private Sprite[] animationFrames; // 애니메이션 프레임 담을 배열
+    [SerializeField] private float frameDuration = 0.1f;
 
-    private Coroutine _fadeCo;
+    [Header("Content")]
+    [SerializeField] private GameObject contentRoot; // 애니메이션 후 활성화할 UI
+
+    private Coroutine _animationCo; // 애니메이션 코루틴 참조
 
     private void Start()
     {
         gameObject.SetActive(false);
     }
-
 
     private void Reset()
     {
@@ -41,36 +45,57 @@ public class SettingPopup : UIBase
 
         if (canvasGroup)
         {
-            canvasGroup.alpha = 0f;
+            canvasGroup.alpha = 1f;
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
+        }
 
-            if (_fadeCo != null) StopCoroutine(_fadeCo);
-            _fadeCo = StartCoroutine(Fade(0f, 1f, fadeDuration));
+        // UI가 열릴 때 애니메이션 시작
+        if (animationImage != null && animationFrames != null && animationFrames.Length > 0)
+        {
+            // 기존 코루틴이 있다면 정지하고 새로 시작
+            if (_animationCo != null) StopCoroutine(_animationCo);
+            _animationCo = StartCoroutine(PlayOpenAnimationCoroutine());
         }
     }
 
     public void RequestClose()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (_fadeCo != null) StopCoroutine(_fadeCo);
-        _fadeCo = StartCoroutine(CloseSequence());
+
+        // 닫기 명령이 들어오면 즉시 상호작용성 해제
+        if (canvasGroup)
+        {
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        // 기존 코루틴(열림 애니메이션)이 있다면 정지하고 닫기 애니메이션 시작
+        if (_animationCo != null) StopCoroutine(_animationCo);
+        _animationCo = StartCoroutine(PlayCloseAnimationCoroutine());
     }
 
     private IEnumerator CloseSequence()
     {
-        if (canvasGroup)
-        {
-            canvasGroup.interactable = false;
-            // 알파 1 > 0 페이드 아웃
-            yield return Fade(1f, 0f, fadeDuration);
-            canvasGroup.blocksRaycasts = false;
-        }
+        // 닫기 애니메이션 완료 후 UIManager에 비활성화를 요청
+        yield return null;
         UIManager.Instance.CloseUI<SettingPopup>();
     }
 
     protected override void OnClose()
     {
+        // 닫기 명령 완료 시 애니메이션 코루틴 정리
+        if (_animationCo != null)
+        {
+            StopCoroutine(_animationCo);
+            _animationCo = null;
+        }
+
+        if (animationImage != null)
+        {
+            animationImage.enabled = false;
+        }
+
         if (canvasGroup)
         {
             canvasGroup.alpha = 0f;
@@ -79,24 +104,47 @@ public class SettingPopup : UIBase
         }
     }
 
-    private IEnumerator Fade(float from, float to, float dur)
+    private IEnumerator PlayOpenAnimationCoroutine()
     {
-        float t = 0f;
-        if (dur <= 0f)
+        animationImage.enabled = true; // Image 컴포넌트를 보이게 설정
+
+        if (contentRoot != null) contentRoot.SetActive(false);
+
+        for (int i = 0; i < animationFrames.Length; i++)
         {
-            if (canvasGroup) canvasGroup.alpha = to;
-            yield break;
+            // 현재 프레임의 스프라이트를 Image 컴포넌트에 할당
+            animationImage.sprite = animationFrames[i];
+
+            // 마지막 프레임이 아닐 때만 대기
+            if (i < animationFrames.Length - 1)
+            {
+                yield return new WaitForSecondsRealtime(frameDuration);
+            }
         }
 
-        if (canvasGroup) canvasGroup.alpha = from;
+        if (contentRoot != null) contentRoot.SetActive(true);
 
-        while (t < dur)
+        _animationCo = null; // 코루틴 종료 후 참조 해제
+    }
+
+    private IEnumerator PlayCloseAnimationCoroutine()
+    {
+        if (contentRoot != null) contentRoot.SetActive(false);
+
+        // 역순으로 반복
+        for (int i = animationFrames.Length - 1; i >= 0; i--)
         {
-            t += Time.unscaledDeltaTime;
-            float a = Mathf.Lerp(from, to, t / dur);
-            if (canvasGroup) canvasGroup.alpha = a;
-            yield return null;
+            animationImage.sprite = animationFrames[i];
+
+            // 0번 프레임이 아닐 때만 대기
+            if (i > 0)
+            {
+                yield return new WaitForSecondsRealtime(frameDuration);
+            }
         }
-        if (canvasGroup) canvasGroup.alpha = to;
+
+        // 닫는 애니메이션 완료 후, UI 비활성화 명령 호출
+        _animationCo = null; // 코루틴 종료 후 참조 해제
+        StartCoroutine(CloseSequence());
     }
 }
