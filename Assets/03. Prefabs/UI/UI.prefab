@@ -11986,6 +11986,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6350400a26a9ce49b2bca2a7f2a175c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animDuration: 0.3
+  openEase: 27
+  closeEase: 26
   root: {fileID: 0}
   _canvasGroup: {fileID: 0}
   killText: {fileID: 4153023283395230582}
@@ -19417,6 +19420,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95da351fe0f2a194e9a80c327b262fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animDuration: 0.3
+  openEase: 27
+  closeEase: 26
   root: {fileID: 0}
   _canvasGroup: {fileID: 0}
   dimmerButton: {fileID: 0}
@@ -19424,8 +19430,6 @@ MonoBehaviour:
   settingButton: {fileID: 4416274866191631119}
   lobbyButton: {fileID: 8584057074610067213}
   quitButton: {fileID: 6179079859931480173}
-  windowRoot: {fileID: 6201650196085101431}
-  animDuration: 0.3
   lobbySceneName: 02. LobbyScene
 --- !u!1 &4704754030278672523
 GameObject:
@@ -29847,6 +29851,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f065b48522bd3d41972d747cdc6296e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animDuration: 0.3
+  openEase: 27
+  closeEase: 26
   root: {fileID: 0}
   _canvasGroup: {fileID: 0}
   retryButton: {fileID: 1966834366684596093}
@@ -31005,6 +31012,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b88393a9f5f9574ca404fc860f6f72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animDuration: 0.3
+  openEase: 27
+  closeEase: 26
   root: {fileID: 0}
   _canvasGroup: {fileID: 0}
   closeButton: {fileID: 629798573419610740}
@@ -33218,6 +33228,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f75c0b98b7fd2904d84cb0046d3f98fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animDuration: 0.3
+  openEase: 27
+  closeEase: 26
   root: {fileID: 0}
   _canvasGroup: {fileID: 0}
   dialogueData: {fileID: 11400000, guid: 74eb3434dadc4cd4c8b33c9a04e9ba3a, type: 2}
@@ -39127,6 +39140,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7585043165230509241}
     m_Modifications:
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 169
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: ShapeModule.m_Scale.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: VelocityModule.y.scalar
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 290630758771748860, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -39189,11 +39222,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 199.7
+      value: 107
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -12
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 1069479079106326351, guid: 2cd476b56c5af0f46970ae2c1012b9df, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
