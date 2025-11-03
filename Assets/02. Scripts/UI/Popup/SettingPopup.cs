@@ -81,6 +81,8 @@ public class SettingPopup : UIBase
         // 기존 코루틴(열림 애니메이션)이 있다면 정지하고 닫기 애니메이션 시작
         if (_animationCo != null) StopCoroutine(_animationCo);
         _animationCo = StartCoroutine(PlayCloseAnimationCoroutine()); // 닫기 애니메이션 코루틴 시작
+
+        Time.timeScale = 1f; // 일시정지 해제
     }
 
 
