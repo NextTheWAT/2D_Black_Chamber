@@ -124,18 +124,19 @@ public class Shooter : MonoBehaviour
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
 
         int count = projPerShot;
-        Vector2 baseDir = direction.sqrMagnitude > 0.0001f ? direction.normalized : (Vector2)gunPoint.right;
+        Vector2 baseDir = direction.sqrMagnitude > 0.0001f ? direction.normalized : (Vector2)gunPoint.up;
 
         for (int i = 0; i < count; i++)
         {
-            Vector2 dir = ApplySpread(baseDir, CurrentSpread);
+            Vector2 dir = ApplySpread(baseDir, CurrentSpread * i);
             SpawnBullet(gunData, gunPoint, dir);
         }
 
+        /*
         // 반동 증가
         float recoilAdd = GetFloat(gunData, 0f, "recoilAmount");
         CurrentSpread += recoilAdd;
-
+        */
         if (respectFireRate) cooldown = 1f / fireRatePerSec;
 
         if (gunData.prefabInfo.muzzleFlashPrefab)
@@ -146,20 +147,9 @@ public class Shooter : MonoBehaviour
 
         // 간단한 사운드 예시 (표시명 기반)
         WeaponSoundManager.Instance.PlaySFX(gunData.prefabInfo.fireSFX, transform.position);
-        /*
-        string shown = GetString(gunData, "weaponName") ?? GetString(gunData, "displayName");
-        if (!string.IsNullOrEmpty(shown))
-        {
-            if (shown.Contains("Pistol"))
-                WeaponSoundManager.Instance?.PlayPistolShootSound(transform.position);
-            else if (shown.Contains("Rifle"))
-                WeaponSoundManager.Instance?.PlayRifleShootSound(transform.position);
-        }
-        */
 
         // 소음 추가
         NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.gunNoiseData);
-        
 
         return true;
     }

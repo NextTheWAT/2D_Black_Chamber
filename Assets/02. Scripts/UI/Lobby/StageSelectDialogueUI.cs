@@ -23,7 +23,7 @@ static class ProgressFlags
     }
 
     public const string FirstMeetDone = "NPC_FirstMeetDone";       // 최초 대화 1회 처리용
-    public static string StageCleared(int n) => $"Stage{n}_Cleared"; // 예) Stage1_Cleared
+    public static string StageCleared(int n) => $"Stage{n}_Cleared"; // 예) Stage1_Cleared
 }
 
 public class StageSelectDialogueUI : UIBase
@@ -39,39 +39,136 @@ public class StageSelectDialogueUI : UIBase
     [SerializeField] private Button stage1Button;
     [SerializeField] private Button stage2Button;
     [SerializeField] private Button stage3Button;
+    [SerializeField] private Button stage4Button;
+    [SerializeField] private Button stage5Button;
     [SerializeField] private Button exitButton;
 
     [Header("Scene Names")]
     [SerializeField] private string stage1SceneName = "ProtoTypeScene";
     [SerializeField] private string stage2SceneName = "ProtoTypeScene";
     [SerializeField] private string stage3SceneName = "ProtoTypeScene";
+    [SerializeField] private string stage4SceneName = "ProtoTypeScene";
+    [SerializeField] private string stage5SceneName = "ProtoTypeScene";
 
     // ⬅️ 타이핑 설정 추가
     [Header("Typing Settings")]
     [SerializeField] private float typingDelay = 0.05f; // 글자당 딜레이 (0.05초)
 
-    // =========================
-    // 대사 진행 상태 변수
-    // =========================
-    private List<string> currentLines; // 현재 진행 중 "한 세트"의 줄들
-    private int currentIndex = -1;     // 다음에 보여줄 줄 인덱스
-    private bool inSequence = false;   // 대사 진행 중 여부
+    // TV 켜지는 효과 오브젝트들
+    [Header("TV Effect Objects")]
+    [SerializeField] private GameObject tvOnEffect1; // 첫 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect2; // 두 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect3; // 세 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect4; // ⬅️ 추가: 네 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect5; // ⬅️ 추가: 다섯 번째 TV 효과
+    [SerializeField] private GameObject tvOnEffect6; // ⬅️ 추가: 여섯 번째 TV 효과
+
+    // 추가: 각 효과 간의 지연 시간 (초)
+    [SerializeField] private float effectDelay = 0.2f;
+
+    // =========================
+    // 대사 진행 상태 변수
+    // =========================
+    private List<string> currentLines; // 현재 진행 중 "한 세트"의 줄들
+    private int currentIndex = -1;     // 다음에 보여줄 줄 인덱스
+    private bool inSequence = false;   // 대사 진행 중 여부
     private Coroutine typingCoroutine; // ⬅️ 추가: 타이핑 코루틴 제어용
 
-    private void Start()
+    private void Start()
     {
         gameObject.SetActive(false);
     }
 
+    // ===================================================================================
+    // 💡 수정됨: OnOpen()은 이제 TV 효과 코루틴만 시작하고, 실제 UI 로직은 ExecuteOnOpenLogic()이 담당
+    // ===================================================================================
     protected override void OnOpen()
     {
-        Time.timeScale = 0f; // 일시정지
-        Cursor.visible = true;
+        // UI가 열리면, 실제 UI 내용을 보여주기 전에 TV 켜짐 효과 시퀀스 시작
+        StartCoroutine(PlayTVOnEffectSequence());
+    }
+
+    // ===================================================================================
+    // 💡 수정됨: TV 켜짐 효과 시퀀스 (6단계)
+    // ===================================================================================
+    /// <summary>
+    /// TV 켜짐 효과 6단계를 순차적으로 보여준 후, StageSelectDialogueUI 본체를 초기화하고 팝업합니다.
+    /// </summary>
+    private IEnumerator PlayTVOnEffectSequence()
+    {
+        // 1. 초기 상태: TVonEffect 오브젝트들 비활성화 (Unity Inspector에서 미리 설정해두는 것을 권장)
+        if (tvOnEffect1) tvOnEffect1.SetActive(false);
+        if (tvOnEffect2) tvOnEffect2.SetActive(false);
+        if (tvOnEffect3) tvOnEffect3.SetActive(false);
+        if (tvOnEffect4) tvOnEffect4.SetActive(false);
+        if (tvOnEffect5) tvOnEffect5.SetActive(false);
+        if (tvOnEffect6) tvOnEffect6.SetActive(false);
+
+        // A. 첫 번째 효과 (TVonEffect1)
+        if (tvOnEffect1)
+        {
+            tvOnEffect1.SetActive(true);
+            // TimeScale이 0일 수 있으므로 WaitForSecondsRealtime 사용
+            yield return new WaitForSecondsRealtime(effectDelay);
+            tvOnEffect1.SetActive(false);
+        }
+
+        // B. 두 번째 효과 (TVonEffect2)
+        if (tvOnEffect2)
+        {
+            tvOnEffect2.SetActive(true);
+            yield return new WaitForSecondsRealtime(effectDelay);
+            tvOnEffect2.SetActive(false);
+        }
+
+        // C. 세 번째 효과 (TVonEffect3)
+        if (tvOnEffect3)
+        {
+            tvOnEffect3.SetActive(true);
+            yield return new WaitForSecondsRealtime(effectDelay);
+            tvOnEffect3.SetActive(false);
+        }
+
+        // D. 네 번째 효과 (TVonEffect4) ⬅️ 추가됨
+        if (tvOnEffect4)
+        {
+            tvOnEffect4.SetActive(true);
+            yield return new WaitForSecondsRealtime(effectDelay);
+            tvOnEffect4.SetActive(false);
+        }
+
+        // E. 다섯 번째 효과 (TVonEffect5) ⬅️ 추가됨
+        if (tvOnEffect5)
+        {
+            tvOnEffect5.SetActive(true);
+            yield return new WaitForSecondsRealtime(effectDelay);
+            tvOnEffect5.SetActive(false);
+        }
+
+        // F. 여섯 번째 효과 (TVonEffect6) ⬅️ 추가됨 (마지막은 조금 더 길게 유지)
+        if (tvOnEffect6)
+        {
+            tvOnEffect6.SetActive(true);
+            yield return new WaitForSecondsRealtime(effectDelay * 1.5f);
+            tvOnEffect6.SetActive(false);
+        }
+
+        // 2. 모든 효과가 끝나면 원래의 OnOpen 로직 실행 (UI 표시 시작)
+        ExecuteOnOpenLogic();
+    }
+
+    // ===================================================================================
+    // 기존 OnOpen()의 UI 초기화 및 대사 시작 로직
+    // ===================================================================================
+    private void ExecuteOnOpenLogic()
+    {
+        Time.timeScale = 0f; // 일시정지 (TV 효과가 끝난 후 정지)
+        Cursor.visible = true;
 
         if (!Initialized)
         {
-            // 씬 바로 로드(X) → TryStartStage로 잠금 검사 후 로드(O)
-            if (stage1Button)
+            // 씬 바로 로드(X) → TryStartStage로 잠금 검사 후 로드(O)
+            if (stage1Button)
             {
                 stage1Button.onClick.RemoveAllListeners();
                 stage1Button.onClick.AddListener(() => TryStartStage(1, stage1SceneName));
@@ -89,6 +186,18 @@ public class StageSelectDialogueUI : UIBase
                 stage3Button.onClick.AddListener(() => TryStartStage(3, stage3SceneName));
             }
 
+            if (stage4Button)
+            {
+                stage4Button.onClick.RemoveAllListeners();
+                stage4Button.onClick.AddListener(() => TryStartStage(4, stage4SceneName));
+            }
+
+            if (stage5Button)
+            {
+                stage5Button.onClick.RemoveAllListeners();
+                stage5Button.onClick.AddListener(() => TryStartStage(5, stage5SceneName));
+            }
+
             if (exitButton)
             {
                 exitButton.onClick.RemoveAllListeners();
@@ -98,8 +207,8 @@ public class StageSelectDialogueUI : UIBase
             Initialized = true;
         }
 
-        // NPC 이름 표시
-        if (dialogueData != null && nameText)
+        // NPC 이름 표시
+        if (dialogueData != null && nameText)
             nameText.text = dialogueData.npcName;
 
         ApplyButtonStatesWithColor();
@@ -110,21 +219,17 @@ public class StageSelectDialogueUI : UIBase
         if (nameText) nameText.raycastTarget = false;
         if (lineText) lineText.raycastTarget = false;
 
-        // =========================
-        // ▶ 핵심: First Meet는 '최초 1회만'
-        //   - 아직 안 봤으면 First Meet 시퀀스를 한 줄씩 보여주고 바로 완료 처리
-        //   - 이미 봤으면 랜덤 멘트 1줄만 표시
-        // =========================
-        bool firstMeetDone = ProgressFlags.Get(ProgressFlags.FirstMeetDone);
+        // First Meet는 '최초 1회만'
+        bool firstMeetDone = ProgressFlags.Get(ProgressFlags.FirstMeetDone);
 
         if (!firstMeetDone &&
-          dialogueData != null &&
-          dialogueData.firstMeetDialogues != null &&
-          dialogueData.firstMeetDialogues.Count > 0)
+            dialogueData != null &&
+            dialogueData.firstMeetDialogues != null &&
+            dialogueData.firstMeetDialogues.Count > 0)
         {
             StartSequence(dialogueData.firstMeetDialogues[0].lines);
             ProgressFlags.Set(ProgressFlags.FirstMeetDone, true); // 다음부턴 나오지 않게
-        }
+        }
         else
         {
             ShowRandomOneLiner();
@@ -133,8 +238,8 @@ public class StageSelectDialogueUI : UIBase
 
     private void Update()
     {
-        // F키로 다음 줄 ⬅️ 수정: 타이핑 중/완료 상태에 따라 다른 처리
-        if (!inSequence) return;
+        // F키로 다음 줄 ⬅️ 수정: 타이핑 중/완료 상태에 따라 다른 처리
+        if (!inSequence) return;
 
         if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         {
@@ -151,15 +256,15 @@ public class StageSelectDialogueUI : UIBase
             else
             {
                 // 2. 타이핑이 완료되었거나 즉시 완료되었다면, 다음 줄로 넘어감
-                NextLine();
+                NextLine();
             }
         }
     }
 
-    // =========================
-    // 대사 진행 메서드
-    // =========================
-    private void StartSequence(List<string> lines)
+    // =========================
+    // 대사 진행 메서드
+    // =========================
+    private void StartSequence(List<string> lines)
     {
         if (lines == null || lines.Count == 0)
         {
@@ -172,7 +277,7 @@ public class StageSelectDialogueUI : UIBase
         inSequence = true;
 
         NextLine(); // 첫 줄 즉시 출력 (이 안에서 타이핑 시작)
-    }
+    }
 
     private void NextLine()
     {
@@ -226,15 +331,15 @@ public class StageSelectDialogueUI : UIBase
             typingCoroutine = null;
         }
 
-        // 세트가 끝나면 기본 랜덤 멘트 1줄로 복귀
-        ShowRandomOneLiner();
+        // 세트가 끝나면 기본 랜덤 멘트 1줄로 복귀
+        ShowRandomOneLiner();
     }
 
     private void ShowRandomOneLiner()
     {
         if (dialogueData != null &&
-          dialogueData.randomDialogues != null &&
-          dialogueData.randomDialogues.Count > 0)
+            dialogueData.randomDialogues != null &&
+            dialogueData.randomDialogues.Count > 0)
         {
             if (lineText)
                 lineText.text = dialogueData.randomDialogues[Random.Range(0, dialogueData.randomDialogues.Count)];
@@ -248,26 +353,27 @@ public class StageSelectDialogueUI : UIBase
 
     public void RequestClose()
     {
-        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+        OnClose();
         UIManager.Instance.CloseUI<StageSelectDialogueUI>();
     }
 
     protected override void OnClose()
     {
-        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
         Time.timeScale = 1f;
     }
 
-    // =========================
-    // 스테이지 시작 시도 (잠금 검사 → 대사 or 로드)
-    // =========================
-    private void TryStartStage(int stageNumber, string sceneName)
+    // =========================
+    // 스테이지 시작 시도 (잠금 검사 → 대사 or 로드)
+    // =========================
+    private void TryStartStage(int stageNumber, string sceneName)
     {
+        // ... (생략된 기존 TryStartStage 로직)
         UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+
         if (!IsUnlocked(stageNumber))
         {
-            // 잠겨있으면 Locked 시퀀스만 출력, 씬 이동 없음
-            if (dialogueData != null &&
+            // 잠겨있으면 Locked 시퀀스만 출력, 씬 이동 없음
+            if (dialogueData != null &&
         dialogueData.lockedStageDialogues != null &&
         dialogueData.lockedStageDialogues.Count > 0 &&
         dialogueData.lockedStageDialogues[0].lines != null &&
@@ -282,12 +388,12 @@ public class StageSelectDialogueUI : UIBase
             return;
         }
 
-        // 열려 있으면 정상 로드
-        LoadStage(sceneName);
+        // 열려 있으면 정상 로드
+        LoadStage(sceneName);
     }
 
-    // 1은 항상 열림, 2는 1 클리어 시, 3은 2 클리어 시 열림
-    private bool IsUnlocked(int stage)
+    // 1은 항상 열림, 2는 1 클리어 시, 3은 2 클리어 시 열림
+    private bool IsUnlocked(int stage)
     {
         if (stage <= 1) return true;
         return ProgressFlags.Get(ProgressFlags.StageCleared(stage - 1));
@@ -306,55 +412,83 @@ public class StageSelectDialogueUI : UIBase
         PlayerPrefs.SetString("LastStage", sceneName);
         PlayerPrefs.Save();
 
-        //LoadingCanvas.LoadScene(sceneName);
         LoadingScreen.Instance.Load(sceneName);
     }
 
-    /// <summary>
-    /// 스테이지 클리어 직후 ‘1회성 대사’를 재생. 재생하면 true.
-    /// </summary>
-    private bool TryPlayPendingClearDialogue()
+    // 스테이지 클리어 직후 ‘1회성 대사’를 재생. 재생하면 true.
+    private bool TryPlayPendingClearDialogue()
     {
-        // 1스테이지 클리어 예약
-        if (PlayerPrefs.GetInt("Stage1_ClearDialoguePending", 0) == 1)
+        // ... (생략된 기존 TryPlayPendingClearDialogue 로직)
+        // 1스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage1_ClearDialoguePending", 0) == 1)
         {
             PlayerPrefs.SetInt("Stage1_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
             if (dialogueData?.stage1ClearDialogues != null &&
-              dialogueData.stage1ClearDialogues.Count > 0 &&
-              dialogueData.stage1ClearDialogues[0].lines?.Count > 0)
+                dialogueData.stage1ClearDialogues.Count > 0 &&
+                dialogueData.stage1ClearDialogues[0].lines?.Count > 0)
             {
                 StartSequence(dialogueData.stage1ClearDialogues[0].lines);
                 return true;
             }
         }
-        // 2스테이지 클리어 예약
-        if (PlayerPrefs.GetInt("Stage2_ClearDialoguePending", 0) == 1)
+        // 2스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage2_ClearDialoguePending", 0) == 1)
         {
             PlayerPrefs.SetInt("Stage2_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
             if (dialogueData?.stage2ClearDialogues != null &&
-              dialogueData.stage2ClearDialogues.Count > 0 &&
-              dialogueData.stage2ClearDialogues[0].lines?.Count > 0)
+                dialogueData.stage2ClearDialogues.Count > 0 &&
+                dialogueData.stage2ClearDialogues[0].lines?.Count > 0)
             {
                 StartSequence(dialogueData.stage2ClearDialogues[0].lines);
                 return true;
             }
         }
 
-        // 3스테이지 클리어 예약
-        if (PlayerPrefs.GetInt("Stage3_ClearDialoguePending", 0) == 1)
+        // 3스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage3_ClearDialoguePending", 0) == 1)
         {
             PlayerPrefs.SetInt("Stage3_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
             if (dialogueData?.stage3ClearDialogues != null &&
-              dialogueData.stage3ClearDialogues.Count > 0 &&
-              dialogueData.stage3ClearDialogues[0].lines?.Count > 0)
+                dialogueData.stage3ClearDialogues.Count > 0 &&
+                dialogueData.stage3ClearDialogues[0].lines?.Count > 0)
             {
                 StartSequence(dialogueData.stage3ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
+        // 4스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage4_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage4_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage4ClearDialogues != null &&
+                dialogueData.stage4ClearDialogues.Count > 0 &&
+                dialogueData.stage4ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage4ClearDialogues[0].lines);
+                return true;
+            }
+        }
+
+        // 5스테이지 클리어 예약
+        if (PlayerPrefs.GetInt("Stage5_ClearDialoguePending", 0) == 1)
+        {
+            PlayerPrefs.SetInt("Stage5_ClearDialoguePending", 0);
+            PlayerPrefs.Save();
+
+            if (dialogueData?.stage5ClearDialogues != null &&
+                dialogueData.stage5ClearDialogues.Count > 0 &&
+                dialogueData.stage5ClearDialogues[0].lines?.Count > 0)
+            {
+                StartSequence(dialogueData.stage5ClearDialogues[0].lines);
                 return true;
             }
         }
@@ -362,40 +496,36 @@ public class StageSelectDialogueUI : UIBase
         return false;
     }
 
-    /// <summary>
-    /// 버튼의 활성/비활성 상태에 맞게 인터랙션과 글자색 변경
-    /// </summary>
-    private void UpdateButton(Button button, bool unlocked)
+    /// 버튼의 활성/비활성 상태에 맞게 인터랙션과 글자색 변경
+    private void UpdateButton(Button button, bool unlocked)
     {
         if (button == null) return;
 
-        // ✅ 잠겨 있어도 클릭은 되도록 유지 (onClick에서 TryStartStage가 처리함)
-        button.interactable = true;
+        //  잠겨 있어도 클릭은 되도록 유지 (onClick에서 TryStartStage가 처리함)
+        button.interactable = true;
 
-        // 비주얼만 잠김처럼 보이게
-        var txt = button.GetComponentInChildren<TMP_Text>();
+        // 비주얼만 잠김처럼 보이게
+        var txt = button.GetComponentInChildren<TMP_Text>();
         if (txt) txt.color = unlocked ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1f);
 
-        // (선택) 잠긴 상태일 때 버튼 전환 효과를 죽여 '비활성 느낌' 주기
-        if (!unlocked)
+        // (선택) 잠긴 상태일 때 버튼 전환 효과를 죽여 '비활성 느낌' 주기
+        if (!unlocked)
         {
             button.transition = Selectable.Transition.None;
         }
         else
         {
             button.transition = Selectable.Transition.ColorTint; // 프로젝트 기본에 맞게
-        }
+        }
     }
 
-
-    /// <summary>
-    /// 현재 진행도에 맞춰 버튼 상태+색을 한 번에 반영
-    /// </summary>
-    private void ApplyButtonStatesWithColor()
+    // 현재 진행도에 맞춰 버튼 상태+색을 한 번에 반영
+    private void ApplyButtonStatesWithColor()
     {
         UpdateButton(stage1Button, IsUnlocked(1)); // 항상 true(표기 일관성)
-        UpdateButton(stage2Button, IsUnlocked(2)); // Stage1_Cleared==1이면 true
-        UpdateButton(stage3Button, IsUnlocked(3)); // Stage2_Cleared==1이면 true
-    }
-
+        UpdateButton(stage2Button, IsUnlocked(2)); // Stage1_Cleared==1이면 true
+        UpdateButton(stage3Button, IsUnlocked(3)); // Stage2_Cleared==1이면 true
+        UpdateButton(stage4Button, IsUnlocked(4)); // Stage3_Cleared==1이면 true
+        UpdateButton(stage5Button, IsUnlocked(5));
+    }
 }

@@ -1,94 +1,163 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Gunimage : MonoBehaviour
 {
-    //public Sprite[] sprites;
-    private Image image;
+    [SerializeField] private float slideDistance = 300f;
+    public RectTransform[] panels;
+    public float slideDuration = 0.45f;
+
     private int currentIndex = 0;
+    private bool isSliding = false;
 
-    [SerializeField]
-    private float slideDistance = 0f; // 원하는 슬라이드 거리 (픽셀)
+    public int CurrentIndex => currentIndex;
+    public float SlideDuration => slideDuration;
 
-    public RectTransform[] panels; // 전환 대상 패널들
-    public float slideDuration = 0.5f; // 슬라이드 애니메이션 지속 시간
-
-    private bool isSliding = false; // 슬라이딩 중 여부 체크
-
-    [SerializeField] private Button nextButton;
-    [SerializeField] private Button prevButton;
-
-
-    // 현재 보이는 패널 인덱스가 필요할 때 (읽기 전용)
-    public int CurrentPanelIndex => currentIndex;
-
-    public void clickshowpanel(bool plus)  //클릭 시 계속 넘어감
+    private void Awake()
     {
-        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
-        int targetindex = currentIndex;
-        if (plus) targetindex++;
-        else targetindex--;
-        ShowPanel(targetindex);
-    }
-    private void ShowPanel(int index)
-    {
-        // 슬라이딩 중이거나 같은 패널이면 무시
-        if (index == currentIndex || isSliding) return;
-
-        // 이동 방향 계산 (왼쪽/오른쪽)
-        Vector2 panelPosition = currentIndex > index ? new Vector2(slideDistance, 0) : new Vector2(-slideDistance, 0);
-
-        // 인덱스 범위 벗어나면 순환 처리
-        if (index >= panels.Length) index = 0;
-        else if (index < 0) index = panels.Length - 1;
-
-        isSliding = true;
-
-        RectTransform fromPanel = panels[currentIndex];
-        RectTransform toPanel = panels[index];
-
-        // 패널 순서 조정 (새 패널을 뒤에 배치)
-        fromPanel.transform.SetAsLastSibling();
-        toPanel.transform.SetAsFirstSibling();
-
-       
-
-        // 새 패널 위치 지정 및 활성화
-        toPanel.gameObject.SetActive(true);
-        toPanel.anchoredPosition = panelPosition;
-
-        // DOTween 애니메이션
-        fromPanel.DOAnchorPos(-panelPosition, slideDuration).SetEase(Ease.OutCubic);
-
-        toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic)
-            .OnComplete(() =>
-            {
-                // 이전 패널 비활성화 및 리셋
-                fromPanel.gameObject.SetActive(false);
-                //fromPanel.anchoredPosition = Vector2.zero;
-                currentIndex = index;
-                isSliding = false;
-            });
+        if (slideDistance <= 0f)
+        {
+            if (panels != null && panels.Length > 0 && panels[0])
+                slideDistance = panels[0].rect.width > 0 ? panels[0].rect.width
+                                                         : ((RectTransform)transform).rect.width;
+            if (slideDistance <= 0f) slideDistance = 600f;
+        }
+        ResetPanels();
     }
 
-    // 다음/이전 슬라이드 시 도착할 패널 인덱스 미리 보기
-    public int PeekNextPanelIndex(bool plus)
+    private void OnEnable() => ResetPanels();
+    private void OnDisable()
+    {
+        if (panels != null)
+            foreach (var rt in panels) if (rt) rt.DOKill();
+        isSliding = false;
+    }
+
+    private void ResetPanels()
+    {
+        if (panels == null) return;
+        for (int i = 0; i < panels.Length; i++)
+        {
+            var rt = panels[i];
+            if (!rt) continue;
+            var le = rt.GetComponent<LayoutElement>();
+            if (le) le.ignoreLayout = true; // 레이아웃 간섭 방지
+            rt.anchoredPosition = Vector2.zero;
+            rt.gameObject.SetActive(i == currentIndex);
+        }
+        isSliding = false;
+    }
+
+    // Armory가 "들어올 패널"을 알 수 있게 제공
+    public int PeekTargetIndex(bool plus)
     {
         int idx = currentIndex + (plus ? 1 : -1);
         if (idx >= panels.Length) idx = 0;
         else if (idx < 0) idx = panels.Length - 1;
         return idx;
     }
+    public RectTransform GetPanel(int index) => (index >= 0 && index < panels.Length) ? panels[index] : null;
 
-    // 특정 패널의 Image 스프라이트를 교체
+    public void clickshowpanel(bool plus)
+    {
+        ShowPanel(PeekTargetIndex(plus), plus);
+    }
+
+    private void ShowPanel(int index, bool plus)
+    {
+        if (isSliding || index == currentIndex || panels == null || panels.Length == 0) return;
+
+        bool moveLeft = plus; // 오른쪽 버튼(plus=true)이면 왼쪽으로 미는 연출
+        Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
+
+        isSliding = true;
+
+        RectTransform fromPanel = panels[currentIndex];
+        RectTransform toPanel = panels[index];
+
+        fromPanel.DOKill();
+        toPanel.DOKill();
+
+        fromPanel.transform.SetAsLastSibling();
+        toPanel.transform.SetAsFirstSibling();
+
+        toPanel.gameObject.SetActive(true);
+        toPanel.anchoredPosition = -offset;
+
+        // 타임스케일 무시: SetUpdate(true)
+        var t1 = fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+        var t2 = toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+
+        t2.OnComplete(() =>
+        {
+            fromPanel.anchoredPosition = Vector2.zero; // 누적 오프셋 제거
+            fromPanel.gameObject.SetActive(false);
+            currentIndex = index;
+            isSliding = false;
+        });
+    }
+
+    // (옵션) 외부에서 패널 스프라이트를 지정할 때 사용
     public void SetPanelSprite(int panelIndex, Sprite sprite)
     {
-        if (panelIndex < 0 || panelIndex >= panels.Length) return;
-        var img = panels[panelIndex].GetComponent<Image>();
+        var p = GetPanel(panelIndex);
+        if (!p) return;
+        var img = p.GetComponent<Image>();
         if (img) img.sprite = sprite;
+    }
+    public void SlideWithSprites(bool toRight, UnityEngine.Sprite fromSprite, UnityEngine.Sprite toSprite, System.Action onComplete = null)
+    {
+        if (panels == null || panels.Length == 0) { onComplete?.Invoke(); return; }
+
+        // 현재 패널/들어올 패널 계산
+        int toIndex = currentIndex + (toRight ? 1 : -1);
+        if (toIndex >= panels.Length) toIndex = 0;
+        else if (toIndex < 0) toIndex = panels.Length - 1;
+
+        bool moveLeft = toRight;                         // 오른쪽 버튼이면 오른쪽→왼쪽으로 미는 연출
+        Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
+
+        var fromPanel = panels[currentIndex];
+        var toPanel = panels[toIndex];
+
+        // from/to 이미지에 각각 현재/다음 스프라이트를 “슬라이드 직전”에 세팅
+        var fromImg = fromPanel.GetComponent<UnityEngine.UI.Image>() ?? fromPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
+        var toImg = toPanel.GetComponent<UnityEngine.UI.Image>() ?? toPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
+        if (fromImg) fromImg.sprite = fromSprite;
+        if (toImg) toImg.sprite = toSprite;
+
+        // 계층/위치 세팅
+        fromPanel.transform.SetAsLastSibling();
+        toPanel.transform.SetAsFirstSibling();
+        toPanel.gameObject.SetActive(true);
+        toPanel.anchoredPosition = -offset;
+
+        // 타임스케일 0에서도 동작
+        fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+        toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true)
+        .OnComplete(() =>
+        {
+            fromPanel.anchoredPosition = Vector2.zero;
+            fromPanel.gameObject.SetActive(false);
+            currentIndex = toIndex;
+            onComplete?.Invoke();
+        });
+    }
+    public void SetAllSprites(Sprite sprite)
+    {
+        if (panels == null) return;
+        foreach (var rt in panels)
+        {
+            if (!rt) continue;
+            var img = rt.GetComponent<UnityEngine.UI.Image>() ?? rt.GetComponentInChildren<UnityEngine.UI.Image>(true);
+            if (!img) continue;
+            var r = img.rectTransform;
+            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
+            r.anchoredPosition = Vector2.zero;
+            img.preserveAspect = true;
+            img.sprite = sprite;
+        }
     }
 
 }

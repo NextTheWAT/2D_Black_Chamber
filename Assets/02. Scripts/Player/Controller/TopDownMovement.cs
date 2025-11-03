@@ -10,9 +10,8 @@ public class TopDownMovement : MonoBehaviour
     // 추가: 상태 참조
     private PlayerInputController input;
     private PlayerConditionManager condition;
-
-    public Transform mouseTr;
-    public float maxMouseDistance = 5f;
+    private PlayerAimController aimController;
+    private PlayerCameraController cameraController;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 5f;
@@ -39,6 +38,8 @@ public class TopDownMovement : MonoBehaviour
         animController = GetComponent<CharacterAnimationController>();
         input = GetComponent<PlayerInputController>();
         condition = GetComponent<PlayerConditionManager>();
+        aimController = GetComponent<PlayerAimController>();
+        cameraController = GetComponent<PlayerCameraController>();
 
         condition = PlayerConditionManager.Instance;
 
@@ -56,12 +57,20 @@ public class TopDownMovement : MonoBehaviour
     {
         controller.OnMoveEvent += HandleMove;
         controller.OnLookEvent += HandleLook;
+        aimController.OnAimingChanged += OnAimingChanged;
     }
 
     private void OnDisable()
     {
         controller.OnMoveEvent -= HandleMove;
         controller.OnLookEvent -= HandleLook;
+        aimController.OnAimingChanged -= OnAimingChanged;
+    }
+
+    void OnAimingChanged(bool isAiming)
+    {
+        float aimDistance = WeaponManager.Instance.CurrentWeapon.gunData.aimDistance;
+        cameraController.CurrentCameraDistance = isAiming ? cameraController.MaxCameraDistance * aimDistance : cameraController.MaxCameraDistance;
     }
 
     private void FixedUpdate()
@@ -101,15 +110,7 @@ public class TopDownMovement : MonoBehaviour
         // 6) 애니메이션
         UpdateAnimation();
 
-        // 7) 마우스 미니 포인터(있다면)
-        if (mouseTr != null)
-        {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos = Vector2.ClampMagnitude(mousePos - (Vector2)transform.position, maxMouseDistance) + (Vector2)transform.position;
-            mouseTr.position = mousePos;
-        }
-
-        // 8) 무기 반동 처리
+        // 7) 무기 반동 처리
         Shooter shooter = WeaponManager.Instance.CurrentWeapon;
 
         if (shooter && shooter.gunData != null)

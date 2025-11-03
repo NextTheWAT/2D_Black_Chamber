@@ -1006,6 +1006,7 @@ GameObject:
   - component: {fileID: 3943578476050053338}
   - component: {fileID: 3995217826896878850}
   - component: {fileID: 5736203384528477055}
+  - component: {fileID: 771583135403648975}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -1105,7 +1106,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 99364
+  m_InstanceId: 278434
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1280,7 +1281,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseTr: {fileID: 0}
-  maxMouseDistance: 4
   moveSpeed: 3
   acceleration: 30
   runSpeedMultiplier: 2
@@ -1674,6 +1674,24 @@ MonoBehaviour:
   startColor: {r: 1, g: 0, b: 0, a: 0.78431374}
   endColor: {r: 1, g: 1, b: 1, a: 1}
   fadeDuration: 1
+--- !u!114 &771583135403648975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323664180436086190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53d32dca30518d04094516d325872c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3507418152336651286}
+  followSpeed: 5
+  maxCameraDistance: 4
+  shakeMagnitude: 0.2
+  shakeDuration: 0.1
+  shakeMultiplier: 0.2
 --- !u!1 &6390167608740650960
 GameObject:
   m_ObjectHideFlags: 0

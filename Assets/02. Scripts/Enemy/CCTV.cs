@@ -135,6 +135,7 @@ public class CCTV : MonoBehaviour
             yield return null;
         }
 
+        StructSoundManager.Instance.PlayCCTVStartSound(transform.position);
         StartCoroutine(Suspect());
     }
 
@@ -203,7 +204,7 @@ public class CCTV : MonoBehaviour
     public void Die()
     {
         StopAllCoroutines();
-        StructSoundManager.Instance.PlayStructBrokenSound(transform.position);
+        StructSoundManager.Instance.PlayCCTVBrokenSound(transform.position);
         ObjectPoolingManager.Instance.Get(explosionEffect, head.position);
         head.GetComponent<SpriteRenderer>().color = destroyedColor;
         light2D.enabled = false;

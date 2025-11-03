@@ -136,7 +136,7 @@ public partial class PlayerInputController : TopDownController
         {
             // 정상 발사
             animationController.PlayShoot();
-            CameraUtility.Shake(shooter.gunData.recoilAmount);
+            cameraController.ShakeCamera(shooter.gunData.recoilAmount);
         }
         else
         {

@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAimController : MonoBehaviour
 {
+    public Action<bool> OnAimingChanged;
+
     [Header("Line")]
     public LineRenderer aimLineRenderer;
     public LineRenderer leftLineRenderer;
@@ -73,7 +76,6 @@ public class PlayerAimController : MonoBehaviour
     private PlayerInputController inputController;
     private float originalCameraSize;
 
-
     void Start()
     {
         inputController = GetComponent<PlayerInputController>();
@@ -98,12 +100,17 @@ public class PlayerAimController : MonoBehaviour
 
         UpdateAimLine();
         UpdateSideLine();
-        UpdateCameraSize();
+        // UpdateCameraSize();
         DrawArc();
     }
 
     void InputAiming()
-        => isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
+    {
+        bool previousAiming = isAiming;
+        isAiming = aimingCooldown ? false : Input.GetMouseButton(1);
+        if(previousAiming != isAiming)
+            OnAimingChanged?.Invoke(isAiming);
+    }
 
     void DrawArc()
     {
@@ -216,7 +223,7 @@ public class PlayerAimController : MonoBehaviour
     {
         float targetSize = isAiming ? originalCameraSize * GunData.aimDistance : originalCameraSize;
         float currentSize = Mathf.Lerp(Camera.main.orthographicSize, targetSize, Time.deltaTime * 5f);
-        CameraUtility.SetOrthographicSize(currentSize);
+        Camera.main.orthographicSize = currentSize;
     }
 
 

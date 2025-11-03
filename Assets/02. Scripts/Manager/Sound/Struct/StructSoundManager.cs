@@ -4,6 +4,7 @@ public class StructSoundManager : SoundManagerBase<StructSoundManager>
 {
     [Header("Strcut SFX")]
     public SoundData cctvBrokenSound;
+    public SoundData cctvStartSound;
     public SoundData pickUpSound;
 
     [Header("Door SFX")]
@@ -22,7 +23,8 @@ public class StructSoundManager : SoundManagerBase<StructSoundManager>
 
     [Range(0, 1)] public float structVol = 0.8f;
 
-    public void PlayStructBrokenSound(Vector2 pos) => PlaySFX(cctvBrokenSound, pos, structVol);
+    public void PlayCCTVBrokenSound(Vector2 pos) => PlaySFX(cctvBrokenSound, pos, structVol);
+    public void PlayCCTVStartSound(Vector2 pos) => PlaySFX(cctvStartSound, pos, structVol);
     public void PlayPickUpSound(Vector2 pos) => PlaySFX(pickUpSound, pos, structVol);
     public void PlayDoorOpenSound(Vector2 pos) => PlaySFX(doorOpenSound, pos, structVol);
     public void PlayDoorCloseSound(Vector2 pos) => PlaySFX(doorCloseSound, pos, structVol);
