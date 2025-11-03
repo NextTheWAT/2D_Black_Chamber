@@ -1280,7 +1280,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d0edc7ff9d1e348aba4018ebfc4a43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseTr: {fileID: 0}
   moveSpeed: 3
   acceleration: 30
   runSpeedMultiplier: 2
@@ -1632,7 +1631,7 @@ MonoBehaviour:
   CalculateHidersAtHiderHeight: 0
   ObstacleMask:
     serializedVersion: 2
-    m_Bits: 33280
+    m_Bits: 164352
   RaycastResolution: 0.5
   ResolveEdge: 1
   MaxEdgeResolveIterations: 7
