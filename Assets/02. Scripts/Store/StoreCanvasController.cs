@@ -109,4 +109,25 @@ public class StoreCanvasController : MonoBehaviour
             }
         }
     }
+
+    public bool BuyWeapon(GunData gun)
+    {
+        if (gun == null) 
+            return false;
+
+        bool success = WeaponInventory.Instance.Buy(gun);
+        if (!success)
+            return false;
+
+        if (success)
+            AchievementManager.instance.HasAllWeapon();
+
+        if (!AchievementManager.instance.IsUnlocked(5))
+            AchievementManager.instance.UnlockAchievement(5);
+
+        RefreshGrid();
+        RefreshMoney();
+
+        return true;
+    }
 }
