@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CursorManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class CursorManager : MonoBehaviour
 
     [Header("UIKey")]
     [SerializeField] private List<UIKey> gameplayKeys = new() { UIKey.Game };
+    private UIKey currentUIKey;
 
     private void Awake()
     {
@@ -19,10 +21,46 @@ public class CursorManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
     }
+
+    private void OnEnable()
+    {
+        if (GameManager.AppIsQuitting) return;
+        UIManager.Instance.OnUIActiveChanged += OnUIActiveChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.AppIsQuitting) return;
+        UIManager.Instance.OnUIActiveChanged -= OnUIActiveChanged;
+    }
+
+    private void OnUIActiveChanged(UIBase uIBase, bool active)
+    {
+        if (active)
+        {
+            SetGameplayCursor(false);
+        }
+        else
+        {
+            if (currentUIKey == UIKey.Title)
+                SetGameplayCursor(false);
+            else
+                SetGameplayCursor(UIActiveCounter.ActiveUICount <= 0);
+        }
+    }
+
+
 
     public void ApplyByUIKey(UIKey key) //UIKey에 맞춰 커서 상태 적용
     {
+        if (crosshairUI == null)
+        {
+            crosshairUI = GameObject.FindAnyObjectByType<CrosshairCursor>().gameObject;
+        }
+
+        currentUIKey = key;
         bool gameplay = gameplayKeys.Contains(key);
         SetGameplayCursor(gameplay);
     }
