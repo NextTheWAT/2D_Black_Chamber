@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +9,14 @@ public class SettingPopup : UIBase
     [SerializeField] private Button dimmerButton;
 
     [Header("Animation")]
-    [SerializeField] private Image animationImage; // ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¹ÌÁö
-    [SerializeField] private Sprite[] animationFrames; // ¾Ö´Ï¸ŞÀÌ¼Ç ÇÁ·¹ÀÓ ´ãÀ» ¹è¿­
+    [SerializeField] private Image animationImage; // ì• ë‹ˆë©”ì´ì…˜ ì´ë¯¸ì§€
+    [SerializeField] private Sprite[] animationFrames; // ì• ë‹ˆë©”ì´ì…˜ í”„ë ˆì„ ë‹´ì„ ë°°ì—´
     [SerializeField] private float frameDuration = 0.1f;
 
     [Header("Content")]
-    [SerializeField] private GameObject contentRoot; // ¾Ö´Ï¸ŞÀÌ¼Ç ÈÄ È°¼ºÈ­ÇÒ UI
+    [SerializeField] private GameObject contentRoot; // ì• ë‹ˆë©”ì´ì…˜ í›„ í™œì„±í™”í•  UI
 
-    private Coroutine _animationCo; // ¾Ö´Ï¸ŞÀÌ¼Ç ÄÚ·çÆ¾ ÂüÁ¶
+    private Coroutine _animationCo; // ì• ë‹ˆë©”ì´ì…˜ ì½”ë£¨í‹´ ì°¸ì¡°
 
     private void Start()
     {
@@ -25,7 +25,6 @@ public class SettingPopup : UIBase
 
     private void Reset()
     {
-        if (canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
         if (closeButton == null) closeButton = GetComponentInChildren<Button>(true);
         if (dimmerButton == null)
         {
@@ -33,6 +32,57 @@ public class SettingPopup : UIBase
             if (dimmer) dimmerButton = dimmer.GetComponent<Button>();
         }
     }
+
+    public override void OpenUI()
+    {
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+
+        gameObject.SetActive(true);
+        EnsureRefs(); // UIBaseì˜ EnsureRefs í˜¸ì¶œ
+
+        IsOpen = true;
+
+        // CanvasGroup ì„¤ì •ì€ OnOpen()ì—ì„œ ì²˜ë¦¬ë˜ë„ë¡ ìœ ì§€í•˜ê±°ë‚˜, ì—¬ê¸°ì„œ ì¦‰ì‹œ ì„¤ì •
+        if (canvasGroup)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+        }
+
+        // ìì²´ OnOpen í›… í˜¸ì¶œ
+        OnOpen();
+
+        // 1. ContentRoot ìˆ¨ê¹€
+        if (contentRoot != null) contentRoot.SetActive(false);
+
+        // 2. ìŠ¤í”„ë¼ì´íŠ¸ ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘
+        if (animationImage != null && animationFrames != null && animationFrames.Length > 0)
+        {
+            if (_animationCo != null) StopCoroutine(_animationCo);
+            _animationCo = StartCoroutine(PlayOpenAnimationCoroutine());
+        }
+    }
+
+    public override void CloseUI()
+    {
+        if (!gameObject.activeInHierarchy) return; // ì´ë¯¸ ë‹«í˜€ ìˆìœ¼ë©´ ë¬´ì‹œ
+
+        UISoundManager.Instance.PlayButtonClickSound(Vector2.zero);
+        EnsureRefs();
+
+        // ë‹«ê¸° ëª…ë ¹ì´ ë“¤ì–´ì˜¤ë©´ ì¦‰ì‹œ ìƒí˜¸ì‘ìš©ì„± í•´ì œ
+        if (canvasGroup)
+        {
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        // ê¸°ì¡´ ì½”ë£¨í‹´(ì—´ë¦¼ ì• ë‹ˆë©”ì´ì…˜)ì´ ìˆë‹¤ë©´ ì •ì§€í•˜ê³  ë‹«ê¸° ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘
+        if (_animationCo != null) StopCoroutine(_animationCo);
+        _animationCo = StartCoroutine(PlayCloseAnimationCoroutine()); // ë‹«ê¸° ì• ë‹ˆë©”ì´ì…˜ ì½”ë£¨í‹´ ì‹œì‘
+    }
+
 
     protected override void OnOpen()
     {
@@ -42,49 +92,24 @@ public class SettingPopup : UIBase
             if (dimmerButton) dimmerButton.onClick.AddListener(RequestClose);
             Initialized = true;
         }
-
-        if (canvasGroup)
-        {
-            canvasGroup.alpha = 1f;
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
-        }
-
-        // UI°¡ ¿­¸± ¶§ ¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ
-        if (animationImage != null && animationFrames != null && animationFrames.Length > 0)
-        {
-            // ±âÁ¸ ÄÚ·çÆ¾ÀÌ ÀÖ´Ù¸é Á¤ÁöÇÏ°í »õ·Î ½ÃÀÛ
-            if (_animationCo != null) StopCoroutine(_animationCo);
-            _animationCo = StartCoroutine(PlayOpenAnimationCoroutine());
-        }
     }
 
     public void RequestClose()
     {
         if (!gameObject.activeInHierarchy) return;
 
-        // ´İ±â ¸í·ÉÀÌ µé¾î¿À¸é Áï½Ã »óÈ£ÀÛ¿ë¼º ÇØÁ¦
-        if (canvasGroup)
-        {
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
-
-        // ±âÁ¸ ÄÚ·çÆ¾(¿­¸² ¾Ö´Ï¸ŞÀÌ¼Ç)ÀÌ ÀÖ´Ù¸é Á¤ÁöÇÏ°í ´İ±â ¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ
-        if (_animationCo != null) StopCoroutine(_animationCo);
-        _animationCo = StartCoroutine(PlayCloseAnimationCoroutine());
+        // ğŸ’¡ ì˜¤ë²„ë¼ì´ë“œëœ CloseUI()ë¥¼ í˜¸ì¶œí•˜ì—¬ ë‹«ê¸° ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘
+        CloseUI();
     }
 
     private IEnumerator CloseSequence()
     {
-        // ´İ±â ¾Ö´Ï¸ŞÀÌ¼Ç ¿Ï·á ÈÄ UIManager¿¡ ºñÈ°¼ºÈ­¸¦ ¿äÃ»
         yield return null;
-        UIManager.Instance.CloseUI<SettingPopup>();
     }
 
     protected override void OnClose()
     {
-        // ´İ±â ¸í·É ¿Ï·á ½Ã ¾Ö´Ï¸ŞÀÌ¼Ç ÄÚ·çÆ¾ Á¤¸®
+        // ë‹«ê¸° ëª…ë ¹ ì™„ë£Œ ì‹œ ì• ë‹ˆë©”ì´ì…˜ ì½”ë£¨í‹´ ì •ë¦¬
         if (_animationCo != null)
         {
             StopCoroutine(_animationCo);
@@ -106,45 +131,51 @@ public class SettingPopup : UIBase
 
     private IEnumerator PlayOpenAnimationCoroutine()
     {
-        animationImage.enabled = true; // Image ÄÄÆ÷³ÍÆ®¸¦ º¸ÀÌ°Ô ¼³Á¤
+        animationImage.enabled = true; // Image ì»´í¬ë„ŒíŠ¸ë¥¼ ë³´ì´ê²Œ ì„¤ì •
 
         if (contentRoot != null) contentRoot.SetActive(false);
 
         for (int i = 0; i < animationFrames.Length; i++)
         {
-            // ÇöÀç ÇÁ·¹ÀÓÀÇ ½ºÇÁ¶óÀÌÆ®¸¦ Image ÄÄÆ÷³ÍÆ®¿¡ ÇÒ´ç
+            // í˜„ì¬ í”„ë ˆì„ì˜ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ Image ì»´í¬ë„ŒíŠ¸ì— í• ë‹¹
             animationImage.sprite = animationFrames[i];
 
-            // ¸¶Áö¸· ÇÁ·¹ÀÓÀÌ ¾Æ´Ò ¶§¸¸ ´ë±â
+            // ë§ˆì§€ë§‰ í”„ë ˆì„ì´ ì•„ë‹ ë•Œë§Œ ëŒ€ê¸°
             if (i < animationFrames.Length - 1)
             {
                 yield return new WaitForSecondsRealtime(frameDuration);
             }
         }
 
+        // ì• ë‹ˆë©”ì´ì…˜ ì™„ë£Œ í›„ ContentRoot í™œì„±í™”
         if (contentRoot != null) contentRoot.SetActive(true);
 
-        _animationCo = null; // ÄÚ·çÆ¾ Á¾·á ÈÄ ÂüÁ¶ ÇØÁ¦
+        _animationCo = null; // ì½”ë£¨í‹´ ì¢…ë£Œ í›„ ì°¸ì¡° í•´ì œ
     }
 
     private IEnumerator PlayCloseAnimationCoroutine()
     {
+        // ë‹«ê¸° ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘ ì‹œ ContentRoot ë¹„í™œì„±í™”
         if (contentRoot != null) contentRoot.SetActive(false);
 
-        // ¿ª¼øÀ¸·Î ¹İº¹
+        // ì—­ìˆœìœ¼ë¡œ ë°˜ë³µ
         for (int i = animationFrames.Length - 1; i >= 0; i--)
         {
             animationImage.sprite = animationFrames[i];
 
-            // 0¹ø ÇÁ·¹ÀÓÀÌ ¾Æ´Ò ¶§¸¸ ´ë±â
+            // 0ë²ˆ í”„ë ˆì„ì´ ì•„ë‹ ë•Œë§Œ ëŒ€ê¸°
             if (i > 0)
             {
                 yield return new WaitForSecondsRealtime(frameDuration);
             }
         }
 
-        // ´İ´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¿Ï·á ÈÄ, UI ºñÈ°¼ºÈ­ ¸í·É È£Ãâ
-        _animationCo = null; // ÄÚ·çÆ¾ Á¾·á ÈÄ ÂüÁ¶ ÇØÁ¦
-        StartCoroutine(CloseSequence());
+        // ë‹«ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì™„ë£Œ í›„, UIManager ë¹„í™œì„±í™” ëª…ë ¹ í˜¸ì¶œ
+        _animationCo = null; // ì½”ë£¨í‹´ ì¢…ë£Œ í›„ ì°¸ì¡° í•´ì œ
+
+        // OnClose í›… í˜¸ì¶œ ë° ìµœì¢… ë¹„í™œì„±í™”
+        OnClose();
+        IsOpen = false;
+        gameObject.SetActive(false);
     }
 }

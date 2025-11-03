@@ -19424,6 +19424,8 @@ MonoBehaviour:
   settingButton: {fileID: 4416274866191631119}
   lobbyButton: {fileID: 8584057074610067213}
   quitButton: {fileID: 6179079859931480173}
+  windowRoot: {fileID: 6201650196085101431}
+  animDuration: 0.3
   lobbySceneName: 02. LobbyScene
 --- !u!1 &4704754030278672523
 GameObject:
