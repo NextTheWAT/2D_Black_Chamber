@@ -50,8 +50,11 @@ public class PlayerCameraController : MonoBehaviour
         Vector3 targetPosition = player.position + (Vector3)(dir * clampedDistance);
         targetPosition.z = -10f;
 
+        // 거리에 비례해서 카메라 이동속도 변경
+        float dynamicFollowSpeed = followSpeed * (clampedDistance / maxCameraDistance);
+
         // 부드럽게 따라가기
-        CamTr.position = Vector3.Lerp(CamTr.position, targetPosition, followSpeed * Time.deltaTime) + shakeOffset;
+        CamTr.position = Vector3.Lerp(CamTr.position, targetPosition, dynamicFollowSpeed * Time.deltaTime) + shakeOffset;
     }
 
 
