@@ -76,6 +76,10 @@ public class PlayerCameraController : MonoBehaviour
 
         while (elapsed < duration)
         {
+            // 일시정지 중이면 대기
+            while (Time.timeScale == 0) 
+                yield return null;
+
             shakeOffset.x = Random.Range(-magnitude, magnitude);
             shakeOffset.y = Random.Range(-magnitude, magnitude);
             shakeOffset *= shakeMultiplier;
