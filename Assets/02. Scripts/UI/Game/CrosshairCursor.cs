@@ -22,7 +22,14 @@ public class CrosshairCursor : MonoBehaviour
     public float reloadFillDuration = 2f;     // ÃÊ ´ÜÀ§
     [SerializeField] private bool useUnscaledTime = false;
 
+    private float cacheElsapsedTime = 0f;
     private Coroutine reloadCR;
+
+    private void OnEnable()
+    {
+        if (cacheElsapsedTime > 0f)
+            PlayReloadUI();
+    }
 
     private void Start()
     {
@@ -86,10 +93,11 @@ public class CrosshairCursor : MonoBehaviour
         if (reload) reload.SetActive(true);
         SetCrosshairVisible(false);
 
-        float elapsed = 0f;
+        float elapsed = cacheElsapsedTime;
         while (elapsed < duration)
         {
             elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            cacheElsapsedTime = elapsed;
             float t = Mathf.Clamp01(elapsed / duration);
             if (reloadFillAmount) reloadFillAmount.fillAmount = t;
             yield return null;
@@ -99,6 +107,7 @@ public class CrosshairCursor : MonoBehaviour
         if (reloadFillAmount) reloadFillAmount.fillAmount = 1f;
         if (reload) reload.SetActive(false);
         SetCrosshairVisible(true);
+        cacheElsapsedTime = 0f;
         reloadCR = null;
         WeaponManager.Instance.isReloading = false;
     }
