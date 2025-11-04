@@ -34,9 +34,6 @@ public partial class PlayerInputController : TopDownController
             Vector3 world = _camera.ScreenToWorldPoint(new Vector3(screen.x, screen.y, zDist));
             Vector2 aim = (Vector2)(world - transform.position);
             if (aim.sqrMagnitude > 0.0001f) CallLookEvent(aim.normalized);
-
-            if (shootPressed)
-                GunForward();
         }
     }
 
