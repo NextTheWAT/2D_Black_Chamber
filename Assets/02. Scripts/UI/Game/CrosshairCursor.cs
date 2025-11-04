@@ -33,8 +33,12 @@ public class CrosshairCursor : MonoBehaviour
 
     private void Start()
     {
-        GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<CharacterAnimationController>().nowcrosshairCursor = this;
+        if (GameManager.Instance.Player)
+        {
+            CharacterAnimationController characterAnimationController = GameManager.Instance.Player.GetComponent<CharacterAnimationController>();
+            if (characterAnimationController)
+                characterAnimationController.nowcrosshairCursor = this;
+        }
 
         // 안전장치: Type이 Filled가 아니면 강제로 전환
         if (reloadFillAmount != null && reloadFillAmount.type != Image.Type.Filled)
