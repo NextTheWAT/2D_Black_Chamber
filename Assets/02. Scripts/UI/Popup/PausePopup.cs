@@ -104,11 +104,15 @@ public class PausePopup : UIBase
 
     private IEnumerator ReturnToLobby()
     {
+        /*
         //  UIBase의 CloseUI를 호출하기 위해 RequestClose() 사용
         RequestClose();
 
         // UIBase의 CloseUI 애니메이션 완료(gameObject.activeInHierarchy == false)를 대기
         while (gameObject.activeInHierarchy) yield return null;
+        */
+
+        RequestClose();
 
         if (Time.timeScale == 0f) Time.timeScale = 1f;
         if (!Application.CanStreamedLevelBeLoaded(lobbySceneName))
