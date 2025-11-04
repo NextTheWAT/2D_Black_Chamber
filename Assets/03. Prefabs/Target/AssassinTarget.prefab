@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 2697154082547761088}
   - component: {fileID: 4215764903156184602}
   - component: {fileID: 6262810931504493246}
-  - component: {fileID: 3191301827752158431}
   m_Layer: 11
   m_Name: AssassinTarget
   m_TagString: Untagged
@@ -117,10 +116,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d072de45a33a5674eb51942dcbb41712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateTable: {fileID: 11400000, guid: 1f1e7961dea3c4042b8807b4a89ce50b, type: 2}
+  dialogueData: {fileID: 0}
+  dialogueBubble: {fileID: 0}
+  dialogueTextComponent: {fileID: 0}
+  dialogueDuration: 3
+  id: 1001001
   nonCombatStateType: 0
   combatStateType: 0
   useCollisionEnter: 1
+  investigateUseStartDelay: 0
   health: {fileID: 208123243127908645}
   angularSpeed: 120
   targetMask:
@@ -139,8 +143,11 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
+  useGunID: 1
+  gunId: 
   shooter: {fileID: 0}
   returnPoint: {fileID: 0}
+  bloodPrefab: {fileID: 0}
   questionIcon: {fileID: 0}
   exclamationIcon: {fileID: 0}
   minIconShowTime: 0.12
@@ -160,6 +167,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
+  useInvincible: 0
+  invincibleDuration: 1
   OnHealthChanged:
     m_PersistentCalls:
       m_Calls:
@@ -190,6 +199,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnInvincibleStart:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInvincibleEnd:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2697154082547761088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +219,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   upperAnimator: {fileID: 4582954057272408066}
   lowerAnimator: {fileID: 8081028850479260102}
+  reloadDuration: 0
+  nowcrosshairCursor: {fileID: 0}
 --- !u!114 &4215764903156184602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -269,24 +286,6 @@ PolygonCollider2D:
       - {x: 0.77692944, y: -0.18338633}
       - {x: 0.7328131, y: 0.11987275}
   m_UseDelaunayMesh: 0
---- !u!114 &3191301827752158431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 701606878684549374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 985add12ee4836e40b7241671b1d892c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fogWar: {fileID: 0}
-  additionalRadius: 0
-  spotThreshold: 0.01
-  fadeInTime: 0.12
-  fadeOutTime: 0.35
-  disableRendererAtZero: 1
 --- !u!1 &1447761448545050520
 GameObject:
   m_ObjectHideFlags: 0
