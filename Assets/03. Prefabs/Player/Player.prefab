@@ -1686,7 +1686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3507418152336651286}
-  followSpeed: 5
+  followSpeed: 6
   maxCameraDistance: 4
   shakeMagnitude: 0.2
   shakeDuration: 0.1
