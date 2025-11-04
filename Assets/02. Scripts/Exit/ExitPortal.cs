@@ -125,14 +125,16 @@ public class ExitPortal : MonoBehaviour
             MoneyManager.Instance.Add(totalRewardToGive);
 
         // 5) 잠입모드클리어 업적
-        if (isStealthClear)
-            AchievementManager.instance.UnlockAchievement(stageNumber - 1);
+        //if (isStealthClear)
+        //    AchievementManager.instance.UnlockAchievement(stageNumber - 1);
 
         ProgressFlags.Set(ProgressFlags.StageCleared(stageNumber), true);
         PlayerPrefs.SetInt($"Stage{stageNumber}_ClearDialoguePending", 1);
         PlayerPrefs.Save();
 
         // 6) 클리어 씬 로드
-        LoadingScreen.Instance.Load(clearSceneName);
+
+        SceneManager.LoadScene(clearSceneName);
+        //LoadingScreen.Instance.Load(clearSceneName);
     }
 }
