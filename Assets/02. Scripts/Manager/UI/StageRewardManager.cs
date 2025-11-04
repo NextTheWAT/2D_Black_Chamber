@@ -14,9 +14,11 @@ public class StageRewardManager : Singleton<StageRewardManager>
 
     private void InitRewards()
     {
-        rewards[1] = new StageReward(1000, 700, 500);
-        rewards[2] = new StageReward(2000, 1400, 1000);
-        rewards[3] = new StageReward(3000, 2100, 1500);
+        rewards[1] = new StageReward(1000, 500, 500);
+        rewards[2] = new StageReward(2000, 1000, 1000);
+        rewards[3] = new StageReward(3000, 1500, 1500);
+        rewards[4] = new StageReward(4000, 2000, 2000);
+        rewards[5] = new StageReward(5000, 2500, 2500);
     }
 
     public StageReward GetReward(int stageNumber)

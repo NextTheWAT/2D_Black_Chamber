@@ -66,11 +66,25 @@ public class PausePopup : UIBase
 
     protected override void OnClose()
     {
+        bool stageSelectIsOpen = UIManager.Instance.IsUIOpen<StageSelectDialogueUI>();
+
         // 시간 복원 (PausePopup 고유 로직)
         if (!suppressRestoreOnce)
-            Time.timeScale = prevTimeScale;
+        {
+            // StageSelectDialogueUI가 열려있으면 TimeScale 복원을 억제하고 0으로 유지
+            if (stageSelectIsOpen)
+            {
+                Time.timeScale = 0f; // StageSelectDialogueUI가 TimeScale 0을 유지하도록 명시
+            }
+            else
+            {
+                Time.timeScale = prevTimeScale; // 다른 UI가 열리지 않은 경우에만 원래대로 복원
+            }
+        }
         else
+        {
             suppressRestoreOnce = false; // 1회성 플래그 초기화
+        }
     }
 
     private void OpenSettingFromPause()

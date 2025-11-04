@@ -42,4 +42,10 @@ public class UIManager : Singleton<UIManager>
         ui.CloseUI();
         OnUIActiveChanged?.Invoke(ui, false);
     }
+
+    public bool IsUIOpen<T>() where T : UIBase
+    {
+        var ui = FindOrCache<T>();
+        return ui != null && ui.IsOpen;
+    }
 }
