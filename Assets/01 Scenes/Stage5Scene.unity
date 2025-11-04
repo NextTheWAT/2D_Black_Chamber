@@ -75080,7 +75080,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3044414773051202813, guid: 40a2cc7c81f2611488616ad6ec46c475, type: 3}
       propertyPath: stageNumber
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3044414773051202813, guid: 40a2cc7c81f2611488616ad6ec46c475, type: 3}
       propertyPath: clearSceneName

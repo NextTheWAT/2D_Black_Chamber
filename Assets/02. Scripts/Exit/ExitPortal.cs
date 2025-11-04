@@ -122,7 +122,6 @@ public class ExitPortal : MonoBehaviour
 
         // 합산된 최종 보상 금액을 MoneyManager에 추가
         if (MoneyManager.Instance != null && totalRewardToGive > 0)
-            MoneyManager.Instance.Add(totalRewardToGive);
 
         // 5) 잠입모드클리어 업적
         //if (isStealthClear)
@@ -135,6 +134,5 @@ public class ExitPortal : MonoBehaviour
         // 6) 클리어 씬 로드
 
         SceneManager.LoadScene(clearSceneName);
-        //LoadingScreen.Instance.Load(clearSceneName);
     }
 }
