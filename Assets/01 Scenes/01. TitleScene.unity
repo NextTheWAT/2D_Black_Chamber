@@ -959,6 +959,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8880274533917837013, guid: 0d9c331dac48c9147bb6f6aeeeb2bc8e, type: 3}
+      propertyPath: animDuration
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 9150921900304054472, guid: 0d9c331dac48c9147bb6f6aeeeb2bc8e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

@@ -19,6 +19,8 @@ static class ProgressFlags
 
     public const string FirstMeetDone = "NPC_FirstMeetDone";       // 최초 대화 1회 처리용
     public static string StageCleared(int n) => $"Stage{n}_Cleared"; // 예) Stage1_Cleared
+
+    public static string ClearDialogueDone(int n) => $"Stage{n}_ClearDialogueDone";
 }
 
 public class StageSelectDialogueUI : UIBase
@@ -400,19 +402,24 @@ public class StageSelectDialogueUI : UIBase
     // 스테이지 클리어 직후 ‘1회성 대사’를 재생. 재생하면 true.
     private bool TryPlayPendingClearDialogue()
     {
-        // ... (생략된 기존 TryPlayPendingClearDialogue 로직)
         // 1스테이지 클리어 예약
         if (PlayerPrefs.GetInt("Stage1_ClearDialoguePending", 0) == 1)
         {
             PlayerPrefs.SetInt("Stage1_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
-            if (dialogueData?.stage1ClearDialogues != null &&
-                dialogueData.stage1ClearDialogues.Count > 0 &&
-                dialogueData.stage1ClearDialogues[0].lines?.Count > 0)
+            if (!ProgressFlags.Get(ProgressFlags.ClearDialogueDone(1)))
             {
-                StartSequence(dialogueData.stage1ClearDialogues[0].lines);
-                return true;
+                // 처음 재생하는 경우, 영구 플래그를 설정하여 다시는 재생되지 않도록함
+                ProgressFlags.Set(ProgressFlags.ClearDialogueDone(1), true);
+
+                if (dialogueData?.stage1ClearDialogues != null &&
+                  dialogueData.stage1ClearDialogues.Count > 0 &&
+                  dialogueData.stage1ClearDialogues[0].lines?.Count > 0)
+                {
+                    StartSequence(dialogueData.stage1ClearDialogues[0].lines);
+                    return true;
+                }
             }
         }
         // 2스테이지 클리어 예약
@@ -421,12 +428,17 @@ public class StageSelectDialogueUI : UIBase
             PlayerPrefs.SetInt("Stage2_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
-            if (dialogueData?.stage2ClearDialogues != null &&
-                dialogueData.stage2ClearDialogues.Count > 0 &&
-                dialogueData.stage2ClearDialogues[0].lines?.Count > 0)
+            if (!ProgressFlags.Get(ProgressFlags.ClearDialogueDone(2)))
             {
-                StartSequence(dialogueData.stage2ClearDialogues[0].lines);
-                return true;
+                ProgressFlags.Set(ProgressFlags.ClearDialogueDone(2), true);
+
+                if (dialogueData?.stage2ClearDialogues != null &&
+                  dialogueData.stage2ClearDialogues.Count > 0 &&
+                  dialogueData.stage2ClearDialogues[0].lines?.Count > 0)
+                {
+                    StartSequence(dialogueData.stage2ClearDialogues[0].lines);
+                    return true;
+                }
             }
         }
 
@@ -436,12 +448,17 @@ public class StageSelectDialogueUI : UIBase
             PlayerPrefs.SetInt("Stage3_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
-            if (dialogueData?.stage3ClearDialogues != null &&
-                dialogueData.stage3ClearDialogues.Count > 0 &&
-                dialogueData.stage3ClearDialogues[0].lines?.Count > 0)
+            if (!ProgressFlags.Get(ProgressFlags.ClearDialogueDone(3)))
             {
-                StartSequence(dialogueData.stage3ClearDialogues[0].lines);
-                return true;
+                ProgressFlags.Set(ProgressFlags.ClearDialogueDone(3), true);
+
+                if (dialogueData?.stage3ClearDialogues != null &&
+                  dialogueData.stage3ClearDialogues.Count > 0 &&
+                  dialogueData.stage3ClearDialogues[0].lines?.Count > 0)
+                {
+                    StartSequence(dialogueData.stage3ClearDialogues[0].lines);
+                    return true;
+                }
             }
         }
 
@@ -451,12 +468,17 @@ public class StageSelectDialogueUI : UIBase
             PlayerPrefs.SetInt("Stage4_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
-            if (dialogueData?.stage4ClearDialogues != null &&
-                dialogueData.stage4ClearDialogues.Count > 0 &&
-                dialogueData.stage4ClearDialogues[0].lines?.Count > 0)
+            if (!ProgressFlags.Get(ProgressFlags.ClearDialogueDone(4)))
             {
-                StartSequence(dialogueData.stage4ClearDialogues[0].lines);
-                return true;
+                ProgressFlags.Set(ProgressFlags.ClearDialogueDone(4), true);
+
+                if (dialogueData?.stage4ClearDialogues != null &&
+                  dialogueData.stage4ClearDialogues.Count > 0 &&
+                  dialogueData.stage4ClearDialogues[0].lines?.Count > 0)
+                {
+                    StartSequence(dialogueData.stage4ClearDialogues[0].lines);
+                    return true;
+                }
             }
         }
 
@@ -466,12 +488,17 @@ public class StageSelectDialogueUI : UIBase
             PlayerPrefs.SetInt("Stage5_ClearDialoguePending", 0);
             PlayerPrefs.Save();
 
-            if (dialogueData?.stage5ClearDialogues != null &&
-                dialogueData.stage5ClearDialogues.Count > 0 &&
-                dialogueData.stage5ClearDialogues[0].lines?.Count > 0)
+            if (!ProgressFlags.Get(ProgressFlags.ClearDialogueDone(5)))
             {
-                StartSequence(dialogueData.stage5ClearDialogues[0].lines);
-                return true;
+                ProgressFlags.Set(ProgressFlags.ClearDialogueDone(5), true);
+
+                if (dialogueData?.stage5ClearDialogues != null &&
+                  dialogueData.stage5ClearDialogues.Count > 0 &&
+                  dialogueData.stage5ClearDialogues[0].lines?.Count > 0)
+                {
+                    StartSequence(dialogueData.stage5ClearDialogues[0].lines);
+                    return true;
+                }
             }
         }
 
