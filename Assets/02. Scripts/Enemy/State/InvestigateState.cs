@@ -28,6 +28,17 @@ public class InvestigateState : BaseState
         ConditionalLogger.Log("InvestigateState Exit");
     }
 
+    public override void Update()
+    {
+        // 소음이 계속 감지되면 조사 상태를 재시작
+        if(owner.IsNoiseDetected && owner.NoiseAmount > NoiseManager.Instance.InvestigateThreshold)
+        {
+            StopInvestigate();
+            BeginInvestigate();
+        }
+    }
+
+
     private void BeginInvestigate()
     {
         investigateTimer = 0f;

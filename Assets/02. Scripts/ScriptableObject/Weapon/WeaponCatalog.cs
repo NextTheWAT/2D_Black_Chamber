@@ -47,4 +47,5 @@ public class WeaponCatalog : ScriptableObject
         string val = f1?.GetValue(d) as string ?? f2?.GetValue(d) as string;
         return string.IsNullOrEmpty(val) ? d.weaponName : val;
     }
+
 }

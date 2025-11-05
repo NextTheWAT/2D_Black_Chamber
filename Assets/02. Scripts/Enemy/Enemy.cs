@@ -320,6 +320,8 @@ public class Enemy : MonoBehaviour
         SetIconState(AlertIconState.None);
         UpdateAlertIcons();
 
+        animationController.SortingOrder = animationController.OriginalSortingOrder;
+
         if (FirebaseManager.Instance.IsGunDataLoaded)
             InitializeGunData();
         else
@@ -495,6 +497,8 @@ public class Enemy : MonoBehaviour
         enabled = false;
         forwardLight.enabled = false;
         backwardLight.enabled = false;
+
+        animationController.SortingOrder = 27;
 
         GameManager.Instance.CancelCombatDelay(this);
 

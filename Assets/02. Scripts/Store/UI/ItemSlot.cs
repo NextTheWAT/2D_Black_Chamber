@@ -24,10 +24,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Sprite hoverBackgroundSprite; // 마우스 올렸을 때 스프라이트
     public Sprite hoverBorderSprite;     // 마우스 올렸을 때 테두리 스프라이트
 
-    [Header("Grade Color")]
-    public Color[] backgroundGradeColors; // 등급별 배경 색상 배열
-    public Color[] borderGradeColors;     // 등급별 테두리 색상 배열
-
     [Header("Popup Positioning")]
     public Vector2 offset = new Vector2(400f, 0f);
 
@@ -91,13 +87,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (gunData == null) return;
 
-        int gradeIndex = Mathf.Clamp(gunData.Grade, 0, backgroundGradeColors.Length - 1);
+        int gradeIndex = Mathf.Clamp(gunData.Grade, 0, hoverPopup.backgroundGradeColors.Length - 1);
 
         if(coverImage)
-            coverImage.color = backgroundGradeColors[gradeIndex];
+            coverImage.color = hoverPopup.backgroundGradeColors[gradeIndex];
 
         if(borderImage)
-            borderImage.color = borderGradeColors[gradeIndex];
+            borderImage.color = hoverPopup.borderGradeColors[gradeIndex];
     }
 
     public void OnPointerEnter(PointerEventData eventData)
