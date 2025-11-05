@@ -1021,6 +1021,7 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  isLoadingEnabled: 0
 --- !u!114 &2220292121186971479
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,6 +1052,7 @@ MonoBehaviour:
   root_DontDestroyOnLoad: 0
   startTime: 0
   killCount: 0
+  moneyCollected: 0
 --- !u!1 &3470070528227405064
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   crosshairUI: {fileID: 0}
-  gameplayKeys: 03000000
+  gameplayKeys: 0300000002000000
 --- !u!1 &3697605121882489202
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ public class CursorManager : MonoBehaviour
     [SerializeField] private GameObject crosshairUI;
 
     [Header("UIKey")]
-    [SerializeField] private List<UIKey> gameplayKeys = new() { UIKey.Game };
+    [SerializeField] private List<UIKey> gameplayKeys = new() { UIKey.Game, UIKey.Lobby };
     private UIKey currentUIKey;
 
     private void Awake()
@@ -56,9 +56,7 @@ public class CursorManager : MonoBehaviour
     public void ApplyByUIKey(UIKey key) //UIKey에 맞춰 커서 상태 적용
     {
         if (crosshairUI == null)
-        {
             crosshairUI = GameObject.FindAnyObjectByType<CrosshairCursor>().gameObject;
-        }
 
         currentUIKey = key;
         bool gameplay = gameplayKeys.Contains(key);
