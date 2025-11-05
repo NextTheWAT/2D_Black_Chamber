@@ -22,6 +22,14 @@ public class CoverState : BaseState
 
     public override void Update()
     {
+        if (owner.IsHit)
+        {
+            if (updateCoverPointCoroutine != null)
+                owner.StopCoroutine(updateCoverPointCoroutine);
+
+            coverPoint = owner.Target.position;
+        }
+
         owner.MoveTo(coverPoint);
         owner.Agent.isStopped = owner.IsArrived;
 
