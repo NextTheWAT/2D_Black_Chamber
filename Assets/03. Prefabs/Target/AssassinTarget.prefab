@@ -220,7 +220,6 @@ MonoBehaviour:
   upperAnimator: {fileID: 4582954057272408066}
   lowerAnimator: {fileID: 8081028850479260102}
   reloadDuration: 0
-  nowcrosshairCursor: {fileID: 0}
 --- !u!114 &4215764903156184602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -523,7 +522,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -43
+  m_SortingOrder: 29
   m_Sprite: {fileID: 21300000, guid: 7484c3fe8a1df574fb6a189074834cd7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -629,7 +628,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -42
+  m_SortingOrder: 30
   m_Sprite: {fileID: -1351816132, guid: 6dc480194c277634189b6628afa0fb3e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
