@@ -418,6 +418,7 @@ public static class GA
 플레이어 사망 위치를 0.5f 단위로 스냅하여 히트맵 생성에 최적화된 데이터 수집
 
 ### 게임 퍼널 분석 결과
+<img width="1229" height="782" alt="image" src="https://github.com/user-attachments/assets/6c209c5f-5d0b-4bdf-87fa-4388c0f62128" />
 
 **5단계 퍼널**: Tutorial Start → Tutorial Complete → Stage 1/2/3 Complete
 
