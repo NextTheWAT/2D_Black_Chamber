@@ -1559,7 +1559,7 @@ MonoBehaviour:
   hitBoxDistance: 0.8
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 2176
   damageAmount: 50
 --- !u!114 &2059217959560316814
 MonoBehaviour:
@@ -1686,7 +1686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3507418152336651286}
-  followSpeed: 5
+  followSpeed: 6
   maxCameraDistance: 4
   shakeMagnitude: 0.2
   shakeDuration: 0.1
