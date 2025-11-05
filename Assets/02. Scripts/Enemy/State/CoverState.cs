@@ -29,8 +29,7 @@ public class CoverState : BaseState
             owner.Agent.isStopped = true;
         }
 
-        if (owner.IsArrived)
-            owner.LookPoint = lookPoint;
+        owner.LookPoint = lookPoint;
     }
 
     public override void Exit()
