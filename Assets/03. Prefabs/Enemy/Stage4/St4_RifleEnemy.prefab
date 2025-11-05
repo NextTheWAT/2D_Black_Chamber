@@ -328,7 +328,7 @@ MonoBehaviour:
     m_Bits: 2176
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 172544
+    m_Bits: 164352
   forwardLight: {fileID: 6599352475685495871}
   backwardLight: {fileID: 3523323190724193581}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
