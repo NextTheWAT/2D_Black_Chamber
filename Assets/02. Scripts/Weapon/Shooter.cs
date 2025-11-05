@@ -149,7 +149,7 @@ public class Shooter : MonoBehaviour
         WeaponSoundManager.Instance.PlaySFX(gunData.prefabInfo.fireSFX, transform.position);
 
         // 소음 추가
-        NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.gunNoiseData);
+        NoiseManager.Instance.EmitNoise(transform.parent, transform.position, gunData.prefabInfo.fireNoiseData);
 
         return true;
     }

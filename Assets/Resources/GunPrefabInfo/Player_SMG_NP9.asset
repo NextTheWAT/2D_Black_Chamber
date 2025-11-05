@@ -21,3 +21,6 @@ MonoBehaviour:
   weaponSprite: {fileID: -568039978, guid: b067af2d5018c5343affa8ddb96d9739, type: 3}
   firePointOffset: {x: 0.24, y: 1.19}
   fireSFX: {fileID: 11400000, guid: ad608595013ddba4dbb15f1d39e26993, type: 2}
+  fireNoiseData:
+    strength: 40
+    range: 15

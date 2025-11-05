@@ -32,7 +32,6 @@ public class GunData
     public float bulletSpeed = 25f; // 탄속 (m/s)
     public int bulletPerShot = 1;     // 발당 발사 총알 수(샷건 등)
     public float bulletDuration = 2f; // 탄이 소멸되기까지의 시간(초)
-    public NoiseData gunNoiseData; // 발사 소음 데이터
 
     public int curAmmo = 0;           // 시작/현재 장전 탄
     public int curReserveAmmo = 0;    // 시작/현재 예비 탄
