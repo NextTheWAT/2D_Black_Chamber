@@ -91,7 +91,7 @@ public class HoverPopup : MonoBehaviour
         return string.IsNullOrEmpty(n) ? d.weaponName : n;
     }
 
-    private static string ReadStr(object obj, string field)
+    public static string ReadStr(object obj, string field)
     {
         var f = obj.GetType().GetField(field);
         if (f == null) return null;
