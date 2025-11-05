@@ -33,7 +33,6 @@ public class InvestigateState : BaseState
         // 소음이 계속 감지되면 조사 상태를 재시작
         if(owner.IsNoiseDetected && owner.NoiseAmount > NoiseManager.Instance.InvestigateThreshold)
         {
-            Debug.Log("Reinvestigating due to continuous noise detection.");
             StopInvestigate();
             BeginInvestigate();
         }
