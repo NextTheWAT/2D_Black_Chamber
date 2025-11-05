@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 public class CoverState : BaseState
@@ -7,34 +8,50 @@ public class CoverState : BaseState
     // 3. 만약 충돌한다면 있다면 그 충돌 지점을 기반으로 삼고, 장애물의 벽에서 플레이어와 반대되는 일정 지점을 엄폐 지점으로 삼는다.
     // 4. 혹시 엄폐 지점에 다른 적이 있다면 이번 지점은 포기하고, 점을 계속 이동시켜 적절한 위치를 찾는다.
     // 5. 엄폐 할 곳이 없거나, 경로를 못찾으면 현재 위치에 머문다.
+    private Vector2 coverPoint;
     private Vector2 lookPoint;
+    private Coroutine updateCoverPointCoroutine;
 
     public CoverState(Enemy owner) : base(owner) { }
 
     public override void Enter()
     {
+        updateCoverPointCoroutine = owner.StartCoroutine(UpdateCoverPoint());
         ConditionalLogger.Log("CoverState Enter");
     }
 
     public override void Update()
     {
-        Vector2 coverPoint = GetCoverPoint();
-        if (Vector2.Distance(owner.transform.position, coverPoint) > 1f)
+        if (owner.IsHit)
         {
-            owner.Agent.isStopped = false;
-            owner.MoveTo(coverPoint);
-        }
-        else
-        {
-            owner.Agent.isStopped = true;
+            if (updateCoverPointCoroutine != null)
+                owner.StopCoroutine(updateCoverPointCoroutine);
+
+            coverPoint = owner.Target.position;
         }
 
-        if (owner.IsArrived)
+        owner.MoveTo(coverPoint);
+        owner.Agent.isStopped = owner.IsArrived;
+
+        if(owner.IsArrived)
             owner.LookPoint = lookPoint;
     }
 
     public override void Exit()
-        => ConditionalLogger.Log("CoverState Exit");
+    {
+        if (updateCoverPointCoroutine != null)
+            owner.StopCoroutine(updateCoverPointCoroutine);
+        ConditionalLogger.Log("CoverState Exit");
+    }
+
+    private IEnumerator UpdateCoverPoint()
+    {
+        while (true)
+        {
+            coverPoint = GetCoverPoint();
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
 
     private Vector2 GetCoverPoint()
     {
@@ -55,7 +72,7 @@ public class CoverState : BaseState
             Vector2 start = corners[i];
             Vector2 end = corners[i - 1];
 
-            for (float t = 0.1f; t <= 1f; t += 0.1f)
+            for (float t = 0f; t <= 1f; t += 0.1f)
             {
                 Vector2 point = Vector2.Lerp(start, end, t);
                 RaycastHit2D hit = Physics2D.Linecast(point, owner.Target.position, GameManager.Instance.obstacleLayerMask);
@@ -75,7 +92,7 @@ public class CoverState : BaseState
                 Vector2 inward = hit.point + hit.normal * coverDepth;
 
                 // 벽을 따라 플레이어 반대 방향으로 이동
-                Vector2 tangentMove = owner.Data.coverOffset * Vector2.Dot(oppositeDir, tangent) * tangent;
+                Vector2 tangentMove = Vector2.Dot(oppositeDir, tangent) * tangent;
                 Vector2 finalCoverPoint = inward + tangentMove;
 
                 // NavMesh 위로 보정

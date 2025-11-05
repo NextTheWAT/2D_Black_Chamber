@@ -17,4 +17,5 @@ public class GunPrefabInfo : ScriptableObject
     public Sprite weaponSprite;
     public Vector2 firePointOffset;
     public SoundData fireSFX;
+    public NoiseData fireNoiseData; // 발사 소음 데이터
 }
