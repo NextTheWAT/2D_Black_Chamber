@@ -201,7 +201,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
         // var cat = ReadStr(gun, "phaseTag") ?? "Unknown";
         var cat = d.prefabInfo.phaseTag;
         var sub = ReadStr(d, "subType");
-        categoryText.text = string.IsNullOrEmpty(sub) ? $"분류 : {cat}" : $"분류 : {cat} / {sub} / 총 종류";
+        categoryText.text = string.IsNullOrEmpty(sub) ? $"분류 : {cat}" : $"분류 : {cat} / {sub}";
 
         damageText.text = $"데미지 : {ReadStr(d, "damage") ?? "-"}";
         rpmText.text = $"RPM : {ReadStr(d, "rpm") ?? ReadStr(d, "fireRate") ?? "-"}";
