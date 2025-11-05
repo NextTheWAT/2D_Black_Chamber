@@ -25,12 +25,12 @@ public class MoneyManager : Singleton<MoneyManager>
     private void OnEnable()
     {
         OnMoneyChanged.AddListener(UpdateUI);
-        OnMoneyChanged.AddListener(CheckAchievements);
+        //OnMoneyChanged.AddListener(CheckAchievements);
     }
     private void OnDisable()
     {
         OnMoneyChanged.RemoveListener(UpdateUI);
-        OnMoneyChanged.RemoveListener(CheckAchievements);
+        //OnMoneyChanged.RemoveListener(CheckAchievements);
     }
 
     public void Set(int amount)
@@ -61,9 +61,9 @@ public class MoneyManager : Singleton<MoneyManager>
             balanceText.text = balance.ToString();
     }
 
-    private void CheckAchievements()    // 10만달러보유 업적
-    {
-        if (balance >= 100000)
-            AchievementManager.instance.UnlockAchievement(8);
-    }
+    //private void CheckAchievements()    // 10만달러보유 업적
+    //{
+    //    if (balance >= 100000)
+    //        AchievementManager.instance.UnlockAchievement(8);
+    //}
 }
