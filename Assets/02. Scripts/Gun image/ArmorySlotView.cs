@@ -28,12 +28,25 @@ public class ArmorySlotViewSimple : MonoBehaviour
     public Button nextButton;    // 오른쪽 화살표
     public Button prevButton;    // 왼쪽 화살표
 
-    [Header("Bottom Texts")]
+    [Header("Top/Title")]
     public TMP_Text titleText;   // 무기 이름
-    public TMP_Text damageText;  // 공격력
-    public TMP_Text accuracyText;// 명중률(정확도)
-    public TMP_Text rpmText;     // 발사 속도
-    public TMP_Text ammoText;    // 장탄수
+
+    [Header("Spec Lines (상점과 동일 구성)")]
+    public TMP_Text categoryText;     // 분류 : 난전/잠입 / 총 종류
+    public TMP_Text damageText;       // 데미지
+    public TMP_Text rpmText;          // RPM
+    public TMP_Text volumeText;        // 소음 (0~100)
+    public TMP_Text baseReloadTimeText;       // 재장전 시간 (s)
+    public TMP_Text maxAmmoText;         // 장탄수
+
+    public TMP_Text accuracyText;          // 정확도
+    public TMP_Text precisionText;         // 정밀도
+    public TMP_Text stabilityText;         // 안정성
+
+    public TMP_Text aimAccuracyText;       // 조준시 정확도
+    public TMP_Text aimPrecisionText;      // 조준시 정밀도
+    public TMP_Text aimStabilityText;      // 조준시 안정성
+    public TMP_Text aimDistanceText;       // 조준배율 (x)
 
     // 내부 상태
     private List<GunData> candidates = new List<GunData>();
@@ -156,11 +169,21 @@ public class ArmorySlotViewSimple : MonoBehaviour
         var d = GetCurrent();
         if (d == null)
         {
-            if (titleText) titleText.text = "-";
-            if (damageText) damageText.text = "공격력 : -";
-            if (accuracyText) accuracyText.text = "명중률 : -";
-            if (rpmText) rpmText.text = "발사 속도 : -";
-            if (ammoText) ammoText.text = "장탄수 : -";
+            if (titleText) titleText.text = "무기 없음";
+            if (categoryText) categoryText.text = "";
+            if (damageText) damageText.text = "";
+            if (rpmText) rpmText.text = "";
+            if (volumeText) volumeText.text = "";
+            if (baseReloadTimeText) baseReloadTimeText.text = "";
+            if (maxAmmoText) maxAmmoText.text = "";
+            if (accuracyText) accuracyText.text = "";
+            if (precisionText) precisionText.text = "";
+            if (stabilityText) stabilityText.text = "";
+            if (aimAccuracyText) aimAccuracyText.text = "";
+            if (aimPrecisionText) aimPrecisionText.text = "";
+            if (aimStabilityText) aimStabilityText.text = "";
+            if (aimDistanceText) aimDistanceText.text = "";
+
             return;
         }
 
@@ -169,10 +192,28 @@ public class ArmorySlotViewSimple : MonoBehaviour
             : WeaponCatalog.GetDisplayName(d);
 
         if (titleText) titleText.text = nameToShow;
-        if (damageText) damageText.text = $"공격력 : {d.damage}";
-        if (accuracyText) accuracyText.text = $"명중률 : {Mathf.RoundToInt(d.accuracy)}";
-        if (rpmText) rpmText.text = $"발사 속도 : {d.rpm}";
-        if (ammoText) ammoText.text = $"장탄수 : {d.maxAmmo}";
+        if (categoryText)
+        {
+            string phaseStr = (d.prefabInfo.phaseTag == GunData.PhaseTag.Combat) ? "Combat" :
+                              (d.prefabInfo.phaseTag == GunData.PhaseTag.Stealth) ? "Stealth" : "Any";
+            string typeStr = d.subType.ToString();
+            categoryText.text = $"{phaseStr} / {typeStr}";
+        }
+        if (damageText) damageText.text = $"데미지 : {d.damage}";
+        if (rpmText) rpmText.text = $"RPM : {d.rpm}";
+        if (volumeText) volumeText.text = $"소음 : {d.volume}";
+        if (baseReloadTimeText) baseReloadTimeText.text = $"재장전 시간 : {d.baseReloadTime:F2} s";
+        if (maxAmmoText) maxAmmoText.text = $"장탄수 : {d.maxAmmo} 발";
+
+        if (accuracyText) accuracyText.text = $"정확도 : {d.accuracy:F1}";
+        if (precisionText) precisionText.text = $"정밀도 : {d.precision:F1}";
+        if (stabilityText) stabilityText.text = $"안정성 : {d.stability:F1}";
+
+        if (aimAccuracyText) aimAccuracyText.text = $"조준시 정확도 : {d.aimAccuracy:F1}";
+        if (aimPrecisionText) aimPrecisionText.text = $"조준시 정밀도 : {d.aimPrecision:F1}";
+        if (aimStabilityText) aimStabilityText.text = $"조준시 안정성 : {d.aimStability:F1}";
+        if (aimDistanceText) aimDistanceText.text = $"조준배율 : {d.aimDistance:F1} x";
+
     }
 
     // ----- 저장 + (있으면) 즉시 장착 반영 -----
