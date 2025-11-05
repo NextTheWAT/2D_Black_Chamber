@@ -70,6 +70,8 @@ public class CharacterAnimationController : MonoBehaviour
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
 
         // 크로스헤어 재장전 UI 실행
+        if (!gameObject.CompareTag("Player")) return;
+
         if (CursorManager.Instance.NowCrosshair)
         {
             float dur = (reloadDuration > 0f)
