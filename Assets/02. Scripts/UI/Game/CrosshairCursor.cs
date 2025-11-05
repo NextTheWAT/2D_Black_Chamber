@@ -5,6 +5,9 @@ using System.Collections;
 
 public class CrosshairCursor : MonoBehaviour
 {
+    [Header("설정")]
+    [SerializeField] private UIKey uiKey;
+
     [Header("크로스헤어")]
     [SerializeField] private Canvas canvas;
 
@@ -33,12 +36,8 @@ public class CrosshairCursor : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance.Player)
-        {
-            CharacterAnimationController characterAnimationController = GameManager.Instance.Player.GetComponent<CharacterAnimationController>();
-            if (characterAnimationController)
-                characterAnimationController.nowcrosshairCursor = this;
-        }
+        // CursorManager에 자신을 등록
+        CursorManager.Instance.AddCrosshair(this, uiKey);
 
         // 안전장치: Type이 Filled가 아니면 강제로 전환
         if (reloadFillAmount != null && reloadFillAmount.type != Image.Type.Filled)

@@ -70,17 +70,14 @@ public class CharacterAnimationController : MonoBehaviour
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
 
         // 크로스헤어 재장전 UI 실행
-        if (nowcrosshairCursor != null)
+        if (CursorManager.Instance.NowCrosshair)
         {
             float dur = (reloadDuration > 0f)
-                        ? reloadDuration
-                        : nowcrosshairCursor.reloadFillDuration; // 미설정 시 기본값 사용
-            nowcrosshairCursor.PlayReloadUI(dur);
+                                ? reloadDuration
+                                : CursorManager.Instance.NowCrosshair.reloadFillDuration; // 미설정 시 기본값 사용
+            CursorManager.Instance.NowCrosshair.PlayReloadUI(dur);
         }
     }
-    public CrosshairCursor nowcrosshairCursor;
-
-
 
     public void PlaySwitch()
     {

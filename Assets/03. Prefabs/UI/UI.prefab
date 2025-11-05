@@ -19040,6 +19040,7 @@ MonoBehaviour:
   downBar: {fileID: 728226570843555971}
   leftBar: {fileID: 2602397809554525354}
   rightBar: {fileID: 5784437585165025156}
+  uiKey: 3
   reload: {fileID: 8484643889560583354}
   reloadFillAmount: {fileID: 1674562095225063812}
   reloadFillDuration: 2
@@ -25635,6 +25636,7 @@ MonoBehaviour:
   downBar: {fileID: 6542905083874455518}
   leftBar: {fileID: 1017004715749450392}
   rightBar: {fileID: 4530881648594342770}
+  uiKey: 2
   reload: {fileID: 3960391740945417221}
   reloadFillAmount: {fileID: 6085661334877925691}
   reloadFillDuration: 2

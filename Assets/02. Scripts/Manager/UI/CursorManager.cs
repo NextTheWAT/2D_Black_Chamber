@@ -6,8 +6,22 @@ public class CursorManager : MonoBehaviour
 {
     public static CursorManager Instance { get; private set; }
 
-    [Header("GameCanvas/Crosshair")]
-    [SerializeField] private GameObject crosshairUI;
+    private Dictionary<UIKey, CrosshairCursor> crosshairDict = new();
+
+    public CrosshairCursor NowCrosshair
+    {
+        get
+        {
+            if (crosshairDict.TryGetValue(currentUIKey, out CrosshairCursor value))
+                return value;
+            return null;
+        }
+        private set
+        {
+            crosshairDict[currentUIKey] = value;
+        }
+    }
+
 
     [Header("UIKey")]
     [SerializeField] private List<UIKey> gameplayKeys = new() { UIKey.Game, UIKey.Lobby };
@@ -36,6 +50,11 @@ public class CursorManager : MonoBehaviour
         UIManager.Instance.OnUIActiveChanged -= OnUIActiveChanged;
     }
 
+    public void AddCrosshair(CrosshairCursor crosshair, UIKey uiKey)
+    {
+        crosshairDict[uiKey] = crosshair;
+    }
+
     private void OnUIActiveChanged(UIBase uIBase, bool active)
     {
         if (active)
@@ -55,9 +74,6 @@ public class CursorManager : MonoBehaviour
 
     public void ApplyByUIKey(UIKey key) //UIKey에 맞춰 커서 상태 적용
     {
-        if (crosshairUI == null)
-            crosshairUI = GameObject.FindAnyObjectByType<CrosshairCursor>().gameObject;
-
         currentUIKey = key;
         bool gameplay = gameplayKeys.Contains(key);
         SetGameplayCursor(gameplay);
@@ -69,13 +85,13 @@ public class CursorManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
-            if (crosshairUI) crosshairUI.SetActive(true);
+            if (NowCrosshair) NowCrosshair.gameObject.SetActive(true);
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            if (crosshairUI) crosshairUI.SetActive(false);
+            if (NowCrosshair) NowCrosshair.gameObject.SetActive(false);
         }
     }
 }
