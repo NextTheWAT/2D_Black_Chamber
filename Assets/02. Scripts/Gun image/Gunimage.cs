@@ -1,4 +1,5 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,45 +12,69 @@ public class Gunimage : MonoBehaviour
     private int currentIndex = 0;
     private bool isSliding = false;
 
+    [Header("UI on Slot")]
+    public Image iconImage;               // ì¸ë„¤ì¼(í˜„ì¬ ë¬´ê¸° ëŒ€í‘œ ì•„ì´ì½˜)
+    public Image coverImage;              // ë“±ê¸‰ ì»¤ë²„ ìƒ‰
+    public Image borderImage;             // ë“±ê¸‰ í…Œë‘ë¦¬ ìƒ‰
+    public TMP_Text nameText;             // ë¬´ê¸° ì´ë¦„
+
+    [SerializeField] private ArmorySlotViewSimple armorySlotView;
+
     public int CurrentIndex => currentIndex;
     public float SlideDuration => slideDuration;
 
+    // =============== Unity lifecycle ===============
     private void Awake()
     {
-        if (slideDistance <= 0f)
+        // panelsê°€ ìˆê³  ê±°ë¦¬ ë¯¸ì§€ì •ì´ë©´ íŒ¨ë„ í­ ê¸°ì¤€ ìë™ ì‚°ì •
+        if ((slideDistance <= 0f) && panels != null && panels.Length > 0 && panels[0])
         {
-            if (panels != null && panels.Length > 0 && panels[0])
-                slideDistance = panels[0].rect.width > 0 ? panels[0].rect.width
-                                                         : ((RectTransform)transform).rect.width;
-            if (slideDistance <= 0f) slideDistance = 600f;
+            // ì²« íŒ¨ë„(í˜¹ì€ ì»¨í…Œì´ë„ˆ)ì˜ ë„ˆë¹„ ê¸°ë°˜ ìŠ¬ë¼ì´ë“œ ê±°ë¦¬
+            var w = panels[0].rect.width;
+            if (w <= 0f && transform is RectTransform rt) w = rt.rect.width;
+            slideDistance = (w > 0f) ? w : 600f;
         }
         ResetPanels();
     }
 
     private void OnEnable() => ResetPanels();
+
     private void OnDisable()
     {
         if (panels != null)
-            foreach (var rt in panels) if (rt) rt.DOKill();
+        {
+            foreach (var rt in panels)
+            {
+                if (rt) rt.DOKill();
+            }
+        }
         isSliding = false;
     }
 
+    // ì´ˆê¸° íŒ¨ë„ ìƒíƒœ ì •ë¦¬
     private void ResetPanels()
     {
-        if (panels == null) return;
+        if (panels == null || panels.Length == 0) return;
+
+        // currentIndex ì•ˆì „ ë³´ì •
+        if (currentIndex < 0 || currentIndex >= panels.Length) currentIndex = 0;
+
         for (int i = 0; i < panels.Length; i++)
         {
             var rt = panels[i];
             if (!rt) continue;
+
+            // ë ˆì´ì•„ì›ƒ ê°„ì„­ ë°©ì§€
             var le = rt.GetComponent<LayoutElement>();
-            if (le) le.ignoreLayout = true; // ·¹ÀÌ¾Æ¿ô °£¼· ¹æÁö
+            if (le) le.ignoreLayout = true;
+
             rt.anchoredPosition = Vector2.zero;
             rt.gameObject.SetActive(i == currentIndex);
         }
         isSliding = false;
     }
 
-    // Armory°¡ "µé¾î¿Ã ÆĞ³Î"À» ¾Ë ¼ö ÀÖ°Ô Á¦°ø
+    // ì™¸ë¶€ì—ì„œ "ë‹¤ìŒ/ì´ì „ íŒ¨ë„ ì¸ë±ìŠ¤" ë¯¸ë¦¬ í™•ì¸
     public int PeekTargetIndex(bool plus)
     {
         int idx = currentIndex + (plus ? 1 : -1);
@@ -57,107 +82,171 @@ public class Gunimage : MonoBehaviour
         else if (idx < 0) idx = panels.Length - 1;
         return idx;
     }
-    public RectTransform GetPanel(int index) => (index >= 0 && index < panels.Length) ? panels[index] : null;
+
+    public RectTransform GetPanel(int index)
+        => (index >= 0 && index < panels.Length) ? panels[index] : null;
 
     public void clickshowpanel(bool plus)
     {
         ShowPanel(PeekTargetIndex(plus), plus);
     }
 
+    // ë‹¨ìˆœ íŒ¨ë„ ìŠ¬ë¼ì´ë“œ(ìŠ¤í”„ë¼ì´íŠ¸ êµì²´ ì—†ì´ ìœ„ì¹˜ë§Œ ì´ë™)
     private void ShowPanel(int index, bool plus)
     {
-        if (isSliding || index == currentIndex || panels == null || panels.Length == 0) return;
+        if (isSliding || panels == null || panels.Length == 0) return;
+        if (index == currentIndex) return;
 
-        bool moveLeft = plus; // ¿À¸¥ÂÊ ¹öÆ°(plus=true)ÀÌ¸é ¿ŞÂÊÀ¸·Î ¹Ì´Â ¿¬Ãâ
+        bool moveLeft = plus; // ì˜¤ë¥¸ìª½ ë²„íŠ¼(plus=true)ì´ë©´ ì™¼ìª½ìœ¼ë¡œ ë¯¸ëŠ” ì—°ì¶œ
         Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
 
         isSliding = true;
 
-        RectTransform fromPanel = panels[currentIndex];
-        RectTransform toPanel = panels[index];
+        var fromPanel = panels[currentIndex];
+        var toPanel = panels[index];
+        if (!fromPanel || !toPanel) { isSliding = false; return; }
 
-        fromPanel.DOKill();
-        toPanel.DOKill();
-
+        // ì •ë ¬
         fromPanel.transform.SetAsLastSibling();
         toPanel.transform.SetAsFirstSibling();
 
         toPanel.gameObject.SetActive(true);
         toPanel.anchoredPosition = -offset;
 
-        // Å¸ÀÓ½ºÄÉÀÏ ¹«½Ã: SetUpdate(true)
+        // íƒ€ì„ìŠ¤ì¼€ì¼ ë¬´ì‹œ: SetUpdate(true)
         var t1 = fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
         var t2 = toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
 
         t2.OnComplete(() =>
         {
-            fromPanel.anchoredPosition = Vector2.zero; // ´©Àû ¿ÀÇÁ¼Â Á¦°Å
+            fromPanel.anchoredPosition = Vector2.zero; // ëˆ„ì  ì˜¤í”„ì…‹ ì œê±°
             fromPanel.gameObject.SetActive(false);
             currentIndex = index;
             isSliding = false;
         });
     }
 
-    // (¿É¼Ç) ¿ÜºÎ¿¡¼­ ÆĞ³Î ½ºÇÁ¶óÀÌÆ®¸¦ ÁöÁ¤ÇÒ ¶§ »ç¿ë
-    public void SetPanelSprite(int panelIndex, Sprite sprite)
+    // =============== ìŠ¬ë¼ì´ë“œ(ìŠ¤í”„ë¼ì´íŠ¸ í¬í•¨) ===============
+    // ê¸°ì¡´ í˜¸ì¶œ í˜¸í™˜: ìŠ¬ë¼ì´ë“œ ì „ from/to íŒ¨ë„ì˜ ì´ë¯¸ì§€ ìŠ¤í”„ë¼ì´íŠ¸ë¥¼ ë°”ê¿”ë†“ê³  ì´ë™
+    public void SlideWithSprites(bool toRight, Sprite fromSprite, Sprite toSprite, System.Action onComplete = null)
     {
-        var p = GetPanel(panelIndex);
-        if (!p) return;
-        var img = p.GetComponent<Image>();
-        if (img) img.sprite = sprite;
-    }
-    public void SlideWithSprites(bool toRight, UnityEngine.Sprite fromSprite, UnityEngine.Sprite toSprite, System.Action onComplete = null)
-    {
-        if (panels == null || panels.Length == 0) { onComplete?.Invoke(); return; }
+        if (panels == null || panels.Length == 0)
+        {
+            onComplete?.Invoke();
+            return;
+        }
 
-        // ÇöÀç ÆĞ³Î/µé¾î¿Ã ÆĞ³Î °è»ê
+        // ë“¤ì–´ì˜¬ íŒ¨ë„ ì¸ë±ìŠ¤ ê³„ì‚°
         int toIndex = currentIndex + (toRight ? 1 : -1);
         if (toIndex >= panels.Length) toIndex = 0;
         else if (toIndex < 0) toIndex = panels.Length - 1;
 
-        bool moveLeft = toRight;                         // ¿À¸¥ÂÊ ¹öÆ°ÀÌ¸é ¿À¸¥ÂÊ¡æ¿ŞÂÊÀ¸·Î ¹Ì´Â ¿¬Ãâ
+        bool moveLeft = toRight; // ì˜¤ë¥¸ìª½ ë²„íŠ¼ì´ë©´ ì™¼ìª½ìœ¼ë¡œ ë¯¸ëŠ” ì—°ì¶œ
         Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
 
         var fromPanel = panels[currentIndex];
         var toPanel = panels[toIndex];
+        if (!fromPanel || !toPanel)
+        {
+            onComplete?.Invoke();
+            return;
+        }
 
-        // from/to ÀÌ¹ÌÁö¿¡ °¢°¢ ÇöÀç/´ÙÀ½ ½ºÇÁ¶óÀÌÆ®¸¦ ¡°½½¶óÀÌµå Á÷Àü¡±¿¡ ¼¼ÆÃ
-        var fromImg = fromPanel.GetComponent<UnityEngine.UI.Image>() ?? fromPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
-        var toImg = toPanel.GetComponent<UnityEngine.UI.Image>() ?? toPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
+        // from/to íŒ¨ë„ì˜ Imageì— ê°ê° í˜„ì¬/ë‹¤ìŒ ìŠ¤í”„ë¼ì´íŠ¸ ì ìš©(ìŠ¬ë¼ì´ë“œ ì§ì „)
+        var fromImg = fromPanel.GetComponent<Image>();
+        var toImg = toPanel.GetComponent<Image>();
         if (fromImg) fromImg.sprite = fromSprite;
         if (toImg) toImg.sprite = toSprite;
 
-        // °èÃş/À§Ä¡ ¼¼ÆÃ
         fromPanel.transform.SetAsLastSibling();
         toPanel.transform.SetAsFirstSibling();
+
         toPanel.gameObject.SetActive(true);
         toPanel.anchoredPosition = -offset;
 
-        // Å¸ÀÓ½ºÄÉÀÏ 0¿¡¼­µµ µ¿ÀÛ
-        fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
-        toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true)
-        .OnComplete(() =>
+        var t1 = fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+        var t2 = toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
+
+        t2.OnComplete(() =>
         {
+            // fromPanel ì›ìƒë³µê·€ ë° ë¹„í™œì„±
             fromPanel.anchoredPosition = Vector2.zero;
             fromPanel.gameObject.SetActive(false);
+
             currentIndex = toIndex;
             onComplete?.Invoke();
         });
     }
-    public void SetAllSprites(Sprite sprite)
+
+    // ì‹ ê·œ: GunDataê¹Œì§€ ë°›ì•„ì„œ ìŠ¬ë¼ì´ë“œ ì™„ë£Œ ì‹œ ì˜¤ë²„ë ˆì´ & íŒ¨ë„ ì¼ê´„ ê°±ì‹ 
+    public void SlideWithData(bool toRight, GunData fromData, GunData toData, System.Action onComplete = null)
     {
+        // ì•ˆì „í•œ ë„ ì²´ì´ë‹ìœ¼ë¡œ ìŠ¤í”„ë¼ì´íŠ¸ ë½‘ê¸°
+        Sprite fromSprite = fromData?.prefabInfo?.weaponSprite;
+        Sprite toSprite = toData?.prefabInfo?.weaponSprite;
+
+        SlideWithSprites(toRight, fromSprite, toSprite, () =>
+        {
+            // ìŠ¬ë¼ì´ë“œ ì™„ë£Œ ì‹œ ì˜¤ë²„ë ˆì´ + íŒ¨ë„ ì¼ê´„ ê°±ì‹ 
+            SetAllSprites(toSprite, toData);
+            onComplete?.Invoke();
+        });
+    }
+
+    // =============== ì˜¤ë²„ë ˆì´ & íŒ¨ë„ ê°±ì‹  ===============
+    // ì˜¤ë²„ë ˆì´(ì•„ì´ì½˜/ì»¤ë²„/ë³´ë”/ë„¤ì„)ë§Œ ê°±ì‹ í•˜ê³  ì‹¶ì„ ë•Œ
+    public void ApplyOverlay(GunData gundata)
+    {
+        if (gundata == null) return;
+
+        // ë“±ê¸‰ ìƒ‰ ì¸ë±ìŠ¤
+        int gradeIndex = Mathf.Clamp(gundata.Grade, 0,
+            (armorySlotView && armorySlotView.backgroundGradeColors != null)
+            ? armorySlotView.backgroundGradeColors.Length - 1 : 0);
+
+        // ì•„ì´ì½˜
+        if (iconImage)
+            iconImage.sprite = (gundata.prefabInfo) ? gundata.prefabInfo.weaponSprite : null;
+
+        // ì»¤ë²„/ë³´ë” ìƒ‰
+        if (coverImage && armorySlotView && armorySlotView.backgroundGradeColors != null
+            && armorySlotView.backgroundGradeColors.Length > 0)
+        {
+            gradeIndex = Mathf.Clamp(gradeIndex, 0, armorySlotView.backgroundGradeColors.Length - 1);
+            coverImage.color = armorySlotView.backgroundGradeColors[gradeIndex];
+        }
+
+        if (borderImage && armorySlotView && armorySlotView.borderGradeColors != null
+            && armorySlotView.borderGradeColors.Length > 0)
+        {
+            gradeIndex = Mathf.Clamp(gradeIndex, 0, armorySlotView.borderGradeColors.Length - 1);
+            borderImage.color = armorySlotView.borderGradeColors[gradeIndex];
+        }
+
+        // ì´ë¦„
+        if (nameText) nameText.text = gundata.weaponName;
+    }
+
+    // íŒ¨ë„ ì „ì²´ ìŠ¤í”„ë¼ì´íŠ¸ + ì˜¤ë²„ë ˆì´ë¥¼ í•œ ë²ˆì— ê°±ì‹ 
+    public void SetAllSprites(Sprite sprite, GunData gundata)
+    {
+        // ë¨¼ì € ì˜¤ë²„ë ˆì´ ì ìš©(ì•„ì´ì½˜/ìƒ‰/ì´ë¦„)
+        if (gundata != null) ApplyOverlay(gundata);
+
         if (panels == null) return;
+
         foreach (var rt in panels)
         {
             if (!rt) continue;
-            var img = rt.GetComponent<UnityEngine.UI.Image>() ?? rt.GetComponentInChildren<UnityEngine.UI.Image>(true);
+            var img = rt.GetComponent<Image>();
             if (!img) continue;
+
             var r = img.rectTransform;
             r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
             r.anchoredPosition = Vector2.zero;
+
             img.preserveAspect = true;
             img.sprite = sprite;
         }
     }
-
 }

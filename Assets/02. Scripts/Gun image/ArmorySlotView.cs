@@ -164,7 +164,7 @@ public class ArmorySlotViewSimple : MonoBehaviour
                 currentItemIndex = next;
                 RefreshDetails();             // (있다면) 스펙 텍스트 갱신
                 SaveLoadoutAndApply();        // (있다면) 실제 장착 반영
-                carousel.SetAllSprites(nextSprite); // 패널 전체 통일
+                carousel.SetAllSprites(nextSprite, GetCurrent()); // 패널 전체 통일
             }
         );
     }
