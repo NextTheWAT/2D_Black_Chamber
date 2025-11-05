@@ -28,25 +28,31 @@ public class ArmorySlotViewSimple : MonoBehaviour
     public Button nextButton;    // 오른쪽 화살표
     public Button prevButton;    // 왼쪽 화살표
 
-    [Header("Top/Title")]
-    public TMP_Text titleText;   // 무기 이름
+    public Color[] backgroundGradeColors; // 등급별 배경 색상 배열
+    public Color[] borderGradeColors;     // 등급별 테두리 색상 배열
 
-    [Header("Spec Lines (상점과 동일 구성)")]
-    public TMP_Text categoryText;     // 분류 : 난전/잠입 / 총 종류
-    public TMP_Text damageText;       // 데미지
-    public TMP_Text rpmText;          // RPM
-    public TMP_Text volumeText;        // 소음 (0~100)
-    public TMP_Text baseReloadTimeText;       // 재장전 시간 (s)
-    public TMP_Text maxAmmoText;         // 장탄수
+    [Space(20)]
+    public TMP_Text weaponNameText;
+    public Image backImage;
 
-    public TMP_Text accuracyText;          // 정확도
-    public TMP_Text precisionText;         // 정밀도
-    public TMP_Text stabilityText;         // 안정성
+    [Space(20)]
+    public TMP_Text categoryText;
+    public TMP_Text damageText;
+    public TMP_Text rpmText;
+    public TMP_Text noiseText;
+    public TMP_Text reloadSpeedText;
+    public TMP_Text ammoCapacityText;
 
-    public TMP_Text aimAccuracyText;       // 조준시 정확도
-    public TMP_Text aimPrecisionText;      // 조준시 정밀도
-    public TMP_Text aimStabilityText;      // 조준시 안정성
-    public TMP_Text aimDistanceText;       // 조준배율 (x)
+    [Space(20)]
+    public TMP_Text accuracyText;
+    public TMP_Text precisionText;
+    public TMP_Text stabilityText;
+
+    [Space(20)]
+    public TMP_Text aimAccuracyText;
+    public TMP_Text aimPrecisionText;
+    public TMP_Text aimStabilityText;
+    public TMP_Text aimDistanceText;
 
     // 내부 상태
     private List<GunData> candidates = new List<GunData>();
@@ -169,51 +175,79 @@ public class ArmorySlotViewSimple : MonoBehaviour
         var d = GetCurrent();
         if (d == null)
         {
-            if (titleText) titleText.text = "무기 없음";
-            if (categoryText) categoryText.text = "";
-            if (damageText) damageText.text = "";
-            if (rpmText) rpmText.text = "";
-            if (volumeText) volumeText.text = "";
-            if (baseReloadTimeText) baseReloadTimeText.text = "";
-            if (maxAmmoText) maxAmmoText.text = "";
-            if (accuracyText) accuracyText.text = "";
-            if (precisionText) precisionText.text = "";
-            if (stabilityText) stabilityText.text = "";
-            if (aimAccuracyText) aimAccuracyText.text = "";
-            if (aimPrecisionText) aimPrecisionText.text = "";
-            if (aimStabilityText) aimStabilityText.text = "";
-            if (aimDistanceText) aimDistanceText.text = "";
+            // 빈칸 처리
+            if (weaponNameText) weaponNameText.text = "-";
+            if (categoryText) categoryText.text = "-";
+            if (damageText) damageText.text = "-";
+            if (rpmText) rpmText.text = "-";
+            if (noiseText) noiseText.text = "-";
+            if (reloadSpeedText) reloadSpeedText.text = "-";
+            if (ammoCapacityText) ammoCapacityText.text = "-";
+            if (accuracyText) accuracyText.text = "-";
+            if (precisionText) precisionText.text = "-";
+            if (stabilityText) stabilityText.text = "-";
+            if (aimAccuracyText) aimAccuracyText.text = "-";
+            if (aimPrecisionText) aimPrecisionText.text = "-";
+            if (aimStabilityText) aimStabilityText.text = "-";
+            if (aimDistanceText) aimDistanceText.text = "-";
 
             return;
         }
 
-        string nameToShow = !string.IsNullOrEmpty(d.weaponName)
-            ? d.weaponName
-            : WeaponCatalog.GetDisplayName(d);
+        // 표시 이름: weaponName → displayName(구스펙) → ScriptableObject name
+        weaponNameText.text = d.weaponName.ToString();
 
-        if (titleText) titleText.text = nameToShow;
-        if (categoryText)
-        {
-            string phaseStr = (d.prefabInfo.phaseTag == GunData.PhaseTag.Combat) ? "Combat" :
-                              (d.prefabInfo.phaseTag == GunData.PhaseTag.Stealth) ? "Stealth" : "Any";
-            string typeStr = d.subType.ToString();
-            categoryText.text = $"{phaseStr} / {typeStr}";
-        }
-        if (damageText) damageText.text = $"데미지 : {d.damage}";
-        if (rpmText) rpmText.text = $"RPM : {d.rpm}";
-        if (volumeText) volumeText.text = $"소음 : {d.volume}";
-        if (baseReloadTimeText) baseReloadTimeText.text = $"재장전 시간 : {d.baseReloadTime:F2} s";
-        if (maxAmmoText) maxAmmoText.text = $"장탄수 : {d.maxAmmo} 발";
+        // 분류: phaseTag / subType
+        // var cat = ReadStr(gun, "phaseTag") ?? "Unknown";
+        var cat = d.prefabInfo.phaseTag;
+        var sub = ReadStr(d, "subType");
+        categoryText.text = string.IsNullOrEmpty(sub) ? $"분류 : {cat}" : $"분류 : {cat} / {sub}";
 
-        if (accuracyText) accuracyText.text = $"정확도 : {d.accuracy:F1}";
-        if (precisionText) precisionText.text = $"정밀도 : {d.precision:F1}";
-        if (stabilityText) stabilityText.text = $"안정성 : {d.stability:F1}";
+        damageText.text = $"데미지 : {ReadStr(d, "damage") ?? "-"}";
+        rpmText.text = $"RPM : {ReadStr(d, "rpm") ?? ReadStr(d, "fireRate") ?? "-"}";
+        // 소음: volume(신) → noise(구)
+        noiseText.text = $"소음 : {ReadStr(d, "volume") ?? ReadStr(d, "noise") ?? "-"}";
+        // 재장전속도: reloadSpeed(신, %) → reloadSpeedMul(구)
+        reloadSpeedText.text = $"재장전 시간 : {ReadStr(d, "reloadSpeed") ?? ReadStr(d, "reloadSpeedMul") ?? "-"}";
+        // 장탄수: maxAmmo(신) → maxMagazine(구) → magazine(아주 구)
+        ammoCapacityText.text = $"장탄수 : {ReadStr(d, "maxAmmo") ?? ReadStr(d, "maxMagazine") ?? ReadStr(d, "magazine") ?? "-"}";
 
-        if (aimAccuracyText) aimAccuracyText.text = $"조준시 정확도 : {d.aimAccuracy:F1}";
-        if (aimPrecisionText) aimPrecisionText.text = $"조준시 정밀도 : {d.aimPrecision:F1}";
-        if (aimStabilityText) aimStabilityText.text = $"조준시 안정성 : {d.aimStability:F1}";
-        if (aimDistanceText) aimDistanceText.text = $"조준배율 : {d.aimDistance:F1} x";
 
+        // 정확도: accuracy(신) → aimAccuracy → accuracyDeg(구)
+        accuracyText.text = $"정확도 : {ReadStr(d, "accuracy") ?? "-"}";
+        // 정밀도: precision(신, 0~100) → spread(구) → accuracyDeg(구)
+        precisionText.text = $"정밀도 : {ReadStr(d, "precision") ?? "-"}";
+        // 안정성 : stability
+        stabilityText.text = $"안정성 : {ReadStr(d, "stability") ?? "-"}";
+
+
+        // 조준 시 정확도: aimAccuracy(신) → aimAccuracy → accuracyDeg(구)
+        aimAccuracyText.text = $"조준 시 정확도 : {ReadStr(d, "aimAccuracy") ?? "-"}";
+        // 조준 시 정밀도 : aimPrecision(신, 0~100)
+        aimPrecisionText.text = $"조준 시 정밀도 : {ReadStr(d, "aimPrecision") ?? "-"}";
+        // 조준 시 안정성 : aimStability
+        aimStabilityText.text = $"조준 시 안정성 : {ReadStr(d, "aimStability") ?? "-"}";
+
+        // 조준 배율 : aimDistance
+        string aimDistanceStr = ReadStr(d, "aimDistance") ?? "-";
+        float aimDistanceValue = float.Parse(aimDistanceStr) * 100f;
+
+        aimDistanceText.text = $"조준 배율 : {aimDistanceValue}%";
+
+        // 등급별 색상 적용
+        int gradeIndex = Mathf.Clamp(d.Grade, 0, backgroundGradeColors.Length - 1);
+        backImage.color = borderGradeColors[gradeIndex];
+        weaponNameText.color = backgroundGradeColors[gradeIndex];
+
+    }
+    // --- helpers ---
+
+    public static string ReadStr(object obj, string field)
+    {
+        var f = obj.GetType().GetField(field);
+        if (f == null) return null;
+        var v = f.GetValue(obj);
+        return v != null ? v.ToString() : null;
     }
 
     // ----- 저장 + (있으면) 즉시 장착 반영 -----
