@@ -123,13 +123,21 @@ public class Shooter : MonoBehaviour
         currentMagazine = Mathf.Max(0, currentMagazine - 1);
         WeaponManager.Instance?.OnAmmoChanged?.Invoke();
 
+        // 장애물 충돌 시 총구 위치 조정
+        Vector2 spawnPoint = gunPoint.position;
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, gunPoint.position, GameManager.Instance.obstacleLayerMask);
+
+        if (hit)
+            spawnPoint = hit.point - (-direction * 0.05f); // 약간 뒤로
+
+        // 탄환 발사
         int count = projPerShot;
         Vector2 baseDir = direction.sqrMagnitude > 0.0001f ? direction.normalized : (Vector2)gunPoint.up;
 
         for (int i = 0; i < count; i++)
         {
             Vector2 dir = ApplySpread(baseDir, CurrentSpread * i);
-            SpawnBullet(gunData, gunPoint, dir);
+            SpawnBullet(gunData, spawnPoint, dir);
         }
 
         /*
@@ -174,7 +182,7 @@ public class Shooter : MonoBehaviour
         return true;
     }
 
-    private void SpawnBullet(GunData gun, Transform muzzle, Vector2 dir)
+    private void SpawnBullet(GunData gun, Vector2 spawnPoint, Vector2 dir)
     {
         var go = Instantiate(gun.prefabInfo.bulletPrefab);
         var b = go.GetComponent<Bullet>();
@@ -186,7 +194,7 @@ public class Shooter : MonoBehaviour
         }
 
         b.Init(
-            position: muzzle.position,
+            position: spawnPoint,
             dir: dir,
             speed: gun.bulletSpeed,
             damage: gun.damage,
