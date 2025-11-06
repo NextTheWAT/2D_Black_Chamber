@@ -21,6 +21,11 @@ public class SceneInitializer : MonoBehaviour
 
         BGMManager.Instance?.SetUiContext(activeUI, instant: true);
 
+        WeaponManager.Instance.isReloading = false;
+
+        SpawnManager.Instance.ResetEnemyCount();
+        SpawnManager.Instance.SpawnSpawner();
+
         var pause = FindFirstObjectByType<PausePopup>(FindObjectsInactive.Include);
         if (pause)
         {

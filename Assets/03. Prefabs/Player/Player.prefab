@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -40
+  m_SortingOrder: 50
   m_Sprite: {fileID: -809858648, guid: cadeb748bd3343642b645a2b02105dc8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -208,7 +208,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -358,7 +358,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -577,7 +577,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -795,7 +795,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -932,7 +932,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -41
+  m_SortingOrder: 49
   m_Sprite: {fileID: 21300000, guid: ddfb0bb5a6d312d49852d093507340c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1106,7 +1106,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 278434
+  m_InstanceId: -174942
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1323,7 +1323,6 @@ MonoBehaviour:
   upperAnimator: {fileID: 8944864754343972750}
   lowerAnimator: {fileID: 2294372615916966701}
   reloadDuration: 0
-  nowcrosshairCursor: {fileID: 0}
 --- !u!114 &2375955192712751179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1559,7 +1558,7 @@ MonoBehaviour:
   hitBoxDistance: 0.8
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 2176
   damageAmount: 50
 --- !u!114 &2059217959560316814
 MonoBehaviour:
@@ -1583,7 +1582,7 @@ MonoBehaviour:
   gaugeArcDrawer: {fileID: 2281563679238384519}
   backgroundArcDrawer: {fileID: 1308643433083292550}
   gaugeOriginalColor: {r: 1, g: 1, b: 1, a: 1}
-  gaugeCooldownColor: {r: 1, g: 0, b: 0, a: 1}
+  gaugeCooldownColor: {r: 0.048089266, g: 1, b: 0, a: 1}
   maxAlpha: 0.6
   gaugeColorTransitionSpeed: 5
   accuracy: 1.5
@@ -1686,7 +1685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 3507418152336651286}
-  followSpeed: 5
+  followSpeed: 6
   maxCameraDistance: 4
   shakeMagnitude: 0.2
   shakeDuration: 0.1
@@ -1765,7 +1764,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Sprite: {fileID: 909438302, guid: e32ca1ca7c9db3d4b9c4671cbb28272c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2050,7 +2049,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 100
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}

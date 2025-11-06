@@ -8,6 +8,18 @@ public class CharacterAnimationController : MonoBehaviour
     public Animator upperAnimator;   // 없으면 Awake에서 "UpperBody" 자식에서 자동 할당
     public Animator lowerAnimator;   // 없으면 Awake에서 "LowerBody" 자식에서 자동 할당
 
+    private SpriteRenderer upperSpriteRenderer;
+    private SpriteRenderer lowerSpriteRenderer;
+
+    private int originalSortingOrder;
+
+    public int OriginalSortingOrder => originalSortingOrder;
+    public int SortingOrder
+    {
+        get => upperSpriteRenderer ? upperSpriteRenderer.sortingOrder : 0;
+        set => SetSpriteSortingOrder(value);
+    }
+
     [SerializeField] private float reloadDuration;
 
     private void Awake()
@@ -23,6 +35,11 @@ public class CharacterAnimationController : MonoBehaviour
 
         if (lowerAnimator == null)
             lowerAnimator = transform.Find("LowerBody")?.GetComponent<Animator>();
+
+        upperSpriteRenderer = upperAnimator ? upperAnimator.GetComponentInChildren<SpriteRenderer>() : null;
+        lowerSpriteRenderer = lowerAnimator ? lowerAnimator.GetComponentInChildren<SpriteRenderer>() : null;
+
+        originalSortingOrder = SortingOrder;
     }
 
     public void Initialize()
@@ -30,6 +47,12 @@ public class CharacterAnimationController : MonoBehaviour
         SetMoveBlend(0f);
         SetMoveSpeed(1f);
         SetActiveUse(false);
+    }
+
+    public void SetSpriteSortingOrder(int layer)
+    {
+        if (upperSpriteRenderer) upperSpriteRenderer.sortingOrder = layer;
+        if (lowerSpriteRenderer) lowerSpriteRenderer.sortingOrder = layer-1;
     }
 
     public void SetLowerBodyRotation(Vector2 direction)
@@ -70,17 +93,16 @@ public class CharacterAnimationController : MonoBehaviour
         WeaponSoundManager.Instance?.PlayReloadSound(transform.position);
 
         // 크로스헤어 재장전 UI 실행
-        if (nowcrosshairCursor != null)
+        if (!gameObject.CompareTag("Player")) return;
+
+        if (CursorManager.Instance.NowCrosshair)
         {
             float dur = (reloadDuration > 0f)
-                        ? reloadDuration
-                        : nowcrosshairCursor.reloadFillDuration; // 미설정 시 기본값 사용
-            nowcrosshairCursor.PlayReloadUI(dur);
+                                ? reloadDuration
+                                : CursorManager.Instance.NowCrosshair.reloadFillDuration; // 미설정 시 기본값 사용
+            CursorManager.Instance.NowCrosshair.PlayReloadUI(dur);
         }
     }
-    public CrosshairCursor nowcrosshairCursor;
-
-
 
     public void PlaySwitch()
     {

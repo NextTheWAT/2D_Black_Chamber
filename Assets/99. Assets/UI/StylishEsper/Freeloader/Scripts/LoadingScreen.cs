@@ -159,12 +159,27 @@ namespace Esper.Freeloader
         /// <summary>
         /// The active loading screen instance.
         /// </summary>
-        public static LoadingScreen Instance { get; private set; }
+        /// 
+        private static LoadingScreen instance;
+        public static LoadingScreen Instance
+        {
+            get
+            {
+                if(instance == null)
+                    instance = FindObjectOfType<LoadingScreen>();
+
+                return instance;
+            }
+            private set
+            {
+                instance = value;
+            }
+        }
 
         protected virtual void Awake()
         {
             // Singleton
-            if (Instance)
+            if (Instance && Instance != this)
             {
                 Destroy(gameObject);
                 return;

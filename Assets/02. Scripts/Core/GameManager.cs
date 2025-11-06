@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 using Constants;
 using System.Collections.Generic;
+using Esper.Freeloader;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -21,6 +22,8 @@ public class GameManager : Singleton<GameManager>
 
     public LayerMask obstacleLayerMask;
     public LayerMask enemyLayerMask;
+
+    public bool isLoadingEnabled = false;
 
     public Transform Player
     {
@@ -54,13 +57,26 @@ public class GameManager : Singleton<GameManager>
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
+        LoadingScreen.Instance.onStart.AddListener(LoadingStart);
+        LoadingScreen.Instance.onClose.AddListener(InvokeLoadingClose);
     }
 
     private void OnDisable()
     {
         if (AppIsQuitting) return;
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        LoadingScreen.Instance.onStart.RemoveListener(LoadingStart);
+        LoadingScreen.Instance.onClose.RemoveListener(InvokeLoadingClose);
     }
+
+    private void LoadingStart()
+        => isLoadingEnabled = true;
+    private void LoadingClose()
+        => isLoadingEnabled = false;
+
+    // 약간의 지연을 두고 로딩 종료 처리 (총 바로 못쏘도록 설정)
+    private void InvokeLoadingClose()
+        => Invoke(nameof(LoadingClose), 0.1f);
 
     private void OnLoading(bool isLoading)
     {

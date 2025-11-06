@@ -20,4 +20,7 @@ MonoBehaviour:
   upperAnimator: {fileID: 22100000, guid: 195ac4e4edf48944a843d88e0c7c7577, type: 2}
   weaponSprite: {fileID: -1555771123, guid: 540c9320f3818694ba543f17ba3b6969, type: 3}
   firePointOffset: {x: 0.24, y: 1.19}
-  fireSFX: {fileID: 11400000, guid: ad608595013ddba4dbb15f1d39e26993, type: 2}
+  fireSFX: {fileID: 11400000, guid: b77cfa71f5b9e134199eec446e8bbc50, type: 2}
+  fireNoiseData:
+    strength: 40
+    range: 5

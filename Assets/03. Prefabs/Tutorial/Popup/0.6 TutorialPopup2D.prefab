@@ -178,6 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6011826562308429196}
   - component: {fileID: 7352095193004505737}
+  - component: {fileID: 3064059235060088736}
   m_Layer: 0
   m_Name: 0.6 TutorialPopup2D
   m_TagString: Untagged
@@ -221,6 +222,60 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f535d4761c92e694d90ecb4b7474850d, type: 3}
   - {fileID: 21300000, guid: 1172271749595db49beff79df1e371d4, type: 3}
   loadSceneAfterLastPage: 
+--- !u!114 &3064059235060088736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8034432587792026300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f23003224c68fb2448e739c65706197a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ViewRadius: 3
+  SoftenDistance: 3
+  ViewAngle: 360
+  UnobscuredRadius: 1
+  Opacity: 1
+  AddCorners: 1
+  RevealHiderInFadeOutZonePercentage: 0.5
+  EyeOffset: 0
+  ShaderEyeOffset: 0
+  VisionHeight: 3
+  VisionHeightSoftenDistance: 1.5
+  SampleHidersAtRevealerHeight: 1
+  CalculateHidersAtHiderHeight: 0
+  ObstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  RaycastResolution: 0.5
+  ResolveEdge: 1
+  MaxEdgeResolveIterations: 10
+  NumExtraIterations: 4
+  NumExtraRaysOnIteration: 3
+  MaxHidersSampledPerFrame: 50
+  MaxAcceptableEdgeAngleDifference: 0.005
+  EdgeDstThreshold: 0.1
+  DoubleHitMaxAngleDelta: 15
+  StartRevealerAsStatic: 0
+  StaticRevealer: 0
+  FogOfWarID: 0
+  IndexID: 0
+  NumberOfPoints: 0
+  Angles: []
+  Radii: []
+  AreHits: 
+  DebugMode: 0
+  DrawInitialRays: 0
+  SegmentTest: 0
+  DrawExpectedNextPoints: 0
+  DrawIteritiveRays: 0
+  DrawEdgeResolveRays: 0
+  DrawExtraCastLines: 0
+  DrawHiderSamples: 0
+  DebugLogHiderBlockerName: 0
 --- !u!1001 &8353141994141326872
 PrefabInstance:
   m_ObjectHideFlags: 0

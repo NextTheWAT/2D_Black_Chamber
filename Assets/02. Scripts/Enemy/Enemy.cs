@@ -64,6 +64,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject questionIcon;     // ? 오브젝트 (애니메이션 포함 가능)
     [SerializeField] private GameObject exclamationIcon;  // ! 오브젝트 (애니메이션 포함 가능)
     [SerializeField] private float minIconShowTime = 0.12f; // 너무 깜빡임 방지
+    private Coroutine _hideAlertCo;
 
     private AlertIconState _iconState = AlertIconState.None;
     private float _lastIconChangeTime = -999f;
@@ -319,6 +320,10 @@ public class Enemy : MonoBehaviour
         SetIconState(AlertIconState.None);
         UpdateAlertIcons();
 
+        animationController.SortingOrder = animationController.OriginalSortingOrder;
+
+        SpawnManager.Instance.IncreaseEnemyCount();
+
         if (FirebaseManager.Instance.IsGunDataLoaded)
             InitializeGunData();
         else
@@ -340,7 +345,22 @@ public class Enemy : MonoBehaviour
         _lastIconChangeTime = Time.time;
 
         if (questionIcon) questionIcon.SetActive(next == AlertIconState.Suspicious);
-        if (exclamationIcon) exclamationIcon.SetActive(next == AlertIconState.Alert);
+        if (exclamationIcon)
+        {
+            exclamationIcon.SetActive(next == AlertIconState.Alert);
+
+            StartCoroutine(HideExclamationAfter(4f)); // 4초 후에 숨기기
+        }
+    }
+    private IEnumerator HideExclamationAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 여전히 Alert 상태라면 "!" 아이콘만 꺼서 보이지 않게 함
+        if (_iconState == AlertIconState.Alert && exclamationIcon)
+            exclamationIcon.SetActive(false);
+
+        _hideAlertCo = null;
     }
 
     private void UpdateAlertIcons()
@@ -480,12 +500,16 @@ public class Enemy : MonoBehaviour
         forwardLight.enabled = false;
         backwardLight.enabled = false;
 
+        animationController.SortingOrder = 27;
+
         GameManager.Instance.CancelCombatDelay(this);
 
         GetComponent<MissionEntityHook>()?.NotifyLogicalDeath();
 
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
+
+        SpawnManager.Instance.DecreaseEnemyCount();
 
         // 대사 버블도 끄기
         if (dialogueBubble) dialogueBubble.SetActive(false);

@@ -15,11 +15,15 @@ public class PlayerMeleeAttack : MonoBehaviour
 
         Vector2 boxOrigin = (Vector2)transform.position + (Vector2)(transform.up * hitBoxDistance);
         float angle = Vector2.SignedAngle(Vector2.right, transform.up);
-        Collider2D hit = Physics2D.OverlapBox(boxOrigin, hitBoxSize, angle, enemyLayer);
-        if (hit != null)
+        Collider2D[] hits = Physics2D.OverlapBoxAll(boxOrigin, hitBoxSize, angle, enemyLayer);
+
+        foreach (var hit in hits)
         {
-            Debug.Log("Hit " + hit.name);
-            hit.GetComponent<IDamageable>().TakeDamage(damageAmount);
+            if (hit != null)
+            {
+                ConditionalLogger.Log("Hit " + hit.name);
+                hit.GetComponent<IDamageable>()?.TakeDamage(damageAmount);
+            }
         }
     }
 

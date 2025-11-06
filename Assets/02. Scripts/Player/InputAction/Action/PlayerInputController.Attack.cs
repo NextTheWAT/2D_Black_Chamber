@@ -4,6 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Esper.Freeloader;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public partial class PlayerInputController : TopDownController
 {
@@ -36,6 +38,8 @@ public partial class PlayerInputController : TopDownController
         if (IsPointerOverBlockingUI()) return;
         if (health.IsDead) return; // 사망 시 무시
         if (shooter == null) return;
+        if (Time.timeScale == 0) return;
+        if(GameManager.Instance.isLoadingEnabled) return; // 로딩 중 무시
 
         // 1) 클릭 시작 시점
         if (ctx.phase == InputActionPhase.Started)
@@ -134,6 +138,7 @@ public partial class PlayerInputController : TopDownController
             // 정상 발사
             animationController.PlayShoot();
             cameraController.ShakeCamera(shooter.gunData.recoilAmount);
+            Debug.Log("PlayerInputController: Gun Fired");
         }
         else
         {

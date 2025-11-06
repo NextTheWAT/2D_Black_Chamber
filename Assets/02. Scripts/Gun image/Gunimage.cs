@@ -1,163 +1,77 @@
-using DG.Tweening;
+Ôªøusing TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Gunimage : MonoBehaviour
 {
-    [SerializeField] private float slideDistance = 300f;
-    public RectTransform[] panels;
-    public float slideDuration = 0.45f;
+    [Header("UI on Slot")]
+    public Image iconImage;      // Ïç∏ÎÑ§Ïùº(ÌòÑÏû¨ Î¨¥Í∏∞ ÎåÄÌëú ÏïÑÏù¥ÏΩò)
+    public Image coverImage;     // Îì±Í∏â Ïª§Î≤Ñ ÏÉâ
+    public Image borderImage;    // Îì±Í∏â ÌÖåÎëêÎ¶¨ ÏÉâ
+    public TMP_Text nameText;    // Î¨¥Í∏∞ Ïù¥Î¶Ñ
 
-    private int currentIndex = 0;
-    private bool isSliding = false;
+    [SerializeField] private ArmorySlotViewSimple armorySlotView;
 
-    public int CurrentIndex => currentIndex;
-    public float SlideDuration => slideDuration;
+    // Ïä¨ÎùºÏù¥Îìú/Ìå®ÎÑê Ï†úÍ±∞ Î≤ÑÏ†ÑÏù¥ÎØÄÎ°ú ÏùòÎØ∏ ÏóÜÎäî ÎçîÎØ∏ Í∞í(Ìò∏ÌôòÏö©)
+    public int CurrentIndex => 0;
+    public float SlideDuration => 0f;
 
-    private void Awake()
+    private GunData currentData;
+
+
+
+    // ================== Í≥µÍ∞ú API ==================
+    // Îç∞Ïù¥ÌÑ∞ ÌÜµÏß∏Î°ú ÏÑ∏ÌåÖ(Î©îÏù∏ Ïù¥ÎØ∏ÏßÄ + Ïò§Î≤ÑÎ†àÏù¥ Í∞±Ïã†)
+    public void SetData(GunData data)
     {
-        if (slideDistance <= 0f)
+        currentData = data;
+        ApplyOverlay(data);
+    }
+
+
+    public void SlideWithSprites(bool toRight, Sprite fromSprite, Sprite toSprite, System.Action onComplete = null)
+    {
+        //SetMainSprite(toSprite);
+        onComplete?.Invoke();
+    }
+
+    // Ïò§Î≤ÑÎ†àÏù¥(ÏïÑÏù¥ÏΩò/Ïª§Î≤Ñ/Î≥¥Îçî/Ïù¥Î¶Ñ) Í∞±Ïã†Îßå ÌïòÍ≥† Ïã∂ÏùÑ Îïå
+    public void ApplyOverlay(GunData gundata)
+    {
+        if (gundata == null) return;
+
+        // Îì±Í∏â ÏÉâ Ïù∏Îç±Ïä§ Í≥ÑÏÇ∞
+        int gradeIndex = Mathf.Clamp(gundata.Grade, 0,
+            (armorySlotView && armorySlotView.backgroundGradeColors != null)
+                ? armorySlotView.backgroundGradeColors.Length - 1 : 0);
+
+        // ÏïÑÏù¥ÏΩò
+        if (iconImage)
+            iconImage.sprite = gundata.prefabInfo ? gundata.prefabInfo.weaponSprite : null;
+
+        // Ïª§Î≤Ñ/Î≥¥Îçî ÏÉâ
+        if (coverImage && armorySlotView && armorySlotView.backgroundGradeColors != null
+            && armorySlotView.backgroundGradeColors.Length > 0)
         {
-            if (panels != null && panels.Length > 0 && panels[0])
-                slideDistance = panels[0].rect.width > 0 ? panels[0].rect.width
-                                                         : ((RectTransform)transform).rect.width;
-            if (slideDistance <= 0f) slideDistance = 600f;
+            gradeIndex = Mathf.Clamp(gradeIndex, 0, armorySlotView.backgroundGradeColors.Length - 1);
+            coverImage.color = armorySlotView.backgroundGradeColors[gradeIndex];
         }
-        ResetPanels();
-    }
 
-    private void OnEnable() => ResetPanels();
-    private void OnDisable()
-    {
-        if (panels != null)
-            foreach (var rt in panels) if (rt) rt.DOKill();
-        isSliding = false;
-    }
-
-    private void ResetPanels()
-    {
-        if (panels == null) return;
-        for (int i = 0; i < panels.Length; i++)
+        if (borderImage && armorySlotView && armorySlotView.borderGradeColors != null
+            && armorySlotView.borderGradeColors.Length > 0)
         {
-            var rt = panels[i];
-            if (!rt) continue;
-            var le = rt.GetComponent<LayoutElement>();
-            if (le) le.ignoreLayout = true; // ∑π¿Ãæ∆øÙ ∞£º∑ πÊ¡ˆ
-            rt.anchoredPosition = Vector2.zero;
-            rt.gameObject.SetActive(i == currentIndex);
+            gradeIndex = Mathf.Clamp(gradeIndex, 0, armorySlotView.borderGradeColors.Length - 1);
+            borderImage.color = armorySlotView.borderGradeColors[gradeIndex];
         }
-        isSliding = false;
+
+        // Ïù¥Î¶Ñ
+        if (nameText) nameText.text = gundata.weaponName;
     }
 
-    // Armory∞° "µÈæÓø√ ∆–≥Œ"¿ª æÀ ºˆ ¿÷∞‘ ¡¶∞¯
-    public int PeekTargetIndex(bool plus)
+    // Ïù¥Ï†Ñ SetAllSprites Ïù¥Î¶Ñ Ïú†ÏßÄ(Ìò∏Ï∂úÎ∂Ä Ìò∏Ìôò): Ïò§Î≤ÑÎ†àÏù¥ + Î©îÏù∏ Ïä§ÌîÑÎùºÏù¥Ìä∏ ÎèôÏãú Í∞±Ïã†
+    public void SetAllSprites(Sprite sprite, GunData gundata)
     {
-        int idx = currentIndex + (plus ? 1 : -1);
-        if (idx >= panels.Length) idx = 0;
-        else if (idx < 0) idx = panels.Length - 1;
-        return idx;
-    }
-    public RectTransform GetPanel(int index) => (index >= 0 && index < panels.Length) ? panels[index] : null;
-
-    public void clickshowpanel(bool plus)
-    {
-        ShowPanel(PeekTargetIndex(plus), plus);
-    }
-
-    private void ShowPanel(int index, bool plus)
-    {
-        if (isSliding || index == currentIndex || panels == null || panels.Length == 0) return;
-
-        bool moveLeft = plus; // ø¿∏•¬  πˆ∆∞(plus=true)¿Ã∏È øﬁ¬ ¿∏∑Œ πÃ¥¬ ø¨√‚
-        Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
-
-        isSliding = true;
-
-        RectTransform fromPanel = panels[currentIndex];
-        RectTransform toPanel = panels[index];
-
-        fromPanel.DOKill();
-        toPanel.DOKill();
-
-        fromPanel.transform.SetAsLastSibling();
-        toPanel.transform.SetAsFirstSibling();
-
-        toPanel.gameObject.SetActive(true);
-        toPanel.anchoredPosition = -offset;
-
-        // ≈∏¿”Ω∫ƒ…¿œ π´Ω√: SetUpdate(true)
-        var t1 = fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
-        var t2 = toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
-
-        t2.OnComplete(() =>
-        {
-            fromPanel.anchoredPosition = Vector2.zero; // ¥©¿˚ ø¿«¡º¬ ¡¶∞≈
-            fromPanel.gameObject.SetActive(false);
-            currentIndex = index;
-            isSliding = false;
-        });
-    }
-
-    // (ø…º«) ø‹∫Œø°º≠ ∆–≥Œ Ω∫«¡∂Û¿Ã∆Æ∏¶ ¡ˆ¡§«“ ∂ß ªÁøÎ
-    public void SetPanelSprite(int panelIndex, Sprite sprite)
-    {
-        var p = GetPanel(panelIndex);
-        if (!p) return;
-        var img = p.GetComponent<Image>();
-        if (img) img.sprite = sprite;
-    }
-    public void SlideWithSprites(bool toRight, UnityEngine.Sprite fromSprite, UnityEngine.Sprite toSprite, System.Action onComplete = null)
-    {
-        if (panels == null || panels.Length == 0) { onComplete?.Invoke(); return; }
-
-        // «ˆ¿Á ∆–≥Œ/µÈæÓø√ ∆–≥Œ ∞ËªÍ
-        int toIndex = currentIndex + (toRight ? 1 : -1);
-        if (toIndex >= panels.Length) toIndex = 0;
-        else if (toIndex < 0) toIndex = panels.Length - 1;
-
-        bool moveLeft = toRight;                         // ø¿∏•¬  πˆ∆∞¿Ã∏È ø¿∏•¬ °Êøﬁ¬ ¿∏∑Œ πÃ¥¬ ø¨√‚
-        Vector2 offset = new Vector2(moveLeft ? -slideDistance : slideDistance, 0f);
-
-        var fromPanel = panels[currentIndex];
-        var toPanel = panels[toIndex];
-
-        // from/to ¿ÃπÃ¡ˆø° ∞¢∞¢ «ˆ¿Á/¥Ÿ¿Ω Ω∫«¡∂Û¿Ã∆Æ∏¶ °∞ΩΩ∂Û¿ÃµÂ ¡˜¿¸°±ø° ºº∆√
-        var fromImg = fromPanel.GetComponent<UnityEngine.UI.Image>() ?? fromPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
-        var toImg = toPanel.GetComponent<UnityEngine.UI.Image>() ?? toPanel.GetComponentInChildren<UnityEngine.UI.Image>(true);
-        if (fromImg) fromImg.sprite = fromSprite;
-        if (toImg) toImg.sprite = toSprite;
-
-        // ∞Ë√˛/¿ßƒ° ºº∆√
-        fromPanel.transform.SetAsLastSibling();
-        toPanel.transform.SetAsFirstSibling();
-        toPanel.gameObject.SetActive(true);
-        toPanel.anchoredPosition = -offset;
-
-        // ≈∏¿”Ω∫ƒ…¿œ 0ø°º≠µµ µø¿€
-        fromPanel.DOAnchorPos(offset, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true);
-        toPanel.DOAnchorPos(Vector2.zero, slideDuration).SetEase(Ease.OutCubic).SetUpdate(true)
-        .OnComplete(() =>
-        {
-            fromPanel.anchoredPosition = Vector2.zero;
-            fromPanel.gameObject.SetActive(false);
-            currentIndex = toIndex;
-            onComplete?.Invoke();
-        });
-    }
-    public void SetAllSprites(Sprite sprite)
-    {
-        if (panels == null) return;
-        foreach (var rt in panels)
-        {
-            if (!rt) continue;
-            var img = rt.GetComponent<UnityEngine.UI.Image>() ?? rt.GetComponentInChildren<UnityEngine.UI.Image>(true);
-            if (!img) continue;
-            var r = img.rectTransform;
-            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = Vector2.zero;
-            img.preserveAspect = true;
-            img.sprite = sprite;
-        }
+        if (gundata != null) ApplyOverlay(gundata);
     }
 
 }

@@ -73,7 +73,7 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 200
   m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -304,7 +304,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -39
+  m_SortingOrder: 200
   m_Sprite: {fileID: 21300000, guid: 0e922aeb5d290e846aa2d0fb6f0eec6f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -395,9 +395,6 @@ MonoBehaviour:
     m_Bits: 2176
   obstacleLayers:
     serializedVersion: 2
-    m_Bits: 98817
+    m_Bits: 229889
   damageHitEffect: {fileID: 3355093780470377054, guid: dee555a4c7f65fb4e89482fb1b39e088, type: 3}
   obstacleHitEffect: {fileID: 31258431754281099, guid: 091de20db6325294d9946af1a9930159, type: 3}
-  wallSoundLayer:
-    serializedVersion: 2
-    m_Bits: 512
