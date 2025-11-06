@@ -154,7 +154,7 @@ MonoBehaviour:
   dialogueBubble: {fileID: 0}
   dialogueTextComponent: {fileID: 0}
   dialogueDuration: 3
-  id: 1001001
+  id: 1003001
   nonCombatStateType: 0
   combatStateType: 0
   useCollisionEnter: 1
@@ -166,10 +166,10 @@ MonoBehaviour:
     m_Bits: 64
   bodyMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2176
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 164353
   forwardLight: {fileID: 3757559673783468784}
   backwardLight: {fileID: 4662476106655208001}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -181,7 +181,7 @@ MonoBehaviour:
   gunId: 
   shooter: {fileID: 0}
   returnPoint: {fileID: 0}
-  bloodPrefab: {fileID: 0}
+  bloodPrefab: {fileID: 3797701039655770728, guid: 1f9f7eee172efdc448c3dce89fb86626, type: 3}
   questionIcon: {fileID: 0}
   exclamationIcon: {fileID: 0}
   minIconShowTime: 0.12
@@ -410,10 +410,10 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 9d4078ec
+  m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -492,10 +492,10 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 9d4078ec
+  m_ApplyToSortingLayers: 00000000
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
