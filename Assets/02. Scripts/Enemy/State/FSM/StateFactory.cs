@@ -6,19 +6,7 @@ public static class StateFactory
     public static Dictionary<Type, IState> CreateStates(Enemy enemy)
     {
         var result = new Dictionary<Type, IState>();
-        /*
-        result.Add(typeof(PatrolState), new PatrolState(enemy));
-        result.Add(typeof(SuspectState), new SuspectState(enemy));
-        result.Add(typeof(InvestigateState), new InvestigateState(enemy));
-        result.Add(typeof(AssaultState), new AssaultState(enemy));
-        result.Add(typeof(CoverState), new CoverState(enemy));
-        result.Add(typeof(AttackState), new AttackState(enemy));
-        result.Add(typeof(DeathState), new DeathState(enemy));
-        result.Add(typeof(RetreatState), new RetreatState(enemy));
-        result.Add(typeof(ReturnState), new ReturnState(enemy));
-        result.Add(typeof(FleeState), new FleeState(enemy));
-        */
-        
+
         AddState<PatrolState>(result, enemy);
         AddState<SuspectState>(result, enemy);
         AddState<InvestigateState>(result, enemy);
