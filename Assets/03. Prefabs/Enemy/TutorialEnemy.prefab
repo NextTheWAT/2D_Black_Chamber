@@ -169,7 +169,7 @@ MonoBehaviour:
     m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 33280
+    m_Bits: 164352
   forwardLight: {fileID: 6599352475685495871}
   backwardLight: {fileID: 3523323190724193581}
   originalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -177,6 +177,7 @@ MonoBehaviour:
   alertColor: {r: 1, g: 0, b: 0, a: 1}
   patrolPoints: []
   startPatrolPointIndex: 0
+  useGunID: 1
   gunId: smg_pizon_00
   shooter: {fileID: 7165611205558197295}
   returnPoint: {fileID: 0}
@@ -241,7 +242,6 @@ MonoBehaviour:
   upperAnimator: {fileID: 8804003209034031421}
   lowerAnimator: {fileID: 4163915192548266303}
   reloadDuration: 0
-  nowcrosshairCursor: {fileID: 0}
 --- !u!114 &7165611205558197295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,9 +267,6 @@ MonoBehaviour:
     bulletSpeed: 25
     bulletPerShot: 1
     bulletDuration: 2
-    gunNoiseData:
-      strength: 0
-      range: 0
     curAmmo: 0
     curReserveAmmo: 0
     maxAmmo: 12
@@ -938,7 +935,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
@@ -1123,7 +1120,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
