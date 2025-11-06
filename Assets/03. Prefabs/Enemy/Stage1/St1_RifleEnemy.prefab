@@ -394,9 +394,6 @@ MonoBehaviour:
     bulletSpeed: 25
     bulletPerShot: 1
     bulletDuration: 2
-    gunNoiseData:
-      strength: 0
-      range: 0
     curAmmo: 0
     curReserveAmmo: 0
     maxAmmo: 12
@@ -1597,7 +1594,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
@@ -1783,7 +1780,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 0.4
+  m_Intensity: 1
   m_LightVolumeIntensity: 0
   m_LightVolumeIntensityEnabled: 1
   m_ApplyToSortingLayers: 000000009d4078ece5de8963b783b9737b66a268
