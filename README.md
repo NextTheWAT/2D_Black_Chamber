@@ -590,3 +590,18 @@ Scripts
 
 ## 🧯 Troubleshooting
 > 개발 과정에서 발생한 주요 문제들과 해결 과정을 정리한 섹션입니다.
+<img width="570" height="799" alt="image" src="https://github.com/user-attachments/assets/a233ca51-c693-40e8-8294-131aaa480562" />
+
+<img width="570" height="817" alt="image" src="https://github.com/user-attachments/assets/c06ed02c-df72-4cbb-8359-f7bc225dae9b" />
+<img width="570" height="258" alt="image" src="https://github.com/user-attachments/assets/4886d4c0-31d8-4d83-bf01-9d55bdf1fd79" />
+
+<img width="570" height="770" alt="image" src="https://github.com/user-attachments/assets/47f95685-62c3-407d-ab5f-f4ce3fc71039" />
+
+<img width="570" height="317" alt="image" src="https://github.com/user-attachments/assets/c6b92a7f-b4dd-4503-bc2c-bac16992a463" />
+<img width="570" height="274" alt="image" src="https://github.com/user-attachments/assets/3ae5858e-6555-4e5c-b1ef-8a18efe1d73a" />
+
+
+
+
+
+
