@@ -35,12 +35,15 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
-            // 화면에 보이지 않을 때만 적 생성
-            if (SpawnManager.Instance.MaxSpawnEnemyCount > SpawnManager.Instance.ActiveEnemyCount && !visibilityChecker.Visible)
-                Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+            // 무언가에 가려졌을 때만 생성
+            if (Physics2D.Linecast(transform.position, GameManager.Instance.Player.position, GameManager.Instance.obstacleLayerMask))
+                // 화면에 보이지 않을 때만 적 생성
+                if (SpawnManager.Instance.MaxSpawnEnemyCount > SpawnManager.Instance.ActiveEnemyCount && !visibilityChecker.Visible)
+                    Instantiate(enemyPrefab, transform.position, Quaternion.identity);
 
             yield return new WaitForSeconds(SpawnManager.Instance.spawnInterval);
         }
     }
+
 
 }
