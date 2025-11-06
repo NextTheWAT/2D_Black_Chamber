@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clips:
   - {fileID: 8300000, guid: 6d58078feb8706746bd6b82550644bd4, type: 3}
-  volume: 0.6
+  volume: 0.3
