@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: lk12
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 428f7729deab1004aa09c9be670b0d1b, type: 3}
+  - {fileID: 8300000, guid: d2d0e9f6298b6314aa3a79f74f2d772c, type: 3}
   volume: 0.6
