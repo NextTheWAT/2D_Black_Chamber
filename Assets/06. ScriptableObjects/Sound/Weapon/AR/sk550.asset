@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: sk550
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 428f7729deab1004aa09c9be670b0d1b, type: 3}
+  - {fileID: 8300000, guid: f41440be99d3d3b438da35b464643d18, type: 3}
   volume: 0.6

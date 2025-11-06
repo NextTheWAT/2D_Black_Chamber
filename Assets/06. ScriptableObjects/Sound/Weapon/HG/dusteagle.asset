@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: dusteagle
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 428f7729deab1004aa09c9be670b0d1b, type: 3}
+  - {fileID: 8300000, guid: 7a62dceb9776b4640b18763fe7090219, type: 3}
   volume: 0.6
