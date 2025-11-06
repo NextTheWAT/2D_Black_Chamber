@@ -25,6 +25,26 @@ https://youtu.be/OVt4j6ZTV6E
 **상호작용**: E키 (문 열기, 아이템 획득 등)  
 **공격**: 마우스 클릭 (전투 모드) 또는 백어택 (스텔스 모드)  
 
+
+## 🕹️ 핵심 재미  
+### 탑다운 시점이지만 시선을 직접 돌려가며 정보를 파악해야 하는 전술적 재미  
+![1](https://github.com/user-attachments/assets/44f21785-2d10-4d50-b591-f40d80b89548)
+<img width="1027" height="157" alt="image" src="https://github.com/user-attachments/assets/fbfdce7c-cdfd-4eaf-9dc6-cb78f610099c" />
+
+## 🕹️ 핵심 시스템 - 시야 시스템  
+![2](https://github.com/user-attachments/assets/8a77dc79-23c7-4f4f-94a2-dbacc80bf23e)
+<img width="613" height="385" alt="image" src="https://github.com/user-attachments/assets/f3c64faf-64a7-453e-a687-dd18bd87ed51" />
+
+## 🕹️ 두 가지 상태 시스템  
+![3](https://github.com/user-attachments/assets/79ed416c-5fd0-4b28-8eca-7428ac01044e)
+<img width="461" height="200" alt="image" src="https://github.com/user-attachments/assets/72940aa4-c6b5-47b4-b9f9-e7294c64e0de" />  
+
+![4](https://github.com/user-attachments/assets/9f08a165-872c-49b0-bcdb-cf4d3f64549b)
+<img width="457" height="207" alt="image" src="https://github.com/user-attachments/assets/1ca7d9ef-a47b-4508-8348-60a90baebb79" />
+
+<img width="746" height="185" alt="image" src="https://github.com/user-attachments/assets/5926cb8e-9826-4d6c-9a48-24505a92e960" />
+
+
 ## ✨ Features   
 
 ### 🎯 스텔스 시스템  
