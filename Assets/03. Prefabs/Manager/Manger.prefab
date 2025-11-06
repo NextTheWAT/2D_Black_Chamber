@@ -638,8 +638,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
-  enemySpawnerPrefab: {fileID: 6068186402997420750, guid: 8b3fea4ec9ac2b54583c6d840d7ace5d, type: 3}
-  spawnInterval: 20
+  spawnPrefab: {fileID: 2077661141275856015, guid: e8d623373a40ef540baaf289a8efa30a, type: 3}
+  spawnCount: 5
+  spawnInterval: 40
 --- !u!1 &2607202431144573002
 GameObject:
   m_ObjectHideFlags: 0
