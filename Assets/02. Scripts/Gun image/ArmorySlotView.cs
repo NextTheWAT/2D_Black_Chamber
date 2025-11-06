@@ -112,33 +112,6 @@ public class ArmorySlotViewSimple : MonoBehaviour
         currentItemIndex = (idx >= 0) ? idx : 0;
     }
 
-    // ----- 캐러셀 패널 이미지를 "현재 선택" 스프라이트로 칠해두기 -----
-    private void PaintPanelsWithCurrent()
-    {
-        if (!carousel || carousel.panels == null) return;
-        var cur = GetCurrent();
-        var sp = cur != null ? cur.prefabInfo.weaponSprite : null;
-
-        for (int i = 0; i < carousel.panels.Length; i++)
-        {
-            var img = carousel.panels[i].GetComponent<Image>();
-            if (!img) continue;
-
-            img.sprite = sp;
-
-            // 스프라이트 교체 시 정렬/위치 보정(위로 붙는 증상 방지)
-            var r = img.rectTransform;
-            r.anchorMin = new Vector2(0.5f, 0.5f);
-            r.anchorMax = new Vector2(0.5f, 0.5f);
-            r.pivot = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = Vector2.zero;
-
-            // 필요 시, 비율 유지
-            img.preserveAspect = true;
-            // img.SetNativeSize(); // 디자인에 맞게 선택
-        }
-    }
-
     // ----- 좌우 화살표 처리 -----
     private void Step(int delta)
     {
@@ -167,6 +140,15 @@ public class ArmorySlotViewSimple : MonoBehaviour
                 carousel.SetAllSprites(nextSprite, GetCurrent()); // 패널 전체 통일
             }
         );
+    }
+    // ----- 패널(아이콘/커버/보더/이름) 갱신 -----
+    private void PaintPanelsWithCurrent()
+    {
+        var d = GetCurrent();
+        if (d == null) return;
+
+        var sprite = d.prefabInfo.weaponSprite;
+        carousel.SetAllSprites(sprite, d);
     }
 
     // ----- 하단 스펙 갱신 -----
