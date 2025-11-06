@@ -321,6 +321,7 @@ public class Enemy : MonoBehaviour
         UpdateAlertIcons();
 
         animationController.SortingOrder = animationController.OriginalSortingOrder;
+        SpawnManager.Instance.IncreaseEnemyCount();
 
         if (FirebaseManager.Instance.IsGunDataLoaded)
             InitializeGunData();
@@ -506,6 +507,8 @@ public class Enemy : MonoBehaviour
 
         questionIcon?.SetActive(false);
         exclamationIcon?.SetActive(false);
+
+        SpawnManager.Instance.DecreaseEnemyCount();
 
         // 대사 버블도 끄기
         if (dialogueBubble) dialogueBubble.SetActive(false);

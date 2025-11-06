@@ -5,9 +5,6 @@ using Constants;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-
-    public int spawnCount = 5;            // 积己且 荐
-    public float spawnInterval = 2f;      // 积己 埃拜
     private bool isSpawningInProgress = false; // 积己 吝汗 规瘤
 
     private void OnEnable()
@@ -33,10 +30,12 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnCoroutine()
     {
-        for (int i = 0; i < spawnCount; i++)
+        while (true)
         {
-            Instantiate(enemyPrefab, transform.position, Quaternion.identity);
-            yield return new WaitForSeconds(spawnInterval);
+            if (SpawnManager.Instance.MaxSpawnEnemyCount > SpawnManager.Instance.ActiveEnemyCount)
+                Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+
+            yield return new WaitForSeconds(SpawnManager.Instance.spawnInterval);
         }
     }
 }
