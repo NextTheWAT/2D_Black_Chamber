@@ -321,6 +321,7 @@ public class Enemy : MonoBehaviour
         UpdateAlertIcons();
 
         animationController.SortingOrder = animationController.OriginalSortingOrder;
+
         SpawnManager.Instance.IncreaseEnemyCount();
 
         if (FirebaseManager.Instance.IsGunDataLoaded)

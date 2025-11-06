@@ -5,6 +5,7 @@ using Constants;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    private VisibilityChecker visibilityChecker;
     private bool isSpawningInProgress = false; // 생성 중복 방지
 
     private void OnEnable()
@@ -15,6 +16,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void OnPhaseChanged(GamePhase gamePhase)
     {
+        visibilityChecker = GetComponent<VisibilityChecker>();
+
         if (gamePhase == GamePhase.Combat)
             StartSpawn();
     }
@@ -32,10 +35,12 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
-            if (SpawnManager.Instance.MaxSpawnEnemyCount > SpawnManager.Instance.ActiveEnemyCount)
+            // 화면에 보이지 않을 때만 적 생성
+            if (SpawnManager.Instance.MaxSpawnEnemyCount > SpawnManager.Instance.ActiveEnemyCount && !visibilityChecker.Visible)
                 Instantiate(enemyPrefab, transform.position, Quaternion.identity);
 
             yield return new WaitForSeconds(SpawnManager.Instance.spawnInterval);
         }
     }
+
 }
