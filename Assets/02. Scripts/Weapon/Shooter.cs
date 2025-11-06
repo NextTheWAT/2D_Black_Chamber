@@ -133,10 +133,11 @@ public class Shooter : MonoBehaviour
         // 탄환 발사
         int count = projPerShot;
         Vector2 baseDir = direction.sqrMagnitude > 0.0001f ? direction.normalized : (Vector2)gunPoint.up;
+        float spread = count == 1 ? 0 : CurrentSpread;
 
         for (int i = 0; i < count; i++)
         {
-            Vector2 dir = ApplySpread(baseDir, CurrentSpread * i);
+            Vector2 dir = ApplySpread(baseDir, spread);
             SpawnBullet(gunData, spawnPoint, dir);
         }
 
