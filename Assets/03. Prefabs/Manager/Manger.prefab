@@ -1510,7 +1510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   root_DontDestroyOnLoad: 0
-  startingBalance: 5000
+  startingBalance: 2000
   balance: 0
   OnMoneyChanged:
     m_PersistentCalls:
