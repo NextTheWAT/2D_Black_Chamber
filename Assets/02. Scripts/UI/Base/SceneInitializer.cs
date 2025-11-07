@@ -23,8 +23,7 @@ public class SceneInitializer : MonoBehaviour
 
         WeaponManager.Instance.isReloading = false;
 
-        SpawnManager.Instance.ResetEnemyCount();
-        SpawnManager.Instance.SpawnSpawner();
+        SpawnManager.Instance.Setting();
 
         var pause = FindFirstObjectByType<PausePopup>(FindObjectsInactive.Include);
         if (pause)

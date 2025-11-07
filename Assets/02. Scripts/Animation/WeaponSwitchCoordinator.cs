@@ -17,7 +17,6 @@ public class WeaponSwitchCoordinator : MonoBehaviour
         if (WeaponManager.Instance != null)
         {
             WeaponManager.Instance.OnWeaponChanged.AddListener(OnWeaponChanged);
-            WeaponManager.Instance.OnAmmoChanged.AddListener(RefreshAmmo);
         }
     }
 
@@ -26,7 +25,6 @@ public class WeaponSwitchCoordinator : MonoBehaviour
         if (WeaponManager.Instance != null)
         {
             WeaponManager.Instance.OnWeaponChanged.RemoveListener(OnWeaponChanged);
-            WeaponManager.Instance.OnAmmoChanged.RemoveListener(RefreshAmmo);
         }
 
     }
@@ -44,16 +42,5 @@ public class WeaponSwitchCoordinator : MonoBehaviour
 
         // 1) 상체 애니메이터 컨트롤러 스왑
         anim.ApplyUpperWeaponAnimator(shooter.gunData, playSwitchAnim: true);
-
-        // 2) (선택) 탄 표시는 HUD 스크립트에서 처리 중이면 생략 가능
-        RefreshAmmo();
-    }
-
-    private void RefreshAmmo()
-    {
-        /*
-        if (!hud || WeaponManager.Instance == null) return;
-        hud.SetAmmo(WeaponManager.Instance.GetMagazine(), WeaponManager.Instance.GetReserve());
-        */
     }
 }
