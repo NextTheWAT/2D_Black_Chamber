@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: sik
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 921673cf472f58e43935180a9ca44ec9, type: 3}
+  - {fileID: 8300000, guid: e54a746ac985eb94fba94105db9592b0, type: 3}
   volume: 0.6

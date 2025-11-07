@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: g-lock
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 6aeb7729eba2d7147818b71c8f1fc5b4, type: 3}
+  - {fileID: 8300000, guid: 7b45f7378ddb1b0488b54418e35f4b0c, type: 3}
   volume: 0.6

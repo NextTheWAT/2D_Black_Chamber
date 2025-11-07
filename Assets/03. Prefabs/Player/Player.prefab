@@ -485,7 +485,7 @@ LineRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0.5882353}
-      key1: {r: 1, g: 1, b: 1, a: 0.5882353}
+      key1: {r: 1, g: 1, b: 1, a: 0.39215687}
       key2: {r: 0, g: 0, b: 0, a: 1}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -922,7 +922,7 @@ LineRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 1, b: 1, a: 0.5882353}
-      key1: {r: 1, g: 1, b: 1, a: 0.5882353}
+      key1: {r: 1, g: 1, b: 1, a: 0.39215687}
       key2: {r: 0, g: 0, b: 0, a: 1}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1209,7 +1209,7 @@ MonoBehaviour:
   - {x: -0.21683323, y: -0.47494334, z: 0}
   m_ShapePathHash: -128645897
   m_Mesh: {fileID: 0}
-  m_InstanceId: 92828
+  m_InstanceId: 160886
   m_LocalBounds:
     m_Center: {x: 0.00062310696, y: -0.0029649138, z: 0}
     m_Extent: {x: 0.52182436, y: 0.5120705, z: 0}
@@ -1681,7 +1681,7 @@ MonoBehaviour:
   aimMaxWidth: 0.08
   aimMinWidth: 0.04
   aimLineOffset: 0.4
-  sideLineOffset: 1.4
+  sideLineOffset: 1.1
   gaugeArcDrawer: {fileID: 2281563679238384519}
   backgroundArcDrawer: {fileID: 1308643433083292550}
   gaugeOriginalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1690,7 +1690,7 @@ MonoBehaviour:
   gaugeColorTransitionSpeed: 5
   accuracy: 1.5
   aimAccuracy: 3
-  sideLineDistance: 0.5
+  sideLineDistance: 0.2
   precision: 20
   aimPrecision: 10
   stability: 5
