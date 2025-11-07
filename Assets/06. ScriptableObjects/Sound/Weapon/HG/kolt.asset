@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: kolt
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 80aeedd87397e45459758f136f45c152, type: 3}
+  - {fileID: 8300000, guid: 7434fef620fc1844dac15bc8a6bad631, type: 3}
   volume: 0.6
