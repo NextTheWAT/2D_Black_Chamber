@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: jakarov
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 3ed7d0e9e35e0e546aa8610207dd262f, type: 3}
+  - {fileID: 8300000, guid: 6fc3213b13ac61a42b1964c33697f7b0, type: 3}
   volume: 0.6

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: np443
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: c7ce83f49ecdec04390695754bda3508, type: 3}
+  - {fileID: 8300000, guid: 6fc3213b13ac61a42b1964c33697f7b0, type: 3}
   volume: 0.6
