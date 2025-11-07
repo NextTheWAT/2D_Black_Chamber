@@ -34,6 +34,9 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     public bool isReloading = false;
 
     private int currentIndex = -1;
+
+    public int CurrentIndex => currentIndex;
+
     public Shooter CurrentWeapon => IsValidSlot(currentIndex) ? weaponSlots[currentIndex] : null;
     public Shooter CombatWeapon => IsValidSlot(combatSlotIndex) ? weaponSlots[combatSlotIndex] : null;
     public Shooter StealthWeapon => IsValidSlot(stealthSlotIndex) ? weaponSlots[stealthSlotIndex] : null;
@@ -173,7 +176,6 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     public bool EquipByIndex(int slot)
     {
         if (!IsValidSlot(slot)) return false;
-
         if (IsValidSlot(currentIndex))
             weaponSlots[currentIndex].gameObject.SetActive(false);
 

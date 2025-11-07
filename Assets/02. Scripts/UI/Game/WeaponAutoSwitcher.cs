@@ -56,6 +56,7 @@ public class WeaponAutoSwitcher : MonoBehaviour
         // 탄이 없으면: 칼 인덱스가 유효할 때만 강제 전환
         if (targetAmmoTotal <= 0)
         {
+            if (WM.CurrentIndex == knifeIndex) return; // 이미 칼이면 무시
             if (knifeIndex >= 0) WM.EquipByIndex(knifeIndex);
             return;
         }
