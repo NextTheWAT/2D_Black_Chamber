@@ -57,6 +57,8 @@ public class SpawnManager : Singleton<SpawnManager>
     {
         if(spawnCoroutine != null)
             StopCoroutine(spawnCoroutine);
+
+        spawnCoroutine = null;
     }
 
     IEnumerator Spawn()
