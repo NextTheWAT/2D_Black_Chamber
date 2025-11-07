@@ -173,6 +173,7 @@ public sealed class WeaponManager : Singleton<WeaponManager>
     public bool EquipByIndex(int slot)
     {
         if (!IsValidSlot(slot)) return false;
+        if (currentIndex == slot) return false; // 이미 장착됨
 
         if (IsValidSlot(currentIndex))
             weaponSlots[currentIndex].gameObject.SetActive(false);
